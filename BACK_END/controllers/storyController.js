@@ -1,64 +1,64 @@
-const Post = require('../models/Post')
+const Story = require('../models/Story')
 
-//GET /posts
+//GET /stories
 exports.getAll = (async (req, res, next) => {
 
-    Post.find({})
-        .then(posts => {
+    Story.find({})
+        .then(stories => {
             res.json(posts)
             res.status(200).json({
                 success: true,
-                posts
+                stories
             })
         })
         .catch(next)
 
 })
 
-//GET /posts/:id
-exports.getPost = (async (req, res, next) => {
+//GET /stories/:id
+exports.getStory = (async (req, res, next) => {
 
-    Post.findById(req.params.id)
-        .then(post => {
+    Story.findById(req.params.id)
+        .then(story => {
             res.json(post)
             res.status(200).json({
                 success: true,
-                post
+                story
             })
         })
         .catch(next)
 
 })
 
-//GET /posts/create
+//GET /stories/create
 exports.create = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//POST /courses/store
+//POST /stories/store
 exports.store = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//GET /courses/:id/edit
+//GET /stories/:id/edit
 exports.edit = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//PUT /courses/:id
+//PUT /stories/:id
 exports.update = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//DELETE /courses/:id
+//DELETE /stories/:id
 exports.destroy = (async (req, res, next) => {
     Post.delete({ _id: req.params.id})
       .then(() => res.redirect('back'))

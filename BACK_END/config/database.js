@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 
-
 const connectDatabase = () => {
-    mongoose.connect(process.env.DB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-    }).then(con => {
-        console.log(`MongoDB Database connected with HOST: ${con.connection.host}`)
-    })
+    try {
+        mongoose.connect(process.env.MONGO_URI,{
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('connect successfully')
+    } catch (error) {
+        console.log('connect failure')
+    }
 }
 
 module.exports = connectDatabase
