@@ -1,16 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Story = new Schema({
-    user_id: {
+const Nofi_user = new Schema({
+    nofi_id: {
         type: String,
     },
-    story_content: {
+    status: {
         type: String,
     },
-    create_story_time: {
+    friend_id: {
         type: String,
     },
 })
 
-module.exports = mongoose.model('Story', Story);
+module.exports = mongoose.model('Nofi_user', Nofi_user);

@@ -1,16 +1,19 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Story = new Schema({
+const Comment = new Schema({
     user_id: {
         type: String,
     },
-    story_content: {
+    post_id: {
         type: String,
     },
-    create_story_time: {
+    comment_content: {
+        type: String,
+    },
+    create_comment_time: {
         type: String,
     },
 })
 
-module.exports = mongoose.model('Story', Story);
+module.exports = mongoose.model('Comment', Comment);

@@ -1,16 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Story = new Schema({
+const Follow = new Schema({
     user_id: {
         type: String,
     },
-    story_content: {
+    follower_user_id: {
         type: String,
     },
-    create_story_time: {
+    following_user_id: {
         type: String,
     },
 })
 
-module.exports = mongoose.model('Story', Story);
+module.exports = mongoose.model('Follow', Follow);

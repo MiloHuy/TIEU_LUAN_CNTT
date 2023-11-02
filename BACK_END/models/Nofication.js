@@ -1,16 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Story = new Schema({
+const Nofication = new Schema({
     user_id: {
         type: String,
     },
-    story_content: {
+    nofi_content: {
         type: String,
     },
-    create_story_time: {
+    nofi_create_time: {
         type: String,
     },
 })
 
-module.exports = mongoose.model('Story', Story);
+module.exports = mongoose.model('Nofication', Nofication);
