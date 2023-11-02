@@ -1,7 +1,10 @@
 const Post = require('../models/Post')
 const Story = require('../models/Story')
+const Follow = require('../models/Follow')
+const Friend = require('../models/Friend')
 
-//GET /statistics/posts
+//GET /statistics
+
 exports.getPosts = (async (req, res, next) => {
 
     Post.find({})
@@ -16,7 +19,7 @@ exports.getPosts = (async (req, res, next) => {
 
 })
 
-//GET /statistics/stories
+
 exports.getStories = (async (req, res, next) => {
 
     Story.find({})
@@ -28,5 +31,17 @@ exports.getStories = (async (req, res, next) => {
             })
         })
         .catch(next)
+
+})
+
+exports.getFollower = (async (req, res, next) => {
+
+})
+
+exports.getFollowing = (async (req, res, next) => {
+
+})
+
+exports.getFriend = (async (req, res, next) => {
 
 })

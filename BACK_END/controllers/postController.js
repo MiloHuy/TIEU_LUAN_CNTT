@@ -37,29 +37,53 @@ exports.create = (async (req, res, next) => {
 
 })
 
-//POST /courses/store
+//POST /posts/store
 exports.store = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//GET /courses/:id/edit
+//GET /posts/:id/edit
 exports.edit = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//PUT /courses/:id
+//PUT /posts/:id
 exports.update = (async (req, res, next) => {
 
     res.send('Hello World!')
 
 })
 
-//DELETE /courses/:id
+//DELETE /posts/:id
 exports.destroy = (async (req, res, next) => {
+    Post.delete({ _id: req.params.id})
+      .then(() => res.redirect('back'))
+      .catch(next)
+
+})
+
+
+//GET /posts/admin
+exports.adminGetAll = (async (req, res, next) => {
+
+    Post.find({})
+        .then(posts => {
+            res.json(posts)
+            res.status(200).json({
+                success: true,
+                posts
+            })
+        })
+        .catch(next)
+
+})
+
+//DELETE /posts/admin/:id
+exports.adminDestroy = (async (req, res, next) => {
     Post.delete({ _id: req.params.id})
       .then(() => res.redirect('back'))
       .catch(next)
