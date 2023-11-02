@@ -4,9 +4,11 @@ const Schema = mongoose.Schema
 const Story_like = new Schema({
     story_id: {
         type: String,
+        required: true,
     },
     user_id: {
         type: String,
+        required: true,
     },
 })
 

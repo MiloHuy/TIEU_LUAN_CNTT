@@ -4,6 +4,8 @@ const Schema = mongoose.Schema
 const Role = new Schema({
     role_name: {
         type: String,
+        required: true,
+        unique: true
     },
 })
 

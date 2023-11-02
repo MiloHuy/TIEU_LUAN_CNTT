@@ -4,12 +4,15 @@ const Schema = mongoose.Schema
 const Nofication = new Schema({
     user_id: {
         type: String,
+        required: true,
     },
     nofi_content: {
         type: String,
+        required: true,
     },
     nofi_create_time: {
         type: String,
+        required: true,
     },
 })
 

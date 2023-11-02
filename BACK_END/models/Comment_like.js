@@ -4,9 +4,11 @@ const Schema = mongoose.Schema
 const Comment_like = new Schema({
     comment_id: {
         type: String,
+        required: true,
     },
     user_id: {
         type: String,
+        required: true,
     },
 })
 
