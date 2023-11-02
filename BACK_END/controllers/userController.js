@@ -2,7 +2,6 @@ const User = require('../models/User')
 
 //GET /users/admin
 exports.getAll = (async (req, res, next) => {
-
     User.find({})
         .then(posts => {
             res.json(posts)
@@ -12,7 +11,6 @@ exports.getAll = (async (req, res, next) => {
             })
         })
         .catch(next)
-
 })
 
 //DELETE /users/admin/:id
