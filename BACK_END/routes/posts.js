@@ -20,7 +20,7 @@ router.post('/store', store);
 router.put('/:id', update);
 router.delete('/:id', destroy);
 
-router.get('/admin', adminGetAll);
+router.get('/admin/get', adminGetAll);
 router.delete('/admin/:id', adminDestroy);
 
 router.get('/', getAll);

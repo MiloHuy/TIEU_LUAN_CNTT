@@ -15,7 +15,6 @@ exports.getAll = (async (req, res, next) => {
                 message: err.message 
             });
         })
-
 })
 
 //GET /posts/:id
@@ -94,7 +93,7 @@ exports.update = (async (req, res, next) => {
 
 //DELETE /posts/:id
 exports.destroy = (async (req, res, next) => {
-    Post.delete({ _id: req.params.id})
+    await Post.deleteOne({ _id: req.params.id})
         .then(() => {
             res.status(200).json({
                 success: true,
@@ -113,27 +112,28 @@ exports.destroy = (async (req, res, next) => {
 
 //GET /posts/admin
 exports.adminGetAll = (async (req, res, next) => {
-
     Post.find({})
         .then(posts => {
-            res.json(posts)
             res.status(200).json({
                 success: true,
                 posts
             })
         })
-        .catch(next)
-
+        .catch(err => {
+            res.status(500).json({
+                success: false, 
+                message: err.message 
+            });
+        })
 })
 
 //DELETE /posts/admin/:id
 exports.adminDestroy = (async (req, res, next) => {
-    Post.updateOne({ _id: req.params.id}, req.body)
-        .then(post => {
+    Post.deleteOne({ _id: req.params.id})
+        .then(() => {
             res.status(200).json({
                 success: true,
-                message: 'Cập nhật bài viết thành công.',
-                post
+                message: 'Xóa bài viết thành công.',
             })
         })
         .catch(err => {
