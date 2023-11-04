@@ -2,46 +2,58 @@ const Story = require('../models/Story')
 
 //GET /stories
 exports.getAll = (async (req, res, next) => {
-
     Story.find({})
         .then(stories => {
-            res.json(posts)
             res.status(200).json({
                 success: true,
                 stories
             })
         })
-        .catch(next)
-
+        .catch(err => {
+            res.status(500).json({
+                success: false, 
+                message: err.message 
+            });
+        })
 })
 
 //GET /stories/:id
 exports.getStory = (async (req, res, next) => {
-
     Story.findById(req.params.id)
-        .then(story => {
-            res.json(post)
-            res.status(200).json({
-                success: true,
-                story
-            })
+    .then(story => {
+        res.status(200).json({
+            success: true,
+            story
         })
-        .catch(next)
-
+    })
+    .catch(err => {
+        res.status(500).json({
+            success: false, 
+            message: err.message 
+        });
+    })
 })
 
 //GET /stories/create
 exports.create = (async (req, res, next) => {
-
     res.send('Hello World!')
-
 })
 
 //POST /stories/store
 exports.store = (async (req, res, next) => {
-
-    res.send('Hello World!')
-
+    try {
+        const story = await Story.create(req.body);
+        res.status(201).json({
+            success: true,
+            message: 'Đăng story thành công.',
+            story
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message 
+        });
+    }
 })
 
 //GET /stories/:id/edit
@@ -53,15 +65,35 @@ exports.edit = (async (req, res, next) => {
 
 //PUT /stories/:id
 exports.update = (async (req, res, next) => {
-
-    res.send('Hello World!')
-
+    Story.updateOne({_id: req.params.id}, req.body)
+        .then(story => {
+            res.status(200).json({
+                success: true,
+                message: 'Cập nhật story thành công.',
+                story
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false, 
+                message: err.message 
+            });
+        })
 })
 
 //DELETE /stories/:id
 exports.destroy = (async (req, res, next) => {
-    Post.delete({ _id: req.params.id})
-      .then(() => res.redirect('back'))
-      .catch(next)
-
+    Story.deleteOne({_id: req.params.id})
+        .then(() => {
+            res.status(200).json({
+                success: true,
+                message: 'Xóa story thành công.',
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false, 
+                message: err.message 
+            });
+        })
 })

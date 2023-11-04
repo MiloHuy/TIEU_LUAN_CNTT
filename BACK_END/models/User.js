@@ -36,17 +36,16 @@ const User = new Schema({
         required: true,
     },
     role_id: {
-        type: String,
-        required: true,
+        type: Number,
+        default: 1,
     },
     is_active: {
         type: Boolean,
-        required: true,
-        default: true
+        default: true,
     },
     avatar: {
         type: String,
-        required: true,
+        default: "https://i.pinimg.com/736x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg",
     },
 })
 

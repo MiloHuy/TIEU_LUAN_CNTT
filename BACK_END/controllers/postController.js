@@ -106,7 +106,6 @@ exports.destroy = (async (req, res, next) => {
                 message: err.message 
             });
         })
-
 })
 
 
