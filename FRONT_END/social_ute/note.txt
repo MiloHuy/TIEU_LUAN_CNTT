@@ -1,3 +1,4 @@
 - Lưu ý cách đặt tên foder 📁 và tên file:
-- Tên foder đặt bằng chữ thường và phân biệt tính năng bằng dấu "-" ví dụ: form-login, form-create-user, dialog-create-user
-- Tên file đặt tên viết hoa đầu chữ và phân biệt cũng bằng chữ hoa đầu chữ: Ví dụ: FormLogin,FormCreateUser,FormRegisterUser,DialogCreateUser
+- Tên foder chung đặt bằng chữ thường và phân biệt tính năng bằng dấu "-" ví dụ: form-login, form-create-user, dialog-create-user
+- Tên file component đặt tên viết hoa đầu chữ và phân biệt cũng bằng chữ hoa đầu chữ: Ví dụ: FormLogin,FormCreateUser,FormRegisterUser,DialogCreateUser
+- Tên file setup, config, ... đặt theo (name.(name_folder).js ví dụ folder slice có nhiệm vụ authen thì đặt theo tên: auth.slice.js)
