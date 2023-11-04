@@ -1,0 +1,3 @@
+- Lưu ý cách đặt tên foder 📁 và tên file:
+- Tên foder đặt bằng chữ thường và phân biệt tính năng bằng dấu "-" ví dụ: form-login, form-create-user, dialog-create-user
+- Tên file đặt tên viết hoa đầu chữ và phân biệt cũng bằng chữ hoa đầu chữ: Ví dụ: FormLogin,FormCreateUser,FormRegisterUser,DialogCreateUser
