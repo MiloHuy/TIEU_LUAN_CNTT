@@ -2,11 +2,12 @@ const express = require('express')
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan')
 const dotenv = require('dotenv');
-const app = express()
-const port = 3000
 
 const route = require('./routes');
 const connectDatabase = require('./config/database')
+
+const app = express()
+const port = 3000
 
 dotenv.config();
 
