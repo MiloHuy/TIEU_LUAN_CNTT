@@ -34,11 +34,6 @@ exports.getPost = (async (req, res, next) => {
         })
 })
 
-//GET /posts/create
-exports.create = (async (req, res, next) => {
-
-})
-
 //POST /posts/store
 exports.store = (async (req, res, next) => {
     try {
@@ -54,23 +49,6 @@ exports.store = (async (req, res, next) => {
             message: err.message 
         });
     }
-})
-
-//GET /posts/:id/edit
-exports.edit = (async (req, res, next) => {
-    Post.findById(req.params.id)
-        .then(post => {
-            res.status(200).json({
-                success: true,
-                post
-            })
-        })
-    .catch(err => {
-        res.status(500).json({
-            success: false, 
-            message: err.message 
-        });
-    })
 })
 
 //PUT /posts/:id
