@@ -1,3 +1,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Caprasimo&family=Merriweather:wght@300&family=Noto+Serif:wght@700&family=Roboto+Slab:wght@300&display=swap");
