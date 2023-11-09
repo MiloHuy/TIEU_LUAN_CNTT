@@ -29,7 +29,15 @@ const isUser = (req, res, next) => {
     next();
 };
 
+const isAdmin = (req, res, next) => {
+    if (!req.user || req.user.role_id !== 0) {
+        return res.status(401).json({ success: false, message: 'Không đủ quyền truy cập.' });
+    }
+    next();
+};
+
 module.exports = {
     verifyToken,
     isUser,
+    isAdmin
 }

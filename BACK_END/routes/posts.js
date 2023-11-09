@@ -11,15 +11,19 @@ const {
     adminDestroy,
 } = require('../controllers/postController.js');
 
-const { verifyToken, isUser } = require('../middlewares/authMiddleware.js');
+const {
+    verifyToken,
+    isUser,
+    isAdmin
+} = require('../middlewares/authMiddleware.js');
 
 router.get('/:id', verifyToken, isUser, getPost);
 router.post('/store', verifyToken, isUser, store);
 router.put('/:id', verifyToken, isUser, update);
 router.delete('/:id', verifyToken, isUser, destroy);
 
-router.get('/admin/get', adminGetAll);
-router.delete('/admin/:id', adminDestroy);
+router.get('/admin/get', verifyToken, isAdmin, adminGetAll);
+router.delete('/admin/:id', verifyToken, isAdmin, adminDestroy);
 
 router.get('/', verifyToken, isUser, getAll);
 
