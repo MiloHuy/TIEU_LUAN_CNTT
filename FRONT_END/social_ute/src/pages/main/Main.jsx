@@ -1,7 +1,6 @@
-import React from 'react'
+import { selectCurrentToken } from 'app/slice/auth/auth.slice'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { selectCurrentToken } from '../../app/slice/auth/auth.slice'
 
 const Public = () => {
 
