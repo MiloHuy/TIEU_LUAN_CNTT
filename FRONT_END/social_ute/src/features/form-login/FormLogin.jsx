@@ -61,7 +61,7 @@ const FormLogin = () => {
 
     return (
         <form className='h-full w-full flex flex-col items-center justify-center'>
-            <h1 className='text-lg text-blue-950 font-bold font-merriweather text-center'>LOGIN</h1>
+            <h1 className='text-lg text-slate-50 font-bold font-merriweather text-center'>LOGIN</h1>
 
             <Input className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full' type="email" placeholder="Email" />
             <Input className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full' type="password" placeholder="Password" />

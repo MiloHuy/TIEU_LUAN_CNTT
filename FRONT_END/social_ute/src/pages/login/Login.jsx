@@ -1,4 +1,3 @@
-
 import { Image } from '@nextui-org/react'
 import logo from 'assets/images/logo.png'
 import FormLogin from 'features/form-login'
@@ -15,7 +14,8 @@ const Login = () => {
                         src={logo}
                     />
                 </div>
-                <div className="flex justify-center items-center top-0 left-0 h-full w-full z-20">
+                <div className="flex justify-center items-center left-0 h-full w-full z-20">
+                    {/* <FormRegister /> */}
                     <FormLogin />
                 </div>
             </div>
