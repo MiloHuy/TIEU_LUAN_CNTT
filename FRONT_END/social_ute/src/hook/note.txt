@@ -1,0 +1,1 @@
+- Nơi để xử lý để export data cho các components hay features sử dụng

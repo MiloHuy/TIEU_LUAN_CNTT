@@ -1,5 +1,5 @@
-import Login from "pages/login"
-import Register from "pages/register"
+import Login from "layout/login"
+import Register from "layout/register"
 import { useState } from "react"
 
 const Authen = () => {
