@@ -1,8 +1,13 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import clsx from "clsx";
 
 const FormRegister = (props) => {
+    const handleOpenRegiser = (value) => {
+        props.handleFunction('hidden')
+    }
+
     return (
-        <form className='flex flex-col gap-2 items-center justify-center p-4 w-full h-full '>
+        <form className={clsx('flex flex-col gap-2 items-center justify-center p-4 w-full h-full ', props.className)}>
             <h1 className="text-lg font-bold font-merriweather text-center">
                 Sign up
             </h1>
@@ -79,7 +84,7 @@ const FormRegister = (props) => {
                 </Select>
             </div>
 
-            <Button className="w-3/4 text-sm font-merriweather">Sign up</Button>
+            <Button className="w-3/4 text-sm font-merriweather" onClick={handleOpenRegiser}>Sign up</Button>
         </form>
     )
 }
