@@ -1,0 +1,1 @@
+- Folder layout tập hợp nhiều components or các features để tạo thành 1 layout chứ không tạo thành 1 page
