@@ -1,6 +1,5 @@
 import { NextUIProvider } from "@nextui-org/system";
 
-import Authen from "pages/authen/Authen";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import AuthRequirement from "./pages/auth-require";
@@ -14,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Main />} />
-          <Route path="login" element={<Authen />} />
+          <Route path="login" element={<Welcome />} />
           <Route element={<AuthRequirement />}>
             <Route path="welcome" element={<Welcome />} />
           </Route>

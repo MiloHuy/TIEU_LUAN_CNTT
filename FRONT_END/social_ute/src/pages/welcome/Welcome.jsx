@@ -1,4 +1,5 @@
-import React from 'react'
+import Sidebar from 'components/sidebar'
+import { useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -14,20 +15,22 @@ const Welcome = () => {
     const [cookies, removeCookie] = useCookies(['access-token'])
     const welcome = user ? `Welcome ${user}!` : `Welcome `
 
+    const [darkmode, setDarkMode] = useState('light')
+
     const handleLogout = () => {
         dispatch(logOut())
         removeCookie(['access-token'])
         navigate('/')
     }
 
+    const handleDarkMode = (value) => {
+        setDarkMode(value)
+    }
+
     return (
-        <section >
-            <h1>{token}</h1>
-            <h1>{welcome}</h1>
-            <button onClick={handleLogout}>
-                Logout
-            </button>
-        </section>
+        <div className={`w-screen h-screen bg-background text-primary ${darkmode}`}>
+            <Sidebar handleController={handleDarkMode} className='absolute w-[200px] h-full border' />
+        </div>
     )
 }
 
