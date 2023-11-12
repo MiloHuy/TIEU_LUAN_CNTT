@@ -22,7 +22,6 @@ const Authen = () => {
                 <Login handleCallbackLogin={handleCallbackLogin} className={openLogin} />
                 <Register handleCallbackRegister={handleCallbackRegister} className={openRegister} />
             </div>
-
         </div>
     )
 }
