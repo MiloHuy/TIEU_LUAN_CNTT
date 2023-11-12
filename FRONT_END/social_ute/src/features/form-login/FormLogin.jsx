@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { Button, Input } from "@nextui-org/react"
+import { useLoginMutation } from 'app/slice/auth/auth-api.slice'
+import { setCredentials } from 'app/slice/auth/auth.slice'
+import clsx from 'clsx'
 import { useCookies } from "react-cookie"
 import { useDispatch } from 'react-redux'
-import { useLoginMutation } from '../../app/slice/auth/auth-api.slice'
-import { setCredentials } from '../../app/slice/auth/auth.slice'
 
-const Login = () => {
-
+const FormLogin = (props) => {
     const errRef = useRef()
     const [username, setUser] = useState('')
     const [password, setPassword] = useState('')
@@ -57,35 +58,27 @@ const Login = () => {
 
     const handlePwdInput = (e) => setPassword(e.target.value)
 
-    const content = isLoading ? <h1>Loading...</h1> : (
-        <section className="login">
-            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+    const handleOpenLogin = () => {
+        props.handleFunction('hidden')
+    }
 
-            <h1>Employee Login</h1>
+    return (
+        <form className={clsx('h-full w-full flex flex-col items-center justify-center', props.className)}>
+            <h1 className='text-lg text-blue-950 font-bold font-merriweather text-center'>LOGIN</h1>
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username:</label>
-                <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={handleUserInput}
-                    autoComplete="off"
-                />
+            <Input className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full' type="email" placeholder="Email" />
+            <Input className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full' type="password" placeholder="Password" />
+            <div className='flex flex-col gap-2 justify-center'>
+                <Button className='text-sm font-merriweather'>LOGIN</Button>
+                <div className='grid grid-cols-4 gap-2 mt-2'>
+                    <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">SIGN UP</Link>
 
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={handlePwdInput}
-                />
+                    <Link className='text-sm col-span-3 font-merriweather' href="#">FORGET YOUR PASSWORD?</Link>
+                </div>
 
-                <button type='submit'>Sign In</button>
-            </form>
-        </section>
+            </div>
+        </form>
     )
-
-    return content
 }
-export default Login
+
+export default FormLogin
