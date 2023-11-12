@@ -11,7 +11,7 @@ const Nofication = new Schema({
         required: true,
     },
     nofi_create_time: {
-        type: String,
+        type: Date,
         required: true,
     },
 })

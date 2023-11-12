@@ -15,7 +15,7 @@ const Post = new Schema({
         required: true,
     },
     create_post_time: {
-        type: String,
+        type: Date,
         required: true,
     },
 })

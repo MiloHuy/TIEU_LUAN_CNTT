@@ -15,7 +15,7 @@ const Comment = new Schema({
         required: true,
     },
     create_comment_time: {
-        type: String,
+        type: Date,
         required: true,
     },
 })
