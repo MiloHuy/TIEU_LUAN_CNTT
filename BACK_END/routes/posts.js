@@ -5,6 +5,8 @@ const {
     getAll,
     getPost,
     store,
+    create,
+    like,
     update,
     destroy,
     adminGetAll,
@@ -18,7 +20,9 @@ const {
 } = require('../middlewares/authMiddleware.js');
 
 router.get('/:id', verifyToken, isUser, getPost);
-router.post('/store', verifyToken, isUser, store);
+router.get('/store/:id', verifyToken, isUser, store);
+router.get('/like/:id', verifyToken, isUser, like);
+router.post('/create', verifyToken, isUser, create);
 router.put('/:id', verifyToken, isUser, update);
 router.delete('/:id', verifyToken, isUser, destroy);
 
