@@ -15,7 +15,7 @@ const User = new Schema({
         required: true,
     },
     birth_day: {
-        type: String,
+        type: Date,
     },
     gender: {
         type: String,
@@ -25,6 +25,8 @@ const User = new Schema({
     },
     phone_number: {
         type: String,
+        required: true,
+        unique: true
     },
     id: {
         type: String,
