@@ -5,18 +5,22 @@ const {
     getAll,
     getStory,
     create,
-    edit,
-    store,
+    like,
     update,
     destroy,
 } = require('../controllers/storyController.js');
 
-router.get('/', getAll);
-router.get('/:id', getStory);
-router.get('/create', create);
-router.get('/:id/edit', edit);
-router.post('/store', store);
-router.put('/:id', update);
-router.delete('/:id', destroy)
+const {
+    verifyToken,
+    isUser
+} = require('../middlewares/authMiddleware.js');
+
+router.get('/:id', verifyToken, isUser, getStory);
+router.get('/like/:id', verifyToken, isUser, like);
+router.post('/create', verifyToken, isUser, create);
+router.put('/:id', verifyToken, isUser, update);
+router.delete('/:id', verifyToken, isUser, destroy);
+
+router.get('/', verifyToken, isUser, getAll);
 
 module.exports = router;
