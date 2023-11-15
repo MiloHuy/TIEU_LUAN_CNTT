@@ -20,8 +20,8 @@ const {
 } = require('../middlewares/authMiddleware.js');
 
 router.get('/:id', verifyToken, isUser, getPost);
-router.get('/store/:id', verifyToken, isUser, store);
-router.get('/like/:id', verifyToken, isUser, like);
+router.post('/store/:id', verifyToken, isUser, store);
+router.post('/like/:id', verifyToken, isUser, like);
 router.post('/create', verifyToken, isUser, create);
 router.put('/:id', verifyToken, isUser, update);
 router.delete('/:id', verifyToken, isUser, destroy);

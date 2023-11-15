@@ -51,14 +51,23 @@ exports.create = (async (req, res) => {
     }
 })
 
-//GET /posts/store/:id
+//POST /posts/store/:id
 exports.store = (async (req, res) => {
     try {
-        await Post_stored.create({ user_id:req.user._id , post_id:req.params.id });
-        res.status(201).json({
-            success: true,
-            message: 'Lưu bài viết thành công.',
-        });
+        await Post_stored.findOne({ user_id:req.user._id , post_id:req.params.id })
+        if(stored){
+            await Post_stored.deleteOne({ user_id:req.user._id , post_id:req.params.id });
+            res.status(200).json({
+                success: true,
+                message: 'Bỏ lưu bài viết thành công.',
+            });
+        } else{
+            await Post_stored.create({ user_id:req.user._id , post_id:req.params.id });
+            res.status(201).json({
+                success: true,
+                message: 'Lưu bài viết thành công.',
+            });
+        }
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -67,14 +76,23 @@ exports.store = (async (req, res) => {
     }
 })
 
-//GET /posts/like/:id
+//POST /posts/like/:id
 exports.like = (async (req, res) => {
     try {
-        await Post_like.create({ user_id:req.user._id , post_id:req.params.id });
-        res.status(201).json({
-            success: true,
-            message: 'Yêu thích thành công.',
-        });
+        await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
+        if(liked){
+            await Post_like.deleteOne({ user_id:req.user._id , post_id:req.params.id });
+            res.status(200).json({
+                success: true,
+                message: 'Bỏ yêu thích thành công.',
+            });
+        } else{
+            await Post_like.create({ user_id:req.user._id , post_id:req.params.id });
+            res.status(201).json({
+                success: true,
+                message: 'Yêu thích thành công.',
+            }); 
+        }
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -104,7 +122,7 @@ exports.update = (async (req, res) => {
 exports.destroy = (async (req, res) => {
     try {
         await Post.deleteOne({ _id: req.params.id, user_id:req.user._id})
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: 'Xóa bài viết thành công.',
         });
