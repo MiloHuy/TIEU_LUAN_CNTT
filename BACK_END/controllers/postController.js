@@ -4,51 +4,49 @@ const Post_stored = require('../models/Post_stored')
 
 //GET /posts
 exports.getAll = (async (req, res) => {
-    Post.find({})
-        .then(posts => {
-            res.status(200).json({
-                success: true,
-                posts
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        const posts = await Post.find()
+        res.status(200).json({
+            success: true,
+            posts,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
 })
 
 //GET /posts/:id
 exports.getPost = (async (req, res) => {
-    Post.findById(req.params.id)
-        .then(post => {
-            res.status(200).json({
-                success: true,
-                post
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        const post = await Post.findById(req.params.id)
+        res.status(200).json({
+            success: true,
+            post,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message ,
+        });
+    }
 })
 
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
-        const post = await Post.create(req.body);
+        const post = await Post.create({ user_id:req.user._id ,...req.body});
         res.status(201).json({
             success: true,
             message: 'Đăng bài thành công.',
-            post
+            post,
         });
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: err.message 
+            message: err.message, 
         });
     }
 })
@@ -64,7 +62,7 @@ exports.store = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: err.message 
+            message: err.message, 
         });
     }
 })
@@ -80,78 +78,74 @@ exports.like = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: err.message 
+            message: err.message, 
         });
     }
 })
 
 //PUT /posts/:id
 exports.update = (async (req, res) => {
-    Post.updateOne({ _id: req.params.id}, req.body)
-        .then(post => {
-            res.status(200).json({
-                success: true,
-                message: 'Cập nhật bài viết thành công.',
-                post
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        const post = await Post.updateOne({ _id: req.params.id , user_id:req.user._id}, req.body);
+        res.status(201).json({
+            success: true,
+            message: 'Cập nhật bài viết thành công.',
+            post,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
 })
 
 //DELETE /posts/:id
 exports.destroy = (async (req, res) => {
-    await Post.deleteOne({ _id: req.params.id})
-        .then(() => {
-            res.status(200).json({
-                success: true,
-                message: 'Xóa bài viết thành công.',
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        await Post.deleteOne({ _id: req.params.id, user_id:req.user._id})
+        res.status(201).json({
+            success: true,
+            message: 'Xóa bài viết thành công.',
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message ,
+        });
+    }
 })
 
 
 //GET /posts/admin
 exports.adminGetAll = (async (req, res) => {
-    Post.find({})
-        .then(posts => {
-            res.status(200).json({
-                success: true,
-                posts
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        const posts = await Post.find({})
+        res.status(201).json({
+            success: true,
+            posts,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message ,
+        });
+    }
 })
 
 //DELETE /posts/admin/:id
 exports.adminDestroy = (async (req, res) => {
-    Post.deleteOne({ _id: req.params.id})
-        .then(() => {
-            res.status(200).json({
-                success: true,
-                message: 'Xóa bài viết thành công.',
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                success: false, 
-                message: err.message 
-            });
-        })
+    try {
+        await Post.deleteOne({ _id: req.params.id})
+        res.status(201).json({
+            success: true,
+            message: 'Xóa bài viết thành công.',
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
 
 })
