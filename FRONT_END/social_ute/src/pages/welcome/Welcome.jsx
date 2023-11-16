@@ -1,8 +1,7 @@
 import { icons } from 'components/icon/siderbar.icon'
 import Sidebar from 'components/sidebar'
 
-import { useCookies } from 'react-cookie'
-import { logOut } from '../../app/slice/auth/auth.slice'
+import { useState } from 'react'
 
 const Welcome = () => {
     // const token = useSelector(selectCurrentToken)
@@ -11,13 +10,19 @@ const Welcome = () => {
     // const dispatch = useDispatch()
     // const navigate = useNavigate()
 
-    const [cookies, removeCookie] = useCookies(['access-token'])
-    const welcome = user ? `Welcome ${user}!` : `Welcome `
+    const [darkmode, setDarkMode] = useState('light')
 
-    const handleLogout = () => {
-        dispatch(logOut())
-        removeCookie(['access-token'])
-        navigate('/')
+    // const [cookies, removeCookie] = useCookies(['access-token'])
+    // const welcome = user ? `Welcome ${user}!` : `Welcome `
+
+    // const handleLogout = () => {
+    //     dispatch(logOut())
+    //     removeCookie(['access-token'])
+    //     navigate('/')
+    // }
+
+    const handleDarkMode = (value) => {
+        setDarkMode(value)
     }
 
     return (
