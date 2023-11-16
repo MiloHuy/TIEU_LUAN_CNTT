@@ -11,7 +11,7 @@ const Story = new Schema({
         required: true,
     },
     create_story_time: {
-        type: String,
+        type: Date,
         required: true,
     },
 })
