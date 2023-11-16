@@ -1,13 +1,13 @@
 import { Switch } from '@nextui-org/react'
 import clsx from 'clsx'
 import { Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const SidebarFooter = (props) => {
     const { className } = props
     const [isSelected, setIsSelected] = useState(true);
 
-    useEffect(() => {
+    useMemo(() => {
         if (isSelected === true)
             props.handleSwitch('light')
         else
