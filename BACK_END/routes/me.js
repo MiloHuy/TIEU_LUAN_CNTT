@@ -5,6 +5,7 @@ const {
     getMyPosts,
     getPosts,
     getStories,
+    getInfo,
     updateInfo,
     updatePassword,
 } = require('../controllers/meController.js');
@@ -17,6 +18,7 @@ const {
 router.get('/myposts', verifyToken, isUser, getMyPosts);
 router.get('/stored/posts', verifyToken, isUser, getPosts);
 router.get('/stored/stories', verifyToken, isUser, getStories);
+router.get('/account/info', verifyToken, isUser, getInfo);
 router.put('/account/info', verifyToken, isUser, updateInfo);
 router.put('/account/password', verifyToken, isUser, updatePassword);
 
