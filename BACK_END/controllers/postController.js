@@ -79,7 +79,7 @@ exports.store = (async (req, res) => {
 //POST /posts/like/:id
 exports.like = (async (req, res) => {
     try {
-        const stored = await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
+        const liked = await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
         if(liked){
             await Post_like.deleteOne({ user_id:req.user._id , post_id:req.params.id });
             res.status(200).json({
