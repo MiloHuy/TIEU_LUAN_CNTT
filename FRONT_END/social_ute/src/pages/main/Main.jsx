@@ -1,10 +1,10 @@
-import { selectCurrentToken } from 'app/slice/auth/auth.slice'
-import { useSelector } from 'react-redux'
+import { SSOCOOKIES } from 'constants/app.const'
+import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 
 const Public = () => {
 
-    const token = useSelector(selectCurrentToken)
+    const token = Cookies.get(SSOCOOKIES.access)
 
     return (
         <div>

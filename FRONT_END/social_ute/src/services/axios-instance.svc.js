@@ -6,11 +6,11 @@ const AxiosInstance = axios.create({
   withCredentials: true,
 });
 
-AxiosInstance.defaults.timeout = 2500;
-AxiosInstance.defaults.headers["Concept-type"] = "application/json";
+AxiosInstance.defaults.headers.post["Content-Type"] = "application/json";
 AxiosInstance.defaults.headers["Accept"] = "application/json";
 AxiosInstance.defaults.headers["Origin"] = "*";
-AxiosInstance.defaults.headers["Access-Control-Allow-Origin"] = "*";
+AxiosInstance.defaults.headers["Content-Type"] = "application/json";
+// AxiosInstance.defaults.headers["Access-Control-Allow-Origin"] = "*";
 
 AxiosInstance.interceptors.request.use(
   (config) => {
