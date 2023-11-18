@@ -1,4 +1,3 @@
-import { Label } from '@nextui-org/react'
 import clsx from "clsx"
 import { cloneElement } from "react"
 
@@ -13,15 +12,15 @@ const FormField = ({ className, children, label, error, hint, layout = 'vertical
     const field = cloneElement(children, { ...props, className: childrenClass })
 
     return (
-        <div className={clsx(className, 'grid gap-2', {
+        <div className={clsx(className, {
             'grid-cols-[minmax(80px,20%)_minmax(0,_1fr)]': layout === 'horizontal'
         })}>
             {label
                 &&
-                <Label
+                <h1
                     className={clsx({ [errorClass]: error, })}
                     htmlFor={props.id}>
-                </Label>
+                </h1>
             }
 
             <div className='grid gap-2'>
