@@ -54,7 +54,7 @@ exports.create = (async (req, res) => {
 //POST /posts/store/:id
 exports.store = (async (req, res) => {
     try {
-        await Post_stored.findOne({ user_id:req.user._id , post_id:req.params.id })
+        const stored = await Post_stored.findOne({ user_id:req.user._id , post_id:req.params.id })
         if(stored){
             await Post_stored.deleteOne({ user_id:req.user._id , post_id:req.params.id });
             res.status(200).json({
@@ -79,7 +79,7 @@ exports.store = (async (req, res) => {
 //POST /posts/like/:id
 exports.like = (async (req, res) => {
     try {
-        await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
+        const stored = await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
         if(liked){
             await Post_like.deleteOne({ user_id:req.user._id , post_id:req.params.id });
             res.status(200).json({
@@ -104,11 +104,10 @@ exports.like = (async (req, res) => {
 //PUT /posts/:id
 exports.update = (async (req, res) => {
     try {
-        const post = await Post.updateOne({ _id: req.params.id , user_id:req.user._id}, req.body);
+        await Post.updateOne({ _id: req.params.id , user_id:req.user._id}, req.body);
         res.status(201).json({
             success: true,
             message: 'Cập nhật bài viết thành công.',
-            post,
         });
     } catch (err) {
         res.status(500).json({
