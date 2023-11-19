@@ -1,10 +1,7 @@
 import { NextUIProvider } from "@nextui-org/system";
 
 import Authen from "pages/authen";
-<<<<<<< HEAD
-=======
 import User from "pages/user";
->>>>>>> origin/feat/DOAN-24
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import AuthRequirement from "./pages/auth-require";
