@@ -10,11 +10,16 @@ const {
     block,
 } = require('../controllers/interactController.js');
 
-router.post('/follow', follow);
-router.post('/addfriend', addfriend);
-router.post('/accept', accept);
-router.post('/accept', refuse);
-router.post('/unfriend', unfriend);
-router.post('/block', block);
+const {
+    verifyToken,
+    isUser,
+} = require('../middlewares/authMiddleware.js');
+
+router.post('/follow/:id', verifyToken, isUser, follow);
+router.post('/addfriend', verifyToken, isUser, addfriend);
+router.post('/accept', verifyToken, isUser, accept);
+router.post('/refuse', verifyToken, isUser, refuse);
+router.post('/unfriend', verifyToken, isUser, unfriend);
+router.post('/block', verifyToken, isUser, block);
 
 module.exports = router;
