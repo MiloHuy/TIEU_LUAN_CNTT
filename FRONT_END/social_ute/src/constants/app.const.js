@@ -1,4 +1,4 @@
 export const SSOCOOKIES = {
-  access: "sso_access_token",
-  refresh: "sso_refresh_token",
+  access: "access_token",
+  refresh: "refresh_token",
 };

@@ -10,14 +10,13 @@ AxiosInstance.defaults.headers.post["Content-Type"] = "application/json";
 AxiosInstance.defaults.headers["Accept"] = "application/json";
 AxiosInstance.defaults.headers["Origin"] = "*";
 AxiosInstance.defaults.headers["Content-Type"] = "application/json";
-// AxiosInstance.defaults.headers["Access-Control-Allow-Origin"] = "*";
 
 AxiosInstance.interceptors.request.use(
   (config) => {
     const token = getAccessTokenFromCookie();
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
 
     return config;

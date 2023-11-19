@@ -11,8 +11,8 @@ const Sidebar = (props) => {
     return (
         <div className={clsx('flex flex-col gap-2 left-0 max-w-[400px]', props.className)}>
             <SidebarHeader />
-            <SidebarBody icons={icons} className='border flex items-center justify-center p-4' />
-            <SidebarFooter handleSwitch={handleController} className='border flex items-center justify-center' />
+            <SidebarBody icons={icons} className=' flex items-center justify-center p-4' />
+            <SidebarFooter handleSwitch={handleController} className='flex items-center justify-center' />
         </div>
     )
 }
