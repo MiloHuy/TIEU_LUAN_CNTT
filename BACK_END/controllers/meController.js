@@ -78,6 +78,22 @@ exports.updateInfo = (async (req, res) => {
     })
 })
 
+//GET /account/info
+exports.getInfo = (async (req, res) => {
+    try {
+        const user = await User.findOne({ _id : req.user._id }).select('-pass_word');
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
+})
+
 //PUT /account/password
 exports.updatePassword = (async (req, res) => {
     const user = req.user;
