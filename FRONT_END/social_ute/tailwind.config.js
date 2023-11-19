@@ -26,6 +26,9 @@ module.exports = {
       backgroundImage: {
         bg_hcmute: "url('./assets/images/bg-hcmute-02.jpg')",
       },
+      rotate: {
+        28: "28deg",
+      },
     },
   },
   darkMode: "class",

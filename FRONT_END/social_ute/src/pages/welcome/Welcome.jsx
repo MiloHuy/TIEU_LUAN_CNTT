@@ -2,6 +2,7 @@ import { icons } from 'components/icon/siderbar.icon'
 import Sidebar from 'components/sidebar'
 
 import { useState } from 'react'
+import { Outlet } from 'react-router'
 
 const Welcome = () => {
     // const token = useSelector(selectCurrentToken)
@@ -26,8 +27,13 @@ const Welcome = () => {
     }
 
     return (
-        <div className={`w-screen h-screen bg-background text-primary ${darkmode}`}>
-            <Sidebar icons={icons} handleController={handleDarkMode} className='absolute w-[200px] h-full border' />
+        <div className={`w-screen grid grid-cols-6 gap-1 h-screen bg-background text-primary  overflow-auto ${darkmode}`}>
+            <div className='col-span-1'>
+                <Sidebar icons={icons} handleController={handleDarkMode} className='absolute max-w-[280px] h-full' />
+            </div>
+            <div className='col-span-5'>
+                <Outlet />
+            </div>
         </div>
     )
 }
