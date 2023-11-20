@@ -5,7 +5,7 @@ const Post_stored = require('../models/Post_stored')
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
-        const posts = await Post.find()
+        const posts = await Post.find().populate('user_id', 'first_name last_name');
         res.status(200).json({
             success: true,
             posts,
@@ -21,7 +21,7 @@ exports.getAll = (async (req, res) => {
 //GET /posts/:id
 exports.getPost = (async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id).populate('user_id', 'first_name', 'last_name');
         res.status(200).json({
             success: true,
             post,
