@@ -6,7 +6,7 @@ const SidebarBody = (props) => {
 
     return (
         <div className={clsx('w-full h-full', className)}>
-            <div className='w-full h-full flex flex-col gap-4 p-4'>
+            <div className='w-full h-full flex flex-col gap-4 p-2'>
                 {icons.map((item) => {
                     return (
                         <div key={item.name} className='flex flex-row gap-2'>
@@ -14,7 +14,8 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start'
                                 color="default"
                                 variant="bordered"
-                                startContent={item.icon}>
+                                startContent={item.icon}
+                            >
                                 {item.name}
                             </Button>
                         </div>

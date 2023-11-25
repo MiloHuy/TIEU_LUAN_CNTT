@@ -1,6 +1,8 @@
 import { NextUIProvider } from "@nextui-org/system";
 
+import Admin from "pages/admin";
 import Authen from "pages/authen";
+import ManageAccount from "pages/manage-account";
 import User from "pages/user";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -19,6 +21,9 @@ function App() {
           <Route element={<AuthRequirement />}>
             <Route path="welcome" element={<Welcome />}>
               <Route index element={<User />} />
+            </Route>
+            <Route path="admin" element={<Admin />}>
+              <Route path="manage_account" element={<ManageAccount />} />
             </Route>
           </Route>
         </Route>
