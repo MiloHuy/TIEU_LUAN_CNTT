@@ -4,6 +4,7 @@ const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
 const Post_stored = require('../models/Post_stored')
 const bcrypt = require('bcrypt');
+const Addfriend = require('../models/Addfriend')
 
 //GET /myposts
 exports.getMyPosts = (async (req, res) => {
@@ -85,6 +86,23 @@ exports.getInfo = (async (req, res) => {
         res.status(200).json({
             success: true,
             user,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
+})
+
+
+//GET /friendrequest
+exports.getFriendRequest = (async (req, res) => {
+    try {
+        const request = await Addfriend.find({ add_user_id : req.user._id });
+        res.status(200).json({
+            success: true,
+            request,
         });
     } catch (err) {
         res.status(500).json({

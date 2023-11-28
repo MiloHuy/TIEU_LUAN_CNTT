@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const Follow = new Schema({
     user_id: {
         type: String,
+        unique: true,
     },
     following_user_id: [{
         type: String,

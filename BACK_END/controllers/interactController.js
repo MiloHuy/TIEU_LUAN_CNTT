@@ -1,5 +1,6 @@
 const Addfriend = require('../models/Addfriend')
-const Follow = require('../models/Follow')
+const Follow = require('../models/Follow');
+const Friend = require('../models/Friend');
 
 
 //POST /interacts/follow/:id
@@ -31,45 +32,129 @@ exports.follow = (async (req, res) => {
             await user.save();
             user_following.follower_user_id.push(req.user._id);
             await user_following.save();
-            res.status(200).json({
+            res.status(201).json({
                 success: true,
                 message: 'Follow thành công.',
             });
         }
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: err.message, 
+            message: error.message, 
         });
     }
 })
 
-//POST /interacts/addfriend
+//POST /interacts/addfriend/:id
 exports.addfriend = (async (req, res) => {
-    const user = await Addfriend.findOneAndUpdate(
-        { user_id: req.user._id },
-        //{ $setOnInsert: { user_id: req.user._id } },
-        {},
-        { new: true, upsert: true }
-    );
+    try {
+        const user = await Addfriend.findOne(
+            { user_id: req.user._id , add_user_id: req.params.id },
+        );
+        if(user){
+            console.log(user)
+            await Addfriend.deleteOne(
+                { user_id: req.user._id, add_user_id: req.params.id }
+            )
+            res.status(201).json({
+                success: true,
+                message: 'Hủy lời mời thành công.',
+            });
+        } else{
+            const request = await Addfriend.create(
+                { user_id: req.user._id , add_user_id: req.params.id }
+            );
+            res.status(201).json({
+                success: true,
+                message: 'Gửi lời mời thành công.',
+                request,
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message, 
+        });
+    }
 })
 
-//POST /interacts/accept
+//POST /interacts/accept/:id
 exports.accept = (async (req, res) => {
-    res.send('Hello World!')
+    try {
+        const user = await Friend.findOneAndUpdate(
+            { user_id: req.user._id },
+            //{ $setOnInsert: { user_id: req.user._id } },
+            {},
+            { new: true, upsert: true }
+        );
+        user.friend_id.push(req.params.id);
+        await user.save();
+
+        const friend = await Friend.findOneAndUpdate(
+            { user_id: req.params.id },
+            //{ $setOnInsert: { user_id: req.user._id } },
+            {},
+            { new: true, upsert: true }
+        );
+        friend.friend_id.push(req.user._id);
+        await friend.save();
+
+        await Addfriend.deleteOne({ 
+            user_id: req.params.id,
+            add_user_id: req.user._id
+        })
+        res.status(201).json({
+            success: true,
+            message: 'Chấp nhận kết bạn.',
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message, 
+        });
+    }
 })
 
-//POST /interacts/refuse
+//POST /interacts/refuse/:id
 exports.refuse = (async (req, res) => {
-    res.send('Hello World!')
+    try {
+        await Addfriend.deleteOne({ 
+            user_id: req.params.id,
+            add_user_id: req.user._id
+        })
+        res.status(201).json({
+            success: true,
+            message: 'Từ chối kết bạn.',
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message, 
+        });
+    }
 })
 
-//POST /interacts/unfriend
+//POST /interacts/unfriend/:id
 exports.unfriend = (async (req, res) => {
-    res.send('Hello World!')
+    try {
+        await Friend.deleteOne({ 
+            user_id: req.user._id,
+            friend_id: req.params.id,
+        })
+        res.status(201).json({
+            success: true,
+            message: 'Hủy kết bạn.',
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message, 
+        });
+    }
 })
 
-//POST /interacts/block
+//POST /interacts/block/:id
 exports.block = (async (req, res) => {
     res.send('Hello World!')
 })
