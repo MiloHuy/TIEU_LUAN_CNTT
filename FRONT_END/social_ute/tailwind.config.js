@@ -22,7 +22,10 @@ module.exports = {
       },
       fontFamily: {
         merriweather: ["Merriweather", "serif"],
+        noto: ["Noto Sans", "serif"],
+        open_sans: ["Open Sans", "sans-serif"],
       },
+
       backgroundImage: {
         bg_hcmute: "url('./assets/images/bg-hcmute-02.jpg')",
       },
