@@ -6,10 +6,9 @@ const Post_like = new Schema({
         type: String,
         required: true,
     },
-    user_id: {
+    user_id: [{
         type: String,
-        required: true,
-    },
+    }],
 })
 
 module.exports = mongoose.model('Post_like', Post_like);

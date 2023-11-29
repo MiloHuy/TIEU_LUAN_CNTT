@@ -54,15 +54,21 @@ exports.create = (async (req, res) => {
 //POST /posts/store/:id
 exports.store = (async (req, res) => {
     try {
-        const stored = await Post_stored.findOne({ user_id:req.user._id , post_id:req.params.id })
-        if(stored){
-            await Post_stored.deleteOne({ user_id:req.user._id , post_id:req.params.id });
-            res.status(200).json({
+        const stored = await Post_stored.findOneAndUpdate(
+            { user_id: req.user._id },
+            {},
+            { new: true, upsert: true }
+        );
+        if(stored.post_id.includes(req.params.id)){
+            stored.post_id.pull(req.params.id);
+            await stored.save();
+            res.status(201).json({
                 success: true,
-                message: 'Bỏ lưu bài viết thành công.',
+                message: 'Bỏ lưu bài viết.',
             });
         } else{
-            await Post_stored.create({ user_id:req.user._id , post_id:req.params.id });
+            stored.post_id.push(req.params.id);
+            await stored.save();
             res.status(201).json({
                 success: true,
                 message: 'Lưu bài viết thành công.',
@@ -79,19 +85,26 @@ exports.store = (async (req, res) => {
 //POST /posts/like/:id
 exports.like = (async (req, res) => {
     try {
-        const liked = await Post_like.findOne( {user_id:req.user._id , post_id:req.params.id})
-        if(liked){
-            await Post_like.deleteOne({ user_id:req.user._id , post_id:req.params.id });
-            res.status(200).json({
-                success: true,
-                message: 'Bỏ yêu thích thành công.',
-            });
-        } else{
-            await Post_like.create({ user_id:req.user._id , post_id:req.params.id });
+        const liked = await Post_like.findOneAndUpdate(
+            { post_id: req.params.id },
+            {},
+            { new: true, upsert: true }
+        );
+        if(liked.user_id.includes(req.user._id)){
+            //console.log(user)
+            liked.user_id.pull(req.user._id);
+            await liked.save();
             res.status(201).json({
                 success: true,
-                message: 'Yêu thích thành công.',
-            }); 
+                message: 'Bỏ yêu thích.',
+            });
+        } else{
+            liked.user_id.push(req.user._id);
+            await liked.save();
+            res.status(201).json({
+                success: true,
+                message: 'Yêu thích bài viết thành công.',
+            });
         }
     } catch (err) {
         res.status(500).json({
