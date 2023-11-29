@@ -95,10 +95,13 @@ exports.accept = (async (req, res) => {
         friend.friend_id.push(req.user._id);
         await friend.save();
 
-        await Addfriend.deleteOne({ 
+        const request = await Addfriend.findOne({
             user_id: req.params.id,
-            add_user_id: req.user._id
-        })
+            add_user_id: { $in: [req.user._id] }
+        });
+        request.add_user_id.pull(req.user._id);
+        await request.save();
+
         res.status(201).json({
             success: true,
             message: 'Chấp nhận kết bạn.',
@@ -115,10 +118,12 @@ exports.accept = (async (req, res) => {
 //POST /interacts/refuse/:id
 exports.refuse = (async (req, res) => {
     try {
-        await Addfriend.deleteOne({ 
+        const request = await Addfriend.findOne({
             user_id: req.params.id,
-            add_user_id: req.user._id
-        })
+            add_user_id: { $in: [req.user._id] }
+        });
+        request.add_user_id.pull(req.user._id);
+        await request.save();
         res.status(201).json({
             success: true,
             message: 'Từ chối kết bạn.',
