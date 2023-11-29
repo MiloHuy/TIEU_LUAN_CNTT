@@ -8,75 +8,91 @@ const Addfriend = require('../models/Addfriend')
 
 //GET /myposts
 exports.getMyPosts = (async (req, res) => {
-    Post.find({ user_id : req.user._id })
-    .then(posts => {
-        res.status(200).json({
-            success: true,
-            posts
-        })
-    })
-    .catch(err => {
+    try {
+        const posts = await Post.find({ user_id : req.user._id })
+        if(posts){
+            res.status(200).json({
+                success: true,
+                posts
+            })
+        } else{
+            res.status(200).json({
+                success: true,
+                message: 'Bạn chưa đăng bài!'
+            })
+        }
+    } catch (error) {
         res.status(500).json({
-            success: false, 
-            message: err.message 
+            success: false,
+            message: error.message, 
         });
-    })
+    }
 })
 
 //GET /stored/posts
 exports.getPosts = (async (req, res) => {
-    Post_stored.find({ user_id : req.user._id })
-    .then(posts => {
-        res.status(200).json({
-            success: true,
-            posts
-        })
-    })
-    .catch(err => {
+    try {
+        const posts = await Post_stored.find({ user_id : req.user._id })
+        if(posts){
+            res.status(200).json({
+                success: true,
+                posts
+            })
+        }else{
+            res.status(200).json({
+                success: true,
+                message: 'Bạn chưa lưu bài viết nào!'
+            })
+        }
+    } catch (error) {
         res.status(500).json({
-            success: false, 
-            message: err.message 
+            success: false,
+            message: error.message, 
         });
-    })
-    
+    }
 })
 
 //GET /stored/stories
 exports.getStories = (async (req, res) => {
-    Story.find({ user_id : req.user._id })
-    .then(posts => {
-        res.status(200).json({
-            success: true,
-            posts
-        })
-    })
-    .catch(err => {
+    try {
+        const stories = await Story.find({ user_id : req.user._id })
+        if(stories){
+            res.status(200).json({
+                success: true,
+                stories
+            })
+        }else{
+            res.status(200).json({
+                success: true,
+                message: 'Bạn chưa đăng story!'
+            })
+        }
+    } catch (error) {
         res.status(500).json({
-            success: false, 
-            message: err.message 
+            success: false,
+            message: error.message, 
         });
-    })
+    }
 })
 
 //PUT /account/info
 exports.updateInfo = (async (req, res) => {
-    await User.findByIdAndUpdate(
-        { _id : req.user._id },
-        {$set: {...req.body}},
-        { new: true },
+    try {
+        const user = await User.findByIdAndUpdate(
+            { _id : req.user._id },
+            {$set: {...req.body}},
+            { new: true },
         )
-    .then(user => {
         res.status(200).json({
             success: true,
             user
         })
-    })
-    .catch(err => {
+    } catch (error) {
         res.status(500).json({
-            success: false, 
-            message: err.message 
+            success: false,
+            message: error.message, 
         });
-    })
+    }
 })
 
 //GET /account/info
@@ -99,11 +115,21 @@ exports.getInfo = (async (req, res) => {
 //GET /friendrequest
 exports.getFriendRequest = (async (req, res) => {
     try {
-        const request = await Addfriend.find({ add_user_id : req.user._id });
-        res.status(200).json({
-            success: true,
-            request,
+        const request = await Addfriend.findOne({
+            add_user_id: { $in: [req.user._id] }
         });
+        if(request){
+            res.status(200).json({
+                success: true,
+                request,
+            });
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Không có lời mời kết bạn',
+            });
+        }
+        
     } catch (err) {
         res.status(500).json({
             success: false,

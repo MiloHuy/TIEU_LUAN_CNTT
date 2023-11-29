@@ -6,10 +6,9 @@ const Addfriend = new Schema({
         type: String,
         required: true,
     },
-    add_user_id: {
+    add_user_id: [{
         type: String,
-        //required: true,
-    },
-},{unique: { index: true, dropDups: true }})
+    }],
+})
 
 module.exports = mongoose.model('Addfriend', Addfriend);

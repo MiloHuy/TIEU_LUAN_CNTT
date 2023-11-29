@@ -8,13 +8,11 @@ exports.follow = (async (req, res) => {
     try {
         const user = await Follow.findOneAndUpdate(
             { user_id: req.user._id },
-            //{ $setOnInsert: { user_id: req.user._id } },
             {},
             { new: true, upsert: true }
         );
         const user_following = await Follow.findOneAndUpdate(
             { user_id: req.params.id },
-            //{ $setOnInsert: { user_id: req.params.id } },
             {},
             { new: true, upsert: true }
         );
@@ -48,26 +46,26 @@ exports.follow = (async (req, res) => {
 //POST /interacts/addfriend/:id
 exports.addfriend = (async (req, res) => {
     try {
-        const user = await Addfriend.findOne(
-            { user_id: req.user._id , add_user_id: req.params.id },
+        const user = await Addfriend.findOneAndUpdate(
+            { user_id: req.user._id },
+            {},
+            { new: true, upsert: true }
         );
-        if(user){
-            console.log(user)
-            await Addfriend.deleteOne(
-                { user_id: req.user._id, add_user_id: req.params.id }
-            )
+        if(user.add_user_id.includes(req.params.id)){
+            //console.log(user)
+            user.add_user_id.pull(req.params.id);
+            await user.save();
             res.status(201).json({
                 success: true,
                 message: 'Hủy lời mời thành công.',
             });
         } else{
-            const request = await Addfriend.create(
-                { user_id: req.user._id , add_user_id: req.params.id }
-            );
+            user.add_user_id.push(req.params.id);
+            await user.save();
             res.status(201).json({
                 success: true,
                 message: 'Gửi lời mời thành công.',
-                request,
+                user,
             });
         }
     } catch (error) {
@@ -83,7 +81,6 @@ exports.accept = (async (req, res) => {
     try {
         const user = await Friend.findOneAndUpdate(
             { user_id: req.user._id },
-            //{ $setOnInsert: { user_id: req.user._id } },
             {},
             { new: true, upsert: true }
         );
@@ -92,7 +89,6 @@ exports.accept = (async (req, res) => {
 
         const friend = await Friend.findOneAndUpdate(
             { user_id: req.params.id },
-            //{ $setOnInsert: { user_id: req.user._id } },
             {},
             { new: true, upsert: true }
         );
