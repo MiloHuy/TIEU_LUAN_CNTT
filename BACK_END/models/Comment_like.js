@@ -6,10 +6,10 @@ const Comment_like = new Schema({
         type: String,
         required: true,
     },
-    user_id: {
+    user_id: [{
         type: String,
         required: true,
-    },
+    }],
 })
 
 module.exports = mongoose.model('Comment_like', Comment_like);

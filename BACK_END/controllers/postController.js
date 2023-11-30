@@ -1,3 +1,5 @@
+const cloudinary = require('cloudinary').v2;
+
 const Post = require('../models/Post')
 const Post_like = require('../models/Post_like')
 const Post_stored = require('../models/Post_stored')
@@ -37,7 +39,19 @@ exports.getPost = (async (req, res) => {
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
-        const post = await Post.create({ user_id:req.user._id ,...req.body});
+        const currentDate = new Date();
+        const post_img = null;
+            
+
+        if(req.body.post_img!=null){
+            const result = await cloudinary.uploader.upload(req.body.post_img);
+            post_img = {
+                publicId: result.public_id,
+                url: result.secure_url
+            }
+        }
+
+        const post = await Post.create({ user_id:req.user._id ,...req.body, public_date: currentDate, post_img});
         res.status(201).json({
             success: true,
             message: 'Đăng bài thành công.',
