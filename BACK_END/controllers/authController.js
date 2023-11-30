@@ -3,37 +3,14 @@ const RefreshToken = require('../models/RefreshToken');
 const bcrypt = require('bcrypt');
 
 const { 
-    generateToken, 
-    generateRefreshToken, 
-    generateChildrenRefreshToken, 
-    deleteABranch
+    sendToken,
+    getRefreshToken,
+    deleteToken,
+    clearToken,
+    getNextRefreshToken
 } = require('../utils/tokenUtils.js');
 
-const {
-    setCookiesAndResponse,
-    clearCookies
-} = require('../utils/cookiesUtils.js');
-
-exports.loginUser = (async (req, res) => {
-    const { phone_number, pass_word } = req.body;
-    if (!phone_number || !pass_word) {
-        return res.status(400).json({ success: false, message: 'Số điện thoại và mật khẩu không thể trống.' });
-    }
-
-    const user = await User.findOne({ phone_number }); 
-    if (!user) {
-        return res.status(401).json({ success: false, message: 'Số điện thoại không chính xác!' });
-    }
-
-    const isMatch = await bcrypt.compare(pass_word, user.pass_word);
-    if (!isMatch) {
-        return res.status(401).json({ success: false, message: 'Mật khẩu không chính xác!' });
-    }
-    const token = await generateRefreshToken(user._id);
-    setCookiesAndResponse(res, token, user);
-})
-
-exports.registerUser = (async (req, res) => {
+exports.register = (async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.pass_word, 10);
         const newUser = {
@@ -61,15 +38,107 @@ exports.registerUser = (async (req, res) => {
     }
 })
 
+exports.login = (async (req, res) => {
+    const { phone_number, pass_word } = req.body;
+
+    if (!phone_number || !pass_word) {
+        return res.status(400).json({
+            success: false,
+            message: 'Đăng nhập thất bại. Vui lòng nhập số điện thoại và mật khẩu' 
+        });
+    }
+
+    const user = await User.findOne({ phone_number }).select('+pass_word');
+
+    if (!user) {
+        return res.status(401).json({
+            success: false,
+            message: 'Đăng nhập thất bại. Không tìm thấy người dùng. Vui lòng kiểm tra số điện thoại' 
+        });
+    }
+
+    const isPasswordMatched = await user.comparePassword(pass_word);
+    if (!isPasswordMatched) {
+        return res.status(401).json({
+            success: false,
+            message: 'Đăng nhập thất bại. Sai mật khẩu' 
+        });
+    }
+    const refreshToken = await getRefreshToken(user);
+
+    return sendToken(user, refreshToken, res);
+});
+
 exports.logout = (async (req, res) => {
     const token = req.cookies.refreshToken;
-    const refreshToken = await RefreshToken.findOne({ token });
-    if (refreshToken) {
-        const parentId = refreshToken.parent || refreshToken._id;
-        await deleteABranch(parentId);
-        clearCookies(res, true, 'Đăng xuất thành công.');
-    } else {
-        return clearCookies(res, false, 'Không đủ quyền truy cập.');
+
+    if (token) {
+        const refreshToken = await RefreshToken.findOne({ token });
+        if (refreshToken) {
+            const parent = refreshToken.parent || refreshToken._id;
+            await deleteToken(parent);
+        }
+
     }
-    
+    clearToken(res);
+
+    res.json({
+        success: true,
+        message: 'Đăng xuất thành công'
+    })
+});
+
+exports.refreshToken =(async (req, res) => {
+
+    const token = req.cookies.refreshToken;
+    if (!token) {
+        return res.status(400).json({
+            success: false,
+            message: 'Cookies không có refreshToken' 
+        });
+    }
+
+    const refreshToken = await RefreshToken.findOne({ token });
+
+    if (!refreshToken) {
+        try {
+            const tokenEncoded = Buffer.from(token, 'base64url').toString();
+            const tokenObject = JSON.parse(tokenEncoded);
+            const parentToken = await RefreshToken.findById(tokenObject.p);
+            const parent = parentToken.parent || parentToken._id;
+            await deleteToken(parent);
+            return res.status(400).json({
+                success: false,
+                message: 'Token đã được sử dụng' 
+            });
+        } catch {
+            clearToken(res);
+            return res.status(400).json({
+                success: false,
+                message: 'Token không tồn tại trong hệ thống' 
+            });
+        }
+    }
+
+
+    const parent = refreshToken.parent || refreshToken._id;
+    if (!refreshToken.status) {
+        await deleteToken(parent);
+        clearToken(res);
+        return res.status(400).json({
+            success: false,
+            message: 'Token đã được sử dụng' 
+        });
+    }
+
+    const user = await User.findById(refreshToken.user);
+    if (refreshToken.parent == null) {
+        await RefreshToken.findByIdAndUpdate(refreshToken._id, { status: false });
+
+    }
+    await RefreshToken.deleteMany({ parent });
+
+    const nextRefreshToken = await getNextRefreshToken(user._id, parent);
+
+    return sendToken(user, nextRefreshToken, res);
 })

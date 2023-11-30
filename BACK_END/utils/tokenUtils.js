@@ -3,35 +3,67 @@ const {nanoid} = require('nanoid');
 
 const RefreshToken = require('../models/RefreshToken')
 
+const sendToken = (user, refreshToken, res) => {
+    const token = user.getAccessToken();
+    const options = {
+        expires: refreshToken.expires,
+        httpOnly: true,
+        path: '/auth',
+        sameSite: 'None',
+        secure: true,
+    }
+    const userData = {
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role_id,
+        avatar: user.avatar.url,
+    };
+    res.cookie('refreshToken', refreshToken.token, options).json({
+        success: true,
+        user: userData,
+        token: token
+    });
+}
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET_KEY, {
-        expiresIn: '1d'
+const clearToken = (res) => {
+    res.clearCookie('refreshToken', {
+        path: '/api/v1/auth',
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+    });
+}
+
+const getRefreshToken = async (user) => {
+    return await RefreshToken.create({
+        token: nanoid(),
+        expires: new Date(Date.now() + process.env.REFRESH_TOKEN_EXPIRES_TIME * 24 * 60 * 60 * 1000),
+        user
     });
 };
 
-const generateRefreshToken = async (user) => {
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
-    return await RefreshToken.create({ token: nanoid(), expires, user });
-};
-
-const generateChildrenRefreshToken = async (user, parent) => {
+const getNextRefreshToken = async (user, parent) => {
     const tokenObj = { _: nanoid(10), p: parent };
     const token = Buffer.from(JSON.stringify(tokenObj)).toString('base64url');
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 7);
     await RefreshToken.deleteMany({ parent });
-    return await RefreshToken.create({ token, expires, user, parent });
+    return await RefreshToken.create({
+        token,
+        expires: new Date(Date.now() + process.env.REFRESH_TOKEN_EXPIRES_TIME * 24 * 60 * 60 * 1000),
+        user,
+        parent
+    });
 };
 
-const deleteABranch = async (parent) => {
+const deleteToken = async (parent) => {
     await RefreshToken.deleteMany({ parent });
-    await RefreshToken.findByIdAndDelete(parent);
+    await RefreshToken.findByIdAndDelete({ _id: parent });
 }
 
 module.exports = { 
-    generateToken, 
-    generateRefreshToken, 
-    generateChildrenRefreshToken, 
-    deleteABranch,}
+    sendToken,
+    clearToken,
+    getRefreshToken,
+    getNextRefreshToken,
+    deleteToken,
+}
