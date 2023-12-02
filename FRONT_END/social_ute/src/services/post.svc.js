@@ -30,8 +30,10 @@ export const getPostById = async (id) => {
   return res;
 };
 
-export const createPost = async () => {
-  const res = AxiosInstance.post(API_POST_ENDPOINT.POST.create_post);
+export const createPost = async (payload) => {
+  const res = AxiosInstance.post(API_POST_ENDPOINT.POST.create_post, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res;
 };
 
