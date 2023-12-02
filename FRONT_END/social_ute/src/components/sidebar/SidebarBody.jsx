@@ -6,17 +6,19 @@ const SidebarBody = (props) => {
 
     return (
         <div className={clsx('w-full h-full', className)}>
-            <div className='w-full h-full flex flex-col gap-4 p-2'>
+            <div className='w-full h-full flex flex-col gap-4 p-2 '>
                 {icons.map((item) => {
                     return (
-                        <div key={item.name} className='flex flex-row gap-2'>
+                        <div key={item.name} className='flex flex-row gap-2 justify-center'>
                             <Button
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start gap-6'
                                 color="default"
-                                variant="bordered"
+                                variant="light"
                                 startContent={item.icon}
                             >
-                                {item.name}
+                                <p className='font-merriweather text-lg'>
+                                    {item.name}
+                                </p>
                             </Button>
                         </div>
                     )

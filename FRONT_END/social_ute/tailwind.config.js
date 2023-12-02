@@ -32,6 +32,11 @@ module.exports = {
       rotate: {
         28: "28deg",
       },
+      gridTemplateRows: {
+        7: "repeat(7, minmax(0, 1fr))",
+
+        layout: "200px minmax(900px, 1fr) 100px",
+      },
     },
   },
   darkMode: "class",

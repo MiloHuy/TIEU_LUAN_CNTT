@@ -1,4 +1,5 @@
-import CardPostUser from "features/card-post-user";
+import ListPostUser from "features/list-post-user";
+import ListSuggestFriends from "features/list-suggest-friends";
 import ProfileUser from "features/profile-user";
 import Header from "layout/header";
 import { useCallback, useEffect, useState } from "react";
@@ -31,28 +32,18 @@ const User = () => {
                 </div>
 
                 <div className="flex flex-col items-center pt-3 gap-3 ">
-                    {
-                        posts.data?.posts.map((post) => {
-                            return (
-                                <CardPostUser
-                                    post_img={post.post_img}
-                                    post_description={post.post_description}
-                                    user_id={post.user_id}
-                                />
-                            )
-                        })
-                    }
+                    <ListPostUser posts={posts.data?.posts} />
                 </div>
             </div>
 
             <div className='col-span-2'>
-                <div className='grid gird-rows-2 gap-4 p-4'>
+                <div className='grid gird-rows-2 gap-4 p-6'>
                     <div className='relative w-full flex'>
                         <ProfileUser />
                     </div>
 
                     <div>
-                        Đề xuất bạn bè
+                        <ListSuggestFriends />
                     </div>
                 </div>
             </div>

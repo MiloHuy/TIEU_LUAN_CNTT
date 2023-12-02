@@ -15,7 +15,7 @@ const SidebarFooter = (props) => {
     }, [isSelected, props])
 
     return (
-        <div className={clsx('w-full h-full', className)}>
+        <div className={clsx('w-2/3 h-full', className)}>
             <Switch
                 defaultSelected
                 size="lg"

@@ -2,12 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button, Input } from '@nextui-org/react'
-import { setCredentials } from 'app/slice/auth/auth.slice'
 import clsx from 'clsx'
 import { SSOCOOKIES } from 'constants/app.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
-import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
 import { object, string } from 'yup'
@@ -22,8 +20,6 @@ const FormLogin = (props) => {
     }
     const [formLogin, setFormLogin] = useState(initFormLogin)
 
-    const dispatch = useDispatch()
-
     useEffect(() => {
         setErrMsg('')
     }, [formLogin.phone_number, formLogin.pass_word])
@@ -34,8 +30,7 @@ const FormLogin = (props) => {
         try {
             const userData = await login(values)
             console.log('User data: ', userData)
-            dispatch(setCredentials({ ...userData, values }))
-            Cookies.set(SSOCOOKIES.access, userData.data.token, { expires: 1 })
+            Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
 
             toast.success('Đăng nhập thành công!!!', {
                 position: "bottom-right",

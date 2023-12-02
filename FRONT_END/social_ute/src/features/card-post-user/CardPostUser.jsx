@@ -1,61 +1,155 @@
 import { Avatar } from "@nextui-org/avatar";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
+import CardPostUserDetail from "features/card-post-user-detail";
 import { Bookmark, Heart, MessageCircle, MoreHorizontal, SendHorizontal } from 'lucide-react';
+import { useState } from "react";
+import { getPostById, likePost, storePost } from "services/post.svc";
 
 const CardPostUser = (props) => {
-    const { post_img, post_description, user_id } = props
-    const userName = user_id?.first_name + " " + user_id?.last_name
+    const { post_img, post_description, user_id, post_id } = props
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [like, setLike] = useState(false)
+    const [save, setSave] = useState(false)
+
+    const userName = [user_id?.first_name, user_id?.last_name].join(" ")
+
+    const handleLikePost = async () => {
+        try {
+            setLike(!like)
+
+            await likePost(post_id)
+
+            console.log('Đã like bài viết')
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleCommentPost = async () => {
+        onOpen()
+
+        try {
+            await getPostById(post_id)
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleSavePost = async () => {
+        try {
+            setSave(!save)
+
+            await storePost(post_id)
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
-        <Card className="grid grid-rows-7 w-3/4 h-[600px]">
-            <CardHeader className="flex gap-3 justify-between row-span-1">
-                <div className="flex flex-row gap-3 items-center">
-                    <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
-                    <p className="text-md text-sm text-black dark:text-white  font-open_sans font-bold ">{userName}</p>
-                </div>
-                <MoreHorizontal size={28} strokeWidth={1.5} />
-            </CardHeader>
+        <div className='w-full p-2'>
+            <Card className="grid grid-rows-7 w-full h-[600px]">
+                <CardHeader className="flex gap-3 justify-between row-span-1">
+                    <div className="flex flex-row gap-3 items-center">
+                        <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
 
-            <CardBody className="w-full flex flex-col gap-2 row-span-5 h-[500px] overflow-hidden">
-                <img
-                    alt="img"
-                    className="object-fill h-3/5 w-full rounded-xl"
-                    src='data:image/jpeg;base64,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        '
-                />
-                <div className='flex justify-between'>
-                    <div className='flex flex-row gap-1'>
-                        <Button className='w-[20px]' size="sm" isIconOnly variant="light">
-                            <Heart size={20} strokeWidth={1.5} />
-                        </Button>
-
-                        <Button className='w-[20px]' size="sm" isIconOnly variant="light">
-                            <MessageCircle size={20} strokeWidth={1.5} />
-                        </Button>
-
-                        <Button size="sm" isIconOnly variant="light" >
-                            <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
-                        </Button>
-                    </div>
-                    <Button size="sm" isIconOnly variant="light" >
-                        <Bookmark size={20} strokeWidth={1.5} />
-                    </Button>
-                </div>
-
-                <div className='flex flex-col gap-2'>
-                    <div className="flex-row flex gap-1">
-                        <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>800</h2>
-                        <span className='text-sm text-black dark:text-white font-open_sans font-bold'>lượt thích</span>
+                        <p className="text-md text-sm text-black dark:text-white font-open_sans font-bold ">
+                            {userName}
+                        </p>
                     </div>
 
-                    <div className="flex-row flex gap-1">
-                        <h2 className="text-sm text-black dark:text-white  font-open_sans font-bold   ">{`${userName}: ${post_description}`}</h2>
+                    <MoreHorizontal size={28} strokeWidth={1.5} />
+
+                </CardHeader>
+
+                <CardBody className="w-full flex flex-col gap-2 row-span-5 h-[500px] overflow-hidden">
+                    <img
+                        alt="img"
+                        className="object-fill h-3/5 w-full rounded-xl"
+                        src={post_img}
+                    />
+
+                    <div className='flex justify-between'>
+                        <div className='flex flex-row gap-1'>
+                            <Button
+                                className='w-[20px]'
+                                size="sm"
+                                isIconOnly
+                                variant="light"
+                                onClick={handleLikePost}
+                            >
+                                <Heart size={20} strokeWidth={1.5} fill={like === true ? 'red' : 'none'} />
+                            </Button>
+
+                            <Button
+                                className='w-[20px]'
+                                size="sm"
+                                isIconOnly
+                                variant="light"
+                                onClick={handleCommentPost}
+                            >
+                                <MessageCircle size={20} strokeWidth={1.5} />
+                            </Button>
+
+                            <Button size="sm" isIconOnly variant="light" >
+                                <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
+                            </Button>
+                        </div>
+                        <Button
+                            size="sm"
+                            isIconOnly
+                            variant="light"
+                            onClick={handleSavePost}
+                        >
+                            <Bookmark size={20} strokeWidth={1.5} fill={save === true ? 'yellow' : 'none'} />
+                        </Button>
                     </div>
 
-                    <Input type="email" variant='underlined' placeholder="Thêm bình luận..." />
-                </div>
-            </CardBody>
-        </Card>
+                    <div className='flex flex-col gap-2'>
+                        <div className="flex-row flex gap-1">
+                            <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>800</h2>
+                            <span className='text-sm text-black dark:text-white font-open_sans font-bold'>lượt thích</span>
+                        </div>
+
+                        <div className="flex-row flex gap-1">
+                            <h2 className="text-sm text-black dark:text-white  font-open_sans font-bold   ">{`${userName}: ${post_description}`}</h2>
+                        </div>
+
+                        <Input variant='underlined' placeholder="Thêm bình luận..." />
+                    </div>
+                </CardBody>
+            </Card>
+
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                radius="2xl"
+                size='5xl'
+                backdrop='blur'
+                stlye={{ height: '1000px' }}
+                classNames={{
+                    base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
+                }}
+            >
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalBody>
+                                <CardPostUserDetail
+                                    userName={userName}
+                                    post_img={post_img}
+                                    post_description={post_description}
+                                />
+                            </ModalBody>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </div >
+
     )
 }
 
