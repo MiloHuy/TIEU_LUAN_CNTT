@@ -98,7 +98,7 @@ exports.updateInfo = (async (req, res) => {
 //GET /account/info
 exports.getInfo = (async (req, res) => {
     try {
-        const user = await User.findOne({ _id : req.user._id }).select('-pass_word');
+        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v');
         res.status(200).json({
             success: true,
             user,
