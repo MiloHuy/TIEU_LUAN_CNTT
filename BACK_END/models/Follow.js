@@ -3,14 +3,17 @@ const Schema = mongoose.Schema
 
 const Follow = new Schema({
     user_id: {
-        type: String,
-        unique: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
     following_user_id: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }],
     follower_user_id: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }],
 })
 

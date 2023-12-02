@@ -3,45 +3,33 @@ const Story = require('../models/Story')
 const Follow = require('../models/Follow')
 const Friend = require('../models/Friend')
 
-//GET /statistics
+//GET /statistics/:id
 
-exports.getPosts = (async (req, res, next) => {
+exports.getStatistics = (async (req, res) => {
+    try {
+        const count_posts = await Post.countDocuments({ user_id:req.params.id });
+        const count_stories = await Story.countDocuments({ user_id:req.params.id });
 
-    Post.find({})
-        .then(posts => {
-            res.json(posts)
-            res.status(200).json({
-                success: true,
-                posts
-            })
-        })
-        .catch(next)
+        const user_follow = await Follow.findOne({ user_id:req.params.id });
+        const count_followers = user_follow ? user_follow.follower_user_id.length : 0;
+        const count_followings = user_follow ? user_follow.following_user_id.length : 0;
 
-})
+        const user = await Friend.findOne({ user_id:req.params.id });
+        const count_friends = user ? user.friend_id.length : 0;
 
-
-exports.getStories = (async (req, res, next) => {
-
-    Story.find({})
-        .then(posts => {
-            res.json(posts)
-            res.status(200).json({
-                success: true,
-                posts
-            })
-        })
-        .catch(next)
-
-})
-
-exports.getFollower = (async (req, res, next) => {
-
-})
-
-exports.getFollowing = (async (req, res, next) => {
-
-})
-
-exports.getFriend = (async (req, res, next) => {
-
+        res.status(200).json({
+            success: true,
+            message: 'Thống kê:',
+            count_posts,
+            count_stories,
+            count_followers,
+            count_followings,
+            count_friends,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
 })
