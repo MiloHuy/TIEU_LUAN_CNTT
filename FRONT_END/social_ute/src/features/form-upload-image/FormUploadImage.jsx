@@ -20,18 +20,21 @@ const FormUploadImage = () => {
         setFormUpload({ ...formUpload, [e.target.name]: e.target.value })
     }
 
-    const toBase64 = (file) => new Promise((resolve, reject) => {
-        const render = new FileReader()
-        render.readAsDataURL(file)
-        render.onLoad = () => resolve(render.result)
-        render.onerror = (error) => reject(error)
-    })
-
     const handleInputFile = async (e) => {
         const ListFile = e.target.files
 
         if (ListFile.length > 0) {
-            setFiles({ ...ListFile[0] })
+            // setFiles({ ...ListFile[0] })
+            const reader = new FileReader()
+            reader.readAsDataURL(e.target.files[0])
+            reader.onload = () => {
+                console.log("Reading file " + reader.result)
+                setFiles(reader.result)
+            }
+            reader.onerror = error => {
+                console.log("error reading file " + error)
+            }
+
             setImage(URL.createObjectURL(ListFile[0]))
         }
     }
@@ -84,11 +87,12 @@ const FormUploadImage = () => {
     console.log('files: ' + files)
 
     return (
-        <form className='h-[300px]'>
+        <form className='h-[350px] max-h-max'>
             {
                 image ?
                     <img
-                        src={image}
+                        loading="lazy"
+                        src={files}
                         alt='img'
                         className="h-2/3 w-full"
                     />

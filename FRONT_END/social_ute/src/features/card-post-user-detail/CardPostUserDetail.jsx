@@ -7,6 +7,7 @@ const CardPostUserDetail = ({ post_img, post_description, userName }) => {
         <div className='w-full h-[500px] grid grid-cols-2 gap-2'>
             <div className="h-full">
                 <img
+                    loading="lazy"
                     alt="img"
                     className="object-fill h-[500px] w-full rounded-xl"
                     src={post_img}

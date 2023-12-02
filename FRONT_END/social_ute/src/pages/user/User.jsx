@@ -7,6 +7,7 @@ import { getAllPost } from "services/post.svc";
 
 const User = () => {
     const [posts, setPosts] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const fetchAllPosts = useCallback(async () => {
         try {
@@ -20,7 +21,11 @@ const User = () => {
 
     useEffect(() => {
         fetchAllPosts()
+        setIsLoading(!isLoading)
+
     }, [fetchAllPosts])
+
+    console.log("isLoading: ", isLoading)
 
     // console.log("Posts: " + Object.values(posts.data.posts?.['user_id']))
 
@@ -32,7 +37,9 @@ const User = () => {
                 </div>
 
                 <div className="flex flex-col items-center pt-3 gap-3 ">
-                    <ListPostUser posts={posts.data?.posts} />
+                    <ListPostUser
+                        isLoaded={isLoading}
+                        posts={posts.data?.posts} />
                 </div>
             </div>
 

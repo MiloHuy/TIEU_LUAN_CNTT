@@ -47,7 +47,7 @@ const SidebarBody = (props) => {
                                 onClick={() => handleEventSidebar(item.name)}
                                 startContent={item.icon}
                             >
-                                <p className='font-merriweather text-lg'>
+                                <p className='font-merriweather text-lg font-bold'>
                                     {item.name}
                                 </p>
                             </Button>
@@ -57,6 +57,7 @@ const SidebarBody = (props) => {
             </div>
 
             <Modal
+                scrollBehavior='outside'
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
                 radius="2xl"
