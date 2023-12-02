@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 
 const Story = new Schema({
     user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
     story_content: {

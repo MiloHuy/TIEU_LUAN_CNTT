@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    getPosts,
-    getStories,
-    getFollower,
-    getFollowing,
-    getFriend,
+    getStatistics,
 } = require('../controllers/statisticsController.js');
 
-router.get('/', getPosts, getStories, getFollower, getFollowing, getFriend);
+const {
+    verifyToken,
+    isUser,
+    isAdmin
+} = require('../middlewares/authMiddleware.js');
 
-module.exports = router;
+router.get('/:id', verifyToken, isUser, getStatistics);
+
+module.exports = router; 
