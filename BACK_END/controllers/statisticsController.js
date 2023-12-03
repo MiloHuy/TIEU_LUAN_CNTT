@@ -10,7 +10,7 @@ exports.getStatistics = (async (req, res) => {
     try {
         const user = await User.findOne({ _id:req.params.id }).select('_id')
         if(!user){
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
                 message: 'Không tìm thấy người dùng', 
             });
