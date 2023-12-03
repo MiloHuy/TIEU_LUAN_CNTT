@@ -8,7 +8,7 @@ const Friend = require('../models/Friend')
 exports.getStatistics = (async (req, res) => {
     try {
         const count_posts = await Post.countDocuments({ user_id:req.params.id });
-        const count_stories = await Story.countDocuments({ user_id:req.params.id });
+        // const count_stories = await Story.countDocuments({ user_id:req.params.id });
 
         const user_follow = await Follow.findOne({ user_id:req.params.id });
         const count_followers = user_follow ? user_follow.follower_user_id.length : 0;
@@ -21,7 +21,7 @@ exports.getStatistics = (async (req, res) => {
             success: true,
             message: 'Thống kê:',
             count_posts,
-            count_stories,
+            // count_stories,
             count_followers,
             count_followings,
             count_friends,

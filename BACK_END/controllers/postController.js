@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const fileUpload = require('express-fileupload');
 
 const Post = require('../models/Post')
 const Post_like = require('../models/Post_like')
@@ -23,7 +24,7 @@ exports.getAll = (async (req, res) => {
 //GET /posts/:id
 exports.getPost = (async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id).populate('user_id', 'first_name', 'last_name');
+        const post = await Post.findById(req.params.id).populate('user_id', 'first_name last_name avatar.url');
         res.status(200).json({
             success: true,
             post,
@@ -39,29 +40,61 @@ exports.getPost = (async (req, res) => {
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
-        const currentDate = new Date();
-        const post_img = null;
-            
-
-        if(req.body.post_img!=null){
-            const result = await cloudinary.uploader.upload(req.body.post_img);
-            post_img = {
-                publicId: result.public_id,
-                url: result.secure_url
-            }
+        if(req.body==null){
+            res.status(400).json({
+                success: false,
+                message: 'Bài đăng phải có nội dung hoặc ảnh.',
+                post,
+            });
         }
+        const currentDate = new Date();
+        //let post_img = null;
+        //const file = req.files.post_img;
+        // if (typeof post_img === 'object'){
+        //     return res.status(201).json({
+        //         success: true,
+        //         message: 'object.',
+        //     })
+        // }
+        //if(req.body.post_img!=null){
+            // const file = req.body;
+            // console.log(file)
+            console.log('nháp');
+            const {post_img} = req.post.image;
+            console.log(post_img);
+            console.log('nháp');
+            // const result = await cloudinary.uploader.upload(req.post_img);
+            // post_img = {
+            //     publicId: result.public_id,
+            //     url: result.secure_url,
+            // }
+            return res.status(201).json({
+                success: true,
+                message: 'Có ảnh.',
+                file
+            })
+        //} 
+        // else{
+        //     return res.status(201).json({
+        //         success: true,
+        //         message: 'Không có ảnh.',
+        //     })
+        // }
 
-        const post = await Post.create({ user_id:req.user._id ,...req.body, public_date: currentDate, post_img});
-        res.status(201).json({
-            success: true,
-            message: 'Đăng bài thành công.',
-            post,
-        });
-    } catch (err) {
+        // const post = await Post.create({ user_id:req.user._id , ...req.body, create_post_time: currentDate, post_img});
+        // res.status(201).json({
+        //     success: true,
+        //     message: 'Đăng bài thành công.',
+        //     post,
+        // });
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: err.message, 
+            message: error, 
         });
+    }
+    finally{
+
     }
 })
 

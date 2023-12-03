@@ -4,16 +4,25 @@ const Friend = require('../models/Friend')
 //GET /info/:id
 exports.getInfo = (async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.params.id }).select('first_name last_name avatar');
+        if(req.params.id==req.user._id){
+            return res.status(200).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
+
+        const user = await User.findOne({ _id: req.params.id }).select('first_name last_name avatar.url');
+
         const check_friend = await Friend.findOne({
             user_id: req.params.id,
-            friend_id: req.user._id
+            friend_id: req.user._id,
         })
         const relationship = check_friend ? "Bạn" : "Người lạ";
+
         res.status(200).json({
             success: true,
             user,
-            relationship,
+            relationship
         });
     } catch (err) {
         res.status(500).json({
