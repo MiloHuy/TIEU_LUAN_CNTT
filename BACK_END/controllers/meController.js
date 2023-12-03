@@ -11,12 +11,12 @@ exports.getMyPosts = (async (req, res) => {
     try {
         const posts = await Post.find({ user_id : req.user._id })
         if(posts){
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 posts
             })
         } else{
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Bạn chưa đăng bài!'
             })
@@ -34,12 +34,12 @@ exports.getPosts = (async (req, res) => {
     try {
         const posts = await Post_stored.find({ user_id : req.user._id })
         if(posts){
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 posts
             })
         }else{
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Bạn chưa lưu bài viết nào!'
             })
@@ -57,12 +57,12 @@ exports.getStories = (async (req, res) => {
     try {
         const stories = await Story.find({ user_id : req.user._id })
         if(stories){
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 stories
             })
         }else{
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Bạn chưa đăng story!'
             })
@@ -110,7 +110,6 @@ exports.getInfo = (async (req, res) => {
         });
     }
 })
-
 
 //GET /friendrequest
 exports.getFriendRequest = (async (req, res) => {
