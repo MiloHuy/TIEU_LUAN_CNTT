@@ -5,7 +5,7 @@ const Friend = require('../models/Friend')
 exports.getInfo = (async (req, res) => {
     try {
         if(req.params.id==req.user._id){
-            return res.status(200).json({
+            return res.status(400).json({
                 success: false,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
