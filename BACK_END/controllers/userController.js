@@ -10,9 +10,13 @@ exports.getInfo = (async (req, res) => {
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
-
         const user = await User.findOne({ _id: req.params.id }).select('first_name last_name avatar.url');
-
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: 'Không tìm thấy người dùng', 
+            });
+        }
         const check_friend = await Friend.findOne({
             user_id: req.params.id,
             friend_id: req.user._id,
