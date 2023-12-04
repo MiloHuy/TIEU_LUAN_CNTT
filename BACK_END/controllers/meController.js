@@ -75,26 +75,6 @@ exports.getStories = (async (req, res) => {
     }
 })
 
-//PUT /account/info
-exports.updateInfo = (async (req, res) => {
-    try {
-        const user = await User.findByIdAndUpdate(
-            { _id : req.user._id },
-            {$set: {...req.body}},
-            { new: true },
-        )
-        res.status(200).json({
-            success: true,
-            user
-        })
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message, 
-        });
-    }
-})
-
 //GET /account/info
 exports.getInfo = (async (req, res) => {
     try {
@@ -118,12 +98,12 @@ exports.getFriendRequest = (async (req, res) => {
             add_user_id: { $in: [req.user._id] }
         });
         if(request){
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 request,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Không có lời mời kết bạn',
             });
@@ -133,6 +113,35 @@ exports.getFriendRequest = (async (req, res) => {
         res.status(500).json({
             success: false,
             message: err.message, 
+        });
+    }
+})
+
+//PUT /account/info
+exports.updateInfo = (async (req, res) => {
+    try {
+        if(!req.body){
+            return res.status(400).json({
+                success: false,
+                message:'Chưa nhập dữ liệu.',
+                user
+            })
+        }
+        const user = await User.findByIdAndUpdate(
+            { _id : req.user._id },
+            {$set: {...req.body}},
+            { new: true },
+        ).select('-pass_word -role_id -is_active -__v')
+        res.status(200).json({
+            success: true,
+            message:'Cập nhật thành công.',
+            user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message:'Cập nhật thất bại.',
+            message: error.message, 
         });
     }
 })
