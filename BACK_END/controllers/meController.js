@@ -78,7 +78,7 @@ exports.getStories = (async (req, res) => {
 //GET /account/info
 exports.getInfo = (async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v');
+        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v -avatar -_id');
         res.status(200).json({
             success: true,
             user,
@@ -94,10 +94,10 @@ exports.getInfo = (async (req, res) => {
 //GET /friendrequest
 exports.getFriendRequest = (async (req, res) => {
     try {
-        const request = await Addfriend.findOne({
+        const request = await Addfriend.find({
             add_user_id: { $in: [req.user._id] }
-        });
-        if(request){
+        }).select('-_id user_id');
+        if(request.length > 0){
             return res.status(200).json({
                 success: true,
                 request,
@@ -120,18 +120,17 @@ exports.getFriendRequest = (async (req, res) => {
 //PUT /account/info
 exports.updateInfo = (async (req, res) => {
     try {
-        if(!req.body){
+        if(Object.keys(req.body).length === 0){
             return res.status(400).json({
                 success: false,
-                message:'Chưa nhập dữ liệu.',
-                user
+                message:'Cập nhật thất bại. Chưa nhập dữ liệu.',
             })
         }
         const user = await User.findByIdAndUpdate(
             { _id : req.user._id },
             {$set: {...req.body}},
             { new: true },
-        ).select('-pass_word -role_id -is_active -__v')
+        ).select('-pass_word -role_id -is_active -__v -avatar -_id');
         res.status(200).json({
             success: true,
             message:'Cập nhật thành công.',
