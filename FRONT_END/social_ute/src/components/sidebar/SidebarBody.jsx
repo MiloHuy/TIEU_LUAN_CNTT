@@ -1,10 +1,17 @@
 import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import FormUploadImage from 'features/form-upload-image';
+import { useNavigate } from 'react-router-dom';
 
 const SidebarBody = (props) => {
     const { icons, className } = props
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const navigate = useNavigate()
+
+    const handleNavigateUser = (link) => {
+        console.log("link", link)
+        navigate(link)
+    }
 
     const handleSearch = () => {
         console.log("HandleSearch")
@@ -18,13 +25,19 @@ const SidebarBody = (props) => {
         onOpen()
     }
 
-    const handleEventSidebar = (name) => {
+    const handleEventSidebar = (name, link) => {
         switch (name) {
+            case "Home":
+                navigate(link)
+                return;
             case 'Search':
                 handleSearch()
                 return;
             case 'Nofitcation':
                 hanldeNofication()
+                return;
+            case 'User':
+                handleNavigateUser(link)
                 return;
             case 'Create':
                 handleOpenModelCreate()
@@ -36,7 +49,7 @@ const SidebarBody = (props) => {
 
     return (
         <div className={clsx('w-full h-full', className)}>
-            <div className='w-full h-full flex flex-col gap-4 p-2 '>
+            <div className='w-full h-full grid grid-cols-1 gap-2 p-2 '>
                 {icons.map((item) => {
                     return (
                         <div key={item.name} className='flex flex-row gap-2 justify-center'>
@@ -44,7 +57,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                onClick={() => handleEventSidebar(item.name)}
+                                onClick={() => handleEventSidebar(item.name, item.link)}
                                 startContent={item.icon}
                             >
                                 <p className='font-merriweather text-lg font-bold'>

@@ -12,6 +12,7 @@ const Login = (props) => {
         <div className={clsx('grid grid-cols-2 gap-1 justify-center items-center w-full h-full', props.className)}>
             <div className="flex justify-center items-center">
                 <Image
+                    loading='lazy'
                     radius='lg'
                     isZoomed
                     alt="HCMUTE"

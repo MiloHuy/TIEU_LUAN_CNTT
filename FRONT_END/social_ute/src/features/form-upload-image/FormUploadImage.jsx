@@ -87,7 +87,7 @@ const FormUploadImage = () => {
     console.log('files: ' + files)
 
     return (
-        <form className='h-[350px] max-h-max'>
+        <form className='h-[350px] max-h-max justify-start flex flex-col items-center'>
             {
                 image ?
                     <img
@@ -117,10 +117,9 @@ const FormUploadImage = () => {
 
             <Button
                 onClick={handleCreatePost}
-                className='text-sm font-merriweather'>
+                className='text-sm font-merriweather w-2/3'>
                 Upload
             </Button>
-
         </form>
     )
 }
