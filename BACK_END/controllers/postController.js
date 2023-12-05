@@ -37,6 +37,8 @@ exports.getPost = (async (req, res) => {
     }
 })
 
+const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base64,/i;
+
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
@@ -48,49 +50,35 @@ exports.create = (async (req, res) => {
             });
         }
         const currentDate = new Date();
-        //let post_img = null;
-        //const file = req.files.post_img;
-        // if (typeof post_img === 'object'){
-        //     return res.status(201).json({
-        //         success: true,
-        //         message: 'object.',
-        //     })
-        // }
-        //if(req.body.post_img!=null){
-            // const file = req.body;
-            // console.log(file)
-            console.log('nháp');
-            const {post_img} = req.post.image;
-            console.log(post_img);
-            console.log('nháp');
-            // const result = await cloudinary.uploader.upload(req.post_img);
-            // post_img = {
-            //     publicId: result.public_id,
-            //     url: result.secure_url,
-            // }
-            return res.status(201).json({
-                success: true,
-                message: 'Có ảnh.',
-                file
-            })
-        //} 
-        // else{
-        //     return res.status(201).json({
-        //         success: true,
-        //         message: 'Không có ảnh.',
-        //     })
-        // }
+        if(req.body.post_img!=null){
 
-        // const post = await Post.create({ user_id:req.user._id , ...req.body, create_post_time: currentDate, post_img});
-        // res.status(201).json({
-        //     success: true,
-        //     message: 'Đăng bài thành công.',
-        //     post,
-        // });
+            const fileFormatMatch = req.body.post_img.match(allowedFormats);
+
+            if (!fileFormatMatch) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Định dạng ảnh không hợp lệ. Chỉ chấp nhận định dạng .jpg, .jpeg hoặc .png.',
+                });
+            }
+
+            const result = await cloudinary.uploader.upload(req.body.post_img);
+            post_img = {
+                publicId: result.public_id,
+                url: result.secure_url,
+            }
+        } 
+        
+
+        const post = await Post.create({ user_id:req.user._id , ...req.body, create_post_time: currentDate, post_img});
+        res.status(201).json({
+            success: true,
+            message: 'Đăng bài thành công.',
+            post,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error, 
+            message: 'Đăng bài thất bại' + error, 
         });
     }
     finally{
