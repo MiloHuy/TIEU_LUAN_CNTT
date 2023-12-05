@@ -2,13 +2,40 @@ const cloudinary = require('cloudinary').v2;
 const fileUpload = require('express-fileupload');
 
 const Post = require('../models/Post')
-const Post_like = require('../models/Post_like')
+const Post_liked = require('../models/Post_liked')
 const Post_stored = require('../models/Post_stored')
 
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
-        const posts = await Post.find().limit(10).populate('user_id', 'first_name last_name avatar.url').select('-post_img.publicId');
+        const posts = await Post
+        .find().limit(10)
+        .populate('user_id', 'first_name last_name avatar.url')
+        .select('-post_img.publicId');
+
+        const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
+        const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
+        // return res.status(200).json({
+        //     success: true,
+        //     check_liked,
+        //     check_stored,
+        // });
+        const postsAfferCheck = posts.map(post => {
+            const isLiked = check_liked.some(like => like.post_id.equals(post._id));
+            const isStored = check_stored.some(store => {
+                // if (Array.isArray(store.post_id)) {
+                  return store.post_id.some(storeId => storeId.equals(post._id));
+                // } else {
+                //   return store.post_id.equals(post._id);
+                // }
+            });
+            return {
+                ...post.toObject(),
+                liked: isLiked,
+                stored: isStored,
+            };
+        });
+
         if(posts.length === 0){
             return res.status(200).json({
                 success: true,
@@ -17,7 +44,7 @@ exports.getAll = (async (req, res) => {
         }
         res.status(200).json({
             success: true,
-            posts,
+            postsAfferCheck,
         });
     } catch (error) {
         res.status(500).json({
@@ -142,7 +169,7 @@ exports.like = (async (req, res) => {
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        const liked = await Post_like.findOneAndUpdate(
+        const liked = await Post_liked.findOneAndUpdate(
             { post_id: req.params.id },
             {},
             { new: true, upsert: true }
