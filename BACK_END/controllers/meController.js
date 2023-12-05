@@ -75,30 +75,10 @@ exports.getStories = (async (req, res) => {
     }
 })
 
-//PUT /account/info
-exports.updateInfo = (async (req, res) => {
-    try {
-        const user = await User.findByIdAndUpdate(
-            { _id : req.user._id },
-            {$set: {...req.body}},
-            { new: true },
-        )
-        res.status(200).json({
-            success: true,
-            user
-        })
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message, 
-        });
-    }
-})
-
 //GET /account/info
 exports.getInfo = (async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v');
+        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v -avatar -_id');
         res.status(200).json({
             success: true,
             user,
@@ -114,16 +94,16 @@ exports.getInfo = (async (req, res) => {
 //GET /friendrequest
 exports.getFriendRequest = (async (req, res) => {
     try {
-        const request = await Addfriend.findOne({
+        const request = await Addfriend.find({
             add_user_id: { $in: [req.user._id] }
-        });
-        if(request){
-            res.status(200).json({
+        }).select('-_id user_id');
+        if(request.length > 0){
+            return res.status(200).json({
                 success: true,
                 request,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Không có lời mời kết bạn',
             });
@@ -133,6 +113,34 @@ exports.getFriendRequest = (async (req, res) => {
         res.status(500).json({
             success: false,
             message: err.message, 
+        });
+    }
+})
+
+//PUT /account/info
+exports.updateInfo = (async (req, res) => {
+    try {
+        if(Object.keys(req.body).length === 0){
+            return res.status(400).json({
+                success: false,
+                message:'Cập nhật thất bại. Chưa nhập dữ liệu.',
+            })
+        }
+        const user = await User.findByIdAndUpdate(
+            { _id : req.user._id },
+            {$set: {...req.body}},
+            { new: true },
+        ).select('-pass_word -role_id -is_active -__v -avatar -_id');
+        res.status(200).json({
+            success: true,
+            message:'Cập nhật thành công.',
+            user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message:'Cập nhật thất bại.',
+            message: error.message, 
         });
     }
 })

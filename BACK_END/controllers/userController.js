@@ -12,26 +12,26 @@ exports.getInfo = (async (req, res) => {
         }
         const user = await User.findOne({ _id: req.params.id }).select('first_name last_name avatar.url');
         if(!user){
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
-                message: 'Không tìm thấy người dùng', 
+                message: 'Không tìm thấy người dùng.', 
             });
         }
         const check_friend = await Friend.findOne({
             user_id: req.params.id,
             friend_id: req.user._id,
         })
-        const relationship = check_friend ? "Bạn" : "Người lạ";
+        const relationship = check_friend ? 1 : 0;
 
         res.status(200).json({
             success: true,
             user,
             relationship
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: err.message, 
+            message: error, 
         });
     }
 })
