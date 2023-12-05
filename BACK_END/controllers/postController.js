@@ -49,14 +49,24 @@ exports.getAll = (async (req, res) => {
 //GET /posts/:id
 exports.getPost = (async (req, res) => {
     try {
-        const check_post = await Post.findOne({ _id: req.params.id });
-        if(!check_post){
+        const post = await Post.findById(req.params.id)
+            .populate('user_id', 'first_name last_name avatar.url')
+            .select('-post_img.publicId')
+            .lean();
+        if(!post){
             return res.status(404).json({
                 success: false,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        const post = await Post.findById(req.params.id).populate('user_id', 'first_name last_name avatar.url').select('-post_img.publicId');
+
+        const check_liked = await Post_liked.findOne({post_id: req.params.id,user_id:req.user._id})
+        const check_stored = await Post_stored.findOne({user_id:req.user._id,post_id: req.params.id})
+        
+        // post.liked = check_liked !== null;
+        post.liked = !!check_liked;
+        post.stored = !!check_stored;
+
         res.status(200).json({
             success: true,
             post,
