@@ -9,7 +9,7 @@ const Post_stored = require('../models/Post_stored')
 exports.getAll = (async (req, res) => {
     try {
         const posts = await Post.find().limit(10).populate('user_id', 'first_name last_name avatar.url').select('-post_img.publicId');
-        if(request.length === 0){
+        if(posts.length === 0){
             return res.status(200).json({
                 success: true,
                 message: 'Chưa có bài viết nào.',
