@@ -8,8 +8,12 @@ const Story = new Schema({
         required: true,
     },
     story_content: {
-        type: String,
-        required: true,
+        publicId: {
+            type: String,
+        },
+        url: {
+            type: String,
+        },
     },
     create_story_time: {
         type: Date,

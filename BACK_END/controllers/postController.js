@@ -19,10 +19,10 @@ exports.getAll = (async (req, res) => {
             success: true,
             posts,
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: err.message, 
+            message: error, 
         });
     }
 })
@@ -56,10 +56,9 @@ const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base
 exports.create = (async (req, res) => {
     try {
         if(req.body.post_img==null){
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
-                post,
             });
         }
         const currentDate = new Date();
