@@ -15,19 +15,11 @@ exports.getAll = (async (req, res) => {
 
         const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
         const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
-        // return res.status(200).json({
-        //     success: true,
-        //     check_liked,
-        //     check_stored,
-        // });
+
         const postsAfferCheck = posts.map(post => {
             const isLiked = check_liked.some(like => like.post_id.equals(post._id));
             const isStored = check_stored.some(store => {
-                // if (Array.isArray(store.post_id)) {
                   return store.post_id.some(storeId => storeId.equals(post._id));
-                // } else {
-                //   return store.post_id.equals(post._id);
-                // }
             });
             return {
                 ...post.toObject(),
