@@ -30,7 +30,7 @@ exports.getStory = (async (req, res) => {
         if(!check_story){
             return res.status(404).json({
                 success: false,
-                message: 'Không tìm thấy bài viết.', 
+                message: 'Không tìm thấy story.', 
             });
         }
         const story = await Story.findById(req.params.id).populate('user_id', 'first_name last_name avatar.url').select('-story_content.publicId -__v');
@@ -51,9 +51,9 @@ exports.like = (async (req, res) => {
     try {
         const story = await Story.findOne({_id: req.params.id});
         if(!story){
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
-                message: 'Story không tồn tại.' ,
+                message: 'Không tìm thấy story.' ,
             });
         }
         const liked = await Story_like.findOneAndUpdate(
