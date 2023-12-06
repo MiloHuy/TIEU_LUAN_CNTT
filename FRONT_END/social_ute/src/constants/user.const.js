@@ -4,6 +4,6 @@ export const USERCOOKIES = {
 };
 
 export const RELATIONSHIP = {
-  friend: 1,
-  other: 0,
+  friend: true,
+  other: false,
 };

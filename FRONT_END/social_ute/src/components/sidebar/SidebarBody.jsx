@@ -1,16 +1,15 @@
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@nextui-org/react';
+import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
-import FormUploadImage from 'features/form-upload-image';
+import ModalUploadImage from 'features/modal-upload-image';
 import { useNavigate } from 'react-router-dom';
 
 const SidebarBody = (props) => {
-    const { icons, className } = props
+    const { icons, className, userID } = props
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const navigate = useNavigate()
 
     const handleNavigateUser = (link) => {
-        console.log("link", link)
-        navigate(link)
+        navigate(`home-user/${userID}`)
     }
 
     const handleSearch = () => {
@@ -60,7 +59,7 @@ const SidebarBody = (props) => {
                                 onClick={() => handleEventSidebar(item.name, item.link)}
                                 startContent={item.icon}
                             >
-                                <p className='font-merriweather text-lg font-bold'>
+                                <p className='font-mont text-lg font-bold'>
                                     {item.name}
                                 </p>
                             </Button>
@@ -69,33 +68,11 @@ const SidebarBody = (props) => {
                 })}
             </div>
 
-            <Modal
-                scrollBehavior='outside'
+            <ModalUploadImage
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                radius="2xl"
-                size='sm'
-                backdrop='blur'
-                stlye={{ height: '1000px' }}
-                classNames={{
-                    base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
-                }}
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader
-                                className="flex flex-col gap-1 justify-center text-black">
-                                Tạo bài viết mới
-                            </ModalHeader>
+            />
 
-                            <ModalBody>
-                                <FormUploadImage />
-                            </ModalBody>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
         </div >
     )
 }

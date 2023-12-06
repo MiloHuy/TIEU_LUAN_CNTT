@@ -7,13 +7,6 @@ const Header = (props) => {
     return (
         <div className={clsx("flex gap-2 space-x-2", className)}>
             <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
-            <CardStoryUser />
         </div>
     )
 }

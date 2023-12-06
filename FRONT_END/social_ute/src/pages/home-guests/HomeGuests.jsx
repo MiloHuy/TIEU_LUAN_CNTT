@@ -15,8 +15,6 @@ const HomeGuests = () => {
     const { guestId } = useParams()
     const userName = getFullName(userInfo?.data.user?.first_name, userInfo?.data.user?.last_name)
 
-    console.log("userName: " + userName)
-
     const fetchUserStatisics = useCallback(async () => {
         try {
             const data_statistics = await statistics(guestId)
@@ -46,55 +44,58 @@ const HomeGuests = () => {
     }, [fetchUserStatisics, fetchUserInfo])
 
     return (
-        <div className='grid grid-rows-3 p-2 h-screen'>
-            <div className='p-4 row-span-1'>
-                <Suspense fallback={<Loading />}>
-                    <HeaderHome
-                        userStatisics={userStatisics?.data ? userStatisics.data : ''}
-                        userInfo={userInfo?.data ? userInfo.data : ''}
-                        userName={userName}
-                    />
-                </Suspense>
-            </div>
+        userStatisics ?
+            <div className='grid grid-rows-3 p-2 h-screen'>
+                <div className='p-4 row-span-1'>
+                    <Suspense fallback={<Loading />}>
+                        <HeaderHome
+                            userStatisics={userStatisics.data}
+                            userInfo={userInfo.data}
+                            userName={userName}
+                        />
+                    </Suspense>
+                </div>
 
-            <div className='grid grid-rows-1 justify-center '>
-                <div className="flex w-full flex-col">
-                    <Tabs
-                        color="default"
-                        variant="underlined"
-                        classNames={{
-                            tabList: "gap-6 w-full relative rounded-none p-0 flex justify-center",
-                            cursor: "w-full",
-                            tab: "max-w-fit px-0 h-12",
-                        }}
-                    >
-                        <Tab
-                            key="posts"
-                            title={
-                                <div className="flex items-center space-x-2">
-                                    <Grid3X3 size={20} />
-                                    <span className="dark:text-white font-noto">Posts</span>
-                                </div>
-                            }
+                <div className='grid grid-rows-1 justify-center '>
+                    <div className="flex w-full flex-col">
+                        <Tabs
+                            color="default"
+                            variant="underlined"
+                            classNames={{
+                                tabList: "gap-6 w-full relative rounded-none p-0 flex justify-center",
+                                cursor: "w-full",
+                                tab: "max-w-fit px-0 h-12",
+                            }}
                         >
-                            <ListPostUserDetail posts={[]} />
-                        </Tab>
+                            <Tab
+                                key="posts"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <Grid3X3 size={20} />
+                                        <span className="dark:text-white font-noto">Posts</span>
+                                    </div>
+                                }
+                            >
+                                <ListPostUserDetail posts={[]} />
+                            </Tab>
 
-                        <Tab
-                            key="story"
-                            title={
-                                <div className="flex items-center space-x-2">
-                                    <Book size={20} />
-                                    <span className="dark:text-white font-noto">Story</span>
-                                </div>
-                            }
-                        >
-                            <ListStoryUserDetail stories={[]} />
-                        </Tab>
-                    </Tabs>
+                            <Tab
+                                key="story"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <Book size={20} />
+                                        <span className="dark:text-white font-noto">Story</span>
+                                    </div>
+                                }
+                            >
+                                <ListStoryUserDetail stories={[]} />
+                            </Tab>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
-        </div>
+            :
+            <Loading />
     )
 }
 

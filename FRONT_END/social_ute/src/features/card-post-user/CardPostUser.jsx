@@ -1,17 +1,21 @@
 import { Avatar } from "@nextui-org/avatar";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Button, Input, Link, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
-import CardPostUserDetail from "features/card-post-user-detail";
+import { Button, Input, Link, useDisclosure } from "@nextui-org/react";
+import { setInfoPost } from "app/slice/post/post.slice";
+import ModalPostUser from "features/modal-post-user";
+import PopupShowMoreOptions from "features/popup-show-more-options";
 import { Bookmark, Heart, MessageCircle, MoreHorizontal, SendHorizontal } from 'lucide-react';
 import { useState } from "react";
+import { useDispatch } from 'react-redux';
 import { getPostById, likePost, storePost } from "services/post.svc";
 import { getFullName } from "utils/user.utils";
 
 const CardPostUser = (props) => {
-    const { post_img, post_description, user_id, post_id, isLoaded } = props
+    const { post_img, post_description, user_id, post_id, isLoaded, post_avatar } = props
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [like, setLike] = useState(false)
     const [save, setSave] = useState(false)
+    const dispatch = useDispatch()
 
     const userName = getFullName(user_id?.first_name, user_id?.last_name)
 
@@ -32,7 +36,8 @@ const CardPostUser = (props) => {
         onOpen()
 
         try {
-            await getPostById(post_id)
+            const postByid = await getPostById(post_id)
+            dispatch(setInfoPost({ ...postByid }))
         }
         catch (err) {
             console.log(err)
@@ -52,10 +57,10 @@ const CardPostUser = (props) => {
 
     return (
         <div className='w-10/12 p-2'>
-            <Card className="grid grid-rows-8 w-full h-[600px] border">
+            <Card className="grid grid-rows-8 w-full h-[600px]">
                 <CardHeader className="flex gap-3 justify-between row-span-1">
                     <div className="flex flex-row gap-3 items-center">
-                        <Avatar src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
+                        <Avatar src={post_avatar} />
 
                         <Link color="foreground" href={`welcome/home-guest/${user_id._id}`} underline="active" >
                             <p className="text-md text-sm text-black dark:text-white font-open_sans font-bold ">
@@ -65,15 +70,19 @@ const CardPostUser = (props) => {
 
                     </div>
 
-                    <Button
-                        className='w-[20px]'
-                        size="sm"
-                        isIconOnly
-                        variant="light"
-                    >
-                        <MoreHorizontal size={28} strokeWidth={1.5} />
+                    <PopupShowMoreOptions
+                        trigger={
+                            <Button
+                                className='w-[20px]'
+                                size="sm"
+                                isIconOnly
+                                variant="light"
+                            >
+                                <MoreHorizontal size={28} strokeWidth={1.5} />
 
-                    </Button>
+                            </Button>
+                        } />
+
                 </CardHeader>
 
                 <CardBody className="w-full flex flex-col gap-2 row-span-6 h-[500px] overflow-hidden">
@@ -135,33 +144,14 @@ const CardPostUser = (props) => {
                 </CardBody>
             </Card>
 
-            <Modal
+            <ModalPostUser
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                radius="2xl"
-                size='5xl'
-                backdrop='blur'
-                stlye={{ height: '1000px' }}
-                classNames={{
-                    base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
-                }}
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalBody>
-                                <CardPostUserDetail
-                                    userName={userName}
-                                    post_img={post_img}
-                                    post_description={post_description}
-                                />
-                            </ModalBody>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-        </div >
 
+                userName={userName}
+            />
+
+        </div >
     )
 }
 

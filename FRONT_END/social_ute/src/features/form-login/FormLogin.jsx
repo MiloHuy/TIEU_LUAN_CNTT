@@ -86,7 +86,6 @@ const FormLogin = (props) => {
     })
 
     const { values, errors } = formik
-    console.log("Values:", Object.values(values))
 
     return (
         <form

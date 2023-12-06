@@ -1,7 +1,9 @@
 import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
 import { getUserIdFromCookie } from "utils/user.utils";
 
-export const Id = getUserIdFromCookie()
+const Id = getUserIdFromCookie()
+
+console.log('ID: ' + Id);
 
 export const icons = [
     {

@@ -24,6 +24,7 @@ module.exports = {
         merriweather: ["Merriweather", "serif"],
         noto: ["Noto Sans", "serif"],
         open_sans: ["Open Sans", "sans-serif"],
+        mont: ["Montserrat", "sans-serif"],
       },
 
       backgroundImage: {

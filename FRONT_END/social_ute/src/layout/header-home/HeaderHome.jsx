@@ -11,8 +11,6 @@ const HeaderHome = (props) => {
 
     const avatar_URL = userInfo?.user?.avatar.url
 
-    console.log("userName: " + userName)
-
     return (
         <div className="grid grid-rows-2 ">
             <div className='grid grid-cols-7 gap-2'>
