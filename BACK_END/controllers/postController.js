@@ -13,6 +13,13 @@ exports.getAll = (async (req, res) => {
         .populate('user_id', 'first_name last_name avatar.url')
         .select('-post_img.publicId');
 
+        if(posts.length === 0){
+            return res.status(200).json({
+                success: true,
+                message: 'Chưa có bài viết nào.',
+            });
+        }
+
         const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
         const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
 
@@ -28,15 +35,22 @@ exports.getAll = (async (req, res) => {
             };
         });
 
-        if(posts.length === 0){
-            return res.status(200).json({
-                success: true,
-                message: 'Chưa có bài viết nào.',
-            });
-        }
+        const postsAfferCountLike = await Promise.all(postsAfferCheck.map(async (post) => {
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            //Làm thêm phần count_cmt
+        
+            return {
+                ...post,
+                likes,
+            };
+        }));
+
+        
         res.status(200).json({
             success: true,
-            postsAfferCheck,
+            posts: postsAfferCountLike,
         });
     } catch (error) {
         res.status(500).json({
@@ -63,9 +77,11 @@ exports.getPost = (async (req, res) => {
         const check_liked = await Post_liked.findOne({post_id: req.params.id,user_id:req.user._id})
         const check_stored = await Post_stored.findOne({user_id:req.user._id,post_id: req.params.id})
         
-        // post.liked = check_liked !== null;
         post.liked = !!check_liked;
         post.stored = !!check_stored;
+
+        const post_like = await Post_liked.findOne({ post_id: post._id });
+        post.likes = post_like ? post_like.user_id.length : 0;
 
         res.status(200).json({
             success: true,
