@@ -5,22 +5,39 @@ const RefreshToken = require('../models/RefreshToken')
 const Post_stored = require('../models/Post_stored')
 const bcrypt = require('bcrypt');
 const Addfriend = require('../models/Addfriend')
+const Post_liked = require('../models/Post_liked')
 
-//GET /myposts
+//GET /my-posts
 exports.getMyPosts = (async (req, res) => {
     try {
         const posts = await Post.find({ user_id : req.user._id })
-        if(posts){
+            .select('_id post_img.url')
+            .lean()
+        if(posts.length===0){
             return res.status(200).json({
                 success: true,
-                posts
+                message: 'Bạn chưa đăng bài.'
             })
-        } else{
-            return res.status(200).json({
-                success: true,
-                message: 'Bạn chưa đăng bài!'
-            })
-        }
+        } 
+
+        const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            //Làm thêm phần count_cmt
+        
+            return {
+                ...post,
+                likes,
+            };
+        }));
+
+        return res.status(200).json({
+            success: true,
+            posts: postsAfferCountLike
+        })
+            
+        
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -32,18 +49,32 @@ exports.getMyPosts = (async (req, res) => {
 //GET /stored/posts
 exports.getPosts = (async (req, res) => {
     try {
-        const posts = await Post_stored.find({ user_id : req.user._id })
-        if(posts){
+        const post = await Post_stored.findOne({ user_id : req.user._id })
+        .select('post_id -_id')
+        .populate('post_id', 'post_img.url')
+        .lean()
+        if(!post){
             return res.status(200).json({
                 success: true,
-                posts
-            })
-        }else{
-            return res.status(200).json({
-                success: true,
-                message: 'Bạn chưa lưu bài viết nào!'
+                message: 'Bạn chưa lưu bài viết nào.'
             })
         }
+        const posts = post.post_id
+        const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            //Làm thêm phần count_cmt
+        
+            return {
+                ...post,
+                likes,
+            };
+        }));
+        return res.status(200).json({
+            success: true,
+            posts: postsAfferCountLike
+        })
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -56,17 +87,16 @@ exports.getPosts = (async (req, res) => {
 exports.getStories = (async (req, res) => {
     try {
         const stories = await Story.find({ user_id : req.user._id })
-        if(stories){
+        if(!stories){
             return res.status(200).json({
                 success: true,
-                stories
-            })
-        }else{
-            return res.status(200).json({
-                success: true,
-                message: 'Bạn chưa đăng story!'
+                message: 'Bạn chưa đăng story.'
             })
         }
+        return res.status(200).json({
+            success: true,
+            stories
+        })
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -147,29 +177,33 @@ exports.updateInfo = (async (req, res) => {
 
 //PUT /account/password
 exports.updatePassword = (async (req, res) => {
-    const user = req.user;
-    const { password, new_password, confirm } = req.body;
-    const updateUser = await User.findById(user._id);
-    const isMatch = await bcrypt.compare(password, updateUser.pass_word);
-    if (!isMatch) {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+        return res.status(404).json({ 
+            success: false, 
+            message: 'Không tìm thấy người dùng.' 
+        });;
+    }
+    const isPasswordMatched = await user.comparePassword(req.body.pass_word);
+    if (!isPasswordMatched) {
         return res.status(400).json({ 
             success: false, 
             message: 'Mật khẩu không chính xác.' 
         });
     }
-
-    if (new_password !== confirm) {
+    if (req.body.new_password !== req.body.confirm) {
         return res.status(400).json({ 
             success: false, 
-            message: 'Nhập lại mật khẩu không chính xác.' });
+            message: 'Nhập lại mật khẩu không trùng khớp.' });
     }
-    const hashedPassword = await bcrypt.hash(new_password, 10);
-    await User.findByIdAndUpdate(updateUser._id, { pass_word: hashedPassword });
-    await RefreshToken.deleteMany({ user: user._id });
 
-    res.clearCookie('refreshToken', { path: 'auth' });
-    res.status(200).json({ 
+    const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
+
+    await User.findByIdAndUpdate(req.user._id, { pass_word: hashedPassword });
+
+    res.status(201).json({ 
         success: true, 
-        message: 'Đổi mât khẩu thành công.' 
+        message: 'Đổi mật khẩu thành công.' 
     });
 })

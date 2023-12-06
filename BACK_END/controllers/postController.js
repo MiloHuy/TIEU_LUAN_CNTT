@@ -2,13 +2,32 @@ const cloudinary = require('cloudinary').v2;
 const fileUpload = require('express-fileupload');
 
 const Post = require('../models/Post')
-const Post_like = require('../models/Post_like')
+const Post_liked = require('../models/Post_liked')
 const Post_stored = require('../models/Post_stored')
 
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
-        const posts = await Post.find().limit(10).populate('user_id', 'first_name last_name avatar.url').select('-post_img.publicId');
+        const posts = await Post
+        .find().limit(10)
+        .populate('user_id', 'first_name last_name avatar.url')
+        .select('-post_img.publicId');
+
+        const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
+        const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
+
+        const postsAfferCheck = posts.map(post => {
+            const isLiked = check_liked.some(like => like.post_id.equals(post._id));
+            const isStored = check_stored.some(store => {
+                  return store.post_id.some(storeId => storeId.equals(post._id));
+            });
+            return {
+                ...post.toObject(),
+                liked: isLiked,
+                stored: isStored,
+            };
+        });
+
         if(posts.length === 0){
             return res.status(200).json({
                 success: true,
@@ -17,12 +36,12 @@ exports.getAll = (async (req, res) => {
         }
         res.status(200).json({
             success: true,
-            posts,
+            postsAfferCheck,
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
-            message: err.message, 
+            message: error, 
         });
     }
 })
@@ -30,14 +49,24 @@ exports.getAll = (async (req, res) => {
 //GET /posts/:id
 exports.getPost = (async (req, res) => {
     try {
-        const check_post = await Post.findOne({ _id: req.params.id });
-        if(!check_post){
+        const post = await Post.findById(req.params.id)
+            .populate('user_id', 'first_name last_name avatar.url')
+            .select('-post_img.publicId')
+            .lean();
+        if(!post){
             return res.status(404).json({
                 success: false,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        const post = await Post.findById(req.params.id).populate('user_id', 'first_name last_name avatar.url').select('-post_img.publicId');
+
+        const check_liked = await Post_liked.findOne({post_id: req.params.id,user_id:req.user._id})
+        const check_stored = await Post_stored.findOne({user_id:req.user._id,post_id: req.params.id})
+        
+        // post.liked = check_liked !== null;
+        post.liked = !!check_liked;
+        post.stored = !!check_stored;
+
         res.status(200).json({
             success: true,
             post,
@@ -56,10 +85,9 @@ const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base
 exports.create = (async (req, res) => {
     try {
         if(req.body.post_img==null){
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
-                post,
             });
         }
         const currentDate = new Date();
@@ -143,7 +171,7 @@ exports.like = (async (req, res) => {
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        const liked = await Post_like.findOneAndUpdate(
+        const liked = await Post_liked.findOneAndUpdate(
             { post_id: req.params.id },
             {},
             { new: true, upsert: true }

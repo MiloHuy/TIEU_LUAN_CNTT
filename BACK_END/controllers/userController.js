@@ -21,12 +21,12 @@ exports.getInfo = (async (req, res) => {
             user_id: req.params.id,
             friend_id: req.user._id,
         })
-        const relationship = check_friend ? 1 : 0;
+        const friend = check_friend ? true : false;
 
         res.status(200).json({
             success: true,
             user,
-            relationship
+            friend
         });
     } catch (error) {
         res.status(500).json({
