@@ -1,5 +1,7 @@
 const User = require('../models/User')
-const Friend = require('../models/Friend')
+const Friend = require('../models/Friend');
+const { UserAPIFeatures } = require('../utils/APIFeatures');
+const { query } = require('express');
 
 //GET /info/:id
 exports.getInfo = (async (req, res) => {
@@ -56,3 +58,33 @@ exports.disabled = (async (req, res, next) => {
       .catch(next)
 
 })
+
+exports.getAllUser = (async (req, res) => {
+    try {
+        const { size } = req.query;
+        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name');
+        
+        const apiFeatures = new UserAPIFeatures(userQuery, req.query)
+            .search();
+        
+        let allUser = await apiFeatures.query;
+        const totals = allUser.length;
+
+        const apiFeaturesPagination = new UserAPIFeatures(User.find(userQuery), req.query)
+            .search()
+            .pagination(size);
+
+        allUser = await apiFeaturesPagination.query;
+        
+        return res.status(200).json({
+            success: true,
+            totals,
+            allUser, 
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error, 
+        });
+    }
+});
