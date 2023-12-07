@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from '@nextui-org/react';
+import { Badge, Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import ModalUploadImage from 'features/modal-upload-image';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ const SidebarBody = (props) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const navigate = useNavigate()
 
-    const handleNavigateUser = (link) => {
+    const handleNavigateUser = () => {
         navigate(`home-user/${userID}`)
     }
 
@@ -59,9 +59,18 @@ const SidebarBody = (props) => {
                                 onClick={() => handleEventSidebar(item.name, item.link)}
                                 startContent={item.icon}
                             >
-                                <p className='font-mont text-lg font-bold'>
-                                    {item.name}
-                                </p>
+                                {
+                                    item.name === 'Nofitcation' ?
+                                        <Badge content="5" color="danger" placement="top-right" className='translate-x-6 overflow-visible'>
+                                            <p className='font-mont text-lg font-bold'>
+                                                {item.name}
+                                            </p>
+                                        </Badge>
+                                        :
+                                        <p className='font-mont text-lg font-bold'>
+                                            {item.name}
+                                        </p>
+                                }
                             </Button>
                         </div>
                     )

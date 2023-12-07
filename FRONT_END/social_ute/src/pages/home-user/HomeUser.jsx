@@ -68,7 +68,7 @@ const HomeUser = () => {
     return (
         userStatisics
             ?
-            <div className='grid grid-rows-3 p-2 h-screen overflow-auto'>
+            <div className='grid grid-rows-3 p-2 h-screen overflow-auto '>
                 <div className='p-4 row-span-1'>
                     <HeaderHome
                         userStatisics={userStatisics.data}
