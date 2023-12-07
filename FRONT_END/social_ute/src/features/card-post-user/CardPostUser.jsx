@@ -1,7 +1,7 @@
 import { Avatar } from "@nextui-org/avatar";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Button, Input, Link, useDisclosure } from "@nextui-org/react";
-import { setInfoPost } from "app/slice/post/post.slice";
+import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
 import ModalPostUser from "features/modal-post-user";
 import PopupShowMoreOptions from "features/popup-show-more-options";
 import { Bookmark, Heart, MessageCircle, MoreHorizontal, SendHorizontal } from 'lucide-react';
@@ -11,10 +11,19 @@ import { getPostById, likePost, storePost } from "services/post.svc";
 import { getFullName } from "utils/user.utils";
 
 const CardPostUser = (props) => {
-    const { post_img, post_description, user_id, post_id, isLoaded, post_avatar } = props
+    const {
+        post_img,
+        post_description,
+        user_id,
+        post_id,
+        post_avatar,
+        liked,
+        number_likes,
+        save_posts } = props
+
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [like, setLike] = useState(false)
-    const [save, setSave] = useState(false)
+    const [like, setLike] = useState(liked)
+    const [save, setSave] = useState(save_posts)
     const dispatch = useDispatch()
 
     const userName = getFullName(user_id?.first_name, user_id?.last_name)
@@ -25,7 +34,6 @@ const CardPostUser = (props) => {
 
             await likePost(post_id)
 
-            console.log('Đã like bài viết')
         }
         catch (err) {
             console.log(err)
@@ -38,6 +46,8 @@ const CardPostUser = (props) => {
         try {
             const postByid = await getPostById(post_id)
             dispatch(setInfoPost({ ...postByid }))
+
+            dispatch(setStatusPost({ like, save, number_likes }))
         }
         catch (err) {
             console.log(err)
@@ -102,7 +112,11 @@ const CardPostUser = (props) => {
                                 variant="light"
                                 onClick={handleLikePost}
                             >
-                                <Heart size={20} strokeWidth={1.5} fill={like === true ? 'red' : 'none'} />
+                                <Heart
+                                    strokeWidth={1.5}
+                                    absoluteStrokeWidth
+                                    size={20}
+                                    fill={like === true ? 'red' : 'none'} />
                             </Button>
 
                             <Button
@@ -125,18 +139,21 @@ const CardPostUser = (props) => {
                             variant="light"
                             onClick={handleSavePost}
                         >
-                            <Bookmark size={20} strokeWidth={1.5} fill={save === true ? 'yellow' : 'none'} />
+                            <Bookmark
+                                size={20}
+                                strokeWidth={1.5}
+                                fill={save === true ? 'yellow' : 'none'} />
                         </Button>
                     </div>
 
                     <div className='flex flex-col gap-2'>
                         <div className="flex-row flex gap-1">
-                            <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>800</h2>
+                            <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>{like === true ? Number(number_likes) + 1 : number_likes}</h2>
                             <span className='text-sm text-black dark:text-white font-open_sans font-bold'>lượt thích</span>
                         </div>
 
                         <div className="flex-row flex gap-1">
-                            <h2 className="text-sm text-black dark:text-white  font-open_sans font-bold   ">{`${userName}: ${post_description}`}</h2>
+                            <h2 className="text-sm text-black dark:text-white  font-open_sans font-bold">{`${userName}: ${post_description}`}</h2>
                         </div>
 
                         <Input variant='underlined' placeholder="Thêm bình luận..." />

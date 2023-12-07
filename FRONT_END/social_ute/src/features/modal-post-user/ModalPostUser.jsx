@@ -1,16 +1,23 @@
-import { Modal, ModalBody, ModalContent, Spinner } from "@nextui-org/react";
-import { selectPostDescription, selectPostImg } from "app/slice/post/post.slice";
+import { Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
+import { setPostInit } from "app/slice/post/post.slice";
 import CardPostUserDetail from "features/card-post-user-detail";
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-const ModalPostUser = ({ isOpen, onOpenChange, userName, }) => {
-    const post_img = useSelector(selectPostImg)
-    const post_description = useSelector(selectPostDescription)
+const ModalPostUser = ({ isOpen, onOpenChange, userName }) => {
+    const dispatch = useDispatch()
+
+    const { onClose } = useDisclosure();
+
+    const handleCloseModal = () => {
+        onClose()
+        dispatch(setPostInit())
+    }
 
     return (
         <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            onClose={handleCloseModal}
             radius="2xl"
             size='5xl'
             backdrop='blur'
@@ -20,18 +27,14 @@ const ModalPostUser = ({ isOpen, onOpenChange, userName, }) => {
             }}
         >
             <ModalContent>
-                {(onClose) => (
+                {() => (
                     <>
                         <ModalBody>
                             {
-                                post_img ?
-                                    <CardPostUserDetail
-                                        userName={userName}
-                                        post_img={post_img}
-                                        post_description={post_description}
-                                    />
-                                    :
-                                    <Spinner color="default" />
+                                <CardPostUserDetail
+                                    userName={userName}
+                                />
+
                             }
                         </ModalBody>
                     </>

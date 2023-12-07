@@ -8,7 +8,6 @@ import { getUserNameFromCookie } from "utils/user.utils";
 
 const User = () => {
     const [posts, setPosts] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
 
     const userName = getUserNameFromCookie()
 
@@ -24,7 +23,6 @@ const User = () => {
 
     useEffect(() => {
         fetchAllPosts()
-        setIsLoading(!isLoading)
 
     }, [fetchAllPosts])
 
@@ -37,7 +35,6 @@ const User = () => {
 
                 <div className="flex flex-col items-center pt-3 gap-3 ">
                     <ListPostUser
-                        isLoaded={isLoading}
                         posts={posts.data?.posts} />
                 </div>
             </div>

@@ -102,6 +102,7 @@ const HomeUser = () => {
                                 {
                                     mePosts ?
                                         <ListPostUserDetail
+                                            userName={userName}
                                             posts={mePosts} />
                                         :
                                         <Spinner color="default" size="lg" />
