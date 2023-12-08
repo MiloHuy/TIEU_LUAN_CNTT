@@ -7,6 +7,12 @@ const User = require('../models/User');
 //POST /interacts/follow/:id
 exports.follow = (async (req, res) => {
     try {
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
         const check_user = await User.findOne({ _id: req.params.id });
         if(!check_user){
             return res.status(404).json({
@@ -54,6 +60,12 @@ exports.follow = (async (req, res) => {
 //POST /interacts/addfriend/:id
 exports.addfriend = (async (req, res) => {
     try {
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
         const check_user = await User.findOne({ _id: req.params.id });
         if(!check_user){
             return res.status(404).json({
@@ -102,6 +114,12 @@ exports.addfriend = (async (req, res) => {
 //POST /interacts/accept/:id
 exports.accept = (async (req, res) => {
     try {
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
         const check_user = await User.findOne({ _id: req.params.id });
         if(!check_user){
             return res.status(404).json({
@@ -109,7 +127,6 @@ exports.accept = (async (req, res) => {
                 message: 'Không tìm thấy người dùng.', 
             });
         }
-
         const request = await Addfriend.findOne({
             user_id: req.params.id,
             add_user_id: { $in: [req.user._id] }
@@ -154,6 +171,12 @@ exports.accept = (async (req, res) => {
 //POST /interacts/refuse/:id
 exports.refuse = (async (req, res) => {
     try {
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
         const check_user = await User.findOne({ _id: req.params.id });
         if(!check_user){
             return res.status(404).json({

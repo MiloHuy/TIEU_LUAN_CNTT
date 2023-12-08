@@ -4,6 +4,8 @@ const { UserAPIFeatures } = require('../utils/APIFeatures');
 const { query } = require('express');
 const Post = require('../models/Post');
 const Post_liked = require('../models/Post_liked');
+const Addfriend = require('../models/Addfriend');
+const Follow = require('../models/Follow');
 
 //GET /info/:id
 exports.getInfo = (async (req, res) => {
@@ -22,15 +24,48 @@ exports.getInfo = (async (req, res) => {
             });
         }
         const check_friend = await Friend.findOne({
-            user_id: req.params.id,
-            friend_id: req.user._id,
+            user_id: req.user._id,
+            friend_id: req.params.id,
         })
         const friend = check_friend ? true : false;
-
+        const check_following = await Follow.findOne({
+            user_id: req.user._id,
+            following_user_id: req.params.id,
+        })
+        const following = check_following ? true : false;
+        if(!friend){
+            const check_friend_request = await Addfriend.findOne({
+                user_id: req.params.id,
+                add_user_id: req.user._id
+            })
+            const friend_request = check_friend_request ? true : false;
+            if(friend_request){
+                return res.status(200).json({
+                    success: true,
+                    user,
+                    following,
+                    friend,
+                    friend_request,
+                });
+            }
+            const check_add_friend = await Addfriend.findOne({
+                user_id: req.user._id,
+                add_user_id: req.params.id
+            })
+            const add_friend = check_add_friend ? true : false;
+            return res.status(200).json({
+                success: true,
+                user,
+                following,
+                friend,
+                add_friend,
+            });
+        }
         res.status(200).json({
             success: true,
             user,
-            friend
+            following,
+            friend,
         });
     } catch (error) {
         res.status(500).json({
