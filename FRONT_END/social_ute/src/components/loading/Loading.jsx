@@ -3,7 +3,7 @@ const Loading = () => {
     const dots = 6
 
     return (
-        <div className='w-full h-full'>
+        <div className='w-96 h-full'>
             <div className='relative rounded-md flex justify-center items-center top-0 w-full h-full'>
                 {
                     Array.from({ length: dots }).map((_, dotIndex) => {

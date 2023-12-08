@@ -2,14 +2,12 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
 import { useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "services/auth.svc";
 import { object, string } from "yup";
-
-const resolveAfter3Sec = new Promise(resolve => setTimeout(resolve, 3000));
 
 const FormRegister = (props) => {
     const [isDisabledFaculity, setDisabledFaculity] = useState(false)
@@ -63,11 +61,6 @@ const FormRegister = (props) => {
         }
     }
 
-    useEffect(() => {
-        console.log("Department:" + department_t)
-        console.log("Faculty:" + faculty)
-    }, [department_t, faculty])
-
     const handleInput = (e) => {
         setFormRegister({ ...formRegister, [e.target.name]: e.target.value, department: faculty | department_t })
     }
@@ -114,6 +107,17 @@ const FormRegister = (props) => {
         }
         catch (err) {
             console.log("Error: ", err)
+
+            toast.error('Đăng ký thất bại!!!', {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 

@@ -1,7 +1,9 @@
-import { Button, Divider } from "@nextui-org/react";
+import { Button, Divider, useDisclosure } from "@nextui-org/react";
 import { RELATIONSHIP } from "constants/user.const";
+import ModalUpdateUser from "features/modal-update-user";
 import { Settings, UserCheck, UserPlus } from 'lucide-react';
 import { useState } from "react";
+import { getMeInfo } from "services/me.svc";
 import { AddCancelFriend } from "services/user.svc";
 
 const HeaderHome = (props) => {
@@ -13,11 +15,13 @@ const HeaderHome = (props) => {
         count_friends,
         count_stories
     } = userStatisics
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const friend = userInfo?.friend
 
     const [relationship, setRelationship] = useState(friend)
     const [isLoading, setIsLoading] = useState(false)
+    const [updateUser, setUpdateUser] = useState()
 
     const avatar_URL = userInfo?.user?.avatar.url
 
@@ -25,7 +29,25 @@ const HeaderHome = (props) => {
         try {
             setIsLoading(true)
             await AddCancelFriend(userInfo?.user?._id)
+
             setRelationship(!relationship)
+            setIsLoading(false)
+        }
+        catch (err) {
+            console.log("err:" + err)
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleUpdateUser = async () => {
+        onOpen()
+
+        try {
+            setIsLoading(true)
+            const data_Info = await getMeInfo()
+            setUpdateUser({ ...data_Info })
             setIsLoading(false)
         }
         catch (err) {
@@ -59,9 +81,20 @@ const HeaderHome = (props) => {
                             {
                                 userAvatar ?
                                     <div className='flex '>
-                                        <Button radius="sm" className="w-50 h-7" >
+                                        <Button
+                                            radius="sm"
+                                            className="w-50 h-7"
+                                            onClick={handleUpdateUser}
+                                        >
                                             Chỉnh sửa trang cá nhân
                                         </Button>
+
+                                        <ModalUpdateUser
+                                            isOpen={isOpen}
+                                            onOpenChange={onOpenChange}
+
+                                            updateUser={updateUser}
+                                        />
 
                                         <Button isIconOnly variant="light" className="h-7 ">
                                             <Settings
