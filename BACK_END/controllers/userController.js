@@ -43,6 +43,12 @@ exports.getInfo = (async (req, res) => {
 //GET /posts/:id
 exports.getPosts = (async (req, res) => {
     try {
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
         const user = await User.findOne({ _id: req.params.id });
         if(!user){
             return res.status(404).json({
