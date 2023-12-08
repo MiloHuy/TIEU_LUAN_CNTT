@@ -4,10 +4,12 @@ import ProfileUser from "features/profile-user";
 import Header from "layout/header";
 import { useCallback, useEffect, useState } from "react";
 import { getAllPost } from "services/post.svc";
+import { getUserNameFromCookie } from "utils/user.utils";
 
 const User = () => {
     const [posts, setPosts] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+
+    const userName = getUserNameFromCookie()
 
     const fetchAllPosts = useCallback(async () => {
         try {
@@ -21,13 +23,8 @@ const User = () => {
 
     useEffect(() => {
         fetchAllPosts()
-        setIsLoading(!isLoading)
 
     }, [fetchAllPosts])
-
-    console.log("isLoading: ", isLoading)
-
-    // console.log("Posts: " + Object.values(posts.data.posts?.['user_id']))
 
     return (
         <div className='grid grid-cols-5 gap-1 w-full h-screen overflow-y-scroll'>
@@ -38,7 +35,6 @@ const User = () => {
 
                 <div className="flex flex-col items-center pt-3 gap-3 ">
                     <ListPostUser
-                        isLoaded={isLoading}
                         posts={posts.data?.posts} />
                 </div>
             </div>
@@ -46,7 +42,7 @@ const User = () => {
             <div className='col-span-2'>
                 <div className='grid gird-rows-2 gap-4 p-6'>
                     <div className='relative w-full flex'>
-                        <ProfileUser />
+                        <ProfileUser userName={userName} />
                     </div>
 
                     <div>

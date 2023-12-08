@@ -24,6 +24,7 @@ module.exports = {
         merriweather: ["Merriweather", "serif"],
         noto: ["Noto Sans", "serif"],
         open_sans: ["Open Sans", "sans-serif"],
+        mont: ["Montserrat", "sans-serif"],
       },
 
       backgroundImage: {
@@ -36,6 +37,28 @@ module.exports = {
         7: "repeat(7, minmax(0, 1fr))",
         8: "repeat(8, minmax(0, 1fr))",
         layout: "200px minmax(900px, 1fr) 100px",
+      },
+      keyframes: {
+        loader: {
+          "15%": {
+            transform: "translateX(0)",
+          },
+          "45%": {
+            transform: " translateX(230px)",
+          },
+          "65%": {
+            transform: " translateX(230px)",
+          },
+          "95%": {
+            transform: "translateX(0)",
+          },
+        },
+      },
+      animation: {
+        loading: "loader infinite 2s",
+      },
+      transitionDelay: {
+        400: "400ms",
       },
     },
   },

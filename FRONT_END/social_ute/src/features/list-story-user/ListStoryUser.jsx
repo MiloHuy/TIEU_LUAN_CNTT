@@ -1,7 +1,10 @@
+import CardStoryUser from "features/card-story-user"
 
 const ListStoryUser = () => {
     return (
-        <div>ListStoryUser</div>
+        <div>
+            <CardStoryUser />
+        </div>
     )
 }
 

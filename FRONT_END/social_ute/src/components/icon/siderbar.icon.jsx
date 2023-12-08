@@ -1,28 +1,44 @@
-import { AlignJustify, Bell, Home, PlusCircle, Search, UserCircle2 } from "lucide-react";
+import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
+import { getUserIdFromCookie } from "utils/user.utils";
+
+const Id = getUserIdFromCookie()
+
+console.log('ID: ' + Id);
 
 export const icons = [
     {
         name: "Home",
-        icon: <Home />
+        icon: <Home />,
+        link: '/welcome'
     },
     {
         name: "Search",
-        icon: <Search />
+        icon: <Search />,
+        link: ''
     },
     {
         name: "Nofitcation",
-        icon: <Bell />
+        icon: <Bell />,
+        link: ''
     },
     {
         name: "User",
-        icon: <UserCircle2 />
+        icon: <UserCircle2 />,
+        link: `home-user/${Id}`
     },
     {
         name: "Create",
-        icon: <PlusCircle />
+        icon: <PlusCircle />,
+        link: ''
     },
     {
         name: "More",
-        icon: <AlignJustify />
+        icon: <AlignJustify />,
+        link: ''
+    },
+    {
+        name: "LogOut",
+        icon: <LogOut />,
+        link: ''
     },
 ]

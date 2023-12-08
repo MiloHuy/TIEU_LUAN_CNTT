@@ -2,17 +2,22 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button, Input } from '@nextui-org/react'
+import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
 import { SSOCOOKIES } from 'constants/app.const'
+import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
+import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
+import { getFullName } from 'utils/user.utils'
 import { object, string } from 'yup'
 
 const FormLogin = (props) => {
     const [errMsg, setErrMsg] = useState('')
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const initFormLogin = {
         phone_number: '',
@@ -30,7 +35,11 @@ const FormLogin = (props) => {
         try {
             const userData = await login(values)
             console.log('User data: ', userData)
+            dispatch(setInfoUser({ ...userData }))
+
             Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
+            Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
+            Cookies.set(USERCOOKIES.userName, getFullName(userData.user.first_name, userData.user.last_name), { expires: 1 })
 
             toast.success('Đăng nhập thành công!!!', {
                 position: "bottom-right",
@@ -77,7 +86,6 @@ const FormLogin = (props) => {
     })
 
     const { values, errors } = formik
-    console.log("Values:", Object.values(values))
 
     return (
         <form
