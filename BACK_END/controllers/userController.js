@@ -2,6 +2,8 @@ const User = require('../models/User')
 const Friend = require('../models/Friend');
 const { UserAPIFeatures } = require('../utils/APIFeatures');
 const { query } = require('express');
+const Post = require('../models/Post');
+const Post_liked = require('../models/Post_liked');
 
 //GET /info/:id
 exports.getInfo = (async (req, res) => {
@@ -34,6 +36,53 @@ exports.getInfo = (async (req, res) => {
         res.status(500).json({
             success: false,
             message: error, 
+        });
+    }
+})
+
+//GET /posts/:id
+exports.getPosts = (async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id });
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy người dùng.', 
+            });
+        }
+
+        const posts = await Post.find({ user_id : req.params.id })
+            .select('_id post_img.url')
+            .lean()
+        if(posts.length===0){
+            return res.status(200).json({
+                success: true,
+                message: 'Chưa có đăng bài.'
+            })
+        } 
+
+        const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            //Làm thêm phần count_cmt
+        
+            return {
+                ...post,
+                likes,
+            };
+        }));
+
+        return res.status(200).json({
+            success: true,
+            posts: postsAfferCountLike
+        })
+            
+        
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message, 
         });
     }
 })
