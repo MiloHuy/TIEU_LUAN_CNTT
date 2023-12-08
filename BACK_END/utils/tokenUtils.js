@@ -28,7 +28,7 @@ const sendToken = (user, refreshToken, res) => {
 
 const clearToken = (res) => {
     res.clearCookie('refreshToken', {
-        path: '/api/v1/auth',
+        path: '/auth',
         httpOnly: true,
         sameSite: 'None',
         secure: true,
