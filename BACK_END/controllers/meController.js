@@ -86,8 +86,8 @@ exports.getPosts = (async (req, res) => {
 //GET /stored/stories
 exports.getStories = (async (req, res) => {
     try {
-        const stories = await Story.find({ user_id : req.user._id })
-        if(!stories){
+        const stories = await Story.find({ user_id : req.user._id }).select('-story_content.publicId')
+        if(stories.length===0){
             return res.status(200).json({
                 success: true,
                 message: 'Bạn chưa đăng story.'
