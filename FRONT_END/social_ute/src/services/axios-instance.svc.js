@@ -1,9 +1,13 @@
 import axios from "axios";
+import qs from 'qs';
 import { getAccessTokenFromCookie } from "utils/auth.utils";
 
 const AxiosInstance = axios.create({
   baseURL: "http://localhost:3000",
   withCredentials: true,
+  paramsSerializer: (params) => {
+    return qs.stringify(params);
+  },
 });
 
 AxiosInstance.defaults.headers.post["Content-Type"] = "application/json";

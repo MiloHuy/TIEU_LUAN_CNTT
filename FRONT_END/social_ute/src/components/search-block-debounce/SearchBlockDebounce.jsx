@@ -4,12 +4,12 @@ import { useRef, useState } from "react";
 
 const SearchBlockDebounce = (props) => {
     const { onSubmit } = props
-    const [searchTerm, setSearchTerm] = useState("")
+    const [search, setSearch] = useState("")
     const typingTimeoutRef = useRef(null)
 
-    const handleSearchTermChange = (e) => {
+    const handlesearchChange = (e) => {
         const value = e.target.value
-        setSearchTerm(value)
+        setSearch(value)
 
         if (!onSubmit) return
 
@@ -19,21 +19,21 @@ const SearchBlockDebounce = (props) => {
 
         typingTimeoutRef.current = setTimeout(() => {
             const formValues = {
-                searchTerm: value
+                search: value
             }
 
             onSubmit(formValues)
-        }, 500)
+        }, 300)
     }
 
     return (
         <form className={clsx('', props.className)}>
             <Input
                 type='text'
-                value={searchTerm}
+                value={search}
                 size='sm'
                 variant="bordered"
-                onChange={handleSearchTermChange}
+                onChange={handlesearchChange}
                 placeholder="Nhập nội dung cần tìm kiếm."
                 className='text-sm text-white dark:text-white'
             />

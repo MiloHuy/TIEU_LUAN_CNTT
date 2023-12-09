@@ -13,7 +13,6 @@ export const API_AUTH_ENDPOINT = {
 
 //payload: phone and password
 export const login = async (payload) => {
-  console.log("payload", payload);
   const res = await AxiosInstance.post(API_AUTH_ENDPOINT.POST.login, payload);
   return res.data;
 };
@@ -23,5 +22,10 @@ export const register = async (payload) => {
     API_AUTH_ENDPOINT.POST.register,
     payload,
   );
+  return res;
+};
+
+export const logout = async () => {
+  const res = await AxiosInstance.post(API_AUTH_ENDPOINT.POST.logout);
   return res;
 };

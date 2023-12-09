@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 import { setPostInit } from "app/slice/post/post.slice";
 import CardPostUserDetail from "features/card-post-user-detail";
 import { useDispatch } from 'react-redux';
@@ -29,14 +29,12 @@ const ModalPostUser = ({ isOpen, onOpenChange, userName }) => {
             <ModalContent>
                 {() => (
                     <>
-                        <ModalBody>
-                            {
-                                <CardPostUserDetail
-                                    userName={userName}
-                                />
+                        {
+                            <CardPostUserDetail
+                                userName={userName}
+                            />
 
-                            }
-                        </ModalBody>
+                        }
                     </>
                 )}
             </ModalContent>
