@@ -19,7 +19,7 @@ exports.register = (async (req, res) => {
             pass_word: hashedPassword,
             birth_day : req.body.birth_day,
             gender: req.body.gender,
-            email: req.body.email,
+            gmail: req.body.gmail,
             phone_number: req.body.phone_number,
             id: req.body.id,
             department : req.body.department,
