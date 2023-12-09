@@ -4,6 +4,7 @@ export const API_USER_ENDPOINT = {
   GET: {
     user_Info: "/users/info/:id",
     statistics: "/statistics/:id ",
+    list_posts_guest: "/users/posts/:id ",
   },
 
   POST: {
@@ -61,6 +62,13 @@ export const AcceptFriend = async (id) => {
 export const RefuseFriend = async (id) => {
   const res = AxiosInstance.post(
     API_USER_ENDPOINT.POST.refuse_friend.replace(":id", id),
+  );
+  return res;
+};
+
+export const getAllPostsGuest = (id) => {
+  const res = AxiosInstance.get(
+    API_USER_ENDPOINT.GET.list_posts_guest.replace(":id", id),
   );
   return res;
 };

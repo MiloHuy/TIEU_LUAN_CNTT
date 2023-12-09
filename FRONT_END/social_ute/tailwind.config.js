@@ -38,6 +38,12 @@ module.exports = {
         8: "repeat(8, minmax(0, 1fr))",
         layout: "200px minmax(900px, 1fr) 100px",
       },
+      colors: {
+        bg_popup_primary: "#121212",
+        bg_popup_secondary: "#1B2E34",
+        bg_popup_third: "#4A5859",
+        bg_popup_fourth: "#7C8989",
+      },
       keyframes: {
         loader: {
           "15%": {
@@ -78,12 +84,16 @@ module.exports = {
         dark: {
           layout: {},
           colors: {
-            background: "#000000",
+            background: "#0A0A0A",
             foreground: "#ECEDEE",
             primary: {
               foreground: "#FFFFFF",
-              DEFAULT: "#006FEE",
+              DEFAULT: "#121212",
             },
+            secondary: {
+              DEFAULT: "#2c2c2c",
+            },
+            focus: "#9BAE96",
           },
         },
       },

@@ -20,7 +20,13 @@ const HeaderHome = (props) => {
     const friend = userInfo ? userInfo.friend : null
     const add_friend = userInfo ? userInfo.add_friend : null
 
+    const CHECK = {
+        relationship: friend,
+        add_friend: add_friend,
+    }
+
     const [relationship, setRelationship] = useState(friend)
+    const [checkAddFriend, setCheckAddFriend] = useState(add_friend)
     const [isLoading, setIsLoading] = useState(false)
     const [updateUser, setUpdateUser] = useState()
 
@@ -32,6 +38,7 @@ const HeaderHome = (props) => {
             await AddCancelFriend(userInfo.user._id)
 
             setRelationship(!relationship)
+            setCheckAddFriend(!checkAddFriend)
             setIsLoading(false)
         }
         catch (err) {
@@ -118,7 +125,7 @@ const HeaderHome = (props) => {
                                                 className="w-50 h-7"
                                                 onClick={handleAddOrCancelFriend}
                                             >
-                                                Bạn bè
+                                                {relationship ? 'Bạn bè' : 'Thêm bạn bè'}
                                             </Button>
                                             <Button radius="sm" className="w-50 h-7">
                                                 Theo dõi
@@ -131,10 +138,14 @@ const HeaderHome = (props) => {
                                                     isLoading={isLoading}
                                                     radius="sm"
                                                     className="w-50 h-7"
-                                                    endContent={relationship ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} /> : <UserPlus size={18} strokeWidth={1} />}
                                                     onClick={handleAddOrCancelFriend}
+
+                                                    endContent={
+                                                        checkAddFriend
+                                                            ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} />
+                                                            : <UserPlus size={18} strokeWidth={1} />}
                                                 >
-                                                    Đã gửi yêu cầu
+                                                    {checkAddFriend ? "Đã gửi yêu cầu" : 'Thêm bạn bè'}
                                                 </Button>
 
                                                 <Button radius="sm" className="w-50 h-7">
@@ -147,10 +158,16 @@ const HeaderHome = (props) => {
                                                     isLoading={isLoading}
                                                     radius="sm"
                                                     className="w-50 h-7"
-                                                    endContent={relationship ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} /> : <UserPlus size={18} strokeWidth={1} />}
                                                     onClick={handleAddOrCancelFriend}
-                                                >
-                                                    Thêm bạn bè
+
+                                                    endContent={
+                                                        checkAddFriend
+                                                            ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} />
+                                                            : <UserPlus size={18} strokeWidth={1}
+                                                            />
+                                                    }>
+
+                                                    {checkAddFriend ? 'Đã gửi yêu cầu' : 'Thêm bạn bè'}
                                                 </Button>
 
                                                 <Button radius="sm" className="w-50 h-7">

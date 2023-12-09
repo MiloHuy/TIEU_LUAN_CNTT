@@ -67,7 +67,7 @@ const CardPostUser = (props) => {
 
     return (
         <div className='w-10/12 p-2'>
-            <Card className="grid grid-rows-8 w-full h-[600px]">
+            <Card className="grid grid-rows-8 w-full h-[600px]" radius='sm' shadow='sm'>
                 <CardHeader className="flex gap-3 justify-between row-span-1">
                     <div className="flex flex-row gap-3 items-center">
                         <Avatar src={post_avatar} />

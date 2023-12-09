@@ -40,7 +40,7 @@ const HomeUser = () => {
         }
     }, [setMePosts])
 
-    const fetchStories = useCallback(async () => {
+    const fetchMeStories = useCallback(async () => {
         try {
             const dataStories = await getAllStory()
             setStory(dataStories)
@@ -58,7 +58,7 @@ const HomeUser = () => {
         }
 
         if (selected === 'story') {
-            fetchStories()
+            fetchMeStories()
         }
 
     }, [fetchUserStatisics, selected])
