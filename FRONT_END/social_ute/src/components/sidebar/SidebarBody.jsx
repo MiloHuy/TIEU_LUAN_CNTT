@@ -1,6 +1,9 @@
-import { Badge, Button, useDisclosure } from '@nextui-org/react';
+import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import ModalUploadImage from 'features/modal-upload-image';
+import PopupNofication from 'features/popup-nofication';
+import PopupSearch from 'features/popup-search';
+import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const SidebarBody = (props) => {
@@ -12,8 +15,8 @@ const SidebarBody = (props) => {
         navigate(`home-user/${userID}`)
     }
 
-    const handleSearch = () => {
-        console.log("HandleSearch")
+    const handleSearch = (trigger) => {
+        console.log("trigger: " + trigger)
     }
 
     const hanldeNofication = () => {
@@ -24,57 +27,103 @@ const SidebarBody = (props) => {
         onOpen()
     }
 
-    const handleEventSidebar = (name, link) => {
-        switch (name) {
-            case "Home":
-                navigate(link)
-                return;
-            case 'Search':
-                handleSearch()
-                return;
-            case 'Nofitcation':
-                hanldeNofication()
-                return;
-            case 'User':
-                handleNavigateUser(link)
-                return;
-            case 'Create':
-                handleOpenModelCreate()
-                return
-            default:
-                return
-        }
+    const handleNavigateHome = () => {
+        navigate('/welcome')
     }
 
     return (
         <div className={clsx('w-full h-full', className)}>
             <div className='w-full h-full grid grid-cols-1 gap-2 p-2 '>
-                {icons.map((item) => {
-                    return (
-                        <div key={item.name} className='flex flex-row gap-2 justify-center'>
+                <div className='flex flex-col gap-2 justify-center'>
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        onClick={handleNavigateHome}
+                        startContent={<Home />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            Home
+                        </p>
+                    </Button>
+
+                    <PopupSearch
+                        trigger={
                             <Button
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                onClick={() => handleEventSidebar(item.name, item.link)}
-                                startContent={item.icon}
+                                startContent={<Search />}
                             >
-                                {
-                                    item.name === 'Nofitcation' ?
-                                        <Badge content="5" color="danger" placement="top-right" className='translate-x-6 overflow-visible'>
-                                            <p className='font-mont text-lg font-bold'>
-                                                {item.name}
-                                            </p>
-                                        </Badge>
-                                        :
-                                        <p className='font-mont text-lg font-bold'>
-                                            {item.name}
-                                        </p>
-                                }
+                                <p className='font-mont text-lg font-bold'>
+                                    Search
+                                </p>
                             </Button>
-                        </div>
-                    )
-                })}
+                        }
+                    />
+
+                    <PopupNofication
+                        trigger={
+                            <Button
+                                className='w-full flex justify-start gap-6'
+                                color="default"
+                                variant="light"
+                                startContent={<Bell />}
+                            >
+                                <p className='font-mont text-lg font-bold'>
+                                    Nofitcation
+                                </p>
+                            </Button>
+                        }
+                    />
+
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        onClick={handleNavigateUser}
+                        startContent={<UserCircle2 />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            User
+                        </p>
+                    </Button>
+
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        onClick={handleOpenModelCreate}
+                        startContent={<PlusCircle />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            Create
+                        </p>
+                    </Button>
+
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        startContent={<AlignJustify />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            More
+                        </p>
+                    </Button>
+
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        startContent={<LogOut />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            LogOut
+                        </p>
+                    </Button>
+
+                </div>
             </div>
 
             <ModalUploadImage
