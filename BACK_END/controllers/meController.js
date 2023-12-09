@@ -6,6 +6,7 @@ const Post_stored = require('../models/Post_stored')
 const bcrypt = require('bcrypt');
 const Addfriend = require('../models/Addfriend')
 const Post_liked = require('../models/Post_liked')
+const Friend = require('../models/Friend')
 
 //GET /my-posts
 exports.getMyPosts = (async (req, res) => {
@@ -125,7 +126,6 @@ exports.getInfo = (async (req, res) => {
 exports.getFriendRequest = (async (req, res) => {
     try {
         const request = await Addfriend.find({
-            // add_user_id: { $in: [req.user._id] }
             add_user_id: req.user._id
         })
             .populate('user_id', 'first_name last_name avatar.url')
@@ -139,6 +139,34 @@ exports.getFriendRequest = (async (req, res) => {
             return res.status(200).json({
                 success: true,
                 message: 'Không có lời mời kết bạn',
+            });
+        }
+        
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
+})
+
+//GET /friends
+exports.getFriends = (async (req, res) => {
+    try {
+        const friends = await Friend.find({
+            user_id: req.user._id
+        })
+            .populate('friend_id', 'first_name last_name avatar.url')
+            .select('-_id friend_id');
+        if(friends.length > 0){
+            return res.status(200).json({
+                success: true,
+                friends,
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: 'Chưa có bạn',
             });
         }
         
