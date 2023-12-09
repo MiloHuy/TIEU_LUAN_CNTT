@@ -1,13 +1,13 @@
-import { Tab, Tabs } from "@nextui-org/react";
+import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import Loading from "components/loading";
 import ListPostUserDetail from "features/list-post-user-detail";
 import ListStoryUserDetail from "features/list-story-user-detail";
+import HeaderHome from "layout/header-home";
 import { Book, Grid3X3 } from 'lucide-react';
-import { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getUserInfo, statistics } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
-const HeaderHome = lazy(() => (import('layout/header-home')));
 
 const HomeGuests = () => {
     const [userStatisics, setUserStatisics] = useState()
@@ -47,13 +47,15 @@ const HomeGuests = () => {
         userStatisics ?
             <div className='grid grid-rows-3 p-2 h-screen'>
                 <div className='p-4 row-span-1'>
-                    <Suspense fallback={<Loading />}>
-                        <HeaderHome
-                            userStatisics={userStatisics.data}
-                            userInfo={userInfo.data}
-                            userName={userName}
-                        />
-                    </Suspense>
+                    {
+                        userInfo ?
+                            <HeaderHome
+                                userStatisics={userStatisics.data}
+                                userInfo={userInfo.data}
+                                userName={userName}
+                            />
+                            : <Spinner color="default" size="lg" />
+                    }
                 </div>
 
                 <div className='grid grid-rows-1 justify-center '>

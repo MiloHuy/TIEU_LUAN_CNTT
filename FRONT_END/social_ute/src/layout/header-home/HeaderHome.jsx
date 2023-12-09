@@ -1,7 +1,9 @@
-import { Button, Divider } from "@nextui-org/react";
+import { Button, Divider, useDisclosure } from "@nextui-org/react";
 import { RELATIONSHIP } from "constants/user.const";
+import ModalUpdateUser from "features/modal-update-user";
 import { Settings, UserCheck, UserPlus } from 'lucide-react';
 import { useState } from "react";
+import { getMeInfo } from "services/me.svc";
 import { AddCancelFriend } from "services/user.svc";
 
 const HeaderHome = (props) => {
@@ -13,19 +15,40 @@ const HeaderHome = (props) => {
         count_friends,
         count_stories
     } = userStatisics
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const friend = userInfo?.friend
+    const friend = userInfo ? userInfo.friend : null
+    const add_friend = userInfo ? userInfo.add_friend : null
 
     const [relationship, setRelationship] = useState(friend)
     const [isLoading, setIsLoading] = useState(false)
+    const [updateUser, setUpdateUser] = useState()
 
-    const avatar_URL = userInfo?.user?.avatar.url
+    const avatar_URL = userInfo ? userInfo.user.avatar.url : null
 
     const handleAddOrCancelFriend = async () => {
         try {
             setIsLoading(true)
-            await AddCancelFriend(userInfo?.user?._id)
+            await AddCancelFriend(userInfo.user._id)
+
             setRelationship(!relationship)
+            setIsLoading(false)
+        }
+        catch (err) {
+            console.log("err:" + err)
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleUpdateUser = async () => {
+        onOpen()
+
+        try {
+            setIsLoading(true)
+            const data_Info = await getMeInfo()
+            setUpdateUser({ ...data_Info })
             setIsLoading(false)
         }
         catch (err) {
@@ -43,7 +66,6 @@ const HeaderHome = (props) => {
                     <img
                         loading='lazy'
                         alt='avatar'
-                        // src='https://i.pravatar.cc/150?u=a04258114e29026302d'
                         src={userAvatar ? userAvatar : avatar_URL}
                         className='rounded-full w-1/2'
                     />
@@ -59,9 +81,20 @@ const HeaderHome = (props) => {
                             {
                                 userAvatar ?
                                     <div className='flex '>
-                                        <Button radius="sm" className="w-50 h-7" >
+                                        <Button
+                                            radius="sm"
+                                            className="w-50 h-7"
+                                            onClick={handleUpdateUser}
+                                        >
                                             Chỉnh sửa trang cá nhân
                                         </Button>
+
+                                        <ModalUpdateUser
+                                            isOpen={isOpen}
+                                            onOpenChange={onOpenChange}
+
+                                            updateUser={updateUser}
+                                        />
 
                                         <Button isIconOnly variant="light" className="h-7 ">
                                             <Settings
@@ -78,35 +111,52 @@ const HeaderHome = (props) => {
 
                             {
                                 avatar_URL ?
-                                    RELATIONSHIP.friend === friend ?
+                                    RELATIONSHIP.FRIEND === friend ?
                                         <div>
                                             <Button
                                                 radius="sm"
                                                 className="w-50 h-7"
                                                 onClick={handleAddOrCancelFriend}
                                             >
-                                                {relationship ? 'Bạn bè' : 'Thêm bạn bè'}
+                                                Bạn bè
                                             </Button>
                                             <Button radius="sm" className="w-50 h-7">
                                                 Theo dõi
                                             </Button>
                                         </div>
                                         :
-                                        <div className='gap-2 flex'>
-                                            <Button
-                                                isLoading={isLoading}
-                                                radius="sm"
-                                                className="w-50 h-7"
-                                                endContent={relationship ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} /> : <UserPlus size={18} strokeWidth={1} />}
-                                                onClick={handleAddOrCancelFriend}
-                                            >
-                                                {relationship ? 'Đã gửi yêu cầu' : 'Thêm bạn bè'}
-                                            </Button>
+                                        RELATIONSHIP.ADD_FRIEND === add_friend ?
+                                            <div className='gap-2 flex'>
+                                                <Button
+                                                    isLoading={isLoading}
+                                                    radius="sm"
+                                                    className="w-50 h-7"
+                                                    endContent={relationship ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} /> : <UserPlus size={18} strokeWidth={1} />}
+                                                    onClick={handleAddOrCancelFriend}
+                                                >
+                                                    Đã gửi yêu cầu
+                                                </Button>
 
-                                            <Button radius="sm" className="w-50 h-7">
-                                                Theo dõi
-                                            </Button>
-                                        </div>
+                                                <Button radius="sm" className="w-50 h-7">
+                                                    Theo dõi
+                                                </Button>
+                                            </div>
+                                            :
+                                            <div className='gap-2 flex'>
+                                                <Button
+                                                    isLoading={isLoading}
+                                                    radius="sm"
+                                                    className="w-50 h-7"
+                                                    endContent={relationship ? <UserCheck size={18} color="#3aa162" strokeWidth={1.5} /> : <UserPlus size={18} strokeWidth={1} />}
+                                                    onClick={handleAddOrCancelFriend}
+                                                >
+                                                    Thêm bạn bè
+                                                </Button>
+
+                                                <Button radius="sm" className="w-50 h-7">
+                                                    Theo dõi
+                                                </Button>
+                                            </div>
                                     : ''
                             }
 
