@@ -78,8 +78,8 @@ module.exports = {
         dark: {
           layout: {},
           colors: {
-            background: "#000000", // or DEFAULT
-            foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+            background: "#000000",
+            foreground: "#ECEDEE",
             primary: {
               foreground: "#FFFFFF",
               DEFAULT: "#006FEE",

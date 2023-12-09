@@ -4,6 +4,8 @@ export const USERCOOKIES = {
 };
 
 export const RELATIONSHIP = {
-  friend: true,
-  other: false,
+  FRIEND: true,
+  OTHER: false,
+  ADD_FRIEND: true,
+  FOLLOWING: true,
 };
