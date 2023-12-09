@@ -4,13 +4,20 @@ const fileUpload = require('express-fileupload');
 const Post = require('../models/Post')
 const Post_liked = require('../models/Post_liked')
 const Post_stored = require('../models/Post_stored')
+const Follow = require('../models/Follow')
 
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
+        const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
+
+        const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
+        // return res.status(200).json({
+        //     success: true,
+        //     following_User_Ids,
+        // });
         const posts = await Post
-        .find()
-        .limit(10)
+        .find({ user_id: { $in: following_User_Ids } })
         .sort({ create_post_time: -1 })
         .populate('user_id', 'first_name last_name avatar.url')
         .select('-post_img.publicId');

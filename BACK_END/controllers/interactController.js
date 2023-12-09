@@ -139,7 +139,8 @@ exports.accept = (async (req, res) => {
         }
         const request = await Addfriend.findOne({
             user_id: req.params.id,
-            add_user_id: { $in: [req.user._id] }
+            // add_user_id: { $in: [req.user._id] }
+            add_user_id: req.user._id,
         });
         if(!request){
             return res.status(404).json({
@@ -147,6 +148,30 @@ exports.accept = (async (req, res) => {
                 message: 'Thao tác thất bại. Không có lời mời kết bạn từ người này.', 
             });
         }
+
+        const user_in_Follow = await Follow.findOneAndUpdate(
+            { user_id: req.user._id }, 
+            {},
+            { new: true, upsert: true }
+        );
+        const friend_in_Follow = await Follow.findOneAndUpdate(
+            { user_id: req.params.id },
+            {},
+            { new: true, upsert: true }
+        );
+        if (!user_in_Follow.following_user_id.includes(req.params.id)){
+            user_in_Follow.following_user_id.push(req.params.id);
+            await user_in_Follow.save();
+            friend_in_Follow.follower_user_id.push(req.user._id);
+            await friend_in_Follow.save();
+        }
+        if (!friend_in_Follow.following_user_id.includes(req.user._id)){
+            friend_in_Follow.following_user_id.push(req.user._id);
+            await friend_in_Follow.save();
+            user_in_Follow.follower_user_id.push(req.params.id);
+            await user_in_Follow.save();
+        }
+
         request.add_user_id.pull(req.user._id);
         await request.save();
 
