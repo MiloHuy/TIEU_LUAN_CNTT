@@ -121,12 +121,15 @@ exports.getInfo = (async (req, res) => {
     }
 })
 
-//GET /friendrequest
+//GET /friend-request
 exports.getFriendRequest = (async (req, res) => {
     try {
         const request = await Addfriend.find({
-            add_user_id: { $in: [req.user._id] }
-        }).select('-_id user_id');
+            // add_user_id: { $in: [req.user._id] }
+            add_user_id: req.user._id
+        })
+            .populate('user_id', 'first_name last_name avatar.url')
+            .select('-_id user_id');
         if(request.length > 0){
             return res.status(200).json({
                 success: true,
