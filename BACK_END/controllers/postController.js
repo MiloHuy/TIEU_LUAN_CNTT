@@ -9,7 +9,9 @@ const Post_stored = require('../models/Post_stored')
 exports.getAll = (async (req, res) => {
     try {
         const posts = await Post
-        .find().limit(10)
+        .find()
+        .limit(10)
+        .sort({ create_post_time: -1 })
         .populate('user_id', 'first_name last_name avatar.url')
         .select('-post_img.publicId');
 
