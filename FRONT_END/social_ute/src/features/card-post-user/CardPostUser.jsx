@@ -1,6 +1,6 @@
 import { Avatar } from "@nextui-org/avatar";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Button, Input, Link, useDisclosure } from "@nextui-org/react";
+import { Card, CardHeader } from "@nextui-org/card";
+import { Button, Image, Input, Link, useDisclosure } from "@nextui-org/react";
 import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
 import ModalPostUser from "features/modal-post-user";
 import PopupShowMoreOptions from "features/popup-show-more-options";
@@ -67,7 +67,10 @@ const CardPostUser = (props) => {
 
     return (
         <div className='w-10/12 p-2'>
-            <Card className="grid grid-rows-8 w-full h-[600px]" radius='sm' shadow='sm'>
+            <Card
+                className="grid grid-rows-8 w-full h-[600px]"
+                radius='sm'
+                shadow='sm'>
                 <CardHeader className="flex gap-3 justify-between row-span-1">
                     <div className="flex flex-row gap-3 items-center">
                         <Avatar src={post_avatar} />
@@ -83,7 +86,7 @@ const CardPostUser = (props) => {
                     <PopupShowMoreOptions
                         trigger={
                             <Button
-                                className='w-[20px]'
+                                className='w-[20px] '
                                 size="sm"
                                 isIconOnly
                                 variant="light"
@@ -95,14 +98,14 @@ const CardPostUser = (props) => {
 
                 </CardHeader>
 
-                <CardBody className="w-full flex flex-col gap-2 row-span-6 h-[500px] overflow-hidden">
-                    <img
+                <div className="w-full flex flex-col gap-2 row-span-6 h-[500px] overflow-hidden">
+                    <Image
+                        removeWrapper
                         loading="lazy"
                         alt="img"
-                        className="object-fill h-3/5 w-full rounded-xl"
+                        className="object-fill h-3/5 w-full rounded-md"
                         src={post_img}
                     />
-
                     <div className='flex justify-between'>
                         <div className='flex flex-row gap-1'>
                             <Button
@@ -146,7 +149,7 @@ const CardPostUser = (props) => {
                         </Button>
                     </div>
 
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-2 px-2'>
                         <div className="flex-row flex gap-1">
                             <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>{like === true ? Number(number_likes) + 1 : number_likes}</h2>
                             <span className='text-sm text-black dark:text-white font-open_sans font-bold'>lượt thích</span>
@@ -158,7 +161,7 @@ const CardPostUser = (props) => {
 
                         <Input variant='underlined' placeholder="Thêm bình luận..." />
                     </div>
-                </CardBody>
+                </div>
             </Card>
 
             <ModalPostUser
