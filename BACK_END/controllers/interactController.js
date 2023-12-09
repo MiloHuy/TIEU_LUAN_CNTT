@@ -83,6 +83,16 @@ exports.addfriend = (async (req, res) => {
                 message: 'Không thể gửi lời mời. Các bạn đã là bạn bè.', 
             });
         }
+        const check_friend_request = await Addfriend.findOne({
+            user_id: req.params.id,
+            add_user_id: req.user._id
+        })
+        if(check_friend_request){
+            return res.status(400).json({
+                success: false,
+                message: 'Người này đã gửi lời mời cho bạn. Chỉ có thể chấp nhận hoặc từ chối.', 
+            });
+        }
         const user = await Addfriend.findOneAndUpdate(
             { user_id: req.user._id },
             {},
