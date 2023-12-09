@@ -1,9 +1,16 @@
+import { Button } from "@nextui-org/react";
 import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
 import { getUserIdFromCookie } from "utils/user.utils";
 
 const Id = getUserIdFromCookie()
 
-console.log('ID: ' + Id);
+export const ButtonTrigger = () => {
+    return (
+        <Button>
+            Open popup
+        </Button>
+    )
+}
 
 export const icons = [
     {
@@ -19,7 +26,8 @@ export const icons = [
     {
         name: "Nofitcation",
         icon: <Bell />,
-        link: ''
+        link: '',
+        trigger: <ButtonTrigger />
     },
     {
         name: "User",
@@ -42,3 +50,4 @@ export const icons = [
         link: ''
     },
 ]
+
