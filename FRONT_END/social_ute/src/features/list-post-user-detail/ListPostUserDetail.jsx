@@ -29,7 +29,7 @@ const ListPostUserDetail = (props) => {
                 {
                     posts.data.posts.map((post) => {
                         return (
-                            <div className="relative group w-full h-full rounded-[15px] bg-white">
+                            <div className="relative group w-full h-full rounded-[15px] ">
                                 <Image
                                     isZoomed
                                     loading="lazy"

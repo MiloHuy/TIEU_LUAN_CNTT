@@ -6,12 +6,14 @@ import HeaderHome from "layout/header-home";
 import { Book, Grid3X3 } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserInfo, statistics } from "services/user.svc";
+import { getAllPostsGuest, getUserInfo, statistics } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
 
 const HomeGuests = () => {
     const [userStatisics, setUserStatisics] = useState()
     const [userInfo, setUserInfo] = useState()
+    const [selected, setSelected] = useState("posts");
+    const [posts, setPosts] = useState()
     const { guestId } = useParams()
     const userName = getFullName(userInfo?.data.user?.first_name, userInfo?.data.user?.last_name)
 
@@ -36,16 +38,30 @@ const HomeGuests = () => {
         }
     }, [])
 
+    const fetchPosts = async () => {
+        try {
+            const posts = await getAllPostsGuest(guestId)
+            setPosts(posts)
+        }
+        catch (error) {
+            console.log("Error: ", error)
+        }
+    }
+
     useEffect(() => {
         fetchUserStatisics()
 
         fetchUserInfo()
 
+        if (selected === 'posts') {
+            fetchPosts()
+        }
+
     }, [fetchUserStatisics, fetchUserInfo])
 
     return (
         userStatisics ?
-            <div className='grid grid-rows-3 p-2 h-screen'>
+            <div className='grid grid-rows-3 p-2 h-screen overflow-auto'>
                 <div className='p-4 row-span-1'>
                     {
                         userInfo ?
@@ -63,6 +79,8 @@ const HomeGuests = () => {
                         <Tabs
                             color="default"
                             variant="underlined"
+                            selectedKey={selected}
+                            onSelectionChange={setSelected}
                             classNames={{
                                 tabList: "gap-6 w-full relative rounded-none p-0 flex justify-center",
                                 cursor: "w-full",
@@ -78,7 +96,15 @@ const HomeGuests = () => {
                                     </div>
                                 }
                             >
-                                <ListPostUserDetail posts={[]} />
+                                {
+                                    posts ?
+                                        <ListPostUserDetail 
+                                            posts={posts}
+                                            userName = {userName} 
+                                            />
+                                        :
+                                        <Spinner color="default" size="lg" />
+                                }
                             </Tab>
 
                             <Tab
