@@ -18,6 +18,7 @@ const ListSearchUser = ({ userSearch, handleClosePopup }) => {
                     userSearch.allUser.map((user) => {
                         return (
                             <div
+                                key={user._id}
                                 onClick={() => handleNavigateUser(user._id)}
                                 className='flex gap-3 cursor-pointer'>
                                 <img
