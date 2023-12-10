@@ -8,19 +8,18 @@ const Addfriend = require('../models/Addfriend')
 const Post_liked = require('../models/Post_liked')
 const Friend = require('../models/Friend')
 
-//GET /my-posts
+//GET /posts
 exports.getMyPosts = (async (req, res) => {
     try {
         const posts = await Post.find({ user_id : req.user._id })
             .select('_id post_img.url')
             .lean()
-        if(posts.length===0){
+        if(!posts){
             return res.status(200).json({
                 success: true,
-                message: 'Bạn chưa đăng bài.'
+                posts: []
             })
-        } 
-
+        }
         const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
             const likes = post_like ? post_like.user_id.length : 0;
@@ -50,17 +49,17 @@ exports.getMyPosts = (async (req, res) => {
 //GET /stored/posts
 exports.getPosts = (async (req, res) => {
     try {
-        const post = await Post_stored.findOne({ user_id : req.user._id })
+        const store = await Post_stored.findOne({ user_id : req.user._id })
         .select('post_id -_id')
         .populate('post_id', 'post_img.url')
         .lean()
-        if(!post){
+        if(!store){
             return res.status(200).json({
                 success: true,
-                message: 'Bạn chưa lưu bài viết nào.'
+                posts: []
             })
         }
-        const posts = post.post_id
+        const posts = store.post_id
         const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
             const likes = post_like ? post_like.user_id.length : 0;
@@ -88,12 +87,6 @@ exports.getPosts = (async (req, res) => {
 exports.getStories = (async (req, res) => {
     try {
         const stories = await Story.find({ user_id : req.user._id }).select('-story_content.publicId')
-        if(stories.length===0){
-            return res.status(200).json({
-                success: true,
-                message: 'Bạn chưa đăng story.'
-            })
-        }
         return res.status(200).json({
             success: true,
             stories
