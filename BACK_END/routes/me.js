@@ -17,7 +17,7 @@ const {
     isUser,
 } = require('../middlewares/authMiddleware.js');
 
-router.get('/my-posts', verifyToken, isUser, getMyPosts);
+router.get('/posts', verifyToken, isUser, getMyPosts);
 router.get('/stored/posts', verifyToken, isUser, getPosts);
 router.get('/stored/stories', verifyToken, isUser, getStories);
 router.get('/account/info', verifyToken, isUser, getInfo);

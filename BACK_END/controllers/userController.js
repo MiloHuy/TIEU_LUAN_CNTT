@@ -95,12 +95,6 @@ exports.getPosts = (async (req, res) => {
         const posts = await Post.find({ user_id : req.params.id })
             .select('_id post_img.url')
             .lean()
-        if(posts.length===0){
-            return res.status(200).json({
-                success: true,
-                message: 'Chưa có đăng bài.'
-            })
-        } 
 
         const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
