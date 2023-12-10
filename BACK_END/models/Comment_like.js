@@ -1,15 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Comment_like = new Schema({
+const Comment_liked = new Schema({
     comment_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
         required: true,
     },
     user_id: [{
-        type: String,
-        required: true,
-    }],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }], 
 })
 
-module.exports = mongoose.model('Comment_like', Comment_like);
+module.exports = mongoose.model('Comment_liked', Comment_liked);

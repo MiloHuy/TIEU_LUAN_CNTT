@@ -14,6 +14,12 @@ exports.getMyPosts = (async (req, res) => {
         const posts = await Post.find({ user_id : req.user._id })
             .select('_id post_img.url')
             .lean()
+        if(!posts){
+            return res.status(200).json({
+                success: true,
+                posts: []
+            })
+        }
         const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
             const likes = post_like ? post_like.user_id.length : 0;

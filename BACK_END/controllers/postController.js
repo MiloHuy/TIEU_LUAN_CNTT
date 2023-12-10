@@ -12,20 +12,18 @@ exports.getAll = (async (req, res) => {
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
 
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
-        // return res.status(200).json({
-        //     success: true,
-        //     following_User_Ids,
-        // });
+        following_User_Ids.push(req.user._id);
+    
         const posts = await Post
-        .find({ user_id: { $in: following_User_Ids } })
-        .sort({ create_post_time: -1 })
-        .populate('user_id', 'first_name last_name avatar.url')
-        .select('-post_img.publicId');
+            .find({ user_id: { $in: following_User_Ids } })
+            .sort({ create_post_time: -1 })
+            .populate('user_id', 'first_name last_name avatar.url')
+            .select('-post_img.publicId');
 
         if(posts.length === 0){
             return res.status(200).json({
                 success: true,
-                message: 'Chưa có bài viết nào.',
+                posts: [],
             });
         }
 
