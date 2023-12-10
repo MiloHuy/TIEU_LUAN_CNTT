@@ -14,7 +14,7 @@ const PopupSearch = ({ trigger }) => {
 
     const [filter, setFilter] = useState({
         page: 1,
-        size: 10,
+        size: 0,
         search: ''
     })
 
@@ -24,6 +24,7 @@ const PopupSearch = ({ trigger }) => {
 
         setFilter((prev) => ({
             ...prev,
+            size: 3,
             search: query.search
         }))
     }
@@ -34,7 +35,7 @@ const PopupSearch = ({ trigger }) => {
             const initialData = await getUserSearch(
                 {
                     page: page,
-                    size: pageSize,
+                    size: pageSize + 3,
                     search: search
                 })
 
@@ -47,15 +48,17 @@ const PopupSearch = ({ trigger }) => {
     }, [])
 
     const handleClosePopup = () => {
-        onClose()
+        setIsOpen(false)
     }
-    useEffect(() => {
-        fetchUserSearch(
-            filter.page,
-            filter.size,
-            filter.search
-        )
 
+    useEffect(() => {
+        if (filter.size !== 0) {
+            fetchUserSearch(
+                filter.page,
+                filter.size,
+                filter.search
+            )
+        }
     }, [fetchUserSearch, filter.size, filter.page, filter.search])
 
     return (
@@ -68,6 +71,8 @@ const PopupSearch = ({ trigger }) => {
                 ],
             }}
             radius='sm'
+            isOpen={isOpen}
+            onOpenChange={(open) => setIsOpen(open)}
             triggerType='grid'
         >
 
