@@ -5,9 +5,8 @@ const ListSearchUser = ({ userSearch, handleClosePopup }) => {
     const navigate = useNavigate()
 
     const handleNavigateUser = (id) => {
-        // handleClosePopup()
         navigate(`home-guest/${id}`)
-
+        handleClosePopup()
     }
 
     return (
@@ -16,7 +15,7 @@ const ListSearchUser = ({ userSearch, handleClosePopup }) => {
                 className="grid grid-cols-1 gap-3 w-full items-start justify-start px-3"
             >
                 {
-                    userSearch?.allUser?.map((user) => {
+                    userSearch.allUser.map((user) => {
                         return (
                             <div
                                 key={user._id}

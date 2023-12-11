@@ -23,7 +23,7 @@ const ListPostUserDetail = (props) => {
     }
 
     return (
-        posts.length !== 0
+        posts && posts.length !== 0
             ?
             <div className='grid grid-cols-3 gap-2 w-full h-screen'>
                 {
