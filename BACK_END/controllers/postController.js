@@ -242,7 +242,21 @@ exports.update = (async (req, res) => {
 //DELETE /posts/:id
 exports.destroy = (async (req, res) => {
     try {
-        await Post.deleteOne({ _id: req.params.id, user_id:req.user._id})
+        const post = await Post.findById(req.params.id)
+        if(!post){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy bài viết.', 
+            });
+        }
+        if(!post.user_id.equals(req.user._id))
+        {
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể xóa bài viết của người khác.',
+            });
+        }
+        await Post.deleteOne({ _id: req.params.id})
         res.status(200).json({
             success: true,
             message: 'Xóa bài viết thành công.',
