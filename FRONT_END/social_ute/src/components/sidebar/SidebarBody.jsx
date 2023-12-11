@@ -51,7 +51,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateHome}
-                        startContent={<Home />}
+                        startContent={<Home size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Home
@@ -64,7 +64,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Search />}
+                                startContent={<Search size={24} strokeWidth={0.75} />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Search
@@ -79,7 +79,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Bell />}
+                                startContent={<Bell size={24} strokeWidth={0.75} />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Nofitcation
@@ -93,7 +93,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateUser}
-                        startContent={<UserCircle2 />}
+                        startContent={<UserCircle2 size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             User
@@ -105,7 +105,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleOpenModelCreate}
-                        startContent={<PlusCircle />}
+                        startContent={<PlusCircle size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Create
@@ -116,7 +116,7 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        startContent={<AlignJustify />}
+                        startContent={<AlignJustify size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             More
@@ -128,7 +128,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleLogOut}
-                        startContent={<LogOut />}
+                        startContent={<LogOut size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             LogOut
