@@ -36,7 +36,7 @@ const HomeGuests = () => {
         catch (error) {
             console.log("Error: ", error)
         }
-    }, [])
+    }, [guestId])
 
     const fetchPosts = async () => {
         try {
@@ -58,6 +58,7 @@ const HomeGuests = () => {
         }
 
     }, [fetchUserStatisics, fetchUserInfo])
+
 
     return (
         userStatisics ?
@@ -98,10 +99,10 @@ const HomeGuests = () => {
                             >
                                 {
                                     posts ?
-                                        <ListPostUserDetail 
+                                        <ListPostUserDetail
                                             posts={posts}
-                                            userName = {userName} 
-                                            />
+                                            userName={userName}
+                                        />
                                         :
                                         <Spinner color="default" size="lg" />
                                 }
