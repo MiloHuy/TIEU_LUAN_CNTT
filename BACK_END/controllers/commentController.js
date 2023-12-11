@@ -19,6 +19,14 @@ exports.getComments = (async (req, res) => {
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
         following_User_Ids.push(req.user._id);
+
+        if (!following_User_Ids.some(id => id.equals(post.user_id))){
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
+            });
+        }
+
         const comments = await Comment
             .find({
                 post_id:req.params.id,
@@ -71,11 +79,29 @@ exports.getComments = (async (req, res) => {
 //POST /comments/create/:Post_id
 exports.create = (async (req, res) => {
     try {
-        if(req.body===null){
+        if(Object.keys(req.body).length === 0){
             return res.status(400).json({
                 success: false,
                 message: 'Thao tác thất bại. Thiếu nội dung',
-            }); 
+            });
+        }
+        const post = await Post.findById(req.params.id)
+        if(!post){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy bài viết.', 
+            });
+        }
+        
+        const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
+        const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
+        following_User_Ids.push(req.user._id);
+        
+        if (!following_User_Ids.some(id => id.equals(post.user_id))){
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
+            });
         }
         const currentDate = new Date();
 
@@ -110,12 +136,14 @@ exports.like = (async (req, res) => {
         }
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
-        if (!following_User_Ids.includes(check_cmt.user_id)){
+        following_User_Ids.push(req.user._id);
+        if (!following_User_Ids.some(id => id.equals(check_cmt.user_id))){
             return res.status(400).json({
                 success: false,
-                message: 'Không thể thao tác. Bình luận này của người bạn chưa theo dõi.',
+                message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
             });
         }
+
         const liked = await Comment_liked.findOneAndUpdate(
             { comment_id: req.params.id },
             {},

@@ -156,6 +156,17 @@ exports.store = (async (req, res) => {
                 message: 'Không tìm thấy bài viết.', 
             });
         }
+
+        const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
+        const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
+        following_User_Ids.push(req.user._id);
+        if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
+            });
+        }
+
         const stored = await Post_stored.findOneAndUpdate(
             { user_id: req.user._id },
             {},
@@ -194,6 +205,17 @@ exports.like = (async (req, res) => {
                 message: 'Không tìm thấy bài viết.', 
             });
         }
+
+        const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
+        const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
+        following_User_Ids.push(req.user._id);
+        if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
+            });
+        }
+
         const liked = await Post_liked.findOneAndUpdate(
             { post_id: req.params.id },
             {},
@@ -242,7 +264,21 @@ exports.update = (async (req, res) => {
 //DELETE /posts/:id
 exports.destroy = (async (req, res) => {
     try {
-        await Post.deleteOne({ _id: req.params.id, user_id:req.user._id})
+        const post = await Post.findById(req.params.id)
+        if(!post){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy bài viết.', 
+            });
+        }
+        if(!post.user_id.equals(req.user._id))
+        {
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể xóa bài viết của người khác.',
+            });
+        }
+        await Post.deleteOne({ _id: req.params.id})
         res.status(200).json({
             success: true,
             message: 'Xóa bài viết thành công.',
