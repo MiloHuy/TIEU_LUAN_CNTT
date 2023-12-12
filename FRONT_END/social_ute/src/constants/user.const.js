@@ -8,4 +8,5 @@ export const RELATIONSHIP = {
   OTHER: false,
   ADD_FRIEND: true,
   FOLLOWING: true,
+  REQUEST_FRIEND: true,
 };

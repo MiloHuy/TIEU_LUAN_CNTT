@@ -47,11 +47,11 @@ const SidebarBody = (props) => {
             <div className='w-full h-full grid grid-cols-1 gap-2 p-2 '>
                 <div className='flex flex-col gap-2 justify-center'>
                     <Button
-                        className='w-full flex justify-start gap-6'
+                        className='w-full flex justify-start gap-6 '
                         color="default"
                         variant="light"
                         onClick={handleNavigateHome}
-                        startContent={<Home size={24} strokeWidth={0.75} />}
+                        startContent={<Home size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Home
@@ -64,7 +64,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Search size={24} strokeWidth={0.75} />}
+                                startContent={<Search size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Search
@@ -79,7 +79,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Bell size={24} strokeWidth={0.75} />}
+                                startContent={<Bell size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Nofitcation
@@ -93,7 +93,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateUser}
-                        startContent={<UserCircle2 size={24} strokeWidth={0.75} />}
+                        startContent={<UserCircle2 size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             User
@@ -105,7 +105,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleOpenModelCreate}
-                        startContent={<PlusCircle size={24} strokeWidth={0.75} />}
+                        startContent={<PlusCircle size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Create
@@ -116,7 +116,7 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        startContent={<AlignJustify size={24} strokeWidth={0.75} />}
+                        startContent={<AlignJustify size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             More
@@ -128,7 +128,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleLogOut}
-                        startContent={<LogOut size={24} strokeWidth={0.75} />}
+                        startContent={<LogOut size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             LogOut
