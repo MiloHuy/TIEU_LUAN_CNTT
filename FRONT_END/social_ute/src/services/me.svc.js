@@ -2,7 +2,7 @@ import AxiosInstance from "./axios-instance.svc";
 
 export const API_ME_ENDPOINT = {
   GET: {
-    me_posts: "me/my-posts",
+    me_posts: "me/posts",
     me_info: "/me/account/info",
   },
   POST: {

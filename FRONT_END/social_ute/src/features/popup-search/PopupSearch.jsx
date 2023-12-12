@@ -63,6 +63,7 @@ const PopupSearch = ({ trigger }) => {
 
     return (
         <Popover
+            disableAnimation
             placement="right"
             classNames={{
                 content: [
