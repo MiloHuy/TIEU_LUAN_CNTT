@@ -20,7 +20,7 @@ router.get('/info/:id', verifyToken, isUser, getInfo);
 router.get('/posts/:id', verifyToken, isUser, getPosts);
 
 router.get('/admin', verifyToken, isAdmin, getAll);
-router.delete('/admin/:id', verifyToken, isAdmin, disabled);
+router.post('/admin/:id', verifyToken, isAdmin, disabled);
 
 
 

@@ -1,11 +1,60 @@
+const moment = require('moment');
+
 const Post = require('../models/Post')
 const Story = require('../models/Story')
 const Follow = require('../models/Follow')
 const Friend = require('../models/Friend')
 const User = require('../models/User')
 
-//GET /statistics/:id
+//GET /statistics/admin
+exports.getAdminStatistics = (async (req, res) => {
+    try {
+        const count_accounts = await User.countDocuments({ role_id: { $ne: 0 } })
 
+        const today = new Date();
+        const startOfDay = moment(today).startOf('day').toDate();
+        const endOfDay = moment(today).endOf('day').toDate();
+        const count_post_in_day = await Post.countDocuments({
+            create_post_time: {
+              $gte: startOfDay,
+              $lte: endOfDay,
+            },
+        })
+
+        const startOfWeek = moment(today).startOf('week').toDate();
+        const endOfWeek = moment(today).endOf('week').toDate();
+        const count_post_in_week = await Post.countDocuments({
+            create_post_time: {
+              $gte: startOfWeek,
+              $lte: endOfWeek,
+            },
+        })
+
+        const startOfMonth = moment(today).startOf('month').toDate();
+        const endOfMonth = moment(today).endOf('month').toDate();
+        const count_post_in_month = await Post.countDocuments({
+            create_post_time: {
+              $gte: startOfMonth,
+              $lte: endOfMonth,
+            },
+        })
+
+        res.status(200).json({
+            success: true,
+            count_accounts,
+            count_post_in_day,
+            count_post_in_week,
+            count_post_in_month
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message, 
+        });
+    }
+})
+
+//GET /statistics/:id
 exports.getStatistics = (async (req, res) => {
     try {
         const user = await User.findOne({ _id:req.params.id }).select('_id')

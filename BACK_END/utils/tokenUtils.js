@@ -16,7 +16,7 @@ const sendToken = (user, refreshToken, res) => {
         _id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
-        role: user.role_id,
+        role_id: user.role_id,
         avatar: user.avatar.url,
     };
     res.cookie('refreshToken', refreshToken.token, options).json({

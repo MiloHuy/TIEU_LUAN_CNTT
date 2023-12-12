@@ -4,7 +4,8 @@ const fileUpload = require('express-fileupload');
 const Post = require('../models/Post')
 const Post_liked = require('../models/Post_liked')
 const Post_stored = require('../models/Post_stored')
-const Follow = require('../models/Follow')
+const Follow = require('../models/Follow');
+const { PostAPIFeatures } = require('../utils/APIFeatures');
 
 //GET /posts
 exports.getAll = (async (req, res) => {
@@ -295,10 +296,23 @@ exports.destroy = (async (req, res) => {
 //GET /posts/admin
 exports.adminGetAll = (async (req, res) => {
     try {
-        const posts = await Post.find({})
-        res.status(201).json({
+        const { size } = req.query;
+        const posts = Post.find().select('-post_img.publicId');
+        
+        const apiFeatures = new PostAPIFeatures(posts, req.query)
+        
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(Post.find(posts), req.query)
+            .pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+        
+        res.status(200).json({
             success: true,
-            posts,
+            totals,
+            posts: allPosts, 
         });
     } catch (err) {
         res.status(500).json({
@@ -311,6 +325,13 @@ exports.adminGetAll = (async (req, res) => {
 //DELETE /posts/admin/:id
 exports.adminDestroy = (async (req, res) => {
     try {
+        const post = await Post.findById(req.params.id)
+        if(!post){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy bài viết.', 
+            });
+        }
         await Post.deleteOne({ _id: req.params.id})
         res.status(201).json({
             success: true,

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const {
+    getAdminStatistics,
     getStatistics,
 } = require('../controllers/statisticsController.js');
 
@@ -10,6 +11,8 @@ const {
     isUser,
     isAdmin
 } = require('../middlewares/authMiddleware.js');
+
+router.get('/admin', verifyToken, isAdmin, getAdminStatistics);
 
 router.get('/:id', verifyToken, isUser, getStatistics);
 
