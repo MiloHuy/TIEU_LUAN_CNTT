@@ -36,6 +36,21 @@ class UserAPIFeatures {
     }
 }
 
+class PostAPIFeatures {
+    constructor(query, queryStr) {
+        this.query = query;
+        this.queryStr = queryStr;
+    }
+
+    pagination(size) {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const skip = size * (currentPage - 1);
+
+        this.query = this.query.limit(size).skip(skip);
+        return this;
+    }
+}
+
 function extractSortQuery(sortField) {
     const [field, order] = sortField.split(',');
     if (field && order) {
@@ -45,5 +60,6 @@ function extractSortQuery(sortField) {
 }
 
 module.exports = {
-    UserAPIFeatures
+    UserAPIFeatures,
+    PostAPIFeatures
 }

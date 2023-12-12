@@ -124,29 +124,66 @@ exports.getPosts = (async (req, res) => {
 
 //GET /users/admin
 exports.getAll = (async (req, res, next) => {
-    User.find({})
-        .then(posts => {
-            res.json(posts)
-            res.status(200).json({
-                success: true,
-                posts
-            })
-        })
-        .catch(next)
+    try {
+        const { size } = req.query;
+        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name');
+        
+        const apiFeatures = new UserAPIFeatures(userQuery, req.query)
+        
+        let allUser = await apiFeatures.query;
+        const totals = allUser.length;
+
+        const apiFeaturesPagination = new UserAPIFeatures(User.find(userQuery), req.query)
+            .search()
+            .pagination(size);
+
+        allUser = await apiFeaturesPagination.query;
+        
+        return res.status(200).json({
+            success: true,
+            totals,
+            allUser, 
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error, 
+        });
+    }
 })
 
-//DELETE /users/admin/:id
-exports.disabled = (async (req, res, next) => {
-    User.delete({ _id: req.params.id})
-      .then(() => res.redirect('back'))
-      .catch(next)
-
+//POST /users/admin/:id
+exports.disabled = (async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id }).select('is_active');
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy người dùng.', 
+            });
+        }
+        is_active = !user.is_active
+        const user_update = await User.updateOne(
+            { _id: req.params.id},
+            { $set: { is_active: is_active } },
+            { new: true },
+        )
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: err.message 
+        });
+    }
 })
 
 exports.getAllUser = (async (req, res) => {
     try {
         const { size } = req.query;
-        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name');
+        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name department');
         
         const apiFeatures = new UserAPIFeatures(userQuery, req.query)
             .search();
