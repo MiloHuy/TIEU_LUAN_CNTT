@@ -1,10 +1,14 @@
 import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
+import { SSOCOOKIES } from 'constants/app.const';
+import { USERCOOKIES } from 'constants/user.const';
 import ModalUploadImage from 'features/modal-upload-image';
 import PopupNofication from 'features/popup-nofication';
 import PopupSearch from 'features/popup-search';
+import Cookies from 'js-cookie';
 import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
+import { logout } from 'services/auth.svc';
 
 const SidebarBody = (props) => {
     const { icons, className, userID } = props
@@ -15,20 +19,27 @@ const SidebarBody = (props) => {
         navigate(`home-user/${userID}`)
     }
 
-    const handleSearch = (trigger) => {
-        console.log("trigger: " + trigger)
-    }
-
-    const hanldeNofication = () => {
-        console.log("hanldeNofication")
-    }
-
     const handleOpenModelCreate = () => {
         onOpen()
     }
 
     const handleNavigateHome = () => {
         navigate('/welcome')
+    }
+
+    const handleLogOut = async () => {
+        try {
+            await logout()
+
+            Cookies.remove(USERCOOKIES.userID)
+            Cookies.remove(USERCOOKIES.userName)
+            Cookies.remove(SSOCOOKIES.access)
+
+            window.location.reload();
+        }
+        catch (err) {
+            console.log('err: ', err)
+        }
     }
 
     return (
@@ -40,7 +51,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateHome}
-                        startContent={<Home />}
+                        startContent={<Home size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Home
@@ -53,7 +64,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Search />}
+                                startContent={<Search size={24} strokeWidth={0.75} />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Search
@@ -68,7 +79,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Bell />}
+                                startContent={<Bell size={24} strokeWidth={0.75} />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Nofitcation
@@ -82,7 +93,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateUser}
-                        startContent={<UserCircle2 />}
+                        startContent={<UserCircle2 size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             User
@@ -94,7 +105,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleOpenModelCreate}
-                        startContent={<PlusCircle />}
+                        startContent={<PlusCircle size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Create
@@ -105,7 +116,7 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        startContent={<AlignJustify />}
+                        startContent={<AlignJustify size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             More
@@ -116,7 +127,8 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        startContent={<LogOut />}
+                        onClick={handleLogOut}
+                        startContent={<LogOut size={24} strokeWidth={0.75} />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             LogOut
