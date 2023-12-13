@@ -3,9 +3,7 @@ import { Check, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { deletePost } from "services/post.svc";
 
-const ModalAlert = ({ isOpen, onOpenChange, post_id, onClose }) => {
-
-    console.log('isOpen', isOpen)
+const ModalConfirm = ({ isOpen, onOpenChange, post_id, onClose }) => {
 
     const handleDeletePost = async () => {
         try {
@@ -57,7 +55,6 @@ const ModalAlert = ({ isOpen, onOpenChange, post_id, onClose }) => {
             }}
         >
 
-
             <ModalContent>
                 {(onClose) => (
                     <>
@@ -93,4 +90,4 @@ const ModalAlert = ({ isOpen, onOpenChange, post_id, onClose }) => {
     )
 }
 
-export default ModalAlert
+export default ModalConfirm

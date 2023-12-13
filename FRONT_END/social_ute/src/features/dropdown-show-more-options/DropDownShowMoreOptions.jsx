@@ -1,5 +1,5 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
-import ModalAlert from "features/modal-alert";
+import ModalConfirm from "features/modal-confirm";
 import { Bookmark, Heart, MoreHorizontal, SendHorizontal, Trash2 } from 'lucide-react';
 import { useState } from "react";
 import { getUserIdFromCookie } from "utils/user.utils";
@@ -144,7 +144,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
                 </DropdownMenu>
             </Dropdown >
 
-            <ModalAlert
+            <ModalConfirm
                 isOpen={openModal.alert_modal}
                 onOpenChange={handleOpenModal}
                 onClose={handleCloseModal}
