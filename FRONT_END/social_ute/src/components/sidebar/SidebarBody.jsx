@@ -2,10 +2,10 @@ import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
-import ModalUploadImageBase64 from 'features/modal-upload-image-base64';
-import ModalUploadImageFile from 'features/modal-upload-image-file';
-import PopupNofication from 'features/popup-nofication';
-import PopupSearch from 'features/popup-search';
+import ModalUploadImageBase64 from 'features/modal/modal-upload-image-base64';
+import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
+import PopupNofication from 'features/popup/popup-nofication';
+import PopupSearch from 'features/popup/popup-search';
 import Cookies from 'js-cookie';
 import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
 import { useState } from 'react';
@@ -155,6 +155,12 @@ const SidebarBody = (props) => {
                         </p>
                     </Button>
 
+                    <ModalUploadImageBase64
+                        isOpen={openModal.modal_base_64}
+                        onOpenChange={handleOpenModal}
+                        onClose={handleCloseModal}
+                    />
+
                     <Button
                         className='w-full flex justify-start gap-6'
                         color="default"
@@ -166,6 +172,12 @@ const SidebarBody = (props) => {
                             Create02
                         </p>
                     </Button>
+
+                    <ModalUploadImageFile
+                        isOpen={openModal.modal_file}
+                        onOpenChange={handleOpenModal}
+                        onClose={handleCloseModal}
+                    />
 
                     <Button
                         className='w-full flex justify-start gap-6'
@@ -192,19 +204,6 @@ const SidebarBody = (props) => {
 
                 </div>
             </div>
-
-            <ModalUploadImageBase64
-                isOpen={openModal.modal_base_64}
-                onOpenChange={handleOpenModal}
-                onClose={handleCloseModal}
-            />
-
-            <ModalUploadImageFile
-                isOpen={openModal.modal_file}
-                onOpenChange={handleOpenModal}
-                onClose={handleCloseModal}
-            />
-
         </div >
     )
 }

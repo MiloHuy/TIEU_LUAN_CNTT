@@ -1,9 +1,8 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import Loading from "components/loading";
-import ListPostUserDetail from "features/list-post-user-detail";
-import ListStoryUserDetail from "features/list-story-user-detail";
+import ListPostUserDetail from "features/list/list-post-user-detail";
 import HeaderHome from "layout/header-home";
-import { Book, Grid3X3 } from 'lucide-react';
+import { Grid3X3 } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllPostsGuest, getUserInfo, statistics } from "services/user.svc";
@@ -106,18 +105,6 @@ const HomeGuests = () => {
                                         :
                                         <Spinner color="default" size="lg" />
                                 }
-                            </Tab>
-
-                            <Tab
-                                key="story"
-                                title={
-                                    <div className="flex items-center space-x-2">
-                                        <Book size={20} />
-                                        <span className="dark:text-white font-noto">Story</span>
-                                    </div>
-                                }
-                            >
-                                <ListStoryUserDetail stories={[]} />
                             </Tab>
                         </Tabs>
                     </div>

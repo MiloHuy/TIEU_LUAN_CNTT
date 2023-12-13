@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import CardStoryUser from "features/card-story-user"
+import CardStoryUser from "features/card/card-story-user"
 
 const Header = (props) => {
     const { imgs, userNames, className } = props

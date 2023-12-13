@@ -1,7 +1,7 @@
 import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
 import { RELATIONSHIP } from "constants/user.const";
-import ModalChangePassword from "features/modal-change-password";
-import ModalUpdateUser from "features/modal-update-user";
+import ModalChangePassword from "features/modal/modal-change-password";
+import ModalUpdateUser from "features/modal/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { getMeInfo } from "services/me.svc";

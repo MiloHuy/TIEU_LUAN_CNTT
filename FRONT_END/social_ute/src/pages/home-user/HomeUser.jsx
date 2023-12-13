@@ -1,31 +1,41 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import Loading from "components/loading";
-import ListFriendsUser from "features/list-friends-user";
-import ListPostUserDetail from "features/list-post-user-detail";
-import ListStoryUserDetail from "features/list-story-user-detail";
+import ListFriendsUser from "features/list/list-friends-user";
+import ListPostUserDetail from 'features/list/list-post-user-detail';
+import ListStoryUserDetail from 'features/list/list-story-user-detail';
 import HeaderHome from "layout/header-home";
-import { Book, Grid3X3, Users } from 'lucide-react';
+import { Book, Bookmark, Grid3X3, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllMePosts, getListFriends } from "services/me.svc";
+import { getPostSaved } from "services/post.svc";
 import { getAllStory } from "services/story.svc";
 import { statistics } from "services/user.svc";
 import { getUserNameFromCookie } from "utils/user.utils";
 
 const HomeUser = () => {
-    const [userStatisics, setUserStatisics] = useState()
-    const [mePosts, setMePosts] = useState()
     const [selected, setSelected] = useState("posts");
-    const [stories, setStory] = useState()
-    const [friends, setFriends] = useState()
 
     const { userId } = useParams()
     const userName = getUserNameFromCookie()
 
+    const initHomeUser = {
+        userStatisics: '',
+        mePosts: '',
+        stories: '',
+        friends: '',
+        postSaved: ''
+    }
+
+    const [homeUser, setHomeUser] = useState(initHomeUser)
+
     const fetchUserStatisics = useCallback(async () => {
         try {
             const data = await statistics(userId)
-            setUserStatisics(data)
+            setHomeUser((prev) => ({
+                ...prev,
+                userStatisics: { ...data }
+            }))
         }
         catch (error) {
             console.log("Error: ", error)
@@ -35,57 +45,96 @@ const HomeUser = () => {
     const fetchMePosts = useCallback(async () => {
         try {
             const dataPosts = await getAllMePosts()
-            setMePosts(dataPosts)
+            setHomeUser((prev) => ({
+                ...prev,
+                mePosts: { ...dataPosts }
+            }))
         }
         catch (error) {
             console.log("Error: ", error)
         }
-    }, [setMePosts])
+    }, [])
 
     const fetchMeStories = useCallback(async () => {
         try {
             const dataStories = await getAllStory()
-            setStory(dataStories)
+            setHomeUser((prev) => ({
+                ...prev,
+                stories: { ...dataStories }
+            }))
         }
         catch (error) {
             console.log("Error: ", error)
         }
-    }, [setStory])
+    }, [])
 
     const fetchMeFriends = useCallback(async () => {
         try {
             const dataFriends = await getListFriends()
-            setFriends(dataFriends)
+            setHomeUser((prev) => ({
+                ...prev,
+                friends: { ...dataFriends }
+            }))
         }
         catch (error) {
             console.log("Error: ", error)
         }
-    }, [setFriends])
+    }, [])
+
+    const fetchMePostSaved = useCallback(async () => {
+        try {
+            const dataPostSaved = await getPostSaved()
+            setHomeUser((prev) => ({
+                ...prev,
+                postSaved: { ...dataPostSaved }
+            }))
+        }
+        catch (error) {
+            console.log("Error: ", error)
+        }
+    }, [])
 
     useEffect(() => {
+        // fetchUserStatisics()
+
+        // if (selected === 'posts') {
+        //     fetchMePosts()
+        // }
+
+        // if (selected === 'story') {
+        //     fetchMeStories()
+        // }
+
+        // if (selected === 'friends') {
+        //     fetchMeFriends()
+        // }
         fetchUserStatisics()
 
-        if (selected === 'posts') {
-            fetchMePosts()
+        switch (selected) {
+            case 'posts':
+                fetchMePosts()
+                break
+            case 'story':
+                fetchMeStories()
+                break
+            case 'friends':
+                fetchMeFriends()
+                break
+            case 'postsSaved':
+                fetchMePostSaved()
+                break
+            default:
+                return
         }
-
-        if (selected === 'story') {
-            fetchMeStories()
-        }
-
-        if (selected === 'friends') {
-            fetchMeFriends()
-        }
-
     }, [fetchUserStatisics, selected])
 
     return (
-        userStatisics
+        homeUser.userStatisics
             ?
             <div className='grid grid-rows-3 p-2 h-screen overflow-auto '>
                 <div className='p-4 row-span-1'>
                     <HeaderHome
-                        userStatisics={userStatisics.data}
+                        userStatisics={homeUser.userStatisics.data}
                         userName={userName}
                         userAvatar='https://i.pravatar.cc/150?u=a042581f4e29026024d'
                     />
@@ -115,10 +164,10 @@ const HomeUser = () => {
                                 }
                             >
                                 {
-                                    mePosts ?
+                                    homeUser.mePosts ?
                                         <ListPostUserDetail
                                             userName={userName}
-                                            posts={mePosts} />
+                                            posts={homeUser.mePosts} />
                                         :
                                         <Spinner color="default" size="lg" />
                                 }
@@ -146,8 +195,33 @@ const HomeUser = () => {
                                 }
                             >
                                 {
-                                    friends ?
-                                        <ListFriendsUser friends={friends.data} />
+                                    homeUser.friends ?
+                                        <ListFriendsUser friends={homeUser.friends.data} />
+                                        :
+                                        <div className='w-full h-full flex items-center justify-center'>
+                                            <Spinner color="default" size="lg" />
+                                        </div >
+                                }
+                            </Tab>
+
+                            <Tab
+                                key="postsSaved"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <Bookmark
+                                            size={20}
+                                            strokeWidth={1.5}
+                                        />
+                                        <span className="dark:text-white font-noto">Post Saved</span>
+                                    </div>
+                                }
+                            >
+                                {
+                                    homeUser.postSaved ?
+                                        <ListPostUserDetail
+                                            userName={userName}
+                                            posts={homeUser.postSaved}
+                                        />
                                         :
                                         <div className='w-full h-full flex items-center justify-center'>
                                             <Spinner color="default" size="lg" />
