@@ -13,6 +13,7 @@ exports.getInfo = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1039,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -20,6 +21,7 @@ exports.getInfo = (async (req, res) => {
         if(!user){
             return res.status(404).json({
                 success: false,
+                code: 1040,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -70,6 +72,7 @@ exports.getInfo = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1041,
             message: error, 
         });
     }
@@ -81,6 +84,7 @@ exports.getPosts = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1042,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -88,6 +92,7 @@ exports.getPosts = (async (req, res) => {
         if(!user){
             return res.status(404).json({
                 success: false,
+                code: 1043,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -117,6 +122,7 @@ exports.getPosts = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1044,
             message: error.message, 
         });
     }
@@ -147,6 +153,7 @@ exports.getAll = (async (req, res, next) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1045,
             message: error, 
         });
     }
@@ -159,6 +166,7 @@ exports.disabled = (async (req, res) => {
         if(!user){
             return res.status(404).json({
                 success: false,
+                code: 1046,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -175,6 +183,7 @@ exports.disabled = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1047,
             message: err.message 
         });
     }
@@ -205,6 +214,7 @@ exports.getAllUser = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1048,
             message: error, 
         });
     }

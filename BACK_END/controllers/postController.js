@@ -63,6 +63,7 @@ exports.getAll = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1008,
             message: error, 
         });
     }
@@ -78,6 +79,7 @@ exports.getPost = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
+                code: 1009,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -98,6 +100,7 @@ exports.getPost = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1010,
             message: err.message ,
         });
     }
@@ -111,6 +114,7 @@ exports.create = (async (req, res) => {
         if(req.body.post_img==null){
             return res.status(400).json({
                 success: false,
+                code: 1011,
                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
             });
         }
@@ -120,6 +124,7 @@ exports.create = (async (req, res) => {
         if (!fileFormatMatch) {
             return res.status(400).json({
                 success: false,
+                code: 1012,
                 message: 'Định dạng ảnh không hợp lệ. Chỉ chấp nhận định dạng .jpg, .jpeg hoặc .png.',
             });
         }
@@ -139,6 +144,7 @@ exports.create = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1014,
             message: 'Đăng bài thất bại :' + error, 
         });
     }
@@ -154,6 +160,7 @@ exports.store = (async (req, res) => {
         if(!check_post){
             return res.status(404).json({
                 success: false,
+                code: 1015,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -164,6 +171,7 @@ exports.store = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
             return res.status(400).json({
                 success: false,
+                code: 1016,
                 message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
             });
         }
@@ -191,6 +199,7 @@ exports.store = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1017,
             message: err.message, 
         });
     }
@@ -203,6 +212,7 @@ exports.like = (async (req, res) => {
         if(!check_post){
             return res.status(404).json({
                 success: false,
+                code: 1018,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -213,6 +223,7 @@ exports.like = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
             return res.status(400).json({
                 success: false,
+                code: 1019,
                 message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
             });
         }
@@ -241,6 +252,7 @@ exports.like = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1020,
             message: err.message, 
         });
     }
@@ -257,6 +269,7 @@ exports.update = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1021,
             message: err.message, 
         });
     }
@@ -269,6 +282,7 @@ exports.destroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
+                code: 1022,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -276,6 +290,7 @@ exports.destroy = (async (req, res) => {
         {
             return res.status(400).json({
                 success: false,
+                code: 1023,
                 message: 'Không thể xóa bài viết của người khác.',
             });
         }
@@ -287,6 +302,7 @@ exports.destroy = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1024,
             message: err.message ,
         });
     }
@@ -317,6 +333,7 @@ exports.adminGetAll = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1025,
             message: err.message ,
         });
     }
@@ -329,6 +346,7 @@ exports.adminDestroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
+                code: 1026,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -340,6 +358,7 @@ exports.adminDestroy = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1027,
             message: err.message, 
         });
     }

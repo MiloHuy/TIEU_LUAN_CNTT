@@ -33,6 +33,7 @@ exports.register = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1000,
             message: err.message 
         });
     }
@@ -44,7 +45,8 @@ exports.login = (async (req, res) => {
     if (!phone_number || !pass_word) {
         return res.status(400).json({
             success: false,
-            message: 'Đăng nhập thất bại. Vui lòng nhập số điện thoại và mật khẩu' 
+            code: 1001,
+            message: 'Đăng nhập thất bại. Vui lòng nhập số điện thoại và mật khẩu',
         });
     }
 
@@ -53,7 +55,8 @@ exports.login = (async (req, res) => {
     if (!user) {
         return res.status(401).json({
             success: false,
-            message: 'Đăng nhập thất bại. Không tìm thấy người dùng. Vui lòng kiểm tra số điện thoại' 
+            code: 1002,
+            message: 'Đăng nhập thất bại. Không tìm thấy người dùng. Vui lòng kiểm tra số điện thoại',
         });
     }
 
@@ -61,6 +64,7 @@ exports.login = (async (req, res) => {
     if (!isPasswordMatched) {
         return res.status(401).json({
             success: false,
+            code: 1003,
             message: 'Đăng nhập thất bại. Sai mật khẩu' 
         });
     }
@@ -94,6 +98,7 @@ exports.refreshToken =(async (req, res) => {
     if (!token) {
         return res.status(400).json({
             success: false,
+            code: 1004,
             message: 'Cookies không có refreshToken' 
         });
     }
@@ -109,12 +114,14 @@ exports.refreshToken =(async (req, res) => {
             await deleteToken(parent);
             return res.status(400).json({
                 success: false,
+                code: 1005,
                 message: 'Token đã được sử dụng' 
             });
         } catch {
             clearToken(res);
             return res.status(400).json({
                 success: false,
+                code: 1006,
                 message: 'Token không tồn tại trong hệ thống' 
             });
         }
@@ -127,6 +134,7 @@ exports.refreshToken =(async (req, res) => {
         clearToken(res);
         return res.status(400).json({
             success: false,
+            code: 1007,
             message: 'Token đã được sử dụng' 
         });
     }
