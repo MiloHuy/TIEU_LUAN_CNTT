@@ -246,13 +246,58 @@ exports.refuse = (async (req, res) => {
 //POST /interacts/unfriend/:id
 exports.unfriend = (async (req, res) => {
     try {
-        await Friend.deleteOne({ 
+        if(req.params.id==req.user._id){
+            return res.status(400).json({
+                success: false,
+                message:'Phải dùng id của người khác, không được dùng id của bản thân.',
+            });
+        }
+        const check_user = await User.findOne({ _id: req.params.id });
+        if(!check_user){
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy người dùng.', 
+            });
+        }
+
+        const check_friend = await Friend.findOne({
             user_id: req.user._id,
-            friend_id: req.params.id,
+            friend_id: req.params.id
         })
+        if(!check_friend){
+            return res.status(400).json({
+                success: false,
+                message: 'Không thể hủy kết bạn. Các bạn không phải là bạn bè', 
+            });
+        }
+
+        const user_in_Friend = await Friend.findOne({
+            user_id: req.user._id
+        }) 
+        user_in_Friend.friend_id.pull(req.params.id)
+        user_in_Friend.save()
+        const friend_in_Friend = await Friend.findOne({
+            user_id: req.params.id
+        }) 
+        friend_in_Friend.friend_id.pull(req.user._id)
+        friend_in_Friend.save()
+
+        const user_in_Follow = await Follow.findOne({
+            user_id: req.user._id
+        }) 
+        user_in_Follow.following_user_id.pull(req.params.id)
+        user_in_Follow.follower_user_id.pull(req.params.id)
+        user_in_Follow.save()
+        const friend_in_Follow = await Follow.findOne({
+            user_id: req.params.id
+        }) 
+        friend_in_Follow.follower_user_id.pull(req.user._id)
+        friend_in_Follow.following_user_id.pull(req.user._id)
+        friend_in_Follow.save()
+
         res.status(201).json({
             success: true,
-            message: 'Hủy kết bạn.',
+            message: 'Hủy kết bạn thành công.',
         });
     } catch (error) {
         res.status(500).json({
