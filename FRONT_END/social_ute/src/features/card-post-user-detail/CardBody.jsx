@@ -35,7 +35,7 @@ const CardBody = ({ flag }) => {
                             comment={comment}
                         />
                     )
-                }) : 'Không có bình luận nào ở bài viết này.'
+                }) : <p className="text-black">Không có bình luận nào ở bài viết này.</p>
             :
             <div className='w-full h-full flex items-center justify-center'>
                 <Spinner color="default" size="lg" />
