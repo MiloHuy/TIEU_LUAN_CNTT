@@ -111,7 +111,7 @@ const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
-        if(req.body.post_img==null){
+        if(!req.body.post_img){
             return res.status(400).json({
                 success: false,
                 code: 1011,

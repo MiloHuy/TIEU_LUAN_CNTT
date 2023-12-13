@@ -151,15 +151,16 @@ exports.getFriendRequest = (async (req, res) => {
 //GET /friends
 exports.getFriends = (async (req, res) => {
     try {
-        const friends = await Friend.find({
-            user_id: req.user._id
-        })
+        const friends = await Friend
+            .findOne({user_id: req.user._id})
             .populate('friend_id', 'first_name last_name avatar.url')
             .select('-_id friend_id');
-        if(friends.length > 0){
+        const friend_list = friends.friend_id
+        if(!friends.length){
             return res.status(200).json({
                 success: true,
-                friends,
+                friends:friend_list,
+                // friends,
             });
         } else {
             return res.status(200).json({
