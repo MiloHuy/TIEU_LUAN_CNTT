@@ -1,7 +1,7 @@
 import { Image } from "@nextui-org/image"
 import logo from 'assets/images/logo.png'
 import clsx from 'clsx'
-import FormRegister from "features/form-register"
+import FormRegister from "features/form/form-register"
 
 const Register = (props) => {
     const handleFunction = (value) => {

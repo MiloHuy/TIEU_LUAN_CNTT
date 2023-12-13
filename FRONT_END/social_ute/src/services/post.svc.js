@@ -5,6 +5,7 @@ export const API_POST_ENDPOINT = {
     all_posts: "/posts",
     post_id: "/posts/:id",
     comment_post: "/comments/:id ",
+    post_saved: "/me/stored/posts",
   },
   POST: {
     create_post: "/posts/create",
@@ -34,9 +35,25 @@ export const getPostById = async (id) => {
 };
 
 export const createPost = async (payload) => {
-  const res = AxiosInstance.post(API_POST_ENDPOINT.POST.create_post, payload, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res = AxiosInstance.post(
+    API_POST_ENDPOINT.POST.create_post,
+    payload,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    },
+    {
+      onUploadProgress: (progressEvent) => {
+        console.log(
+          "upload progress " +
+            Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+            "%",
+        );
+      },
+    },
+  );
   return res;
 };
 
@@ -72,6 +89,11 @@ export const getCommentPost = async (id) => {
   const res = AxiosInstance.get(
     API_POST_ENDPOINT.GET.comment_post.replace(":id", id),
   );
+  return res;
+};
+
+export const getPostSaved = async () => {
+  const res = AxiosInstance.get(API_POST_ENDPOINT.GET.post_saved);
   return res;
 };
 
