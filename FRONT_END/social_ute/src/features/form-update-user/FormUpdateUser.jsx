@@ -14,6 +14,7 @@ const FormUpdateUser = (props) => {
     const [faculty, setFaculty] = useState(null)
     const [department_t, setDeparements] = useState(null)
     const { updateUser } = props
+    const [isLoading, setIsLoading] = useState(false)
 
     const initFormUpdateUser = {
         first_name: updateUser.user.first_name,
@@ -82,7 +83,9 @@ const FormUpdateUser = (props) => {
     const handleUpdateForm = async () => {
         try {
             faculty ? values['department'] = faculty : values['department'] = department_t
+            setIsLoading(true)
             await updateUserInfo(values)
+            setIsLoading(false)
 
             toast.success('Cập nhật thông tin thành công!!!', {
                 position: "bottom-right",
@@ -234,6 +237,7 @@ const FormUpdateUser = (props) => {
                 </div>
 
                 <Button
+                    isLoading={isLoading}
                     className="w-3/4 text-sm font-merriweather"
                     onClick={handleUpdateForm}
                     type='submit'

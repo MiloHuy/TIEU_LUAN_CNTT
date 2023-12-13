@@ -1,5 +1,6 @@
 import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
 import { RELATIONSHIP } from "constants/user.const";
+import ModalChangePassword from "features/modal-change-password";
 import ModalUpdateUser from "features/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
@@ -15,7 +16,7 @@ const HeaderHome = (props) => {
         count_friends,
         count_stories
     } = userStatisics
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { onOpen, onClose } = useDisclosure();
 
     const avatar_URL = userInfo ? userInfo.user.avatar.url : null
 
@@ -36,6 +37,10 @@ const HeaderHome = (props) => {
 
     const [check, setCheck] = useState(INIT_CHECK)
     const [updateUser, setUpdateUser] = useState()
+    const [openModal, setOpenModal] = useState({
+        change_password: false,
+        change_user_info: false,
+    })
 
     const handleAddOrCancelFriend = async () => {
         try {
@@ -120,7 +125,10 @@ const HeaderHome = (props) => {
     }
 
     const handleUpdateUser = async () => {
-        onOpen()
+        setOpenModal(() => ({
+            change_user_info: true,
+            change_password: false
+        }))
 
         try {
             const data_Info = await getMeInfo()
@@ -128,6 +136,40 @@ const HeaderHome = (props) => {
         }
         catch (err) {
             console.log("err:" + err)
+        }
+    }
+
+    const hanldeChangePassword = async () => {
+        setOpenModal(() => ({
+            change_password: true,
+            change_user_info: false
+        }))
+    }
+
+    const handleOpenModal = () => {
+        if (openModal.change_user_info === true && openModal.change_password !== true) {
+            onOpen()
+        }
+        else if (openModal.change_password === true && openModal.change_user_info !== true) {
+            onOpen()
+        }
+    }
+
+    const handleCloseModal = () => {
+        if (openModal.change_user_info === true && openModal.change_password !== true) {
+            setOpenModal((prev) => ({
+                ...prev,
+                change_user_info: false
+            }))
+
+            onClose()
+        }
+        else if (openModal.change_password === true && openModal.change_user_info !== true) {
+            setOpenModal((prev) => ({
+                ...prev,
+                change_password: false
+            }))
+            onClose()
         }
     }
 
@@ -152,7 +194,7 @@ const HeaderHome = (props) => {
 
                             {
                                 userAvatar ?
-                                    <div className='flex '>
+                                    <div className='flex gap-2'>
                                         <Button
                                             radius="sm"
                                             className="w-50 h-7"
@@ -162,13 +204,19 @@ const HeaderHome = (props) => {
                                         </Button>
 
                                         <ModalUpdateUser
-                                            isOpen={isOpen}
-                                            onOpenChange={onOpenChange}
+                                            isOpen={openModal.change_user_info}
+                                            onOpenChange={handleOpenModal}
+                                            onClose={handleCloseModal}
 
                                             updateUser={updateUser}
                                         />
 
-                                        <Button isIconOnly variant="light" className="h-7 ">
+                                        <Button
+                                            onClick={hanldeChangePassword}
+                                            isIconOnly
+                                            variant="light"
+                                            className="h-7"
+                                        >
                                             <Settings
                                                 size={20}
                                                 strokeWidth={0.75}
@@ -176,6 +224,12 @@ const HeaderHome = (props) => {
                                                 className="hover:rotate-45"
                                             />
                                         </Button>
+
+                                        <ModalChangePassword
+                                            isOpen={openModal.change_password}
+                                            onOpenChange={handleOpenModal}
+                                            onClose={handleCloseModal}
+                                        />
                                     </div>
                                     :
                                     ''

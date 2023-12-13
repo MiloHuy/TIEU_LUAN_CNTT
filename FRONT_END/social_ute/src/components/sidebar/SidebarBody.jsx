@@ -2,25 +2,41 @@ import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
-import ModalUploadImage from 'features/modal-upload-image';
+import ModalUploadImageBase64 from 'features/modal-upload-image-base64';
+import ModalUploadImageFile from 'features/modal-upload-image-file';
 import PopupNofication from 'features/popup-nofication';
 import PopupSearch from 'features/popup-search';
 import Cookies from 'js-cookie';
 import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2 } from "lucide-react";
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
 
 const SidebarBody = (props) => {
     const { icons, className, userID } = props
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { onOpen, onClose } = useDisclosure();
     const navigate = useNavigate()
+    const [openModal, setOpenModal] = useState({
+        modal_base_64: false,
+        modal_file: false,
+    })
 
     const handleNavigateUser = () => {
         navigate(`home-user/${userID}`)
     }
 
-    const handleOpenModelCreate = () => {
-        onOpen()
+    const handleOpenModelCreate01 = () => {
+        setOpenModal((prev) => ({
+            ...prev,
+            modal_base_64: true
+        }))
+    }
+
+    const handleOpenModelCreate02 = () => {
+        setOpenModal((prev) => ({
+            ...prev,
+            modal_file: true
+        }))
     }
 
     const handleNavigateHome = () => {
@@ -39,6 +55,33 @@ const SidebarBody = (props) => {
         }
         catch (err) {
             console.log('err: ', err)
+        }
+    }
+
+    const handleOpenModal = () => {
+        if (openModal.modal_base_64 === true && openModal.modal_file !== true) {
+            onOpen()
+        }
+        else if (openModal.modal_file === true && openModal.modal_base_64 !== true) {
+            onOpen()
+        }
+    }
+
+    const handleCloseModal = () => {
+        if (openModal.modal_base_64 === true && openModal.modal_file !== true) {
+            setOpenModal((prev) => ({
+                ...prev,
+                modal_base_64: false
+            }))
+
+            onClose()
+        }
+        else if (openModal.modal_file === true && openModal.modal_base_64 !== true) {
+            setOpenModal((prev) => ({
+                ...prev,
+                modal_file: false
+            }))
+            onClose()
         }
     }
 
@@ -104,11 +147,23 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        onClick={handleOpenModelCreate}
+                        onClick={handleOpenModelCreate01}
                         startContent={<PlusCircle size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
-                            Create
+                            Create01
+                        </p>
+                    </Button>
+
+                    <Button
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        onClick={handleOpenModelCreate02}
+                        startContent={<PlusCircle size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                    >
+                        <p className='font-mont text-lg font-bold'>
+                            Create02
                         </p>
                     </Button>
 
@@ -138,9 +193,16 @@ const SidebarBody = (props) => {
                 </div>
             </div>
 
-            <ModalUploadImage
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
+            <ModalUploadImageBase64
+                isOpen={openModal.modal_base_64}
+                onOpenChange={handleOpenModal}
+                onClose={handleCloseModal}
+            />
+
+            <ModalUploadImageFile
+                isOpen={openModal.modal_file}
+                onOpenChange={handleOpenModal}
+                onClose={handleCloseModal}
             />
 
         </div >

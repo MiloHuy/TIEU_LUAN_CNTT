@@ -43,6 +43,9 @@ module.exports = {
         bg_popup_secondary: "#1B2E34",
         bg_popup_third: "#4A5859",
         bg_popup_fourth: "#7C8989",
+
+        bg_dropdown_primary: "#323232",
+        focus: "#9BAE96",
       },
       keyframes: {
         loader: {
@@ -85,6 +88,7 @@ module.exports = {
           layout: {},
           colors: {
             background: "#0A0A0A",
+            dropdown_background: "#121212",
             foreground: "#ECEDEE",
             primary: {
               foreground: "#FFFFFF",

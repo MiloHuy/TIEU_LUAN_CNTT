@@ -1,12 +1,14 @@
 import { Modal, ModalBody, ModalContent, Spinner } from "@nextui-org/react";
 import FormUpdateUser from "features/form-update-user";
 
-const ModalUpdateUser = ({ isOpen, onOpenChange, updateUser }) => {
+const ModalUpdateUser = ({ isOpen, onOpenChange, updateUser, onClose }) => {
 
     return (
         <Modal
+            isDismissable={true}
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            onClose={onClose}
             radius="2xl"
             size='md'
             backdrop='blur'
@@ -16,6 +18,7 @@ const ModalUpdateUser = ({ isOpen, onOpenChange, updateUser }) => {
                 base: "border-[#292f46] bg-[#202120] dark:bg-[#525451] text-[#a8b0d3]",
                 closeButton: "hover:bg-white/5 active:bg-white/10",
             }}
+
         >
             <ModalContent>
                 {() => (

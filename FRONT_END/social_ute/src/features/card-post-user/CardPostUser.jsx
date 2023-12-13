@@ -2,9 +2,9 @@ import { Avatar } from "@nextui-org/avatar";
 import { Card, CardHeader } from "@nextui-org/card";
 import { Button, Image, Input, Link, useDisclosure } from "@nextui-org/react";
 import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
+import DropdownShowMoreOptions from "features/dropdown-show-more-options";
 import ModalPostUser from "features/modal-post-user";
-import PopupShowMoreOptions from "features/popup-show-more-options";
-import { Bookmark, Heart, MessageCircle, MoreHorizontal, SendHorizontal } from 'lucide-react';
+import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { getPostById, likePost, storePost } from "services/post.svc";
@@ -33,7 +33,6 @@ const CardPostUser = (props) => {
             setLike(!like)
 
             await likePost(post_id)
-
         }
         catch (err) {
             console.log(err)
@@ -68,7 +67,7 @@ const CardPostUser = (props) => {
     return (
         <div className='w-10/12 p-2'>
             <Card
-                className="grid grid-rows-8 w-full h-[600px]"
+                className="grid grid-rows-8 w-full h-[550px]"
                 radius='sm'
                 shadow='sm'>
                 <CardHeader className="flex gap-3 justify-between row-span-1">
@@ -76,25 +75,16 @@ const CardPostUser = (props) => {
                         <Avatar src={post_avatar} />
 
                         <Link color="foreground" href={`welcome/home-guest/${user_id._id}`} underline="active" >
-                            <p className="text-md text-sm text-black dark:text-white font-open_sans font-bold ">
+                            <p className="text-md hover:underline text-sm text-black dark:text-white font-open_sans font-bold ">
                                 {userName}
                             </p>
                         </Link>
 
                     </div>
 
-                    <PopupShowMoreOptions
-                        trigger={
-                            <Button
-                                className='w-[20px] '
-                                size="sm"
-                                isIconOnly
-                                variant="light"
-                            >
-                                <MoreHorizontal size={28} strokeWidth={1.5} />
-
-                            </Button>
-                        } />
+                    <DropdownShowMoreOptions
+                        user_id={user_id}
+                    />
 
                 </CardHeader>
 

@@ -4,11 +4,14 @@ export const API_POST_ENDPOINT = {
   GET: {
     all_posts: "/posts",
     post_id: "/posts/:id",
+    comment_post: "/comments/:id ",
   },
   POST: {
     create_post: "/posts/create",
     store_post: "/posts/store/:id",
     like_post: "/posts/like/:id",
+    create_comment: "/comments/create/:id",
+    like_comment: "/comments/like/:id",
   },
   PUT: {
     update_post: "/posts/:id",
@@ -61,6 +64,28 @@ export const updatePost = async (id) => {
 export const deletePost = async (id) => {
   const res = AxiosInstance.delete(
     API_POST_ENDPOINT.DELETE.delete_post.replace(":id", id),
+  );
+  return res;
+};
+
+export const getCommentPost = async (id) => {
+  const res = AxiosInstance.get(
+    API_POST_ENDPOINT.GET.comment_post.replace(":id", id),
+  );
+  return res;
+};
+
+export const postComment = async (id, payload) => {
+  const res = AxiosInstance.post(
+    API_POST_ENDPOINT.POST.create_comment.replace(":id", id),
+    payload,
+  );
+  return res;
+};
+
+export const likeComment = async (id) => {
+  const res = AxiosInstance.post(
+    API_POST_ENDPOINT.POST.like_comment.replace(":id", id),
   );
   return res;
 };
