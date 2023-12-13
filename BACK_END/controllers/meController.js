@@ -41,6 +41,7 @@ exports.getMyPosts = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1028,
             message: error.message, 
         });
     }
@@ -78,6 +79,7 @@ exports.getPosts = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1029,
             message: error.message, 
         });
     }
@@ -94,6 +96,7 @@ exports.getStories = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1030,
             message: error.message, 
         });
     }
@@ -110,6 +113,7 @@ exports.getInfo = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1031,
             message: err.message, 
         });
     }
@@ -138,6 +142,7 @@ exports.getFriendRequest = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1032,
             message: err.message, 
         });
     }
@@ -166,6 +171,7 @@ exports.getFriends = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1033,
             message: err.message, 
         });
     }
@@ -177,6 +183,7 @@ exports.updateInfo = (async (req, res) => {
         if(Object.keys(req.body).length === 0){
             return res.status(400).json({
                 success: false,
+                code: 1034,
                 message:'Cập nhật thất bại. Chưa nhập dữ liệu.',
             })
         }
@@ -193,6 +200,7 @@ exports.updateInfo = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1035,
             message:'Cập nhật thất bại.',
             message: error.message, 
         });
@@ -206,6 +214,7 @@ exports.updatePassword = (async (req, res) => {
     if (!user) {
         return res.status(404).json({ 
             success: false, 
+            code: 1036,
             message: 'Không tìm thấy người dùng.' 
         });;
     }
@@ -213,12 +222,14 @@ exports.updatePassword = (async (req, res) => {
     if (!isPasswordMatched) {
         return res.status(400).json({ 
             success: false, 
+            code: 1037,
             message: 'Mật khẩu không chính xác.' 
         });
     }
     if (req.body.new_password !== req.body.confirm) {
         return res.status(400).json({ 
             success: false, 
+            code: 1038,
             message: 'Nhập lại mật khẩu không trùng khớp.' });
     }
 

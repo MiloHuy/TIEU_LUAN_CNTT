@@ -38,6 +38,7 @@ exports.getAll = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1072,
             message: err,
         });
     }
@@ -50,6 +51,7 @@ exports.getStory = (async (req, res) => {
         if(!check_story){
             return res.status(404).json({
                 success: false,
+                code: 1073,
                 message: 'Không tìm thấy story.', 
             });
         }
@@ -61,6 +63,7 @@ exports.getStory = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1074,
             message: err.message 
         });
     }
@@ -73,6 +76,7 @@ exports.like = (async (req, res) => {
         if(!story){
             return res.status(404).json({
                 success: false,
+                code: 1075,
                 message: 'Không tìm thấy story.' ,
             });
         }
@@ -83,6 +87,7 @@ exports.like = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(story.user_id))){
             return res.status(400).json({
                 success: false,
+                code: 1076,
                 message: 'Không thể thao tác. Story này của người mà bạn chưa theo dõi.',
             });
         }
@@ -111,6 +116,7 @@ exports.like = (async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
+            code: 1077,
             message: error.message 
         });
     }
@@ -124,6 +130,7 @@ exports.create = (async (req, res) => {
         if(req.body.story_content==null){
             res.status(400).json({
                 success: false,
+                code: 1078,
                 message: 'Đăng story thất bại. Story phải có ảnh.',
             });
         }
@@ -133,6 +140,7 @@ exports.create = (async (req, res) => {
         if (!fileFormatMatch) {
             return res.status(400).json({
                 success: false,
+                code: 1079,
                 message: 'Định dạng ảnh không hợp lệ. Chỉ chấp nhận định dạng .jpg, .jpeg hoặc .png.',
             });
         }
@@ -152,6 +160,7 @@ exports.create = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1080,
             message: 'Đăng story thất bại :' + error,  
         });
     }
@@ -164,6 +173,7 @@ exports.update = (async (req, res) => {
         if(!story){
             res.status(400).json({
                 success: false,
+                code: 1081,
                 message: 'Story không tồn tại.' ,
             });
         }
@@ -175,6 +185,7 @@ exports.update = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1082,
             message: err.message 
         });
     }
@@ -187,6 +198,7 @@ exports.destroy = (async (req, res) => {
         if(!story){
             res.status(400).json({
                 success: false,
+                code: 1083,
                 message: 'Story không tồn tại.' ,
             });
         }
@@ -194,6 +206,7 @@ exports.destroy = (async (req, res) => {
         {
             return res.status(400).json({
                 success: false,
+                code: 1084,
                 message: 'Không thể xóa story của người khác.',
             });
         }
@@ -205,6 +218,7 @@ exports.destroy = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            code: 1085,
             message: err.message 
         });
     }

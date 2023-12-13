@@ -10,6 +10,7 @@ exports.follow = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1049,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -17,6 +18,7 @@ exports.follow = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
+                code: 1050,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -52,6 +54,7 @@ exports.follow = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1051,
             message:'Thao tác thất bại :' + error.message, 
         });
     }
@@ -63,6 +66,7 @@ exports.addfriend = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1052,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -70,6 +74,7 @@ exports.addfriend = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
+                code: 1053,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -80,6 +85,7 @@ exports.addfriend = (async (req, res) => {
         if(check_friend){
             return res.status(400).json({
                 success: false,
+                code: 1054,
                 message: 'Không thể gửi lời mời. Các bạn đã là bạn bè.', 
             });
         }
@@ -90,6 +96,7 @@ exports.addfriend = (async (req, res) => {
         if(check_friend_request){
             return res.status(400).json({
                 success: false,
+                code: 1055,
                 message: 'Người này đã gửi lời mời cho bạn. Chỉ có thể chấp nhận hoặc từ chối.', 
             });
         }
@@ -116,6 +123,7 @@ exports.addfriend = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1056,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -127,6 +135,7 @@ exports.accept = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1057,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -134,6 +143,7 @@ exports.accept = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
+                code: 1058,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -145,6 +155,7 @@ exports.accept = (async (req, res) => {
         if(!request){
             return res.status(404).json({
                 success: false,
+                code: 1059,
                 message: 'Thao tác thất bại. Không có lời mời kết bạn từ người này.', 
             });
         }
@@ -198,6 +209,7 @@ exports.accept = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1060,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -209,6 +221,7 @@ exports.refuse = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1061,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -216,6 +229,7 @@ exports.refuse = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
+                code: 1062,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -226,6 +240,7 @@ exports.refuse = (async (req, res) => {
         if(!request){
             return res.status(404).json({
                 success: false,
+                code: 1063,
                 message: 'Thao tác thất bại. Không có lời mời kết bạn từ người này.', 
             });
         }
@@ -238,6 +253,7 @@ exports.refuse = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1064,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -249,6 +265,7 @@ exports.unfriend = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
+                code: 1065,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -256,6 +273,7 @@ exports.unfriend = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
+                code: 1066,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -267,6 +285,7 @@ exports.unfriend = (async (req, res) => {
         if(!check_friend){
             return res.status(400).json({
                 success: false,
+                code: 1067,
                 message: 'Không thể hủy kết bạn. Các bạn không phải là bạn bè', 
             });
         }
@@ -302,6 +321,7 @@ exports.unfriend = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
+            code: 1068,
             message: error.message, 
         });
     }
