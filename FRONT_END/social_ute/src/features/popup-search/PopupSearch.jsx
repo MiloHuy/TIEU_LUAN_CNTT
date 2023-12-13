@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger, Spinner, useDisclosure } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger, Spinner } from "@nextui-org/react";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListSearchUser from "features/list-search-user";
 import { useCallback, useEffect, useState } from "react";
@@ -10,7 +10,6 @@ const PopupSearch = ({ trigger }) => {
     const [userSearch, setUserSearch] = useState()
     const [isLoading, setIsLoading] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
-    const { onClose } = useDisclosure();
 
     const [filter, setFilter] = useState({
         page: 1,

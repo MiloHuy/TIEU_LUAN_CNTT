@@ -1,12 +1,13 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import Loading from "components/loading";
+import ListFriendsUser from "features/list-friends-user";
 import ListPostUserDetail from "features/list-post-user-detail";
 import ListStoryUserDetail from "features/list-story-user-detail";
 import HeaderHome from "layout/header-home";
-import { Book, Grid3X3 } from 'lucide-react';
+import { Book, Grid3X3, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getAllMePosts } from "services/me.svc";
+import { getAllMePosts, getListFriends } from "services/me.svc";
 import { getAllStory } from "services/story.svc";
 import { statistics } from "services/user.svc";
 import { getUserNameFromCookie } from "utils/user.utils";
@@ -16,6 +17,7 @@ const HomeUser = () => {
     const [mePosts, setMePosts] = useState()
     const [selected, setSelected] = useState("posts");
     const [stories, setStory] = useState()
+    const [friends, setFriends] = useState()
 
     const { userId } = useParams()
     const userName = getUserNameFromCookie()
@@ -50,6 +52,16 @@ const HomeUser = () => {
         }
     }, [setStory])
 
+    const fetchMeFriends = useCallback(async () => {
+        try {
+            const dataFriends = await getListFriends()
+            setFriends(dataFriends)
+        }
+        catch (error) {
+            console.log("Error: ", error)
+        }
+    }, [setFriends])
+
     useEffect(() => {
         fetchUserStatisics()
 
@@ -61,9 +73,11 @@ const HomeUser = () => {
             fetchMeStories()
         }
 
-    }, [fetchUserStatisics, selected])
+        if (selected === 'friends') {
+            fetchMeFriends()
+        }
 
-    console.log("selected: " + selected)
+    }, [fetchUserStatisics, selected])
 
     return (
         userStatisics
@@ -81,13 +95,14 @@ const HomeUser = () => {
                     <div className="flex w-full flex-col">
                         <Tabs
                             color="default"
-                            variant="underlined"
+                            variant="light"
+                            radius='md'
                             selectedKey={selected}
                             onSelectionChange={setSelected}
                             classNames={{
-                                tabList: "gap-6 w-full relative rounded-none p-0 flex justify-center",
+                                tabList: "gap-6 w-full relative rounded-none flex justify-center",
                                 cursor: "w-full",
-                                tab: "max-w-fit px-0 h-12",
+                                tab: "max-w-[200px] w-[150px] px-0 h-12",
                             }}
                         >
                             <Tab
@@ -119,6 +134,25 @@ const HomeUser = () => {
                                 }
                             >
                                 <ListStoryUserDetail stories={[]} />
+                            </Tab>
+
+                            <Tab
+                                key="friends"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <Users size={20} />
+                                        <span className="dark:text-white font-noto">Friends</span>
+                                    </div>
+                                }
+                            >
+                                {
+                                    friends ?
+                                        <ListFriendsUser friends={friends.data} />
+                                        :
+                                        <div className='w-full h-full flex items-center justify-center'>
+                                            <Spinner color="default" size="lg" />
+                                        </div >
+                                }
                             </Tab>
                         </Tabs>
                     </div>
