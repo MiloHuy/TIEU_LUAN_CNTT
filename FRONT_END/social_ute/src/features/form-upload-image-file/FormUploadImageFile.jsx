@@ -10,6 +10,8 @@ const FormUploadImageFile = () => {
 
     const [image, setImage] = useState()
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const initFormUpload = {
         post_description: '',
         post_img: ''
@@ -20,20 +22,22 @@ const FormUploadImageFile = () => {
         setFormUpload({ ...formUpload, [e.target.name]: e.target.value })
     }
 
-    const handleInputFile = async (e) => {
+    const handleInputFile = (e) => {
         const ListFile = e.target.files
 
+        console.log("List File: " + (e.target.files))
+
         if (ListFile.length > 0) {
-            // setFiles({ ...ListFile[0] })
-            const reader = new FileReader()
-            reader.readAsDataURL(e.target.files[0])
-            reader.onload = () => {
-                console.log("Reading file " + reader.result)
-                setFiles(reader.result)
-            }
-            reader.onerror = error => {
-                console.log("error reading file " + error)
-            }
+            setFiles(e.target.files)
+            // const reader = new FileReader()
+            // reader.readAsDataURL(e.target.files[0])
+            // reader.onload = () => {  
+            //     console.log("Reading file " + reader.result)
+            //     setFiles(reader.result)
+            // }
+            // reader.onerror = error => {
+            //     console.log("error reading file " + error)
+            // }
 
             setImage(URL.createObjectURL(ListFile[0]))
         }
@@ -41,13 +45,16 @@ const FormUploadImageFile = () => {
 
     const handleCreatePost = async () => {
         try {
-            values['post_img'] = files
+            setIsLoading(true)
+            values['post_img'] = files[0]
 
             const formData = new FormData()
             formData.append('post_description', values['post_description'])
             formData.append('post_img', values['post_img'])
 
             await createPost(formData)
+
+            setIsLoading(false)
 
             toast.success('Đăng bài viết thành công!!!', {
                 position: "bottom-right",
@@ -61,6 +68,7 @@ const FormUploadImageFile = () => {
             });
         }
         catch (err) {
+            setIsLoading(false)
             console.log("error", err.response);
 
             toast.error('Đăng bài viết thất bại!!!', {
@@ -84,7 +92,7 @@ const FormUploadImageFile = () => {
 
     const { values, errors } = formik
 
-    console.log('files: ' + files)
+    console.log('files: ' + (files[0] ? files[0].type : ''))
 
     return (
         <form className='h-[350px] max-h-max justify-start flex flex-col items-center'>
@@ -92,7 +100,7 @@ const FormUploadImageFile = () => {
                 image ?
                     <img
                         loading="lazy"
-                        src={files}
+                        src={image}
                         alt='img'
                         className="h-2/3 w-full"
                     />
@@ -116,6 +124,7 @@ const FormUploadImageFile = () => {
             />
 
             <Button
+                isLoading={isLoading}
                 onClick={handleCreatePost}
                 className='text-sm font-merriweather w-2/3'>
                 Upload

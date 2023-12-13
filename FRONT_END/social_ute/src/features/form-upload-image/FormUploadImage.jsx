@@ -10,6 +10,8 @@ const FormUploadImage = () => {
 
     const [image, setImage] = useState()
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const initFormUpload = {
         post_description: '',
         post_img: ''
@@ -41,13 +43,16 @@ const FormUploadImage = () => {
 
     const handleCreatePost = async () => {
         try {
+            setIsLoading(true)
             values['post_img'] = files
 
-            const formData = new FormData()
-            formData.append('post_description', values['post_description'])
-            formData.append('post_img', values['post_img'])
+            // const formData = new FormData()
+            // formData.append('post_description', values['post_description'])
+            // formData.append('post_img', values['post_img'])
 
-            await createPost(formData)
+            await createPost(values)
+
+            setIsLoading(false)
 
             toast.success('Đăng bài viết thành công!!!', {
                 position: "bottom-right",
@@ -116,6 +121,7 @@ const FormUploadImage = () => {
             />
 
             <Button
+                isLoading={isLoading}
                 onClick={handleCreatePost}
                 className='text-sm font-merriweather w-2/3'>
                 Upload

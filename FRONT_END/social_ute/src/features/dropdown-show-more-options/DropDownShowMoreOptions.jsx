@@ -4,7 +4,6 @@ import { getUserIdFromCookie } from "utils/user.utils";
 
 const DropDownShowMoreOptions = ({ user_id }) => {
     const id = getUserIdFromCookie()
-    console.log('user_id', user_id._id);
 
     const handleDeletePost = async () => {
         try {
