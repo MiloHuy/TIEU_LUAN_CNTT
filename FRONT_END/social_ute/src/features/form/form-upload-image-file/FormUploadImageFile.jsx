@@ -52,7 +52,7 @@ const FormUploadImageFile = () => {
             formData.append('post_description', values['post_description'])
             formData.append('post_img', values['post_img'])
 
-            await createPost({ formData })
+            await createPost(formData)
 
             setIsLoading(false)
 
