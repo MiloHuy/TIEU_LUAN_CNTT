@@ -65,7 +65,7 @@ exports.getAll = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1008,
+            code: 2000,
             message: error, 
         });
     }
@@ -81,7 +81,7 @@ exports.getPost = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 1009,
+                code: 2001,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -102,7 +102,7 @@ exports.getPost = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1010,
+            code: 2002,
             message: err.message ,
         });
     }
@@ -163,7 +163,7 @@ exports.create = (async (req, res) => {
         if (!req.files.post_img || !req.files.post_img.data) {
             return res.status(400).json({
                 success: false,
-                code: 1011,
+                code: 2003,
                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
             });
         }
@@ -174,7 +174,7 @@ exports.create = (async (req, res) => {
         if (!allowedExtensions.includes(fileExtension)) {
             return res.status(400).json({
                 success: false,
-                code: 1012,
+                code: 2004,
                 message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
             });
         }
@@ -183,7 +183,7 @@ exports.create = (async (req, res) => {
         if (fileSize > maxFileSize) {
             return res.status(400).json({
                 success: false,
-                code: 1013,
+                code: 2005,
                 message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
             });
         }
@@ -228,7 +228,7 @@ exports.create = (async (req, res) => {
         // console.error('Lỗi:', error);
         res.status(500).json({
             success: false,
-            code: 1014,
+            code: 2006,
             message: 'Đăng bài thất bại :' + error.message, 
         });
     }
@@ -244,7 +244,7 @@ exports.store = (async (req, res) => {
         if(!check_post){
             return res.status(404).json({
                 success: false,
-                code: 1015,
+                code: 2007,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -255,7 +255,7 @@ exports.store = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
             return res.status(400).json({
                 success: false,
-                code: 1016,
+                code: 2008,
                 message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
             });
         }
@@ -283,7 +283,7 @@ exports.store = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1017,
+            code: 2009,
             message: err.message, 
         });
     }
@@ -296,7 +296,7 @@ exports.like = (async (req, res) => {
         if(!check_post){
             return res.status(404).json({
                 success: false,
-                code: 1018,
+                code: 2010,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -307,7 +307,7 @@ exports.like = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
             return res.status(400).json({
                 success: false,
-                code: 1019,
+                code: 2011,
                 message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
             });
         }
@@ -336,7 +336,7 @@ exports.like = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1020,
+            code: 2012,
             message: err.message, 
         });
     }
@@ -353,7 +353,7 @@ exports.update = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1021,
+            code: 2013,
             message: err.message, 
         });
     }
@@ -366,7 +366,7 @@ exports.destroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 1022,
+                code: 2014,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -374,7 +374,7 @@ exports.destroy = (async (req, res) => {
         {
             return res.status(400).json({
                 success: false,
-                code: 1023,
+                code: 2015,
                 message: 'Không thể xóa bài viết của người khác.',
             });
         }
@@ -386,7 +386,7 @@ exports.destroy = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1024,
+            code: 2016,
             message: err.message ,
         });
     }
@@ -417,7 +417,7 @@ exports.adminGetAll = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1025,
+            code: 2017,
             message: err.message ,
         });
     }
@@ -430,7 +430,7 @@ exports.adminDestroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 1026,
+                code: 2018,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -442,7 +442,7 @@ exports.adminDestroy = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1027,
+            code: 2019,
             message: err.message, 
         });
     }

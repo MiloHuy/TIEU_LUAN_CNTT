@@ -49,7 +49,7 @@ exports.getAdminStatistics = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1069,
+            code: 6000,
             message: err.message, 
         });
     }
@@ -62,7 +62,7 @@ exports.getStatistics = (async (req, res) => {
         if(!user){
             return res.status(404).json({
                 success: false,
-                code: 1070,
+                code: 6001,
                 message: 'Không tìm thấy người dùng', 
             });
         }
@@ -88,7 +88,7 @@ exports.getStatistics = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1071,
+            code: 6002,
             message: err.message, 
         });
     }

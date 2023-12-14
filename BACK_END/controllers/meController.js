@@ -42,7 +42,7 @@ exports.getMyPosts = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1028,
+            code: 3000,
             message: error.message, 
         });
     }
@@ -80,7 +80,7 @@ exports.getPosts = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1029,
+            code: 3001,
             message: error.message, 
         });
     }
@@ -97,7 +97,7 @@ exports.getStories = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1030,
+            code: 3002,
             message: error.message, 
         });
     }
@@ -114,7 +114,7 @@ exports.getInfo = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1031,
+            code: 3003,
             message: err.message, 
         });
     }
@@ -143,7 +143,7 @@ exports.getFriendRequest = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1032,
+            code: 3004,
             message: err.message, 
         });
     }
@@ -173,7 +173,7 @@ exports.getFriends = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1033,
+            code: 3005,
             message: err.message, 
         });
     }
@@ -209,7 +209,7 @@ exports.searchFriends = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1096,
+            code: 3006,
             message: error.message, 
         });
     }
@@ -221,7 +221,7 @@ exports.updateInfo = (async (req, res) => {
         if(Object.keys(req.body).length === 0){
             return res.status(400).json({
                 success: false,
-                code: 1034,
+                code: 3007,
                 message:'Cập nhật thất bại. Chưa nhập dữ liệu.',
             })
         }
@@ -238,7 +238,7 @@ exports.updateInfo = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1035,
+            code: 3008,
             message:'Cập nhật thất bại.',
             message: error.message, 
         });
@@ -252,7 +252,7 @@ exports.updatePassword = (async (req, res) => {
     if (!user) {
         return res.status(404).json({ 
             success: false, 
-            code: 1036,
+            code: 3009,
             message: 'Không tìm thấy người dùng.' 
         });;
     }
@@ -260,14 +260,14 @@ exports.updatePassword = (async (req, res) => {
     if (!isPasswordMatched) {
         return res.status(400).json({ 
             success: false, 
-            code: 1037,
+            code: 3010,
             message: 'Mật khẩu không chính xác.' 
         });
     }
     if (req.body.new_password !== req.body.confirm) {
         return res.status(400).json({ 
             success: false, 
-            code: 1038,
+            code: 3011,
             message: 'Nhập lại mật khẩu không trùng khớp.' });
     }
 
