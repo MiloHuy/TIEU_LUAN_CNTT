@@ -1,4 +1,5 @@
 import { NextUIProvider } from "@nextui-org/system";
+import NotFound from "pages/404-not_found/NotFound";
 import Admin from "pages/admin";
 import HomeUser from "pages/home-user";
 import RequestFriend from "pages/request-friend";
@@ -35,6 +36,8 @@ function App() {
 
               <Route path="manage" element={<Admin />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </Suspense>
