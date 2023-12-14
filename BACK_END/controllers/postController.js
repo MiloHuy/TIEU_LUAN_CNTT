@@ -66,7 +66,7 @@ exports.getAll = (async (req, res) => {
         res.status(500).json({
             success: false,
             code: 2000,
-            message: error, 
+            message: error.message, 
         });
     }
 })
@@ -99,11 +99,11 @@ exports.getPost = (async (req, res) => {
             success: true,
             post,
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2002,
-            message: err.message ,
+            message: error.message ,
         });
     }
 })
@@ -280,11 +280,11 @@ exports.store = (async (req, res) => {
                 message: 'Lưu bài viết thành công.',
             });
         }
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2009,
-            message: err.message, 
+            message: error.message, 
         });
     }
 })
@@ -333,11 +333,11 @@ exports.like = (async (req, res) => {
                 message: 'Yêu thích bài viết thành công.',
             });
         }
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2012,
-            message: err.message, 
+            message: error.message, 
         });
     }
 })
@@ -350,11 +350,11 @@ exports.update = (async (req, res) => {
             success: true,
             message: 'Cập nhật bài viết thành công.',
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2013,
-            message: err.message, 
+            message: error.message, 
         });
     }
 })
@@ -383,11 +383,11 @@ exports.destroy = (async (req, res) => {
             success: true,
             message: 'Xóa bài viết thành công.',
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2016,
-            message: err.message ,
+            message: error.message ,
         });
     }
 })
@@ -414,11 +414,11 @@ exports.adminGetAll = (async (req, res) => {
             totals,
             posts: allPosts, 
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2017,
-            message: err.message ,
+            message: error.message ,
         });
     }
 })
@@ -439,11 +439,11 @@ exports.adminDestroy = (async (req, res) => {
             success: true,
             message: 'Xóa bài viết thành công.',
         });
-    } catch (err) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             code: 2019,
-            message: err.message, 
+            message: error.message, 
         });
     }
 
