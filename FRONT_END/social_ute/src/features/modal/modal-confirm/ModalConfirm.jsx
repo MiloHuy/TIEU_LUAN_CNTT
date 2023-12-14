@@ -1,41 +1,12 @@
 import { Button, Modal, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 import { Check, X } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { deletePost } from "services/post.svc";
+import { useCallback } from "react";
 
-const ModalConfirm = ({ isOpen, onOpenChange, post_id, onClose }) => {
+const ModalConfirm = ({ isOpen, onOpenChange, handleCallback, onClose, title }) => {
 
-    const handleDeletePost = async () => {
-        try {
-            await deletePost(post_id)
-
-            toast.success('Xóa bài viết thành công!!!', {
-                position: "bottom-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-
-            window.location.reload()
-        }
-        catch (err) {
-
-            toast.error('Xóa bài viết thất bại!!!', {
-                position: "bottom-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-    }
+    const handleAgree = useCallback(() => {
+        handleCallback();
+    }, [handleCallback])
 
     return (
         <Modal
@@ -59,7 +30,7 @@ const ModalConfirm = ({ isOpen, onOpenChange, post_id, onClose }) => {
                 {(onClose) => (
                     <>
                         <ModalHeader className="flex flex-col gap-1 text-center">
-                            Có phải bạn muốn xóa bài viết?
+                            {title}
                         </ModalHeader>
 
                         <ModalFooter>
@@ -67,7 +38,7 @@ const ModalConfirm = ({ isOpen, onOpenChange, post_id, onClose }) => {
                                 <Button
                                     color="danger"
                                     variant="bordered"
-                                    onPress={handleDeletePost}
+                                    onPress={handleAgree}
                                     endContent={<Check size={16} strokeWidth={0.75} />}
                                 >
                                     Có

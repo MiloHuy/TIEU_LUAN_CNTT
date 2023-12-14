@@ -5,6 +5,7 @@ export const API_ME_ENDPOINT = {
     me_posts: "me/posts",
     me_info: "/me/account/info",
     me_friends: "/me/friends",
+    me_requests_friends: "/me/friend-request",
   },
   POST: {
     create_post: "/posts/create",
@@ -27,6 +28,11 @@ export const getAllMePosts = () => {
 
 export const getMeInfo = () => {
   const res = AxiosInstance.get(API_ME_ENDPOINT.GET.me_info);
+  return res;
+};
+
+export const getRequestFriend = () => {
+  const res = AxiosInstance.get(API_ME_ENDPOINT.GET.me_requests_friends);
   return res;
 };
 

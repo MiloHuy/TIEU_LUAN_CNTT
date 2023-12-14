@@ -45,6 +45,8 @@ module.exports = {
         bg_popup_fourth: "#7C8989",
 
         bg_dropdown_primary: "#323232",
+
+        bg_button_delete: "#2F2F2F",
         focus: "#9BAE96",
       },
       keyframes: {

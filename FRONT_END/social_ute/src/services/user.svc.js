@@ -13,6 +13,7 @@ export const API_USER_ENDPOINT = {
     follow_unfollow_guest: "/interacts/follow/:id",
     add_cancel_friend: "/interacts/addfriend/:id",
     accept_friend: "/interacts/accept/:id",
+    unfriend: "/interacts/unfriend/:id",
     refuse_friend: "/interacts/refuse/:id ",
   },
 };
@@ -78,5 +79,12 @@ export const getUserSearch = (payload) => {
   const res = AxiosInstance.get(API_USER_ENDPOINT.GET.get_search_user, {
     params: payload,
   });
+  return res;
+};
+
+export const unFriend = (id) => {
+  const res = AxiosInstance.post(
+    API_USER_ENDPOINT.POST.unfriend.replace(":id", id),
+  );
   return res;
 };

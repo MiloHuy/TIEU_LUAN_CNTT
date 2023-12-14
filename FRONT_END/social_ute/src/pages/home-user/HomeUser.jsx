@@ -1,5 +1,6 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import Loading from "components/loading";
+import SearchBlockDebounce from "components/search-block-debounce";
 import ListFriendsUser from "features/list/list-friends-user";
 import ListPostUserDetail from 'features/list/list-post-user-detail';
 import ListStoryUserDetail from 'features/list/list-story-user-detail';
@@ -167,7 +168,7 @@ const HomeUser = () => {
                                     homeUser.mePosts ?
                                         <ListPostUserDetail
                                             userName={userName}
-                                            posts={homeUser.mePosts} />
+                                            posts={homeUser.mePosts.data} />
                                         :
                                         <Spinner color="default" size="lg" />
                                 }
@@ -196,7 +197,15 @@ const HomeUser = () => {
                             >
                                 {
                                     homeUser.friends ?
-                                        <ListFriendsUser friends={homeUser.friends.data} />
+                                        <div className="flex flex-col gap-2">
+                                            <div className="w-full flex justify-end">
+                                                <SearchBlockDebounce
+                                                    className='w-1/3'
+                                                />
+                                            </div>
+
+                                            <ListFriendsUser friends={homeUser.friends.data} />
+                                        </div>
                                         :
                                         <div className='w-full h-full flex items-center justify-center'>
                                             <Spinner color="default" size="lg" />
@@ -220,7 +229,7 @@ const HomeUser = () => {
                                     homeUser.postSaved ?
                                         <ListPostUserDetail
                                             userName={userName}
-                                            posts={homeUser.postSaved}
+                                            posts={homeUser.postSaved.data}
                                         />
                                         :
                                         <div className='w-full h-full flex items-center justify-center'>
