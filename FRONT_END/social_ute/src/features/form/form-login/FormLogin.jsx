@@ -55,6 +55,17 @@ const FormLogin = (props) => {
 
         } catch (err) {
             console.error(err)
+
+            toast.error('Đăng nhập thất bại!!!', {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 

@@ -1,27 +1,25 @@
-import { Spinner } from "@nextui-org/react";
+import CardFriendUser from "features/card/card-friend-user";
 
 const ListFriendsUser = ({ friends }) => {
 
     return (
-        friends.friends.friend_id?.length
+        friends.friends.length !== 0
             ?
-            friends.friends.friend_id.length !== 0
-                ?
-                friends.friends.friend_id.map((friend) => {
-                    return (
-                        <div
-                            key={friend._id}
-                            className=""
-                        >
-                            {friend.first_name}
-                        </div>
-                    )
-                })
-                : 'Hiện không có bạn bè nào ở đây cả.'
-            :
-            <div className='w-full h-full flex items-center justify-center'>
-                <Spinner color="default" size="lg" />
+            <div className='grid grid-cols-2 gap-2 w-full h-full'>
+                {
+                    friends.friends.map((friend) => {
+                        return (
+                            <CardFriendUser
+                                friend={friend}
+                            />
+                        )
+                    })
+                }
             </div >
+            :
+            <p className="text-white">
+                Hiện không có bạn bè nào ở đây cả.
+            </p>
 
     )
 }

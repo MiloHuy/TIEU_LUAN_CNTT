@@ -2,7 +2,7 @@ import { Camera } from 'lucide-react';
 
 const FormUploadImageDetail = () => {
     return (
-        <div className="grid grid-rows-2 gap-2 items-center">
+        <div className="grid grid-rows-2 gap-2 items-center w-full justify-center">
             <div className='w-full h-full flex justify-center'>
                 <Camera size={40} color='#857a7a' strokeWidth={0.75} />
             </div>

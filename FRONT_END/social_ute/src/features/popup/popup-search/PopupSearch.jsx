@@ -103,7 +103,6 @@ const PopupSearch = ({ trigger }) => {
                     }
                 </div>
             </PopoverContent>
-
         </Popover >
     )
 }

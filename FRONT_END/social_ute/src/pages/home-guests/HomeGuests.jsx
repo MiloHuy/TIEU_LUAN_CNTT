@@ -58,7 +58,6 @@ const HomeGuests = () => {
 
     }, [fetchUserStatisics, fetchUserInfo])
 
-
     return (
         userStatisics ?
             <div className='grid grid-rows-3 p-2 h-screen overflow-auto'>
@@ -78,13 +77,13 @@ const HomeGuests = () => {
                     <div className="flex w-full flex-col">
                         <Tabs
                             color="default"
-                            variant="underlined"
+                            variant="light"
                             selectedKey={selected}
                             onSelectionChange={setSelected}
                             classNames={{
                                 tabList: "gap-6 w-full relative rounded-none p-0 flex justify-center",
                                 cursor: "w-full",
-                                tab: "max-w-fit px-0 h-12",
+                                tab: "max-w-[200px] w-[200px] px-0 h-12",
                             }}
                         >
                             <Tab
@@ -99,7 +98,7 @@ const HomeGuests = () => {
                                 {
                                     posts ?
                                         <ListPostUserDetail
-                                            posts={posts}
+                                            posts={posts.data}
                                             userName={userName}
                                         />
                                         :

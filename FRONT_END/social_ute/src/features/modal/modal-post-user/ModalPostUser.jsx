@@ -18,7 +18,7 @@ const ModalPostUser = ({ isOpen, onOpenChange }) => {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={handleCloseModal}
-            radius="2xl"
+            radius="sm"
             size='5xl'
             backdrop='blur'
             stlye={{ height: '1000px' }}

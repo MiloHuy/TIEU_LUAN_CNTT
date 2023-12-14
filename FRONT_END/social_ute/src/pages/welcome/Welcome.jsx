@@ -24,7 +24,7 @@ const Welcome = () => {
                     className='relative max-w-[250px] h-full' />
             </div>
 
-            <div className='col-span-6'>
+            <div className={`col-span-6 ${darkmode}`}>
                 <Outlet />
             </div>
         </div>
