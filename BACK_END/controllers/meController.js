@@ -123,15 +123,27 @@ exports.getInfo = (async (req, res) => {
 //GET /friend-request
 exports.getFriendRequest = (async (req, res) => {
     try {
-        const request = await Addfriend.find({
-            add_user_id: req.user._id
-        })
-            .populate('user_id', 'first_name last_name avatar.url')
+        const friend_request = await Addfriend.find({
+                add_user_id: req.user._id
+            })
+            .populate('user_id', 'first_name last_name avatar.url department id')
             .select('-_id user_id');
-        if(request.length > 0){
+        if(friend_request.length > 0){
+            const formattedRequests = friend_request.map(request => {
+                const user = request.user_id;
+                return {
+                    avatar: user.avatar,
+                    _id: user._id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    id: user.id,
+                    department: user.department
+                };
+            });
+
             return res.status(200).json({
                 success: true,
-                request,
+                requests: formattedRequests,
             });
         } else {
             return res.status(200).json({
