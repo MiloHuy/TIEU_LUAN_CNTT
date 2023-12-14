@@ -8,6 +8,7 @@ const {
     getInfo,
     getFriendRequest,
     getFriends,
+    searchFriends,
     updateInfo,
     updatePassword,
 } = require('../controllers/meController.js');
@@ -23,6 +24,7 @@ router.get('/stored/stories', verifyToken, isUser, getStories);
 router.get('/account/info', verifyToken, isUser, getInfo);
 router.get('/friend-request', verifyToken, isUser, getFriendRequest);
 router.get('/friends', verifyToken, isUser, getFriends);
+router.get('/friends/search', verifyToken, isUser, searchFriends);
 router.put('/account/info', verifyToken, isUser, updateInfo);
 router.put('/account/password', verifyToken, isUser, updatePassword);
 

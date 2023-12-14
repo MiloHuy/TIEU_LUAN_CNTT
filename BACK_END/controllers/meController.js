@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const Addfriend = require('../models/Addfriend')
 const Post_liked = require('../models/Post_liked')
 const Friend = require('../models/Friend')
+const { UserAPIFeatures } = require('../utils/APIFeatures');
 
 //GET /posts
 exports.getMyPosts = (async (req, res) => {
@@ -153,7 +154,7 @@ exports.getFriends = (async (req, res) => {
     try {
         const friends = await Friend
             .findOne({user_id: req.user._id})
-            .populate('friend_id', 'first_name last_name avatar.url')
+            .populate('friend_id', 'first_name last_name avatar.url department id')
             .select('-_id friend_id');
         const friend_list = friends.friend_id
         if(!friends.length){
@@ -177,6 +178,42 @@ exports.getFriends = (async (req, res) => {
         });
     }
 })
+
+//GET /me/friends/search
+exports.searchFriends = (async (req, res) => {
+    try {
+        const { size } = req.query;
+        const friends = await Friend.findOne({ user_id: req.user._id }).select('-_id friend_id');
+        const friend_ids = friends.friend_id
+
+        const userQuery = User.find({ _id: { $in: friend_ids } })
+            .select('avatar.url first_name last_name department id');
+        
+        const apiFeatures = new UserAPIFeatures(userQuery, req.query)
+            .search();
+        
+        let allUser = await apiFeatures.query;
+        const totals = allUser.length;
+        
+        const apiFeaturesPagination = new UserAPIFeatures(User.find(userQuery), req.query)
+            .search()
+            .pagination(size);
+
+        allUser = await apiFeaturesPagination.query;
+
+        return res.status(200).json({
+            success: true,
+            totals,
+            allUser,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 1096,
+            message: error.message, 
+        });
+    }
+});
 
 //PUT /account/info
 exports.updateInfo = (async (req, res) => {

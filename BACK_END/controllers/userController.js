@@ -189,6 +189,7 @@ exports.disabled = (async (req, res) => {
     }
 })
 
+//GET /users/search
 exports.getAllUser = (async (req, res) => {
     try {
         const { size } = req.query;
