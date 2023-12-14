@@ -1,5 +1,7 @@
 const cloudinary = require('cloudinary').v2;
 const fileUpload = require('express-fileupload');
+const fs = require('fs').promises;
+const path = require('path');
 
 const Post = require('../models/Post')
 const Post_liked = require('../models/Post_liked')
@@ -106,46 +108,128 @@ exports.getPost = (async (req, res) => {
     }
 })
 
-const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base64,/i;
+//const allowedFormats = /^(data:image\/jpeg|data:image\/jpg|data:image\/png);base64,/i;
 
 //POST /posts/create
+// exports.create = (async (req, res) => {
+//     try {
+//         if(!req.body.post_img){
+//             return res.status(400).json({
+//                 success: false,
+//                 code: 1011,
+//                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
+//             });
+//         }
+//         const currentDate = new Date();
+//         const fileFormatMatch = req.body.post_img.match(allowedFormats);
+        
+//         if (!fileFormatMatch) {
+//             return res.status(400).json({
+//                 success: false,
+//                 code: 1012,
+//                 message: 'Định dạng ảnh không hợp lệ. Chỉ chấp nhận định dạng .jpg, .jpeg hoặc .png.',
+//             });
+//         }
+
+//         const result = await cloudinary.uploader.upload(req.body.post_img);
+//         post_img = {
+//             publicId: result.public_id,
+//             url: result.secure_url,
+//         }
+
+//         const post = await Post.create({ user_id:req.user._id , ...req.body, create_post_time: currentDate, post_img});
+//         res.status(201).json({
+//             success: true,
+//             message: 'Đăng bài thành công.',
+//             post,
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             code: 1014,
+//             message: 'Đăng bài thất bại :' + error, 
+//         });
+//     }
+//     finally{
+
+//     }
+// })
+
+const maxFileSize = 10 * 1024 * 1024;
+//file
 exports.create = (async (req, res) => {
     try {
-        if(!req.body.post_img){
+        console.log(req.files.post_img);
+        if (!req.files.post_img || !req.files.post_img.data) {
             return res.status(400).json({
                 success: false,
                 code: 1011,
                 message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
             });
         }
-        const currentDate = new Date();
-        const fileFormatMatch = req.body.post_img.match(allowedFormats);
-        
-        if (!fileFormatMatch) {
+
+        const allowedExtensions = validImageFormats.map(format => `.${format}`);
+        const fileExtension = path.extname(req.files.post_img.name).toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
             return res.status(400).json({
                 success: false,
                 code: 1012,
-                message: 'Định dạng ảnh không hợp lệ. Chỉ chấp nhận định dạng .jpg, .jpeg hoặc .png.',
+                message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
             });
         }
 
-        const result = await cloudinary.uploader.upload(req.body.post_img);
-        post_img = {
-            publicId: result.public_id,
-            url: result.secure_url,
+        const fileSize = req.files.post_img.data.length;
+        if (fileSize > maxFileSize) {
+            return res.status(400).json({
+                success: false,
+                code: 1013,
+                message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+            });
         }
 
-        const post = await Post.create({ user_id:req.user._id , ...req.body, create_post_time: currentDate, post_img});
+        // Tạo một thư mục tạm thời nếu nó chưa tồn tại
+        const tempDir = path.join(__dirname, 'temp');
+        await fs.mkdir(tempDir, { recursive: true });
+
+        // Tạo một bộ đệm từ dữ liệu tệp
+        const buffer = req.files.post_img.data;
+
+        // Tạo một đường dẫn tạm thời để lưu trữ tệp
+        const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
+
+        // Ghi dữ liệu vào tệp tạm thời
+        await fs.writeFile(tempFilePath, buffer);
+
+        const result = await cloudinary.uploader.upload(tempFilePath);
+
+        // Xóa tệp tạm thời
+        await fs.unlink(tempFilePath);
+
+        const post_img = {
+            publicId: result.public_id,
+            url: result.secure_url,
+        };
+
+        const currentDate = new Date();
+        const post = await Post.create({
+            user_id: req.user._id,
+            ...req.body,
+            create_post_time: currentDate,
+            post_img,
+        });
+
         res.status(201).json({
             success: true,
             message: 'Đăng bài thành công.',
             post,
         });
     } catch (error) {
+        // console.error('Lỗi:', error);
         res.status(500).json({
             success: false,
             code: 1014,
-            message: 'Đăng bài thất bại :' + error, 
+            message: 'Đăng bài thất bại :' + error.message, 
         });
     }
     finally{
