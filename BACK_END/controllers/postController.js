@@ -155,6 +155,7 @@ exports.getPost = (async (req, res) => {
 //     }
 // })
 
+const validImageFormats = ['jpg', 'jpeg', 'png'];
 const maxFileSize = 10 * 1024 * 1024;
 //file
 exports.create = (async (req, res) => {
