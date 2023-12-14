@@ -40,8 +40,7 @@ export const createPost = async (payload) => {
     payload,
     {
       headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
+        "Content-Type": `multipart/form-data; boundary=${payload._boundary}`,
       },
     },
     {
