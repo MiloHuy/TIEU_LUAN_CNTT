@@ -136,9 +136,9 @@ const CardFooter = ({ signalFlag }) => {
                         name='comment_content'
                         value={commentInput.comment_content}
                         onChange={handleOnChange}
-                        variant='underlined'
+                        variant='bordered'
                         placeholder="Thêm bình luận..."
-                        className='text-white dark:placeholder:text-black'
+                        className='text-black dark:placeholder:text-black border-black px-2'
                         endContent={
                             <Button
                                 size="sm"

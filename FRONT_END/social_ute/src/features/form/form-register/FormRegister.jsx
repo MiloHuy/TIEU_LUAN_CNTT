@@ -16,6 +16,7 @@ const FormRegister = (props) => {
     const [department_t, setDeparements] = useState(null)
 
     const handleOpenRegiser = () => {
+        formik.resetForm();
         props.handleFunction('hidden')
     }
 
@@ -103,6 +104,8 @@ const FormRegister = (props) => {
                 theme: "light",
             });
 
+            formik.resetForm();
+
             setTimeout(() => { handleOpenRegiser() }, 3000)
         }
         catch (err) {
@@ -134,6 +137,7 @@ const FormRegister = (props) => {
         <form
             className={clsx('flex flex-col gap-2 items-center justify-center p-4 w-full h-full ', props.className)}
             onSubmit={formik.handleSubmit}
+            onReset={formik.resetForm}
         >
             <h1 className="text-lg font-bold font-merriweather text-center">
                 Sign up
@@ -254,7 +258,11 @@ const FormRegister = (props) => {
             >Sign up
             </Button>
 
-            <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenRegiser} href="#">Login</Link>
+            <Link
+                className='text-sm col-span-1 font-merriweather'
+                onClick={handleOpenRegiser} href="#">
+                Login
+            </Link>
         </form>
     )
 }

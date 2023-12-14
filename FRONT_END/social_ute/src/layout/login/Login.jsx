@@ -14,7 +14,6 @@ const Login = (props) => {
                 <Image
                     loading='lazy'
                     radius='lg'
-                    isZoomed
                     alt="HCMUTE"
                     src={logo}
                 />

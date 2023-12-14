@@ -2,6 +2,8 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDiscl
 import ModalConfirm from "features/modal/modal-confirm";
 import { Bookmark, Heart, MoreHorizontal, SendHorizontal, Trash2 } from 'lucide-react';
 import { useState } from "react";
+import { toast } from 'react-toastify';
+import { deletePost } from "services/post.svc";
 import { getUserIdFromCookie } from "utils/user.utils";
 
 const DropDownShowMoreOptions = ({ user_id, post_id }) => {
@@ -9,7 +11,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     const { onOpen, onClose } = useDisclosure();
     const [openModal, setOpenModal] = useState({
         drop_down: false,
-        alert_modal: false,
+        confirm_modal: false,
     })
 
     const handleOpenDropDown = () => {
@@ -22,22 +24,22 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     const handleOpenModelAlert = () => {
         setOpenModal((prev) => ({
             ...prev,
-            alert_modal: true
+            confirm_modal: true
         }))
     }
 
     const handleOpenModal = () => {
         console.log('adasd')
-        if (openModal.drop_down === true && openModal.alert_modal !== true) {
+        if (openModal.drop_down === true && openModal.confirm_modal !== true) {
             onOpen()
         }
-        else if (openModal.alert_modal === true && openModal.drop_down !== true) {
+        else if (openModal.confirm_modal === true && openModal.drop_down !== true) {
             onOpen()
         }
     }
 
     const handleCloseModal = () => {
-        if (openModal.drop_down === true && openModal.alert_modal !== true) {
+        if (openModal.drop_down === true && openModal.confirm_modal !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 drop_down: false
@@ -45,10 +47,10 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
 
             onClose()
         }
-        else if (openModal.alert_modal === true && openModal.drop_down !== true) {
+        else if (openModal.confirm_modal === true && openModal.drop_down !== true) {
             setOpenModal((prev) => ({
                 ...prev,
-                alert_modal: false
+                confirm_modal: false
             }))
             onClose()
         }
@@ -59,6 +61,38 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
         if (key === 'delete') {
             handleCloseModal()
             handleOpenModelAlert()
+        }
+    }
+
+    const handleDeletePost = async () => {
+        try {
+            await deletePost(post_id)
+
+            toast.success('Xóa bài viết thành công!!!', {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
+            window.location.reload()
+        }
+        catch (err) {
+
+            toast.error('Xóa bài viết thất bại!!!', {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 
@@ -145,11 +179,12 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
             </Dropdown >
 
             <ModalConfirm
-                isOpen={openModal.alert_modal}
+                title='Có phải bạn muốn xóa bài viết?'
+                isOpen={openModal.confirm_modal}
                 onOpenChange={handleOpenModal}
                 onClose={handleCloseModal}
 
-                post_id={post_id}
+                handleCallback={handleDeletePost}
             />
         </div>
     )
