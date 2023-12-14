@@ -12,7 +12,7 @@ exports.getComments = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 1086,
+                code: 8000,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -24,7 +24,7 @@ exports.getComments = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(post.user_id))){
             return res.status(400).json({
                 success: false,
-                code: 1087,
+                code: 8001,
                 message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
             });
         }
@@ -73,7 +73,7 @@ exports.getComments = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1088,
+            code: 8002,
             message: error ,
         });
     }
@@ -85,7 +85,7 @@ exports.create = (async (req, res) => {
         if(Object.keys(req.body).length === 0){
             return res.status(400).json({
                 success: false,
-                code: 1089,
+                code: 8003,
                 message: 'Thao tác thất bại. Thiếu nội dung',
             });
         }
@@ -93,7 +93,7 @@ exports.create = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 1090,
+                code: 8004,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -105,7 +105,7 @@ exports.create = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(post.user_id))){
             return res.status(400).json({
                 success: false,
-                code: 1091,
+                code: 8005,
                 message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
             });
         }
@@ -125,7 +125,7 @@ exports.create = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1092,
+            code: 8006,
             message: err.message, 
         });
     }
@@ -138,7 +138,7 @@ exports.like = (async (req, res) => {
         if(!check_cmt){
             return res.status(404).json({
                 success: false,
-                code: 1093,
+                code: 8007,
                 message: 'Không tìm thấy bình luận.', 
             });
         }
@@ -148,7 +148,7 @@ exports.like = (async (req, res) => {
         if (!following_User_Ids.some(id => id.equals(check_cmt.user_id))){
             return res.status(400).json({
                 success: false,
-                code: 1094,
+                code: 8008,
                 message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
             });
         }
@@ -176,7 +176,7 @@ exports.like = (async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
-            code: 1095,
+            code: 8009,
             message: err.message, 
         });
     }

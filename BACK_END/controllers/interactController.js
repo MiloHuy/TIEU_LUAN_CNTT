@@ -10,7 +10,7 @@ exports.follow = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
-                code: 1049,
+                code: 5000,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -18,7 +18,7 @@ exports.follow = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
-                code: 1050,
+                code: 5001,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -54,7 +54,7 @@ exports.follow = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1051,
+            code: 5002,
             message:'Thao tác thất bại :' + error.message, 
         });
     }
@@ -66,7 +66,7 @@ exports.addfriend = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
-                code: 1052,
+                code: 5003,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -74,7 +74,7 @@ exports.addfriend = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
-                code: 1053,
+                code: 5004,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -85,7 +85,7 @@ exports.addfriend = (async (req, res) => {
         if(check_friend){
             return res.status(400).json({
                 success: false,
-                code: 1054,
+                code: 5005,
                 message: 'Không thể gửi lời mời. Các bạn đã là bạn bè.', 
             });
         }
@@ -96,7 +96,7 @@ exports.addfriend = (async (req, res) => {
         if(check_friend_request){
             return res.status(400).json({
                 success: false,
-                code: 1055,
+                code: 5006,
                 message: 'Người này đã gửi lời mời cho bạn. Chỉ có thể chấp nhận hoặc từ chối.', 
             });
         }
@@ -123,7 +123,7 @@ exports.addfriend = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1056,
+            code: 5007,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -135,7 +135,7 @@ exports.accept = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
-                code: 1057,
+                code: 5008,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -143,7 +143,7 @@ exports.accept = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
-                code: 1058,
+                code: 5009,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -155,7 +155,7 @@ exports.accept = (async (req, res) => {
         if(!request){
             return res.status(404).json({
                 success: false,
-                code: 1059,
+                code: 5010,
                 message: 'Thao tác thất bại. Không có lời mời kết bạn từ người này.', 
             });
         }
@@ -209,7 +209,7 @@ exports.accept = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1060,
+            code: 5011,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -221,7 +221,7 @@ exports.refuse = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
-                code: 1061,
+                code: 5012,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -229,7 +229,7 @@ exports.refuse = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
-                code: 1062,
+                code: 5013,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -240,7 +240,7 @@ exports.refuse = (async (req, res) => {
         if(!request){
             return res.status(404).json({
                 success: false,
-                code: 1063,
+                code: 5014,
                 message: 'Thao tác thất bại. Không có lời mời kết bạn từ người này.', 
             });
         }
@@ -253,7 +253,7 @@ exports.refuse = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1064,
+            code: 5015,
             message:'Thao tác thất bại :' + error.message,
         });
     }
@@ -265,7 +265,7 @@ exports.unfriend = (async (req, res) => {
         if(req.params.id==req.user._id){
             return res.status(400).json({
                 success: false,
-                code: 1065,
+                code: 5016,
                 message:'Phải dùng id của người khác, không được dùng id của bản thân.',
             });
         }
@@ -273,7 +273,7 @@ exports.unfriend = (async (req, res) => {
         if(!check_user){
             return res.status(404).json({
                 success: false,
-                code: 1066,
+                code: 5017,
                 message: 'Không tìm thấy người dùng.', 
             });
         }
@@ -285,7 +285,7 @@ exports.unfriend = (async (req, res) => {
         if(!check_friend){
             return res.status(400).json({
                 success: false,
-                code: 1067,
+                code: 5018,
                 message: 'Không thể hủy kết bạn. Các bạn không phải là bạn bè', 
             });
         }
@@ -321,7 +321,7 @@ exports.unfriend = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1068,
+            code: 5019,
             message: error.message, 
         });
     }
