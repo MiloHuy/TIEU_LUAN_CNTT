@@ -1,4 +1,5 @@
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { CheckCheck, CircleDot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const PopupNofication = ({ trigger }) => {
@@ -43,25 +44,38 @@ const PopupNofication = ({ trigger }) => {
                                 />
 
                                 <div className='flex justify-between items-center w-full'>
-                                    <div className="flex gap-2 h-full items-center w-full">
-                                        <p className="text-sm text-white w-[200px] dark:text-white font-open_sans ">
-                                            userName đã gửi lời mời kết bạn cho bạn
-                                        </p>
-
-                                        <Button
-                                            size='sm'
-                                            color='primary'
-                                            className="w-20"
-                                        >
-                                            Chấp nhận
-                                        </Button>
-
-                                        <Button
-                                            size='sm'
-                                            className="w-20 bg-bg_button_delete text-white">
-                                            Xóa
-                                        </Button>
+                                    <div className="flex gap-2 h-full items-center w-[250px]">
+                                        userNameadadsdad vừa mới đăng tải một bài viết mới
                                     </div>
+
+                                    <Dropdown
+                                        className='bg-bg_dropdown_primary '
+                                    >
+                                        <DropdownTrigger>
+                                            <Button
+                                                className='w-[20px] '
+                                                size="sm"
+                                                isIconOnly
+                                                variant="light"
+                                            >
+                                                <CircleDot size={16} strokeWidth={0.75} color='#ffffff' />
+
+                                            </Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu
+                                            aria-label="unfriend"
+                                        >
+                                            <DropdownItem
+                                                key="unfriend"
+                                                className="text-white"
+                                                endContent={<CheckCheck size={16} strokeWidth={0.75} />}
+                                            >
+                                                <p className='text-md font-open_sans font-bold gap-2'>
+                                                    Đánh dấu là đã đọc
+                                                </p>
+                                            </DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
                                 </div>
                             </div>
                         </div>

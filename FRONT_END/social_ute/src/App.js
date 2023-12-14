@@ -1,6 +1,7 @@
 import { NextUIProvider } from "@nextui-org/system";
 import Admin from "pages/admin";
 import HomeUser from "pages/home-user";
+import RequestFriend from "pages/request-friend";
 import User from "pages/user";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
@@ -28,6 +29,8 @@ function App() {
                 <Route path="home-user/:userId" element={<HomeUser />} />
 
                 <Route path="home-guest/:guestId" element={<HomeG />} />
+
+                <Route path="request-friend" element={<RequestFriend />} />
               </Route>
 
               <Route path="manage" element={<Admin />} />
