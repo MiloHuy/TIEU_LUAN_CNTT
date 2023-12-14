@@ -10,7 +10,6 @@ const Addfriend = new Schema({
     add_user_id: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        type: String,
     }],
 })
 
