@@ -1,5 +1,5 @@
-import ListPostUser from "features/list-post-user";
-import ListSuggestFriends from "features/list-suggest-friends";
+import ListPostUser from "features/list/list-post-user";
+import ListSuggestFriends from "features/list/list-suggest-friends";
 import ProfileUser from "features/profile-user";
 import Header from "layout/header";
 import { useCallback, useEffect, useState } from "react";

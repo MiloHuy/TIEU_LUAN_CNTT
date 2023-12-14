@@ -1,7 +1,7 @@
 import { Image } from '@nextui-org/react'
 import logo from 'assets/images/logo.png'
 import clsx from 'clsx'
-import FormLogin from 'features/form-login'
+import FormLogin from 'features/form/form-login'
 
 const Login = (props) => {
     const handleFunction = (value) => {
