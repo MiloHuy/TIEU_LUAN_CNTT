@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
 import ModalUploadImageBase64 from 'features/modal/modal-upload-image-base64';
+import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
 import PopupSearch from 'features/popup/popup-search';
 import Cookies from 'js-cookie';
@@ -176,7 +177,7 @@ const SidebarBody = (props) => {
                         onClose={handleCloseModal}
                     />
 
-                    {/* <Button
+                    <Button
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
@@ -192,7 +193,7 @@ const SidebarBody = (props) => {
                         isOpen={openModal.modal_file}
                         onOpenChange={handleOpenModal}
                         onClose={handleCloseModal}
-                    /> */}
+                    />
 
                     <Button
                         className='w-full flex justify-start gap-6'

@@ -69,7 +69,7 @@ const FormUploadImageFile = () => {
         }
         catch (err) {
             setIsLoading(false)
-            console.log("error", err.response);
+            console.log("error", err);
 
             toast.error('Đăng bài viết thất bại!!!', {
                 position: "bottom-right",
@@ -92,7 +92,7 @@ const FormUploadImageFile = () => {
 
     const { values, errors } = formik
 
-    console.log('files: ' + Object.values(selectFiled))
+    console.log('values: ' + Object.entries(values['post_img']))
 
     return (
         <form className='h-[350px] max-h-max justify-start flex flex-col items-center'>
