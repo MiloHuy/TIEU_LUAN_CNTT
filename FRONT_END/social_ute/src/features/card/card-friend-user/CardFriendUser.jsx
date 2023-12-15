@@ -69,7 +69,7 @@ const CardFriendUser = ({ friend }) => {
 
             toast.success('Hủy kết bạn thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -85,7 +85,7 @@ const CardFriendUser = ({ friend }) => {
 
             toast.error('Hủy kết bạn thất bạn!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

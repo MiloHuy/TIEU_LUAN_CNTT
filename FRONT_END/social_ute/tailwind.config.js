@@ -40,7 +40,7 @@ module.exports = {
       },
       colors: {
         bg_popup_primary: "#121212",
-        bg_popup_secondary: "#1B2E34",
+        bg_popup_secondary: "#ccc",
         bg_popup_third: "#4A5859",
         bg_popup_fourth: "#7C8989",
 

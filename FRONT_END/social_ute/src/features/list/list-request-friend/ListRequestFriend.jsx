@@ -1,3 +1,4 @@
+import { Spinner } from "@nextui-org/react";
 import CardFriendRequest from "features/card/card-friend-request";
 import { useCallback, useEffect, useState } from "react";
 import { getRequestFriend } from "services/me.svc";
@@ -18,29 +19,23 @@ const ListRequestFriend = () => {
         fetchAllRequests()
     }, [fetchAllRequests])
 
-    console.log('friends: ', friends ? Object.entries(friends.data) : '')
-
     return (
         <div className="relative grid grid-cols-1 gap-2 w-full h-full justify-center items-start">
-            <div className="w-full flex items-center justify-center">
-                <CardFriendRequest />
-            </div>
+            {
+                friends
+                    ?
+                    <div className="w-full flex flex-col gap-3 items-center justify-center">
+                        <CardFriendRequest
+                            handleCallback={fetchAllRequests}
+                            friends={friends.data}
+                        />
+                    </div>
+                    :
+                    <div className='w-full h-full flex items-center justify-center'>
+                        <Spinner color="default" size="lg" />
+                    </div >
+            }
 
-            <div className="w-full flex items-center justify-center">
-                <CardFriendRequest />
-            </div>
-
-            <div className="w-full flex items-center justify-center">
-                <CardFriendRequest />
-            </div>
-
-            <div className="w-full flex items-center justify-center">
-                <CardFriendRequest />
-            </div>
-
-            <div className="w-full flex items-center justify-center">
-                <CardFriendRequest />
-            </div>
         </div>
     )
 }

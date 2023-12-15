@@ -5,7 +5,7 @@ import ModalUpdateUser from "features/modal/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { getMeInfo } from "services/me.svc";
-import { AcceptFriend, AddCancelFriend, RefuseFriend, followGuest } from "services/user.svc";
+import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest } from "services/user.svc";
 
 const HeaderHome = (props) => {
     const { userStatisics, userInfo, userName, userAvatar } = props
@@ -90,7 +90,7 @@ const HeaderHome = (props) => {
                 ...prev,
                 isLoadingRequest: true
             }))
-            await RefuseFriend(userInfo.user._id)
+            await RefuseRequest(userInfo.user._id)
 
             setCheck((prev) => ({
                 ...prev,
@@ -188,7 +188,7 @@ const HeaderHome = (props) => {
                 <div className="col-span-5">
                     <div className='grid grid-rows-2 gap-6'>
                         <div className="flex gap-2 w-full items-center">
-                            <p className='dark:text-white font-noto text-center'>
+                            <p className='dark:text-white text-black font-noto text-center'>
                                 {userName}
                             </p>
 
@@ -359,18 +359,18 @@ const HeaderHome = (props) => {
 
                         <div className="flex flex-row gap-7">
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">{count_posts}</p>
-                                <p className="dark:text-white font-noto">Bài viết</p>
+                                <p className="dark:text-white font-noto text-black">{count_posts}</p>
+                                <p className="dark:text-white font-noto text-black">Bài viết</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">{count_followers}</p>
-                                <p className="dark:text-white font-noto">người theo dõi</p>
+                                <p className="dark:text-white font-noto text-black">{count_followers}</p>
+                                <p className="dark:text-white font-noto text-black">người theo dõi</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">Đang theo dõi:</p>
-                                <p className="dark:text-white font-noto">{`${count_followings || 0} người dùng`}</p>
+                                <p className="dark:text-white font-noto text-black">Đang theo dõi:</p>
+                                <p className="dark:text-white font-noto text-black">{`${count_followings || 0} người dùng`}</p>
                             </div>
                         </div>
                     </div>

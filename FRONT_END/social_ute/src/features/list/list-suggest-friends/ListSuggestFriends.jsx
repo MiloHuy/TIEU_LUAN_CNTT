@@ -1,7 +1,8 @@
+import { Datepicker } from 'flowbite-react';
 
 const ListSuggestFriends = () => {
     return (
-        <div>ListSuggestFriends</div>
+        <Datepicker inline />
     )
 }
 

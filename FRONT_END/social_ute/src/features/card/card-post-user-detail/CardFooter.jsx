@@ -145,14 +145,12 @@ const CardFooter = ({ signalFlag }) => {
                                 variant="bordered"
                                 onClick={handlePostComment}
                                 isDisabled={active}
-                                className={`hover:bg-black border-black text-black font-mont font-bold text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                className={`hover:bg-black border-black text-black hover:text-white font-mont font-bold text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
                                 color="primary"
                             >
                                 Đăng
                             </Button>}
                     />
-
-
                 </div>
             </div>
         </div>

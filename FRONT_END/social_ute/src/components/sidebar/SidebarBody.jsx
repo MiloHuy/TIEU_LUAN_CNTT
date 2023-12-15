@@ -2,12 +2,12 @@ import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
-import ModalUploadImageBase64 from 'features/modal/modal-upload-image-base64';
+// import ModalUploadImageBase64 from 'features/modal/modal-upload-image-base64';
 import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
 import PopupSearch from 'features/popup/popup-search';
 import Cookies from 'js-cookie';
-import { AlignJustify, Bell, Home, LogOut, PlusCircle, Search, UserCircle2, UserPlus } from "lucide-react";
+import { AlignJustify, Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
@@ -98,7 +98,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateHome}
-                        startContent={<Home size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<Home size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Home
@@ -111,7 +111,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Search size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                                startContent={<Search size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Search
@@ -126,7 +126,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start gap-6'
                                 color="default"
                                 variant="light"
-                                startContent={<Bell size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                                startContent={<Bell size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                             >
                                 <p className='font-mont text-lg font-bold'>
                                     Nofitcation
@@ -140,7 +140,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateUser}
-                        startContent={<UserCircle2 size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<UserCircle2 size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             User
@@ -152,19 +152,19 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleNavigateRequest}
-                        startContent={<UserPlus size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<UserPlus size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Requests
                         </p>
                     </Button>
 
-                    <Button
+                    {/* <Button
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
                         onClick={handleOpenModelCreate01}
-                        startContent={<PlusCircle size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<PlusCircle size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Create01
@@ -175,14 +175,14 @@ const SidebarBody = (props) => {
                         isOpen={openModal.modal_base_64}
                         onOpenChange={handleOpenModal}
                         onClose={handleCloseModal}
-                    />
+                    /> */}
 
                     <Button
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
                         onClick={handleOpenModelCreate02}
-                        startContent={<PlusCircle size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<PlusSquare size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             Create02
@@ -199,7 +199,7 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
-                        startContent={<AlignJustify size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<AlignJustify size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             More
@@ -211,7 +211,7 @@ const SidebarBody = (props) => {
                         color="default"
                         variant="light"
                         onClick={handleLogOut}
-                        startContent={<LogOut size={24} strokeWidth={0.75} className='hover:animate-ping duration-200 transform' />}
+                        startContent={<LogOut size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
                         <p className='font-mont text-lg font-bold'>
                             LogOut

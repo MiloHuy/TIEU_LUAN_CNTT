@@ -197,10 +197,10 @@ const HomeUser = () => {
                             >
                                 {
                                     homeUser.friends ?
-                                        <div className="flex flex-col gap-2">
-                                            <div className="w-full flex justify-end">
+                                        <div className="grid grid-cols-1 w-full gap-3">
+                                            <div className="w-full flex justify-end ">
                                                 <SearchBlockDebounce
-                                                    className='w-1/3'
+                                                    className='w-1/3 '
                                                 />
                                             </div>
 

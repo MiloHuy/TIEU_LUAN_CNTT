@@ -56,7 +56,7 @@ const FormUploadImage = () => {
 
             toast.success('Đăng bài viết thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -70,7 +70,7 @@ const FormUploadImage = () => {
 
             toast.error('Đăng bài viết thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
