@@ -148,7 +148,7 @@ exports.getFriendRequest = (async (req, res) => {
         } else {
             return res.status(200).json({
                 success: true,
-                message: 'Không có lời mời kết bạn',
+                requests: [],
             });
         }
         
