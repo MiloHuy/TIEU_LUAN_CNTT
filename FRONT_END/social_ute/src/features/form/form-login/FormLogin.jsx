@@ -51,7 +51,7 @@ const FormLogin = (props) => {
                 progress: undefined,
                 theme: "light",
             });
-            setTimeout(() => { navigate('/welcome') }, 3000)
+            setTimeout(() => { navigate('/manage') }, 3000)
 
         } catch (err) {
             console.error(err)

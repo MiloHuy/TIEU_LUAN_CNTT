@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
 
 const SidebarBody = (props) => {
-    const { icons, className, userID } = props
+    const { className, userID } = props
     const { onOpen, onClose } = useDisclosure();
     const navigate = useNavigate()
     const [openModal, setOpenModal] = useState({

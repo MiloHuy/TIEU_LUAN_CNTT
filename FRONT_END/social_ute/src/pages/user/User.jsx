@@ -1,3 +1,4 @@
+import Calendar from "components/calendar";
 import ListPostUser from "features/list/list-post-user";
 import ListSuggestFriends from "features/list/list-suggest-friends";
 import ProfileUser from "features/profile-user";
@@ -39,13 +40,17 @@ const User = () => {
                 </div>
             </div>
 
-            <div className='col-span-2'>
-                <div className='grid gird-rows-2 gap-4 p-6'>
+            <div className='col-span-2 h-full'>
+                <div className='flex flex-col gap-4 p-6 '>
                     <div className='relative w-full flex'>
                         <ProfileUser userName={userName} />
                     </div>
 
-                    <div>
+                    <div className='h-max w-full border rounded-lg'>
+                        <Calendar />
+                    </div>
+
+                    <div className='w-full '>
                         <ListSuggestFriends />
                     </div>
                 </div>
