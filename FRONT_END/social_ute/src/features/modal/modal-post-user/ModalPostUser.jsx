@@ -3,7 +3,7 @@ import { setPostInit } from "app/slice/post/post.slice";
 import CardPostUserDetail from "features/card/card-post-user-detail";
 import { useDispatch } from 'react-redux';
 
-const ModalPostUser = ({ isOpen, onOpenChange }) => {
+const ModalPostUser = ({ isOpen, onOpenChange, handleCallbackLikePost, handleCallbackSavedPost }) => {
     const dispatch = useDispatch()
 
     const { onClose } = useDisclosure();
@@ -31,6 +31,8 @@ const ModalPostUser = ({ isOpen, onOpenChange }) => {
                     <>
                         {
                             <CardPostUserDetail
+                                handleCallbackLikePost={handleCallbackLikePost}
+                                handleCallbackSavedPost={handleCallbackSavedPost}
                             />
 
                         }

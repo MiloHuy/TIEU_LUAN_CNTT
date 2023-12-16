@@ -6,7 +6,7 @@ import CardBody from "./CardBody";
 import CardFooter from "./CardFooter";
 import CardHeader from "./CardHeader";
 
-const CardPostUserDetail = ({ userName }) => {
+const CardPostUserDetail = ({ handleCallbackLikePost, handleCallbackSavedPost }) => {
     const post_img = useSelector(selectPostImg)
     const post_description = useSelector(selectPostDescription)
     const [flag, setFlag] = useState(false)
@@ -23,7 +23,7 @@ const CardPostUserDetail = ({ userName }) => {
                         <img
                             loading="lazy"
                             alt="img"
-                            className="object-fill h-[500px] w-full rounded-xl"
+                            className="object-fill h-[500px] w-full rounded-sm"
                             src={post_img}
                         /> :
                         <div className='flex items-center justify-center h-full'>
@@ -38,15 +38,27 @@ const CardPostUserDetail = ({ userName }) => {
                 </div>
 
                 <div className='h-[300px] flex flex-col gap-2'>
-                    <CardBody
-                        flag={flag}
-                    />
+                    {
+                        post_img ?
+                            <CardBody
+                                flag={flag}
+                            /> :
+                            <Spinner color="default" />
+                    }
                 </div>
 
                 <div className='h-20 w-full'>
-                    <CardFooter
-                        signalFlag={SignalFlag}
-                    />
+                    {
+                        post_img ?
+                            <CardFooter
+                                handleCallbackLikePost={handleCallbackLikePost}
+                                handleCallbackSavedPost={handleCallbackSavedPost}
+                                signalFlag={SignalFlag}
+                            /> :
+                            <div className='flex items-center justify-center h-full'>
+                                <Spinner color="default" />
+                            </div>
+                    }
                 </div>
             </div>
         </div>

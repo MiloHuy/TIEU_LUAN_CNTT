@@ -2,10 +2,10 @@ import { Button, useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
+import ModalSearchUser from 'features/modal/modal-search-user';
 // import ModalUploadImageBase64 from 'features/modal/modal-upload-image-base64';
 import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
-import PopupSearch from 'features/popup/popup-search';
 import Cookies from 'js-cookie';
 import { AlignJustify, Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useState } from 'react';
@@ -17,7 +17,7 @@ const SidebarBody = (props) => {
     const { onOpen, onClose } = useDisclosure();
     const navigate = useNavigate()
     const [openModal, setOpenModal] = useState({
-        modal_base_64: false,
+        modal_search: false,
         modal_file: false,
     })
 
@@ -32,7 +32,7 @@ const SidebarBody = (props) => {
     const handleOpenModelCreate01 = () => {
         setOpenModal((prev) => ({
             ...prev,
-            modal_base_64: true
+            modal_search: true
         }))
     }
 
@@ -63,24 +63,24 @@ const SidebarBody = (props) => {
     }
 
     const handleOpenModal = () => {
-        if (openModal.modal_base_64 === true && openModal.modal_file !== true) {
+        if (openModal.modal_search === true && openModal.modal_file !== true) {
             onOpen()
         }
-        else if (openModal.modal_file === true && openModal.modal_base_64 !== true) {
+        else if (openModal.modal_file === true && openModal.modal_search !== true) {
             onOpen()
         }
     }
 
     const handleCloseModal = () => {
-        if (openModal.modal_base_64 === true && openModal.modal_file !== true) {
+        if (openModal.modal_search === true && openModal.modal_file !== true) {
             setOpenModal((prev) => ({
                 ...prev,
-                modal_base_64: false
+                modal_search: false
             }))
 
             onClose()
         }
-        else if (openModal.modal_file === true && openModal.modal_base_64 !== true) {
+        else if (openModal.modal_file === true && openModal.modal_search !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 modal_file: false
@@ -91,7 +91,7 @@ const SidebarBody = (props) => {
 
     return (
         <div className={clsx('w-full h-full', className)}>
-            <div className='w-full h-full grid grid-cols-1 gap-2 p-2 '>
+            <div className='w-full h-full grid grid-cols-1 gap-2 p-2'>
                 <div className='flex flex-col gap-2 justify-center'>
                     <Button
                         className='w-full flex justify-start gap-6 '
@@ -100,12 +100,12 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateHome}
                         startContent={<Home size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            Home
+                        <p className='font-mono text-xl '>
+                            Trang chủ
                         </p>
                     </Button>
 
-                    <PopupSearch
+                    {/* <PopupSearch
                         trigger={
                             <Button
                                 className='w-full flex justify-start gap-6'
@@ -113,11 +113,28 @@ const SidebarBody = (props) => {
                                 variant="light"
                                 startContent={<Search size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                             >
-                                <p className='font-mont text-lg font-bold'>
-                                    Search
+                                <p className='font-mono text-xl '>
+                                    Tìm kiếm
                                 </p>
                             </Button>
                         }
+                    /> */}
+
+                    <Button
+                        onClick={handleOpenModelCreate01}
+                        className='w-full flex justify-start gap-6'
+                        color="default"
+                        variant="light"
+                        startContent={<Search size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
+                    >
+                        <p className='font-mono text-xl '>
+                            Tìm kiếm
+                        </p>
+                    </Button>
+
+                    <ModalSearchUser
+                        isOpen={openModal.modal_search}
+                        onOpenChange={handleOpenModal}
                     />
 
                     <PopupNofication
@@ -128,8 +145,8 @@ const SidebarBody = (props) => {
                                 variant="light"
                                 startContent={<Bell size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                             >
-                                <p className='font-mont text-lg font-bold'>
-                                    Nofitcation
+                                <p className='font-mono text-xl '>
+                                    Thông báo
                                 </p>
                             </Button>
                         }
@@ -142,8 +159,8 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateUser}
                         startContent={<UserCircle2 size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            User
+                        <p className='font-mono text-xl '>
+                            Trang cá nhân
                         </p>
                     </Button>
 
@@ -154,8 +171,8 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateRequest}
                         startContent={<UserPlus size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            Requests
+                        <p className='font-mono text-xl '>
+                            Yêu cầu
                         </p>
                     </Button>
 
@@ -166,13 +183,13 @@ const SidebarBody = (props) => {
                         onClick={handleOpenModelCreate01}
                         startContent={<PlusCircle size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
+                        <p className='font-mono text-xl '>
                             Create01
                         </p>
                     </Button>
 
                     <ModalUploadImageBase64
-                        isOpen={openModal.modal_base_64}
+                        isOpen={openModal.modal_search}
                         onOpenChange={handleOpenModal}
                         onClose={handleCloseModal}
                     /> */}
@@ -184,8 +201,8 @@ const SidebarBody = (props) => {
                         onClick={handleOpenModelCreate02}
                         startContent={<PlusSquare size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            Create02
+                        <p className='font-mono text-xl '>
+                            Tạo
                         </p>
                     </Button>
 
@@ -201,8 +218,8 @@ const SidebarBody = (props) => {
                         variant="light"
                         startContent={<AlignJustify size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            More
+                        <p className='font-mono text-xl '>
+                            Xem thêm
                         </p>
                     </Button>
 
@@ -213,8 +230,8 @@ const SidebarBody = (props) => {
                         onClick={handleLogOut}
                         startContent={<LogOut size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mont text-lg font-bold'>
-                            LogOut
+                        <p className='font-mono text-xl '>
+                            Đăng xuất
                         </p>
                     </Button>
 

@@ -1,4 +1,6 @@
+import { Spinner } from "@nextui-org/react";
 import Calendar from "components/calendar";
+import Clock from "components/clock";
 import ListPostUser from "features/list/list-post-user";
 import ListSuggestFriends from "features/list/list-suggest-friends";
 import ProfileUser from "features/profile-user";
@@ -40,21 +42,32 @@ const User = () => {
                 </div>
             </div>
 
-            <div className='col-span-2 h-full'>
-                <div className='flex flex-col gap-4 p-6 '>
-                    <div className='relative w-full flex'>
-                        <ProfileUser userName={userName} />
-                    </div>
+            {
+                posts.data
+                    ?
+                    <div className='col-span-2 h-full'>
+                        <div className='flex flex-col gap-4 p-6 '>
+                            <div className='relative w-full flex'>
+                                <ProfileUser userName={userName} />
+                            </div>
+                            <div className='h-max w-full border border-black dark:border-white rounded-lg'>
+                                <Calendar />
+                            </div>
 
-                    <div className='h-max w-full border rounded-lg'>
-                        <Calendar />
-                    </div>
+                            <div className='w-full '>
+                                <ListSuggestFriends />
+                            </div>
 
-                    <div className='w-full '>
-                        <ListSuggestFriends />
+                            <div className="w-full flex justify-end px-1">
+                                <Clock />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                    :
+                    <div className='w-full h-full flex items-center justify-center'>
+                        <Spinner color="default" size="lg" />
+                    </div >
+            }
         </div>
     )
 }

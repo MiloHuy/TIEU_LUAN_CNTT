@@ -1,18 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 
-const ListSearchUser = ({ userSearch, handleClosePopup }) => {
+const ListSearchUser = ({ userSearch, }) => {
     const totals = userSearch.totals
     const navigate = useNavigate()
 
     const handleNavigateUser = (id) => {
         navigate(`home-guest/${id}`)
-        handleClosePopup()
+        // handleClosePopup()
     }
 
     return (
         totals !== 0 ?
             <div
-                className="grid grid-cols-1 gap-3 w-full items-start justify-start px-3"
+                className="grid grid-cols-1 gap-3 w-full h-full items-start justify-start px-3"
             >
                 {
                     userSearch.allUser.map((user) => {

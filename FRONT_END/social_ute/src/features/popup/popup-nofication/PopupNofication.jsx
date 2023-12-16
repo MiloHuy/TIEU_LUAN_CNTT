@@ -10,11 +10,12 @@ const PopupNofication = ({ trigger }) => {
 
     return (
         <Popover
+            backdrop='opaque'
             placement="right"
             showArrow={false}
             classNames={{
                 content: [
-                    "py-3 px-4 border text-white",
+                    "py-3 px-4 border",
                     'bg-bg_popup_primary'
                 ],
             }}

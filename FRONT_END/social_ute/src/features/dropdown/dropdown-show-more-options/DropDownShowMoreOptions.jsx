@@ -29,7 +29,6 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     }
 
     const handleOpenModal = () => {
-        console.log('adasd')
         if (openModal.drop_down === true && openModal.confirm_modal !== true) {
             onOpen()
         }
@@ -57,7 +56,6 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     }
 
     const handleActionByKey = (key) => {
-        console.log('key', key);
         if (key === 'delete') {
             handleCloseModal()
             handleOpenModelAlert()

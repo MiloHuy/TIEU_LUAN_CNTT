@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { unFriend } from "services/user.svc";
+import { getFullName } from "utils/user.utils";
 
 const CardFriendUser = ({ friend }) => {
     const { onOpen, onClose } = useDisclosure();
@@ -100,12 +101,12 @@ const CardFriendUser = ({ friend }) => {
     }
 
     return (
-        <div className="relative group w-full h-[100px] rounded-[15px] border flex">
+        <div className="relative group w-full h-[100px] rounded-[15px] border flex border-black dark:border-white">
             <img
                 className="h-full rounded-[15px] p-2"
                 alt='friend'
-                // src={friend.avatar.url}
-                src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
+                src={friend.avatar.url}
+            // src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
             />
 
             <div className='flex justify-between items-center w-full'>
@@ -113,8 +114,7 @@ const CardFriendUser = ({ friend }) => {
                     onClick={() => handleNavigateFriend(friend._id)}
                     className="flex flex-col gap-2 h-full justify-center cursor-pointer">
                     <p className="text-sm text-black dark:text-white font-open_sans font-bold">
-                        {/* {getFullName(friend.first_name, friend.last_name)} */}
-                        userName
+                        {getFullName(friend.first_name, friend.last_name)}
                     </p>
 
                     <p className="text-sm text-black dark:text-white font-open_sans font-bold">

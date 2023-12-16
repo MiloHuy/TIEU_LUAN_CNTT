@@ -156,7 +156,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
             ?
             friends.requests.map((request) => {
                 return (
-                    <div className="relative group w-2/3 h-[100px] rounded-[15px] border-1 flex items-center justify-center">
+                    <div className="relative group w-2/3 h-[100px] border-black dark:border-white rounded-[15px] border-1 flex items-center justify-center">
                         <img
                             className="h-full rounded-[15px] p-2"
                             alt='friend'
@@ -260,7 +260,9 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                 )
             })
             :
-            'Không có yêu cầu kết bạn'
+            <p className='text-black dark:text-white font-mono text-md'>
+                Không có yêu cầu kết bạn
+            </p>
     )
 }
 

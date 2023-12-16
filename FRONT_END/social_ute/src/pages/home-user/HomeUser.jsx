@@ -160,7 +160,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Grid3X3 size={20} />
-                                        <span className="dark:text-white font-noto">Posts</span>
+                                        <span className="dark:text-white font-mono">Posts</span>
                                     </div>
                                 }
                             >
@@ -179,7 +179,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Book size={20} />
-                                        <span className="dark:text-white font-noto">Story</span>
+                                        <span className="dark:text-white font-mono">Story</span>
                                     </div>
                                 }
                             >
@@ -191,7 +191,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Users size={20} />
-                                        <span className="dark:text-white font-noto">Friends</span>
+                                        <span className="dark:text-white font-mono">Friends</span>
                                     </div>
                                 }
                             >
@@ -221,7 +221,7 @@ const HomeUser = () => {
                                             size={20}
                                             strokeWidth={1.5}
                                         />
-                                        <span className="dark:text-white font-noto">Post Saved</span>
+                                        <span className="dark:text-white text-black font-mono">Post Saved</span>
                                     </div>
                                 }
                             >

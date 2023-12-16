@@ -1,16 +1,15 @@
 import { Accordion, AccordionItem } from "@nextui-org/react";
-import CardFriendUser from "features/card/card-friend-user";
 
 const ListSuggestFriends = () => {
     return (
         <div className="w-full">
             <Accordion
-                className='border border-white'
+                className='border dark:border-white border-black'
                 itemClasses={{
-                    base: "py-0 w-full",
-                    title: "font-normal text-sm",
+                    base: "py-0 w-full ",
+                    title: "font-normal text-md font-mono",
                     indicator: "text-medium",
-                    content: "text-small",
+                    content: "text-small flex flex-col gap-2",
                 }}
                 variant="bordered"
             >
@@ -19,12 +18,9 @@ const ListSuggestFriends = () => {
                     aria-label="Friends sugguest"
                     title="Danh sách bạn bè đề xuất"
                 >
-                    <CardFriendUser
-                        friend=''
-                    />
-                    <CardFriendUser
-                        friend=''
-                    />
+                    <p className='font-mono text-sm text-black dark:text-white'>
+                        Chưa có lời gợi ý kết bạn nào
+                    </p>
                 </AccordionItem>
             </Accordion>
         </div>

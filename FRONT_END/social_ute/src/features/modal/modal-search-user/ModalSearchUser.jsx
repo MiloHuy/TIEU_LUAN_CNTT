@@ -1,15 +1,23 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListSearchUser from "features/list/list-search-user";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
 import { useSearchParams } from "react-router-dom";
 import { getUserSearch } from "services/user.svc";
 
-const PopupSearch = ({ trigger }) => {
+const ModalSearchUser = ({ isOpen, onOpenChange }) => {
+    const dispatch = useDispatch()
+
+    const { onClose } = useDisclosure();
+
+    const handleCloseModal = () => {
+        onClose()
+    }
+
     const [searchParams, setSearchParams] = useSearchParams('')
     const [userSearch, setUserSearch] = useState()
     const [isLoading, setIsLoading] = useState(false)
-    const [isOpen, setIsOpen] = useState(false);
 
     const [filter, setFilter] = useState({
         page: 1,
@@ -46,10 +54,6 @@ const PopupSearch = ({ trigger }) => {
 
     }, [])
 
-    const handleClosePopup = () => {
-        setIsOpen(false)
-    }
-
     useEffect(() => {
         if (filter.size !== 0) {
             fetchUserSearch(
@@ -61,29 +65,19 @@ const PopupSearch = ({ trigger }) => {
     }, [fetchUserSearch, filter.size, filter.page, filter.search])
 
     return (
-        <Popover
-            disableAnimation
-            placement="right"
-            classNames={{
-                content: [
-                    "py-2 px-2 border text-white",
-                    'bg-bg_popup_primary'
-                ],
-            }}
-            radius='sm'
+        <Modal
             isOpen={isOpen}
-            onOpenChange={(open) => setIsOpen(open)}
-            triggerType='grid'
+            onOpenChange={onOpenChange}
+            // onClose={handleCloseModal}
+            radius="sm"
+            size='5xl'
+            backdrop='blur'
+            stlye={{ height: '1000px' }}
+            classNames={{
+                base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
+            }}
         >
-
-            <PopoverTrigger children>
-                {trigger}
-            </PopoverTrigger>
-
-            <PopoverContent
-                className="w-[300px] h-[200px]"
-
-            >
+            <ModalContent>
                 <div className='grid grid-cols-1 gap-2 w-full h-full overflow-auto'>
                     <SearchBlockDebounce
                         className='w-full'
@@ -95,16 +89,15 @@ const PopupSearch = ({ trigger }) => {
                             <div className='w-full h-full'>
                                 <ListSearchUser
                                     userSearch={userSearch.data}
-                                    handleClosePopup={handleClosePopup}
                                 />
                             </div>
 
                             : 'Chưa có ai hiện tại'
                     }
                 </div>
-            </PopoverContent>
-        </Popover >
+            </ModalContent>
+        </Modal>
     )
 }
 
-export default PopupSearch
+export default ModalSearchUser

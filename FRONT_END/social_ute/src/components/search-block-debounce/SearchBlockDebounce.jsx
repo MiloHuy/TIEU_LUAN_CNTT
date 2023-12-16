@@ -35,7 +35,7 @@ const SearchBlockDebounce = (props) => {
                 variant="bordered"
                 onChange={handlesearchChange}
                 placeholder="Nhập nội dung cần tìm kiếm."
-                className='text-sm text-white dark:text-white h-full'
+                className='text-sm text-black dark:text-white h-full'
             />
         </form>
     )
