@@ -27,7 +27,7 @@ const SearchBlockDebounce = (props) => {
     }
 
     return (
-        <form className={clsx('', props.className)}>
+        <form className={clsx('relative', props.className)}>
             <Input
                 type='text'
                 value={search}
@@ -35,7 +35,7 @@ const SearchBlockDebounce = (props) => {
                 variant="bordered"
                 onChange={handlesearchChange}
                 placeholder="Nhập nội dung cần tìm kiếm."
-                className='text-sm text-white dark:text-white'
+                className='text-sm text-black dark:text-white h-full'
             />
         </form>
     )

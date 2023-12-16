@@ -1,9 +1,11 @@
 import { Button, Input } from "@nextui-org/react";
 import { useFormik } from "formik";
+import { Camera } from 'lucide-react';
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createPost } from "services/post.svc";
+
 
 const FormUploadImageFile = () => {
     const [selectFiled, setSelectFiles] = useState('')
@@ -29,15 +31,6 @@ const FormUploadImageFile = () => {
 
         if (ListFile.length > 0) {
             setSelectFiles(e.target.files)
-            // const reader = new FileReader()
-            // reader.readAsDataURL(e.target.files[0])
-            // reader.onload = () => {  
-            //     console.log("Reading file " + reader.result)
-            //     setFiles(reader.result)
-            // }
-            // reader.onerror = error => {
-            //     console.log("error reading file " + error)
-            // }
 
             setImage(URL.createObjectURL(ListFile[0]))
         }
@@ -58,7 +51,7 @@ const FormUploadImageFile = () => {
 
             toast.success('Đăng bài viết thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -73,7 +66,7 @@ const FormUploadImageFile = () => {
 
             toast.error('Đăng bài viết thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -95,40 +88,58 @@ const FormUploadImageFile = () => {
     console.log('values: ' + Object.entries(values['post_img']))
 
     return (
-        <form className='h-[350px] max-h-max justify-start flex flex-col items-center'>
-            {
-                image ?
-                    <img
-                        loading="lazy"
-                        src={image}
-                        alt='img'
-                        className="h-2/3 w-full"
-                    />
-                    :
-
-                    <Input
-                        id="post_img"
-                        name='post_img'
-                        type="file"
-                        onChange={handleInputFile}
-                        accept="image/*"
-                        variant="bordered"
-                    />}
-
+        <form className='h-full gap-2 justify-start flex flex-col items-center'>
             <Input
                 name='post_description'
                 type='text'
-                variant='underlined'
-                className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full placeholder:text-black'
+                variant='bordered'
+                className=' text-sm rounded-sm w-full placeholder:text-black text-white'
                 placeholder='Hãy nói cảm nghĩ của bạn.'
                 onChange={formik.handleChange}
             />
 
+            <div className="flex items-center justify-between w-full h-full">
+                {
+                    image ?
+                        <label
+                            for="post_img"
+                            className="flex flex-col items-center justify-center w-full h-80">
+
+                            <img
+                                loading="lazy"
+                                src={image}
+                                alt='img'
+                                className="h-full w-full"
+                            />
+                        </label>
+                        :
+                        <label
+                            for="post_img"
+                            className="flex flex-col items-center justify-center w-full h-80 rounded-lg bg-bg_popup_secondary border-dashed">
+
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                <Camera size={50} strokeWidth={1} color='#000000' />
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG  </p>
+                            </div>
+
+                            <input
+                                id="post_img"
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleInputFile}
+                            />
+                        </label>
+                }
+            </div>
+
             <Button
                 type="submit"
+                radius="sm"
                 isLoading={isLoading}
                 onClick={handleCreatePost}
-                className='text-sm font-merriweather w-2/3'>
+                className='text-sm font-merriweather w-1/2'>
                 Upload
             </Button>
         </form>

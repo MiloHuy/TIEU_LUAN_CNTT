@@ -43,7 +43,7 @@ const FormLogin = (props) => {
 
             toast.success('Đăng nhập thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -51,14 +51,14 @@ const FormLogin = (props) => {
                 progress: undefined,
                 theme: "light",
             });
-            setTimeout(() => { navigate('/welcome') }, 3000)
+            setTimeout(() => { navigate('/welcome') }, 2000)
 
         } catch (err) {
             console.error(err)
 
             toast.error('Đăng nhập thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

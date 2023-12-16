@@ -1,9 +1,9 @@
-import FormCreateUser from "features/form-create-user"
+import ListAccountUser from "features/list/list-account-user"
 
 const ManageAccount = () => {
     return (
-        <div>
-            <FormCreateUser />
+        <div className='w-full h-full p-2 flex '>
+            <ListAccountUser />
         </div>
     )
 }

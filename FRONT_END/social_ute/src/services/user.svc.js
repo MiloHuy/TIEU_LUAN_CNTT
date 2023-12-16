@@ -61,7 +61,7 @@ export const AcceptFriend = async (id) => {
   return res;
 };
 
-export const RefuseFriend = async (id) => {
+export const RefuseRequest = async (id) => {
   const res = AxiosInstance.post(
     API_USER_ENDPOINT.POST.refuse_friend.replace(":id", id),
   );

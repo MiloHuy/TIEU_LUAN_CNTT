@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger, Spinner } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListSearchUser from "features/list/list-search-user";
 import { useCallback, useEffect, useState } from "react";
@@ -86,7 +86,7 @@ const PopupSearch = ({ trigger }) => {
             >
                 <div className='grid grid-cols-1 gap-2 w-full h-full overflow-auto'>
                     <SearchBlockDebounce
-                        className='w-full p-3'
+                        className='w-full'
                         onSubmit={handleSearchDebounce}
                     />
 
@@ -99,7 +99,7 @@ const PopupSearch = ({ trigger }) => {
                                 />
                             </div>
 
-                            : <Spinner color="default" size="lg" />
+                            : 'Chưa có ai hiện tại'
                     }
                 </div>
             </PopoverContent>

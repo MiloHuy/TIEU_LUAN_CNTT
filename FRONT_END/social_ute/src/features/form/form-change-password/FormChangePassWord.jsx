@@ -44,7 +44,7 @@ const FormChangePassWord = () => {
 
             toast.success('Thay đổi mật khẩu thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -61,7 +61,7 @@ const FormChangePassWord = () => {
 
             toast.error('Thay đổi mật khẩu thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

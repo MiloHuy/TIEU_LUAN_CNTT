@@ -8,7 +8,7 @@ import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { getPostById, likePost, storePost } from "services/post.svc";
-import { getFullName } from "utils/user.utils";
+import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 
 const CardPostUser = (props) => {
     const {
@@ -22,15 +22,22 @@ const CardPostUser = (props) => {
         save_posts } = props
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [like, setLike] = useState(liked)
-    const [save, setSave] = useState(save_posts)
+    const initStatusPost = {
+        isLiked: liked,
+        isSaved: save_posts,
+    }
+    const [statusPost, setStatusPosts] = useState(initStatusPost)
     const dispatch = useDispatch()
 
     const userName = getFullName(user_id?.first_name, user_id?.last_name)
+    const ID = getUserIdFromCookie()
 
     const handleLikePost = async () => {
         try {
-            setLike(!like)
+            setStatusPosts((prev) => ({
+                ...prev,
+                isLiked: !prev.isLiked
+            }))
 
             await likePost(post_id)
         }
@@ -46,7 +53,12 @@ const CardPostUser = (props) => {
             const postByid = await getPostById(post_id)
             dispatch(setInfoPost({ ...postByid }))
 
-            dispatch(setStatusPost({ like, save, number_likes }))
+            dispatch(
+                setStatusPost({
+                    like: statusPost.isLiked,
+                    save: statusPost.isSaved,
+                    number_likes
+                }))
         }
         catch (err) {
             console.log(err)
@@ -55,7 +67,10 @@ const CardPostUser = (props) => {
 
     const handleSavePost = async () => {
         try {
-            setSave(!save)
+            setStatusPosts((prev) => ({
+                ...prev,
+                isSaved: !prev.isSaved
+            }))
 
             await storePost(post_id)
         }
@@ -67,15 +82,22 @@ const CardPostUser = (props) => {
     return (
         <div className='w-10/12 p-2'>
             <Card
-                className="grid grid-rows-8 w-full h-[550px]"
+                classNames={{
+                    base: 'border-black border dark:border-none'
+                }}
+                className="grid grid-rows-8 w-full h-[550px] "
                 radius='sm'
                 shadow='sm'>
                 <CardHeader className="flex gap-3 justify-between row-span-1">
                     <div className="flex flex-row gap-3 items-center">
                         <Avatar src={post_avatar} />
 
-                        <Link color="foreground" href={`welcome/home-guest/${user_id._id}`} underline="active" >
-                            <p className="text-md hover:underline text-sm text-black dark:text-white font-open_sans font-bold ">
+                        <Link
+                            color="foreground"
+                            href={user_id._id !== ID ? `welcome/home-guest/${user_id._id}` : `welcome/home-user/${ID}`}
+                            underline="active"
+                        >
+                            <p className="text-md hover:underline text-md text-black dark:text-white font-mono  ">
                                 {userName}
                             </p>
                         </Link>
@@ -85,6 +107,8 @@ const CardPostUser = (props) => {
                     <DropdownShowMoreOptions
                         user_id={user_id}
                         post_id={post_id}
+
+
                     />
 
                 </CardHeader>
@@ -110,7 +134,7 @@ const CardPostUser = (props) => {
                                     strokeWidth={1.5}
                                     absoluteStrokeWidth
                                     size={20}
-                                    fill={like === true ? 'red' : 'none'} />
+                                    fill={statusPost.isLiked === true ? 'red' : 'none'} />
                             </Button>
 
                             <Button
@@ -136,30 +160,32 @@ const CardPostUser = (props) => {
                             <Bookmark
                                 size={20}
                                 strokeWidth={1.5}
-                                fill={save === true ? 'yellow' : 'none'} />
+                                fill={statusPost.isSaved === true ? 'yellow' : 'none'} />
                         </Button>
                     </div>
 
                     <div className='flex flex-col gap-2 px-2'>
                         <div className="flex-row flex gap-1">
-                            <h2 className='text-sm text-black dark:text-white font-open_sans font-bold'>{like === true ? Number(number_likes) + 1 : number_likes}</h2>
-                            <span className='text-sm text-black dark:text-white font-open_sans font-bold'>lượt thích</span>
+                            <h2 className='text-md text-black dark:text-white font-mono '>{number_likes}</h2>
+                            <span className='text-md text-black dark:text-white font-mono '>lượt thích</span>
                         </div>
 
                         <div className="flex-row flex gap-1">
-                            <h2 className="text-sm text-black dark:text-white  font-open_sans font-bold">{`${userName}: ${post_description}`}</h2>
+                            <h2 className="text-md text-black dark:text-white  font-mono ">{`${userName}: ${post_description}`}</h2>
                         </div>
 
                         <Input variant='underlined' placeholder="Thêm bình luận..." />
                     </div>
-                </div>
-            </Card>
+                </div >
+            </Card >
 
             <ModalPostUser
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
 
                 userName={userName}
+                handleCallbackLikePost={handleLikePost}
+                handleCallbackSavedPost={handleSavePost}
             />
 
         </div >

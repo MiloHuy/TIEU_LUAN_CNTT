@@ -5,7 +5,7 @@ import ModalUpdateUser from "features/modal/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { getMeInfo } from "services/me.svc";
-import { AcceptFriend, AddCancelFriend, RefuseFriend, followGuest } from "services/user.svc";
+import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest } from "services/user.svc";
 
 const HeaderHome = (props) => {
     const { userStatisics, userInfo, userName, userAvatar } = props
@@ -90,7 +90,7 @@ const HeaderHome = (props) => {
                 ...prev,
                 isLoadingRequest: true
             }))
-            await RefuseFriend(userInfo.user._id)
+            await RefuseRequest(userInfo.user._id)
 
             setCheck((prev) => ({
                 ...prev,
@@ -177,18 +177,59 @@ const HeaderHome = (props) => {
         <div className="grid grid-rows-2 ">
             <div className='grid grid-cols-7 gap-2'>
                 <div className='col-span-2 justify-center flex'>
-                    <img
-                        loading='lazy'
-                        alt='avatar'
-                        src={userAvatar ? userAvatar : avatar_URL}
-                        className='rounded-full w-1/2'
-                    />
+                    {
+                        userAvatar
+                            ?
+                            <Dropdown
+                                itemClasses={{
+                                    base: "py-0 w-full bg-black",
+                                    wrapper: 'bg-black',
+                                    title: "font-normal text-md font-mono ",
+                                    indicator: "text-medium ",
+                                    content: "text-small flex flex-col gap-2 ",
+                                }}
+                                placement="bottom"
+                                variant='bordered'
+                            >
+                                <DropdownTrigger>
+                                    <img
+                                        loading='lazy'
+                                        alt='avatar'
+                                        src={userAvatar}
+                                        className='rounded-full w-1/2 cursor-pointer'
+                                    />
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    aria-label="avatar"
+                                    variant="light"
+                                    classNames={{
+                                        base: 'bg-black text-white w-full h-full',
+                                        wrapper: 'bg-black'
+                                    }}
+                                >
+                                    <DropdownItem
+                                        classNames={{
+                                            base: 'bg-black text-white',
+                                            wrapper: 'bg-black'
+                                        }}
+                                        key="avatar" >
+                                        <p className="font-mono">Chỉnh sửa ảnh đại diện</p>
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                            : <img
+                                loading='lazy'
+                                alt='avatar'
+                                src={avatar_URL}
+                                className='rounded-full w-1/2'
+                            />
+                    }
                 </div>
 
                 <div className="col-span-5">
                     <div className='grid grid-rows-2 gap-6'>
                         <div className="flex gap-2 w-full items-center">
-                            <p className='dark:text-white font-noto text-center'>
+                            <p className='dark:text-white text-black font-mono text-center'>
                                 {userName}
                             </p>
 
@@ -197,7 +238,7 @@ const HeaderHome = (props) => {
                                     <div className='flex gap-2'>
                                         <Button
                                             radius="sm"
-                                            className="w-50 h-7"
+                                            className="w-50 h-7 font-mono"
                                             onClick={handleUpdateUser}
                                         >
                                             Chỉnh sửa trang cá nhân
@@ -359,18 +400,18 @@ const HeaderHome = (props) => {
 
                         <div className="flex flex-row gap-7">
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">{count_posts}</p>
-                                <p className="dark:text-white font-noto">Bài viết</p>
+                                <p className="dark:text-white font-mono text-black">{count_posts}</p>
+                                <p className="dark:text-white font-mono text-black">Bài viết</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">{count_followers}</p>
-                                <p className="dark:text-white font-noto">người theo dõi</p>
+                                <p className="dark:text-white font-mono text-black">{count_followers}</p>
+                                <p className="dark:text-white font-mono text-black">người theo dõi</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-noto">Đang theo dõi:</p>
-                                <p className="dark:text-white font-noto">{`${count_followings || 0} người dùng`}</p>
+                                <p className="dark:text-white font-mono text-black">Đang theo dõi:</p>
+                                <p className="dark:text-white font-mono text-black">{`${count_followings || 0} người dùng`}</p>
                             </div>
                         </div>
                     </div>

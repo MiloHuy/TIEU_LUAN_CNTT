@@ -8,19 +8,18 @@ const ModalUploadImageFile = ({ isOpen, onOpenChange, onClose }) => {
             isOpen={isOpen}
             onClose={onClose}
             onOpenChange={onOpenChange}
-            radius="2xl"
-            size='sm'
+            radius="3xl"
+            size='lg'
             backdrop='blur'
-            stlye={{ height: '1000px' }}
             classNames={{
-                base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
+                base: "border-[#ffffff] bg-[#0C0C0C] dark:bg-black text-[#a8b0d3] h-[520px]",
             }}
         >
             <ModalContent>
                 {(onClose) => (
                     <>
                         <ModalHeader
-                            className="flex flex-col gap-1 justify-center text-black">
+                            className="flex gap-1 justify-center text-white">
                             Tạo bài viết mới - File
                         </ModalHeader>
 

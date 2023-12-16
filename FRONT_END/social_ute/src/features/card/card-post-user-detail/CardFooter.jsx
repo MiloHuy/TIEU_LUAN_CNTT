@@ -1,15 +1,16 @@
 import { Button, Input } from "@nextui-org/react";
 import { selectPostId, selectStatusLikedPost, selectStatusNumberLikes, selectStatusSavedPost } from "app/slice/post/post.slice";
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { likePost, postComment, storePost } from "services/post.svc";
+import { postComment } from "services/post.svc";
 
-const CardFooter = ({ signalFlag }) => {
+const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPost }) => {
     const number_likes = useSelector(selectStatusNumberLikes)
     const [commentInput, setCommentInput] = useState({
         comment_content: ''
     })
+    const [isLoading, setIsLoading] = useState(false)
 
     const statusPost = {
         liked: useSelector(selectStatusLikedPost), // boolean
@@ -26,27 +27,35 @@ const CardFooter = ({ signalFlag }) => {
         setCommentInput({ comment_content: e.target.value })
     }
 
+    const handleCallBackLikePost = useCallback(() => {
+        handleCallbackLikePost();
+    }, [handleCallbackLikePost])
+
+    const handleCallBackSavedPost = useCallback(() => {
+        handleCallbackSavedPost();
+    }, [handleCallbackSavedPost])
+
     const handleLikePost = async () => {
         try {
-
             setStatusPost((prev) => ({
                 ...prev,
                 liked: !prev.liked
             }))
 
-            await likePost(post_id)
+            handleCallBackLikePost()
         }
         catch (err) {
             console.log(err)
         }
-
     }
 
     const handlePostComment = async () => {
         try {
+            setIsLoading(true)
             await postComment(post_id, commentInput)
 
             setCommentInput({ comment_content: '' })
+            setIsLoading(false)
 
             signalFlag(true)
         }
@@ -57,7 +66,12 @@ const CardFooter = ({ signalFlag }) => {
 
     const handleSavePost = async () => {
         try {
-            await storePost(post_id)
+            setStatusPost((prev) => ({
+                ...prev,
+                saved: !prev.saved
+            }))
+
+            handleCallBackSavedPost()
         }
         catch (err) {
             console.log(err)
@@ -76,7 +90,7 @@ const CardFooter = ({ signalFlag }) => {
 
     return (
         <div>
-            <div className="flex justify-between flex-row">
+            <div className="flex justify-between flex-row px-2">
                 <div className='flex flex-row gap-1'>
                     <Button
                         onClick={handleLikePost}
@@ -123,7 +137,7 @@ const CardFooter = ({ signalFlag }) => {
                 <div className="flex-row flex gap-1">
                     <h2
                         className='text-sm text-black dark:text-white font-open_sans font-bold'>
-                        {postStatus.liked === true ? Number(number_likes) + 1 : number_likes}
+                        {number_likes}
                     </h2>
 
                     <span className='text-sm text-black dark:text-white font-open_sans font-bold'>
@@ -137,22 +151,21 @@ const CardFooter = ({ signalFlag }) => {
                         value={commentInput.comment_content}
                         onChange={handleOnChange}
                         variant='bordered'
+                        isLoading={isLoading}
                         placeholder="Thêm bình luận..."
-                        className='text-black dark:placeholder:text-black border-black px-2'
+                        className='text-black dark:placeholder:text-black border-black px-1'
                         endContent={
                             <Button
                                 size="sm"
                                 variant="bordered"
                                 onClick={handlePostComment}
                                 isDisabled={active}
-                                className={`hover:bg-black border-black text-black font-mont font-bold text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                className={`hover:bg-black border-black text-black hover:text-white font-mont font-bold text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
                                 color="primary"
                             >
                                 Đăng
                             </Button>}
                     />
-
-
                 </div>
             </div>
         </div>

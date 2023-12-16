@@ -11,8 +11,6 @@ const CardHeader = () => {
     const user_img = useSelector(selectAvatarPostUser)
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    console.log('userFirstName: ' + userFirstName)
-
     return (
         <div className="flex flex-row gap-3 items-center h-full">
             <Avatar src={user_img} />

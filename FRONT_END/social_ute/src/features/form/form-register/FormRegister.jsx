@@ -87,7 +87,7 @@ const FormRegister = (props) => {
         })
     }, [formLabel])
 
-    const handleRegisterForm = async () => {
+    const handleRegisterForm = async (e) => {
         try {
             faculty ? values['department'] = faculty : values['department'] = department_t
             const user_data = await register(values)
@@ -95,7 +95,7 @@ const FormRegister = (props) => {
 
             toast.success('Đăng ký thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -104,16 +104,15 @@ const FormRegister = (props) => {
                 theme: "light",
             });
 
-            formik.resetForm();
+            setTimeout(() => { handleOpenRegiser() }, 2000)
 
-            setTimeout(() => { handleOpenRegiser() }, 3000)
         }
         catch (err) {
             console.log("Error: ", err)
 
             toast.error('Đăng ký thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -149,6 +148,7 @@ const FormRegister = (props) => {
                     type="text"
                     name='first_name'
                     label={formLabel.first_name}
+                    value={values['first_name']}
                     defaultValue=""
                     className="w-full"
                     onChange={formik.handleChange}
@@ -158,6 +158,7 @@ const FormRegister = (props) => {
                     isRequired
                     type="text"
                     name='last_name'
+                    value={values['last_name']}
                     label={formLabel.last_name}
                     defaultValue=""
                     className="w-full"
@@ -168,6 +169,7 @@ const FormRegister = (props) => {
                 isRequired
                 type="email"
                 name="gmail"
+                value={values['gmail']}
                 label={formLabel.email}
                 defaultValue=""
                 placeholder="a@hcmute.edu.vn"
@@ -180,6 +182,7 @@ const FormRegister = (props) => {
                 isRequired
                 type="text"
                 name='phone_number'
+                value={values['phone_number']}
                 label={formLabel.phone_number}
                 errorMessage={errors?.phone_number}
                 defaultValue=""
@@ -192,6 +195,7 @@ const FormRegister = (props) => {
                     isRequired
                     type="password"
                     name='pass_word'
+                    value={values['pass_word']}
                     label={formLabel.pass_word}
                     defaultValue=""
                     className="w-full"
@@ -202,6 +206,7 @@ const FormRegister = (props) => {
                     isRequired
                     type="text"
                     name='id'
+                    value={values['id']}
                     label={formLabel.id}
                     errorMessage={errors?.id}
                     defaultValue=""
@@ -215,6 +220,7 @@ const FormRegister = (props) => {
                     isRequired
                     label="Faculty"
                     name='faculty'
+                    value={values['department']}
                     defaultValue='null'
                     isDisabled={isDisabledFaculity}
                     placeholder="Select Faculty"
@@ -235,6 +241,7 @@ const FormRegister = (props) => {
                     label="Department"
                     name='department'
                     isDisabled={isDisabledDepartment}
+                    value={values['department']}
                     placeholder="Select department"
                     className="w-full"
                     defaultValue='null'

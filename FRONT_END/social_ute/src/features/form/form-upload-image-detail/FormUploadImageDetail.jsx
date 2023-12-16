@@ -7,7 +7,7 @@ const FormUploadImageDetail = () => {
                 <Camera size={40} color='#857a7a' strokeWidth={0.75} />
             </div>
 
-            <p className='dark:text-white font-noto'>
+            <p className='dark:text-white font-mono text-black'>
                 Hãy chia sẻ bức ảnh đầu tiên của bạn nào.
             </p>
         </div>

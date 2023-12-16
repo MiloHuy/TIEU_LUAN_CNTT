@@ -1,5 +1,5 @@
 import { Button, Modal, ModalContent } from "@nextui-org/react";
-import { Bookmark, Heart, SendHorizontal } from 'lucide-react';
+import { Bookmark, Heart, SendHorizontal, Trash2 } from 'lucide-react';
 
 const ModalShowMoreOptions = ({ isOpen, onOpenChange }) => {
     return (
@@ -70,6 +70,19 @@ const ModalShowMoreOptions = ({ isOpen, onOpenChange }) => {
                                         className='transform -rotate-28 -translate-y-0.5' />}
                             >
                                 <p className='text-md font-open_sans font-bold dark:text-white gap-2'> Chia sẻ bài viết</p>
+                            </Button>
+
+                            <Button
+                                className='text-white w-full flex justify-start text-lg font-normal'
+                                key="share"
+                                variant="light"
+                                startContent={
+                                    <Trash2
+                                        size={19}
+                                        strokeWidth={1}
+                                    />}
+                            >
+                                <p className='text-md font-open_sans font-bold dark:text-white gap-2'> Xóa bài viết</p>
                             </Button>
                         </div>
                     </div>

@@ -29,7 +29,6 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     }
 
     const handleOpenModal = () => {
-        console.log('adasd')
         if (openModal.drop_down === true && openModal.confirm_modal !== true) {
             onOpen()
         }
@@ -57,7 +56,6 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     }
 
     const handleActionByKey = (key) => {
-        console.log('key', key);
         if (key === 'delete') {
             handleCloseModal()
             handleOpenModelAlert()
@@ -70,7 +68,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
 
             toast.success('Xóa bài viết thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -85,7 +83,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
 
             toast.error('Xóa bài viết thất bại!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

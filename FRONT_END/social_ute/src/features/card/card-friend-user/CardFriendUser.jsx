@@ -69,7 +69,7 @@ const CardFriendUser = ({ friend }) => {
 
             toast.success('Hủy kết bạn thành công!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -85,7 +85,7 @@ const CardFriendUser = ({ friend }) => {
 
             toast.error('Hủy kết bạn thất bạn!!!', {
                 position: "bottom-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -101,11 +101,12 @@ const CardFriendUser = ({ friend }) => {
     }
 
     return (
-        <div className="relative group w-full h-[100px] rounded-[15px] border flex">
+        <div className="relative group w-full h-[100px] rounded-[15px] border flex border-black dark:border-white">
             <img
                 className="h-full rounded-[15px] p-2"
                 alt='friend'
                 src={friend.avatar.url}
+            // src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
             />
 
             <div className='flex justify-between items-center w-full'>
