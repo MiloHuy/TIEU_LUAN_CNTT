@@ -8,10 +8,13 @@ const Post_liked = require('../models/Post_liked')
 const Post_stored = require('../models/Post_stored')
 const Follow = require('../models/Follow');
 const { PostAPIFeatures } = require('../utils/APIFeatures');
+const Notification = require('../models/Notification');
+const Noti_user = require('../models/Noti_user');
 
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
+        // xem xét thay hàm find thành findOne
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
 
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
@@ -220,6 +223,30 @@ exports.create = (async (req, res) => {
             post_img,
         });
 
+        const content = req.user.first_name + ' ' + req.user.last_name +' vừa mới đăng bài.';
+
+        const noti = await Notification.create({
+            user_id: req.user._id,
+            noti_content: content,
+            post_id: post._id,
+            noti_create_time: currentDate
+        })
+
+        const follower_Users = await Follow.find({user_id: req.user._id})
+            .select('follower_user_id');
+
+        const follower_user_ids = follower_Users
+            .map(follow => follow.follower_user_id)
+            .flat();
+
+        for (const user_id of follower_user_ids) {
+            await Noti_user.findOneAndUpdate(
+                { user_id: user_id },
+                { $push: { 'detail': { noti_id: noti._id } } },
+                { new: true, upsert: true }
+            );
+        }
+
         res.status(201).json({
             success: true,
             message: 'Đăng bài thành công.',
@@ -293,8 +320,8 @@ exports.store = (async (req, res) => {
 //POST /posts/like/:id
 exports.like = (async (req, res) => {
     try {
-        const check_post = await Post.findOne({ _id: req.params.id });
-        if(!check_post){
+        const post = await Post.findOne({ _id: req.params.id });
+        if(!post){
             return res.status(404).json({
                 success: false,
                 code: 2010,
@@ -305,11 +332,11 @@ exports.like = (async (req, res) => {
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
         following_User_Ids.push(req.user._id);
-        if (!following_User_Ids.some(id => id.equals(check_post.user_id))){
+        if (!following_User_Ids.some(id => id.equals(post.user_id))){
             return res.status(400).json({
                 success: false,
                 code: 2011,
-                message: 'Không thể thao tác. Bình luận này của người mà bạn chưa theo dõi.',
+                message: 'Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.',
             });
         }
 
@@ -322,6 +349,19 @@ exports.like = (async (req, res) => {
             //console.log(user)
             liked.user_id.pull(req.user._id);
             await liked.save();
+
+            const noti = await Notification.findOneAndDelete({
+                user_id: req.user._id,
+                post_id: req.params.id,
+            })
+            if(noti){
+                await Noti_user.findOneAndUpdate(
+                    { user_id: post.user_id },
+                    { $pull: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+
             res.status(201).json({
                 success: true,
                 message: 'Bỏ yêu thích.',
@@ -329,6 +369,23 @@ exports.like = (async (req, res) => {
         } else{
             liked.user_id.push(req.user._id);
             await liked.save();
+
+            const currentDate = new Date();
+            const content = req.user.first_name + ' ' + req.user.last_name +' yêu thích bài viết của bạn.';
+
+            const noti = await Notification.create({
+                user_id: req.user._id,
+                noti_content: content,
+                post_id: post._id,
+                noti_create_time: currentDate
+            })
+
+            await Noti_user.findOneAndUpdate(
+                { user_id: post.user_id },
+                { $push: { 'detail': { noti_id: noti._id } } },
+                { new: true, upsert: true }
+            );
+
             res.status(201).json({
                 success: true,
                 message: 'Yêu thích bài viết thành công.',
@@ -380,6 +437,28 @@ exports.destroy = (async (req, res) => {
             });
         }
         await Post.deleteOne({ _id: req.params.id})
+
+        const noti = await Notification.findOneAndDelete({
+            user_id: req.user._id,
+            post_id: req.params.id
+        })
+        if(noti){
+            const follower_Users = await Follow.find({user_id: req.user._id})
+                .select('follower_user_id');
+
+            const follower_user_ids = follower_Users
+                .map(follow => follow.follower_user_id)
+                .flat();
+
+            for (const user_id of follower_user_ids) {
+                await Noti_user.findOneAndUpdate(
+                    { user_id: user_id },
+                    { $pull: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+        }
+        
         res.status(200).json({
             success: true,
             message: 'Xóa bài viết thành công.',
