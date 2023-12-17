@@ -2,7 +2,8 @@ const Addfriend = require('../models/Addfriend')
 const Follow = require('../models/Follow');
 const Friend = require('../models/Friend');
 const User = require('../models/User');
-
+const Notification = require('../models/Notification');
+const Noti_user = require('../models/Noti_user');
 
 //POST /interacts/follow/:id
 exports.follow = (async (req, res) => {
@@ -101,13 +102,31 @@ exports.addfriend = (async (req, res) => {
             });
         }
         const user = await Addfriend.findOneAndUpdate(
-            { user_id: req.user._id },
-            {},
-            { new: true, upsert: true }
-        );
+                { user_id: req.user._id },
+                {},
+                { new: true, upsert: true }
+            )
+            .populate('user_id', 'first_name last_name');
+
+        const first_name = user.user_id.first_name;
+        const last_name = user.user_id.last_name;
+        
         if(user.add_user_id.includes(req.params.id)){
             user.add_user_id.pull(req.params.id);
             await user.save();
+
+            const noti = await Notification.findOneAndDelete({
+                user_id: req.user._id,
+                add_user_id: req.params.id,
+            })
+            if(noti){
+                await Noti_user.findOneAndUpdate(
+                    { user_id: req.params.id },
+                    { $pull: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+
             return res.status(201).json({
                 success: true,
                 message: 'Hủy lời mời thành công.',
@@ -115,6 +134,22 @@ exports.addfriend = (async (req, res) => {
         } else{
             user.add_user_id.push(req.params.id);
             await user.save();
+
+            const currentDate = new Date();
+            const content = first_name + ' ' + last_name +' đã gửi lời mời kết bạn.';
+            const noti = await Notification.create({
+                user_id: req.user._id,
+                noti_content: content,
+                add_user_id: req.params.id,
+                noti_create_time: currentDate
+            })
+
+            await Noti_user.findOneAndUpdate(
+                { user_id: req.params.id },
+                { $push: { 'detail': { noti_id: noti._id } } },
+                { new: true, upsert: true }
+            );
+
             return res.status(201).json({
                 success: true,
                 message: 'Gửi lời mời thành công.',

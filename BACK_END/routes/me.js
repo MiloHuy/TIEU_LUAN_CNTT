@@ -14,6 +14,11 @@ const {
 } = require('../controllers/meController.js');
 
 const {
+    getNotis,
+    readNoti,
+} = require('../controllers/nofiController.js');
+
+const {
     verifyToken,
     isUser,
 } = require('../middlewares/authMiddleware.js');
@@ -25,8 +30,11 @@ router.get('/account/info', verifyToken, isUser, getInfo);
 router.get('/friend-request', verifyToken, isUser, getFriendRequest);
 router.get('/friends', verifyToken, isUser, getFriends);
 router.get('/friends/search', verifyToken, isUser, searchFriends);
+router.get('/notis', verifyToken, isUser, getNotis);
+router.post('/notis/read/:id', verifyToken, isUser, readNoti);
 router.put('/account/info', verifyToken, isUser, updateInfo);
 router.put('/account/password', verifyToken, isUser, updatePassword);
+
 
 
 

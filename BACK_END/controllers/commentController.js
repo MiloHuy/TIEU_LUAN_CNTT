@@ -3,6 +3,8 @@ const Post = require('../models/Post')
 const Comment = require('../models/Comment');
 const Comment_liked = require('../models/Comment_like');
 const Follow = require('../models/Follow');
+const Notification = require('../models/Notification');
+const Noti_user = require('../models/Noti_user');
 
 
 //GET /:Post_id
@@ -117,6 +119,21 @@ exports.create = (async (req, res) => {
             ...req.body, 
             create_comment_time: currentDate
         });
+
+        const content = req.user.first_name + ' ' + req.user.last_name +' bình luận bài viết của bạn.';
+
+        const noti = await Notification.create({
+            user_id: req.user._id,
+            noti_content: content,
+            post_id: post._id,
+            noti_create_time: currentDate
+        })
+        await Noti_user.findOneAndUpdate(
+            { user_id: post.user_id },
+            { $push: { 'detail': { noti_id: noti._id } } },
+            { new: true, upsert: true }
+        );
+
         res.status(201).json({
             success: true,
             message: 'Comment thành công.',
