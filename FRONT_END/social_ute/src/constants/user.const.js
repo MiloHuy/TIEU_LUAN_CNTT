@@ -1,6 +1,7 @@
 export const USERCOOKIES = {
   userID: "userID",
   userName: "userName",
+  userAvatar: "userAvatar",
 };
 
 export const RELATIONSHIP = {

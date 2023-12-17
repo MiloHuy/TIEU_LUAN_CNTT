@@ -52,13 +52,15 @@ const FormUploadImageFile = () => {
             toast.success('Đăng bài viết thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
             });
+
+            setTimeout(() => { window.location.reload() }, 2500)
         }
         catch (err) {
             setIsLoading(false)
@@ -67,7 +69,7 @@ const FormUploadImageFile = () => {
             toast.error('Đăng bài viết thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -84,8 +86,6 @@ const FormUploadImageFile = () => {
     })
 
     const { values, errors } = formik
-
-    console.log('values: ' + Object.entries(values['post_img']))
 
     return (
         <form className='h-full gap-2 justify-start flex flex-col items-center'>
@@ -115,7 +115,7 @@ const FormUploadImageFile = () => {
                         :
                         <label
                             for="post_img"
-                            className="flex flex-col items-center justify-center w-full h-80 rounded-lg bg-bg_popup_secondary border-dashed">
+                            className="flex flex-col items-center justify-center w-full h-80 rounded-lg bg-bg_popup_secondary border-dashed cursor-pointer">
 
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <Camera size={50} strokeWidth={1} color='#000000' />
@@ -139,8 +139,8 @@ const FormUploadImageFile = () => {
                 radius="sm"
                 isLoading={isLoading}
                 onClick={handleCreatePost}
-                className='text-sm font-merriweather w-1/2'>
-                Upload
+                className='text-lg font-mono w-1/2'>
+                Đăng
             </Button>
         </form>
     )

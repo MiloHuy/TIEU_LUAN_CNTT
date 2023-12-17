@@ -2,7 +2,7 @@ import { Button, Modal, ModalContent, ModalFooter, ModalHeader } from "@nextui-o
 import { Check, X } from 'lucide-react';
 import { useCallback } from "react";
 
-const ModalConfirm = ({ isOpen, onOpenChange, handleCallback, onClose, title }) => {
+const ModalConfirm = ({ isOpen, onOpenChange, handleCallback, onClose, title, isLoading }) => {
 
     const handleAgree = useCallback(() => {
         handleCallback();
@@ -36,6 +36,7 @@ const ModalConfirm = ({ isOpen, onOpenChange, handleCallback, onClose, title }) 
                         <ModalFooter>
                             <div className='w-full grid grid-cols-2 gap-2 items-center'>
                                 <Button
+                                    isLoading={isLoading}
                                     color="danger"
                                     variant="bordered"
                                     onPress={handleAgree}

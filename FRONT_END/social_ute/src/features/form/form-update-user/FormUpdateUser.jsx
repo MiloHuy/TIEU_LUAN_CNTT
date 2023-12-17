@@ -90,7 +90,7 @@ const FormUpdateUser = (props) => {
             toast.success('Cập nhật thông tin thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -104,7 +104,7 @@ const FormUpdateUser = (props) => {
             toast.error('Cập nhật thông tin thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,

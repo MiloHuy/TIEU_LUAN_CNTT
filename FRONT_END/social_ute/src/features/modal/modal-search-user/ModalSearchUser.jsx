@@ -1,20 +1,11 @@
-import { Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent } from "@nextui-org/react";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListSearchUser from "features/list/list-search-user";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from 'react-redux';
 import { useSearchParams } from "react-router-dom";
 import { getUserSearch } from "services/user.svc";
 
-const ModalSearchUser = ({ isOpen, onOpenChange }) => {
-    const dispatch = useDispatch()
-
-    const { onClose } = useDisclosure();
-
-    const handleCloseModal = () => {
-        onClose()
-    }
-
+const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
     const [searchParams, setSearchParams] = useSearchParams('')
     const [userSearch, setUserSearch] = useState()
     const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +42,6 @@ const ModalSearchUser = ({ isOpen, onOpenChange }) => {
         } catch (error) {
             console.log(error)
         }
-
     }, [])
 
     useEffect(() => {
@@ -68,33 +58,41 @@ const ModalSearchUser = ({ isOpen, onOpenChange }) => {
         <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
-            // onClose={handleCloseModal}
+            onClose={onCloseModal}
+            hideCloseButton
             radius="sm"
-            size='5xl'
+            size='2xl'
             backdrop='blur'
-            stlye={{ height: '1000px' }}
+            scrollBehavior='outside'
             classNames={{
-                base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3]",
+                base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3] h-[350px] py-3 px-6",
             }}
         >
             <ModalContent>
-                <div className='grid grid-cols-1 gap-2 w-full h-full overflow-auto'>
-                    <SearchBlockDebounce
-                        className='w-full'
-                        onSubmit={handleSearchDebounce}
-                    />
+                {
+                    (onClose) => (
+                        <div className='flex flex-col w-full h-full gap-5 '>
+                            <SearchBlockDebounce
+                                className='w-full'
+                                onSubmit={handleSearchDebounce}
+                            />
+                            {
+                                userSearch ?
+                                    <div className='w-full h-4/5 overflow-auto'>
+                                        <ListSearchUser
+                                            userSearch={userSearch.data}
+                                        // onCloseModal={onClose}
+                                        />
+                                    </div>
 
-                    {
-                        userSearch ?
-                            <div className='w-full h-full'>
-                                <ListSearchUser
-                                    userSearch={userSearch.data}
-                                />
-                            </div>
-
-                            : 'Chưa có ai hiện tại'
-                    }
-                </div>
+                                    :
+                                    <p className="text-lg font-mono text-black">
+                                        Chưa có ai hiện tại
+                                    </p>
+                            }
+                        </div>
+                    )
+                }
             </ModalContent>
         </Modal>
     )

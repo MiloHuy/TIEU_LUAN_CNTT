@@ -43,6 +43,13 @@ const SidebarBody = (props) => {
         }))
     }
 
+    const handleOpenModelSearch = () => {
+        setOpenModal((prev) => ({
+            ...prev,
+            modal_search: true
+        }))
+    }
+
     const handleNavigateHome = () => {
         navigate('/welcome')
     }
@@ -63,6 +70,7 @@ const SidebarBody = (props) => {
     }
 
     const handleOpenModal = () => {
+        console.log('adads')
         if (openModal.modal_search === true && openModal.modal_file !== true) {
             onOpen()
         }
@@ -121,7 +129,7 @@ const SidebarBody = (props) => {
                     /> */}
 
                     <Button
-                        onClick={handleOpenModelCreate01}
+                        onClick={handleOpenModelSearch}
                         className='w-full flex justify-start gap-6'
                         color="default"
                         variant="light"
@@ -135,6 +143,7 @@ const SidebarBody = (props) => {
                     <ModalSearchUser
                         isOpen={openModal.modal_search}
                         onOpenChange={handleOpenModal}
+                        onCloseModal={handleCloseModal}
                     />
 
                     <PopupNofication

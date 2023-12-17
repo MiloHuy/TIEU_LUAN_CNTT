@@ -83,7 +83,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
             toast.success('Chấp nhận kết bạn thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -100,7 +100,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
             toast.error('Chấp nhận kết bạn thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -125,7 +125,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
             toast.success('Từ chối kết bạn thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -141,7 +141,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
             toast.error('Từ chối kết bạn thất bạn!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,

@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
 import FormUploadImageFile from 'features/form/form-upload-image-file';
 
-const ModalUploadImageFile = ({ isOpen, onOpenChange, onClose }) => {
+const ModalChangeAvatar = ({ isOpen, onOpenChange, onClose }) => {
     return (
         <Modal
             scrollBehavior='outside'
@@ -19,7 +19,7 @@ const ModalUploadImageFile = ({ isOpen, onOpenChange, onClose }) => {
                 {(onClose) => (
                     <>
                         <ModalHeader
-                            className="flex gap-1 justify-center text-white font-mono">
+                            className="flex gap-1 justify-center text-white">
                             Tạo bài viết mới - File
                         </ModalHeader>
 
@@ -33,4 +33,4 @@ const ModalUploadImageFile = ({ isOpen, onOpenChange, onClose }) => {
     )
 }
 
-export default ModalUploadImageFile
+export default ModalChangeAvatar

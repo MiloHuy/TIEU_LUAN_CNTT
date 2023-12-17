@@ -7,6 +7,7 @@ import ModalPostUser from "features/modal/modal-post-user";
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { getPostById, likePost, storePost } from "services/post.svc";
 import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 
@@ -36,7 +37,7 @@ const CardPostUser = (props) => {
         try {
             setStatusPosts((prev) => ({
                 ...prev,
-                isLiked: !prev.isLiked
+                isLiked: !prev.isLiked,
             }))
 
             await likePost(post_id)
@@ -69,7 +70,7 @@ const CardPostUser = (props) => {
         try {
             setStatusPosts((prev) => ({
                 ...prev,
-                isSaved: !prev.isSaved
+                isSaved: !prev.isSaved,
             }))
 
             await storePost(post_id)
@@ -78,6 +79,26 @@ const CardPostUser = (props) => {
             console.log(err)
         }
     }
+
+    const CopyURL = () => {
+        const el = document.createElement("input");
+        el.value = `http://localhost:8080/welcome/post/${post_id}`;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+
+        toast.success('Sao chép đường dẫn thành công!!!', {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    };
 
     return (
         <div className='w-10/12 p-2'>
@@ -108,7 +129,9 @@ const CardPostUser = (props) => {
                         user_id={user_id}
                         post_id={post_id}
 
-
+                        statusPost={statusPost}
+                        handleCallbackLikedPost={handleLikePost}
+                        handleCallbackSavedPost={handleSavePost}
                     />
 
                 </CardHeader>
@@ -147,7 +170,12 @@ const CardPostUser = (props) => {
                                 <MessageCircle size={20} strokeWidth={1.5} />
                             </Button>
 
-                            <Button size="sm" isIconOnly variant="light" >
+                            <Button
+                                size="sm"
+                                isIconOnly
+                                variant="light"
+
+                                onClick={CopyURL}>
                                 <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
                             </Button>
                         </div>

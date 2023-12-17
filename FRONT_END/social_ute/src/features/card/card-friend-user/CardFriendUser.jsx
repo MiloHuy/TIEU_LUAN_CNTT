@@ -70,7 +70,7 @@ const CardFriendUser = ({ friend }) => {
             toast.success('Hủy kết bạn thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -78,7 +78,7 @@ const CardFriendUser = ({ friend }) => {
                 theme: "light",
             });
 
-            window.location.reload()
+            setTimeout(() => { window.location.reload() }, 2500)
         }
         catch (err) {
             console.log('err :' + err)
@@ -86,7 +86,7 @@ const CardFriendUser = ({ friend }) => {
             toast.error('Hủy kết bạn thất bạn!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,

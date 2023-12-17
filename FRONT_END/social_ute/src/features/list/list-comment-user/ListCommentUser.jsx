@@ -23,8 +23,6 @@ const ListCommentUser = ({ comment }) => {
         }
     }
 
-    console.log('like: ' + Object.entries(comment))
-
     return (
         <div className="w-full flex justify-between">
             <div className="flex flex-row gap-3 items-center">
