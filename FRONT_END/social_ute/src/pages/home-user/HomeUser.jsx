@@ -7,19 +7,22 @@ import ListStoryUserDetail from 'features/list/list-story-user-detail';
 import HeaderHome from "layout/header-home";
 import { Book, Bookmark, Grid3X3, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getAllMePosts, getListFriends } from "services/me.svc";
 import { getPostSaved } from "services/post.svc";
 import { getAllStory } from "services/story.svc";
 import { statistics } from "services/user.svc";
-import { getUserNameFromCookie } from "utils/user.utils";
+import { getUserAvatarFromCookie, getUserNameFromCookie } from "utils/user.utils";
 
 const HomeUser = () => {
     const [selected, setSelected] = useState("posts");
 
+
+
     const { userId } = useParams()
     const userName = getUserNameFromCookie()
-
+    const userAvatar = getUserAvatarFromCookie()
+    const navigate = useNavigate()
     const initHomeUser = {
         userStatisics: '',
         mePosts: '',
@@ -39,7 +42,11 @@ const HomeUser = () => {
             }))
         }
         catch (error) {
-            console.log("Error: ", error)
+            console.log("Error: ", error.response.data)
+            const { code } = error.response.data
+            if (code) {
+                navigate('*')
+            }
         }
     }, [userId])
 
@@ -78,7 +85,7 @@ const HomeUser = () => {
             }))
         }
         catch (error) {
-            console.log("Error: ", error)
+            console.log("Error: ", error.response.data)
         }
     }, [])
 
@@ -96,19 +103,6 @@ const HomeUser = () => {
     }, [])
 
     useEffect(() => {
-        // fetchUserStatisics()
-
-        // if (selected === 'posts') {
-        //     fetchMePosts()
-        // }
-
-        // if (selected === 'story') {
-        //     fetchMeStories()
-        // }
-
-        // if (selected === 'friends') {
-        //     fetchMeFriends()
-        // }
         fetchUserStatisics()
 
         switch (selected) {
@@ -137,7 +131,7 @@ const HomeUser = () => {
                     <HeaderHome
                         userStatisics={homeUser.userStatisics.data}
                         userName={userName}
-                        userAvatar='https://i.pravatar.cc/150?u=a042581f4e29026024d'
+                        userAvatar={userAvatar}
                     />
                 </div>
 
@@ -168,7 +162,8 @@ const HomeUser = () => {
                                     homeUser.mePosts ?
                                         <ListPostUserDetail
                                             userName={userName}
-                                            posts={homeUser.mePosts.data} />
+                                            posts={homeUser.mePosts.data}
+                                        />
                                         :
                                         <Spinner color="default" size="lg" />
                                 }

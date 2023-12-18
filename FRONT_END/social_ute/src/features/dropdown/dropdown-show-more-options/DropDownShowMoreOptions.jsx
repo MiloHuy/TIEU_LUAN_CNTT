@@ -1,18 +1,45 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
 import ModalConfirm from "features/modal/modal-confirm";
 import { Bookmark, Heart, MoreHorizontal, SendHorizontal, Trash2 } from 'lucide-react';
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from 'react-toastify';
 import { deletePost } from "services/post.svc";
 import { getUserIdFromCookie } from "utils/user.utils";
 
-const DropDownShowMoreOptions = ({ user_id, post_id }) => {
+const DropDownShowMoreOptions = ({ user_id, post_id, statusPost, handleCallbackLikedPost, handleCallbackSavedPost }) => {
     const id = getUserIdFromCookie()
     const { onOpen, onClose } = useDisclosure();
     const [openModal, setOpenModal] = useState({
         drop_down: false,
         confirm_modal: false,
     })
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleCallBackLikedPost = useCallback(() => {
+        handleCallbackLikedPost();
+    }, [handleCallbackLikedPost])
+
+    const handleLikePost = async () => {
+        try {
+            handleCallBackLikedPost()
+        }
+        catch (err) {
+            console.log('error:', err)
+        }
+    }
+
+    const handleCallBackSavedPost = useCallback(() => {
+        handleCallbackSavedPost();
+    }, [handleCallbackSavedPost])
+
+    const handleSavePost = async () => {
+        try {
+            handleCallBackSavedPost()
+        }
+        catch (err) {
+            console.log('error:', err)
+        }
+    }
 
     const handleOpenDropDown = () => {
         setOpenModal((prev) => ({
@@ -63,28 +90,30 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
     }
 
     const handleDeletePost = async () => {
+        setIsLoading(true)
         try {
             await deletePost(post_id)
 
             toast.success('Xóa bài viết thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
             });
+            setIsLoading(false);
 
-            window.location.reload()
+            setTimeout(() => { window.location.reload() }, 2500)
         }
         catch (err) {
 
             toast.error('Xóa bài viết thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -93,6 +122,28 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
             });
         }
     }
+
+    const CopyURL = () => {
+        const el = document.createElement("input");
+        el.value = `http://localhost:8080/welcome/post/${post_id}`
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+
+        console.log('el.value:' + el.value)
+
+        toast.success('Sao chép đường dẫn thành công!!!', {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    };
 
     return (
         <div>
@@ -127,26 +178,41 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
                         showDivider
                         className='text-white '
                         key="like"
+                        onClick={handleLikePost}
                         textValue='Yêu thích bài viết'
-                        startContent={<Heart size={18} strokeWidth={0.75} />}
+                        startContent={
+                            <Heart
+                                size={18}
+                                strokeWidth={0.75}
+                                fill={statusPost.isLiked === true ? 'red' : 'none'}
+                            />
+                        }
                     >
-                        <p className='text-md font-open_sans font-bold dark:text-white gap-2'>Yêu thích bài viết</p>
+                        <p className='text-md font-mono dark:text-white gap-2'>
+                            {statusPost.isLiked === true ? 'Hủy yêu thích' : 'Yêu thích bài viết'}
+                        </p>
                     </DropdownItem>
 
                     <DropdownItem
                         showDivider
                         className='text-white '
                         key="save"
-                        startContent={<Bookmark size={18} strokeWidth={0.75} />}
+                        onClick={handleSavePost}
+                        startContent={
+                            <Bookmark
+                                fill={statusPost.isSaved === true ? 'yellow' : 'none'}
+                                size={18}
+                                strokeWidth={0.75} />}
                     >
-                        <p className='text-md font-open_sans font-bold gap-2'>
-                            Lưu bài viết
+                        <p className='text-md font-mono gap-2'>
+                            {statusPost.isSaved === true ? 'Hủy lưu' : 'Lưu bài viết'}
                         </p>
                     </DropdownItem>
 
                     <DropdownItem
                         className='text-white '
                         key="share"
+                        onClick={CopyURL}
                         showDivider
                         startContent={
                             <SendHorizontal
@@ -154,7 +220,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
                                 strokeWidth={0.75}
                                 className='transform -rotate-28 -translate-y-0.5' />}
                     >
-                        <p className='text-md font-open_sans font-bold dark:text-white gap-2'> Chia sẻ bài viết</p>
+                        <p className='text-md font-mono dark:text-white gap-2'> Chia sẻ bài viết</p>
                     </DropdownItem>
 
                     {
@@ -167,7 +233,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
                                 startContent={
                                     <Trash2 size={18} color="#d04e4e" strokeWidth={0.75} />}
                             >
-                                <p className='text-md font-open_sans font-bold dark:text-white gap-2'>
+                                <p className='text-md font-mono dark:text-white gap-2'>
                                     Xóa bài viết
                                 </p>
                             </DropdownItem>
@@ -177,6 +243,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id }) => {
             </Dropdown >
 
             <ModalConfirm
+                isLoading={isLoading}
                 title='Có phải bạn muốn xóa bài viết?'
                 isOpen={openModal.confirm_modal}
                 onOpenChange={handleOpenModal}

@@ -26,6 +26,10 @@ const postSlice = createSlice({
       state.userFirstName = state.posts.user_id.first_name;
       state.userLastName = state.posts.user_id.last_name;
       state.post_avatar_user = state.posts.user_id.avatar.url;
+
+      state.liked = state.posts.liked;
+      state.saved = state.posts.stored;
+      state.number_likes = state.posts.likes;
     },
 
     setStatusPost: (state, action) => {

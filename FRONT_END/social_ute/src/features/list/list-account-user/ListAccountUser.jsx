@@ -92,7 +92,7 @@ const ListAccountUser = (props) => {
             toast.success('Xóa account thành công!!!', {
                 position: "bottom-right",
                 autoClose: 2000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -106,7 +106,7 @@ const ListAccountUser = (props) => {
             toast.success('Xóa account thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 2000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,

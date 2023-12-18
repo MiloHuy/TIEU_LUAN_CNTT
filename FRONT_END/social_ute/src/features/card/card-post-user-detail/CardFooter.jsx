@@ -3,15 +3,15 @@ import { selectPostId, selectStatusLikedPost, selectStatusNumberLikes, selectSta
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { postComment } from "services/post.svc";
+import { likePost, postComment, storePost } from "services/post.svc";
 
 const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPost }) => {
-    const number_likes = useSelector(selectStatusNumberLikes)
     const [commentInput, setCommentInput] = useState({
         comment_content: ''
     })
     const [isLoading, setIsLoading] = useState(false)
 
+    const number_likes = useSelector(selectStatusNumberLikes)
     const statusPost = {
         liked: useSelector(selectStatusLikedPost), // boolean
         saved: useSelector(selectStatusSavedPost) // boolean
@@ -42,7 +42,12 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                 liked: !prev.liked
             }))
 
-            handleCallBackLikePost()
+            if (handleCallbackLikePost) {
+                handleCallBackLikePost()
+            }
+            else {
+                await likePost(post_id)
+            }
         }
         catch (err) {
             console.log(err)
@@ -71,7 +76,12 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                 saved: !prev.saved
             }))
 
-            handleCallBackSavedPost()
+            if (handleCallbackLikePost) {
+                handleCallBackSavedPost()
+            }
+            else {
+                await storePost(post_id)
+            }
         }
         catch (err) {
             console.log(err)
@@ -88,9 +98,11 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
 
     }, [commentInput.comment_content])
 
+    console.log('statusPost: ' + Object.entries(statusPost))
+
     return (
         <div>
-            <div className="flex justify-between flex-row px-2">
+            <div className="flex justify-between flex-row">
                 <div className='flex flex-row gap-1'>
                     <Button
                         onClick={handleLikePost}
@@ -134,13 +146,13 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
             </div>
 
             <div className='flex flex-col gap-2'>
-                <div className="flex-row flex gap-1">
+                <div className="flex-row flex gap-1 ">
                     <h2
-                        className='text-sm text-black dark:text-white font-open_sans font-bold'>
+                        className='text-md text-black dark:text-white font-mono  translate-x-2'>
                         {number_likes}
                     </h2>
 
-                    <span className='text-sm text-black dark:text-white font-open_sans font-bold'>
+                    <span className='text-md text-black dark:text-white font-mono  translate-x-2'>
                         lượt thích
                     </span>
                 </div>
@@ -160,7 +172,7 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                                 variant="bordered"
                                 onClick={handlePostComment}
                                 isDisabled={active}
-                                className={`hover:bg-black border-black text-black hover:text-white font-mont font-bold text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                className={`hover:bg-black border-black text-black hover:text-white font-mont  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
                                 color="primary"
                             >
                                 Đăng

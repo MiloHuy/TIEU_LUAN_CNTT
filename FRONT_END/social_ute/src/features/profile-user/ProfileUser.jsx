@@ -1,10 +1,11 @@
 import { Avatar } from "@nextui-org/react";
 import { useNavigate } from 'react-router-dom';
-import { getUserIdFromCookie } from "utils/user.utils";
+import { getUserAvatarFromCookie, getUserIdFromCookie } from "utils/user.utils";
 
 const ProfileUser = (props) => {
     const { userName } = props
     const userID = getUserIdFromCookie()
+    const userAvatar = getUserAvatarFromCookie()
     const navigate = useNavigate()
 
     const handleNavigateHomeUser = () => {
@@ -19,7 +20,7 @@ const ProfileUser = (props) => {
             className='flex gap-5 items-center cursor-pointer'>
             <Avatar
                 isBordered
-                src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
+                src={userAvatar} />
             <h2 className="text-xl text-black dark:text-white font-mono">{userName}</h2>
         </div>
     )

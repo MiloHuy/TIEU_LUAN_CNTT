@@ -34,7 +34,10 @@ const CardPostUserDetail = ({ handleCallbackLikePost, handleCallbackSavedPost })
 
             <div className="flex flex-col h-[550px] gap-3">
                 <div className='flex items-center pt-2 h-[50px]'>
-                    <CardHeader />
+                    <CardHeader
+                        handleCallbackLikePost={handleCallbackLikePost}
+                        handleCallbackSavedPost={handleCallbackSavedPost}
+                    />
                 </div>
 
                 <div className='h-[300px] flex flex-col gap-2'>

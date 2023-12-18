@@ -5,7 +5,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { getFullName } from "utils/user.utils";
 
-const CardHeader = () => {
+const CardHeader = ({ handleCallbackLikePost, handleCallbackSavedPost }) => {
     const userFirstName = useSelector(selectFirtName)
     const userLastName = useSelector(selectLastName)
     const user_img = useSelector(selectAvatarPostUser)
@@ -31,8 +31,11 @@ const CardHeader = () => {
             </Button>
 
             <ModalShowMoreOptions
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
+                isOpenShowMore={isOpen}
+                onOpenChangeShowMore={onOpenChange}
+
+                handleCallbackLikePost={handleCallbackLikePost}
+                handleCallbackSavedPost={handleCallbackSavedPost}
             />
         </div>
     )

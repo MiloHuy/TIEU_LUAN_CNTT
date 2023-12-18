@@ -11,6 +11,11 @@ export function getUserNameFromCookie() {
   return userID;
 }
 
+export function getUserAvatarFromCookie() {
+  const userAvatar = Cookies.get(USERCOOKIES.userAvatar);
+  return userAvatar;
+}
+
 export const getFullName = (firstName, lastName) => {
   return [firstName, lastName].join(" ");
 };

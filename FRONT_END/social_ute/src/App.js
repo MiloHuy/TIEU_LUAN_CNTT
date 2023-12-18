@@ -1,5 +1,7 @@
 import { NextUIProvider } from "@nextui-org/system";
+import Loading from "components/loading";
 import NotFound from "pages/404-not_found/NotFound";
+import PostDetail from "pages/[...post_id]/PostDetail";
 import Admin from "pages/admin";
 import HomeUser from "pages/home-user";
 import Manage from "pages/manage";
@@ -32,8 +34,18 @@ function App() {
                 <Route index element={<User />} />
                 <Route path="home-user/:userId" element={<HomeUser />} />
 
-                <Route path="home-guest/:guestId" element={<HomeG />} />
+                <Route
+                  path="home-guest/:guestId"
+                  element={
+                    <Suspense fallback={<Loading />}>
+                      <HomeG />
+                    </Suspense>
+                  }
+                />
 
+                <Route path="post/:postId/" element={<PostDetail />} />
+
+                <Route path="*" element={<NotFound />} />
                 <Route path="request-friend" element={<RequestFriend />} />
               </Route>
 

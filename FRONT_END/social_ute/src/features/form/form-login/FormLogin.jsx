@@ -38,13 +38,14 @@ const FormLogin = (props) => {
             dispatch(setInfoUser({ ...userData }))
 
             Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
+            Cookies.set(USERCOOKIES.userAvatar, userData.user.avatar, { expires: 1 })
             Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
             Cookies.set(USERCOOKIES.userName, getFullName(userData.user.first_name, userData.user.last_name), { expires: 1 })
 
             toast.success('Đăng nhập thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
@@ -59,7 +60,7 @@ const FormLogin = (props) => {
             toast.error('Đăng nhập thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
-                hideProgressBar: false,
+                hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,

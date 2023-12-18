@@ -40,6 +40,7 @@ const HeaderHome = (props) => {
     const [openModal, setOpenModal] = useState({
         change_password: false,
         change_user_info: false,
+        change_avatar: false,
     })
 
     const handleAddOrCancelFriend = async () => {
@@ -127,7 +128,8 @@ const HeaderHome = (props) => {
     const handleUpdateUser = async () => {
         setOpenModal(() => ({
             change_user_info: true,
-            change_password: false
+            change_password: false,
+            change_avatar: false
         }))
 
         try {
@@ -142,21 +144,33 @@ const HeaderHome = (props) => {
     const hanldeChangePassword = async () => {
         setOpenModal(() => ({
             change_password: true,
+            change_user_info: false,
+            change_avatar: false,
+        }))
+    }
+
+    const handleChangeAvatar = async () => {
+        setOpenModal(() => ({
+            change_avatar: true,
+            change_password: false,
             change_user_info: false
         }))
     }
 
     const handleOpenModal = () => {
-        if (openModal.change_user_info === true && openModal.change_password !== true) {
+        if (openModal.change_user_info === true && openModal.change_password !== true && openModal.change_avatar !== true) {
             onOpen()
         }
-        else if (openModal.change_password === true && openModal.change_user_info !== true) {
+        else if (openModal.change_password === true && openModal.change_user_info !== true && openModal.change_avatar !== true) {
+            onOpen()
+        }
+        else if (openModal.change_avatar === true && openModal.change_password !== true && openModal.change_user_info !== true) {
             onOpen()
         }
     }
 
     const handleCloseModal = () => {
-        if (openModal.change_user_info === true && openModal.change_password !== true) {
+        if (openModal.change_user_info === true && openModal.change_password !== true && openModal.change_avatar !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 change_user_info: false
@@ -164,10 +178,17 @@ const HeaderHome = (props) => {
 
             onClose()
         }
-        else if (openModal.change_password === true && openModal.change_user_info !== true) {
+        else if (openModal.change_password === true && openModal.change_user_info !== true && openModal.change_avatar !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 change_password: false
+            }))
+            onClose()
+        }
+        else if (openModal.change_avatar === true && openModal.change_user_info !== true && openModal.change_password !== true) {
+            setOpenModal((prev) => ({
+                ...prev,
+                change_avatar: false
             }))
             onClose()
         }
@@ -180,43 +201,13 @@ const HeaderHome = (props) => {
                     {
                         userAvatar
                             ?
-                            <Dropdown
-                                itemClasses={{
-                                    base: "py-0 w-full bg-black",
-                                    wrapper: 'bg-black',
-                                    title: "font-normal text-md font-mono ",
-                                    indicator: "text-medium ",
-                                    content: "text-small flex flex-col gap-2 ",
-                                }}
-                                placement="bottom"
-                                variant='bordered'
-                            >
-                                <DropdownTrigger>
-                                    <img
-                                        loading='lazy'
-                                        alt='avatar'
-                                        src={userAvatar}
-                                        className='rounded-full w-1/2 cursor-pointer'
-                                    />
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    aria-label="avatar"
-                                    variant="light"
-                                    classNames={{
-                                        base: 'bg-black text-white w-full h-full',
-                                        wrapper: 'bg-black'
-                                    }}
-                                >
-                                    <DropdownItem
-                                        classNames={{
-                                            base: 'bg-black text-white',
-                                            wrapper: 'bg-black'
-                                        }}
-                                        key="avatar" >
-                                        <p className="font-mono">Chỉnh sửa ảnh đại diện</p>
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
+                            <img
+                                onClick={handleChangeAvatar}
+                                loading='lazy'
+                                alt='avatar'
+                                src={userAvatar}
+                                className='rounded-full w-1/2 cursor-pointer'
+                            />
                             : <img
                                 loading='lazy'
                                 alt='avatar'
