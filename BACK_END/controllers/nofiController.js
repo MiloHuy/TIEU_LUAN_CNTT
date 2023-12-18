@@ -11,15 +11,21 @@ const Noti_user = require('../models/Noti_user');
 exports.getNotis = (async (req, res) => {
     try {
         const notis = await Noti_user.findOne({ user_id: req.user._id }).populate({
-            path: 'detail.noti_id',
-            select: 'noti_content post_id user_id noti_create_time',
-            populate: {
-                path: 'user_id',
-                model: 'User',
-                select: 'avatar.url first_name last_name',
-            },
-        }).select('-_id detail').lean().exec()
-        || []
+                path: 'detail.noti_id',
+                select: 'noti_content post_id user_id noti_create_time',
+                populate: {
+                    path: 'user_id',
+                    model: 'User',
+                    select: 'avatar.url first_name last_name',
+                },
+            })
+            .select('-_id detail').lean().exec()
+        if(!notis){
+            return res.status(200).json({
+                success: true,
+                notis: []
+            });
+        }
         const notis_filter = notis.detail.map(item => ({
             _id: item.noti_id._id,
             user_id: item.noti_id.user_id._id,

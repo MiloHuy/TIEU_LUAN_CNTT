@@ -346,22 +346,20 @@ exports.like = (async (req, res) => {
             { new: true, upsert: true }
         );
         if(liked.user_id.includes(req.user._id)){
-            //console.log(user)
+            // console.log(user)
             liked.user_id.pull(req.user._id);
             await liked.save();
 
-            if(!post.user_id.equals(req.user._id)){
-                const noti = await Notification.findOneAndDelete({
-                    user_id: req.user._id,
-                    post_id: req.params.id,
-                })
-                if(noti){
-                    await Noti_user.findOneAndUpdate(
-                        { user_id: post.user_id },
-                        { $pull: { 'detail': { noti_id: noti._id } } },
-                        { new: true, upsert: true }
-                    );
-                }
+            const noti = await Notification.findOneAndDelete({
+                user_id: req.user._id,
+                post_id: req.params.id,
+            })
+            if(noti){
+                await Noti_user.findOneAndUpdate(
+                    { user_id: post.user_id },
+                    { $pull: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
             }
 
             res.status(201).json({
@@ -372,15 +370,19 @@ exports.like = (async (req, res) => {
             liked.user_id.push(req.user._id);
             await liked.save();
 
-            const currentDate = new Date();
-            const content = req.user.first_name + ' ' + req.user.last_name +' yêu thích bài viết của bạn.';
+            // if(!post.user_id.equals(req.user._id)){
+                
+            // }
 
-            const noti = await Notification.create({
-                user_id: req.user._id,
-                noti_content: content,
-                post_id: post._id,
-                noti_create_time: currentDate
-            })
+            const currentDate = new Date();
+                const content = req.user.first_name + ' ' + req.user.last_name +' yêu thích bài viết của bạn.';
+
+                const noti = await Notification.create({
+                    user_id: req.user._id,
+                    noti_content: content,
+                    post_id: post._id,
+                    noti_create_time: currentDate
+                })
 
             await Noti_user.findOneAndUpdate(
                 { user_id: post.user_id },
