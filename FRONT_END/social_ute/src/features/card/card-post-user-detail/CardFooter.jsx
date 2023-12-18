@@ -112,6 +112,7 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                         variant="light"
                     >
                         <Heart
+                            color={postStatus.liked === true ? 'red' : '#ffffff'}
                             size={25}
                             strokeWidth={2}
                             fill={postStatus.liked === true ? 'red' : 'none'}
@@ -138,6 +139,7 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                     variant="light"
                 >
                     <Bookmark
+                        color={postStatus.saved === true ? 'yellow' : '#ffffff'}
                         size={25}
                         strokeWidth={2}
                         fill={postStatus.saved === true ? 'yellow' : 'none'}
