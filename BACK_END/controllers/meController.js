@@ -1,3 +1,7 @@
+const fs = require('fs').promises;
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+
 const Post = require('../models/Post')
 const Story = require('../models/Story')
 const User = require('../models/User')
@@ -291,4 +295,89 @@ exports.updatePassword = (async (req, res) => {
         success: true, 
         message: 'Đổi mật khẩu thành công.' 
     });
+})
+
+// uploadAvatar
+const validImageFormats = ['jpg', 'jpeg', 'png'];
+const maxFileSize = 10 * 1024 * 1024;
+//POST /me/avatar
+exports.uploadAvatar = (async (req, res) => {
+    try {
+        if (!req.files.avatar || !req.files.avatar.data) {
+            return res.status(400).json({
+                success: false,
+                code: 3012,
+                message: 'Đổi avatar thất bại. Chưa có ảnh.',
+            });
+        }
+
+        const allowedExtensions = validImageFormats.map(format => `.${format}`);
+        const fileExtension = path.extname(req.files.avatar.name).toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            return res.status(400).json({
+                success: false,
+                code: 3013,
+                message: 'Đổi avatar thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+            });
+        }
+
+        const fileSize = req.files.avatar.data.length;
+        if (fileSize > maxFileSize) {
+            return res.status(400).json({
+                success: false,
+                code: 3014,
+                message: 'Đổi avatar thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+            });
+        }
+
+        const user = await User.findOne({_id: req.user._id})
+
+        if(user.avatar.publicId){
+            await cloudinary.uploader.destroy(user.avatar.publicId)
+        }
+
+        // Tạo một thư mục tạm thời nếu nó chưa tồn tại
+        const tempDir = path.join(__dirname, 'temp');
+        await fs.mkdir(tempDir, { recursive: true });
+
+        // Tạo một bộ đệm từ dữ liệu tệp
+        const buffer = req.files.avatar.data;
+
+        // Tạo một đường dẫn tạm thời để lưu trữ tệp
+        const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
+
+        // Ghi dữ liệu vào tệp tạm thời
+        await fs.writeFile(tempFilePath, buffer);
+
+        const result = await cloudinary.uploader.upload(
+            tempFilePath,
+            { folder: 'avatars', width: 512, height: 512, crop: 'fill', },
+        );
+
+        // Xóa tệp tạm thời
+        await fs.unlink(tempFilePath);
+
+        const avatar = {
+            publicId: result.public_id,
+            url: result.secure_url,
+        };
+
+        const new_user = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { avatar: avatar },
+            { new: true }
+        );
+
+        res.status(201).json({
+            success: true,
+            message: 'Đổi avatar thành công.',
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 3015,
+            message: 'Đổi avatar thất bại :' + error.message, 
+        });
+    }
 })

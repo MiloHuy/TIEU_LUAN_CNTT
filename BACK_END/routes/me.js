@@ -11,6 +11,7 @@ const {
     searchFriends,
     updateInfo,
     updatePassword,
+    uploadAvatar
 } = require('../controllers/meController.js');
 
 const {
@@ -34,6 +35,7 @@ router.get('/notis', verifyToken, isUser, getNotis);
 router.post('/notis/read/:id', verifyToken, isUser, readNoti);
 router.put('/account/info', verifyToken, isUser, updateInfo);
 router.put('/account/password', verifyToken, isUser, updatePassword);
+router.post('/avatar', verifyToken, isUser, uploadAvatar);
 
 
 

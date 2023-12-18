@@ -163,7 +163,6 @@ const maxFileSize = 10 * 1024 * 1024;
 //file
 exports.create = (async (req, res) => {
     try {
-        console.log(req.files.post_img);
         if (!req.files.post_img || !req.files.post_img.data) {
             return res.status(400).json({
                 success: false,
@@ -259,9 +258,6 @@ exports.create = (async (req, res) => {
             code: 2006,
             message: 'Đăng bài thất bại :' + error.message, 
         });
-    }
-    finally{
-
     }
 })
 
