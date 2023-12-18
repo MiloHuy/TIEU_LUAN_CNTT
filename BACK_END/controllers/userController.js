@@ -132,7 +132,7 @@ exports.getPosts = (async (req, res) => {
 exports.getAll = (async (req, res, next) => {
     try {
         const { size } = req.query;
-        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name');
+        const userQuery = User.find({ role_id: { $ne: 0 } }).select('avatar.url first_name last_name gmail id department');
         
         const apiFeatures = new UserAPIFeatures(userQuery, req.query)
         
