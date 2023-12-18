@@ -106,7 +106,7 @@ exports.getStories = (async (req, res) => {
 //GET /account/info
 exports.getInfo = (async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -role_id -is_active -__v -avatar -_id');
+        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -is_active -__v -avatar.publicId -_id');
         res.status(200).json({
             success: true,
             user,
