@@ -154,6 +154,7 @@ const CardPostUser = (props) => {
                                 onClick={handleLikePost}
                             >
                                 <Heart
+                                    color={statusPost.isLiked === true ? 'red' : '#ffffff'}
                                     strokeWidth={1.5}
                                     absoluteStrokeWidth
                                     size={20}
@@ -186,6 +187,7 @@ const CardPostUser = (props) => {
                             onClick={handleSavePost}
                         >
                             <Bookmark
+                                color={statusPost.isSaved === true ? 'yellow' : '#ffffff'}
                                 size={20}
                                 strokeWidth={1.5}
                                 fill={statusPost.isSaved === true ? 'yellow' : 'none'} />
