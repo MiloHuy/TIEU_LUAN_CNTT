@@ -350,16 +350,18 @@ exports.like = (async (req, res) => {
             liked.user_id.pull(req.user._id);
             await liked.save();
 
-            const noti = await Notification.findOneAndDelete({
-                user_id: req.user._id,
-                post_id: req.params.id,
-            })
-            if(noti){
-                await Noti_user.findOneAndUpdate(
-                    { user_id: post.user_id },
-                    { $pull: { 'detail': { noti_id: noti._id } } },
-                    { new: true, upsert: true }
-                );
+            if(!post.user_id.equals(req.user._id)){
+                const noti = await Notification.findOneAndDelete({
+                    user_id: req.user._id,
+                    post_id: req.params.id,
+                })
+                if(noti){
+                    await Noti_user.findOneAndUpdate(
+                        { user_id: post.user_id },
+                        { $pull: { 'detail': { noti_id: noti._id } } },
+                        { new: true, upsert: true }
+                    );
+                }
             }
 
             res.status(201).json({
