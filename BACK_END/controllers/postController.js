@@ -204,7 +204,10 @@ exports.create = (async (req, res) => {
         // Ghi dữ liệu vào tệp tạm thời
         await fs.writeFile(tempFilePath, buffer);
 
-        const result = await cloudinary.uploader.upload(tempFilePath);
+        const result = await cloudinary.uploader.upload(
+            tempFilePath,
+            { folder: 'post_imgs'},
+        );
 
         // Xóa tệp tạm thời
         await fs.unlink(tempFilePath);
@@ -403,7 +406,75 @@ exports.like = (async (req, res) => {
 //PUT /posts/:id
 exports.update = (async (req, res) => {
     try {
-        await Post.updateOne({ _id: req.params.id , user_id:req.user._id}, req.body);
+        const post = await Post.findById(req.params.id)
+        if(!post){
+            return res.status(404).json({
+                success: false,
+                code: 2013,
+                message: 'Không tìm thấy bài viết.', 
+            });
+        }
+        if(post_img.publicId){
+            await cloudinary.uploader.destroy(user.avatar.publicId)
+        }
+        if (!req.files.post_img || !req.files.post_img.data) {
+            return res.status(400).json({
+                success: false,
+                code: 2014,
+                message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
+            });
+        }
+
+        const allowedExtensions = validImageFormats.map(format => `.${format}`);
+        const fileExtension = path.extname(req.files.post_img.name).toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            return res.status(400).json({
+                success: false,
+                code: 2015,
+                message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+            });
+        }
+
+        const fileSize = req.files.post_img.data.length;
+        if (fileSize > maxFileSize) {
+            return res.status(400).json({
+                success: false,
+                code: 2016,
+                message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+            });
+        }
+
+        // Tạo một thư mục tạm thời nếu nó chưa tồn tại
+        const tempDir = path.join(__dirname, 'temp');
+        await fs.mkdir(tempDir, { recursive: true });
+
+        // Tạo một bộ đệm từ dữ liệu tệp
+        const buffer = req.files.post_img.data;
+
+        // Tạo một đường dẫn tạm thời để lưu trữ tệp
+        const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
+
+        // Ghi dữ liệu vào tệp tạm thời
+        await fs.writeFile(tempFilePath, buffer);
+
+        const result = await cloudinary.uploader.upload(
+            tempFilePath,
+            { folder: 'post_imgs'},
+        );
+
+        // Xóa tệp tạm thời
+        await fs.unlink(tempFilePath);
+
+        const post_img = {
+            publicId: result.public_id,
+            url: result.secure_url,
+        };
+        const description = req.body.post_description
+        await Post.updateOne(
+            { _id: req.params.id, user_id: req.user._id },
+            { $set: { post_description: description, post_img: post_img } }
+        );
         res.status(201).json({
             success: true,
             message: 'Cập nhật bài viết thành công.',
@@ -411,8 +482,8 @@ exports.update = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 2013,
-            message: error.message, 
+            code: 2017,
+            message: 'Cập nhật bài viết thất bại : ' + error.message, 
         });
     }
 })
@@ -424,7 +495,7 @@ exports.destroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 2014,
+                code: 2018,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
@@ -432,14 +503,17 @@ exports.destroy = (async (req, res) => {
         {
             return res.status(400).json({
                 success: false,
-                code: 2015,
+                code: 2019,
                 message: 'Không thể xóa bài viết của người khác.',
             });
+        }
+        if(post.post_img.publicId){
+            await cloudinary.uploader.destroy(post_img.publicId)
         }
         await Post.deleteOne({ _id: req.params.id})
 
         const noti = await Notification.findOneAndDelete({
-            user_id: req.user._id,
+            user_id: post.user_id,
             post_id: req.params.id
         })
         if(noti){
@@ -466,8 +540,8 @@ exports.destroy = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 2016,
-            message: error.message ,
+            code: 2020,
+            message: 'Xóa bài viết thất bại : ' + error.message ,
         });
     }
 })
@@ -497,7 +571,7 @@ exports.adminGetAll = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 2017,
+            code: 2021,
             message: error.message ,
         });
     }
@@ -510,10 +584,35 @@ exports.adminDestroy = (async (req, res) => {
         if(!post){
             return res.status(404).json({
                 success: false,
-                code: 2018,
+                code: 2022,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
+        if(post.post_img.publicId){
+            await cloudinary.uploader.destroy(post_img.publicId)
+        }
+
+        const noti = await Notification.findOneAndDelete({
+            user_id: post.user_id,
+            post_id: req.params.id
+        })
+        if(noti){
+            const follower_Users = await Follow.find({user_id: req.user._id})
+                .select('follower_user_id');
+
+            const follower_user_ids = follower_Users
+                .map(follow => follow.follower_user_id)
+                .flat();
+
+            for (const user_id of follower_user_ids) {
+                await Noti_user.findOneAndUpdate(
+                    { user_id: user_id },
+                    { $pull: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+        }
+
         await Post.deleteOne({ _id: req.params.id})
         res.status(201).json({
             success: true,
@@ -522,8 +621,8 @@ exports.adminDestroy = (async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 2019,
-            message: error.message, 
+            code: 2023,
+            message: 'Xóa bài viết thất bại : ' + error.message, 
         });
     }
 
