@@ -9,43 +9,124 @@ const User = require('../models/User')
 //GET /statistics/admin
 exports.getAdminStatistics = (async (req, res) => {
     try {
-        const count_accounts = await User.countDocuments({ role_id: { $ne: 0 } })
+        const totals_accounts = await User.countDocuments({ role_id: { $ne: 0 } })
 
         const today = new Date();
-        const startOfDay = moment(today).startOf('day').toDate();
-        const endOfDay = moment(today).endOf('day').toDate();
-        const count_post_in_day = await Post.countDocuments({
+        const start_of_current_day = moment(today).startOf('day').toDate();
+        const end_of_current_day = moment(today).endOf('day').toDate();
+        const posts_in_current_day = await Post.countDocuments({
             create_post_time: {
-              $gte: startOfDay,
-              $lte: endOfDay,
+              $gte: start_of_current_day,
+              $lte: end_of_current_day,
             },
         })
 
-        const startOfWeek = moment(today).startOf('week').toDate();
-        const endOfWeek = moment(today).endOf('week').toDate();
-        const count_post_in_week = await Post.countDocuments({
+        const start_of_current_week = moment(today).startOf('week').toDate();
+        const end_of_current_week = moment(today).endOf('week').toDate();
+        const posts_in_current_week = await Post.countDocuments({
             create_post_time: {
-              $gte: startOfWeek,
-              $lte: endOfWeek,
+              $gte: start_of_current_week,
+              $lte: end_of_current_week,
             },
         })
 
-        const startOfMonth = moment(today).startOf('month').toDate();
-        const endOfMonth = moment(today).endOf('month').toDate();
-        const count_post_in_month = await Post.countDocuments({
+        const start_of_current_month = moment(today).startOf('month').toDate();
+        const end_of_current_month = moment(today).endOf('month').toDate();
+        const posts_in_current_month = await Post.countDocuments({
             create_post_time: {
-              $gte: startOfMonth,
-              $lte: endOfMonth,
+              $gte: start_of_current_month,
+              $lte: end_of_current_month,
             },
         })
+
+        // if(!res.body){
+        //     return res.status(200).json({
+        //         success: true,
+        //         count_accounts,
+        //         post_in_current_day,
+        //         post_in_current_week,
+        //         post_in_current_month
+        //     });
+        // }
+
+        const month = parseInt(req.body.month);
+        const year = moment().year();
+
+        const startOfMonth = moment({ year, month: month - 1, day: 1 }).startOf('day').toDate();
+        const endOfMonth = moment({ year, month: month - 1, day: 1 }).endOf('month').toDate();
+
+        const daysInMonth = moment(endOfMonth).diff(startOfMonth, 'days') + 1;
+        const daysArray = [...Array(daysInMonth).keys()].map(day => moment(startOfMonth).add(day, 'days').date());
+
+        const result = await Post.aggregate([
+            {
+                $match: {
+                    create_post_time: {
+                        $gte: startOfMonth,
+                        $lte: endOfMonth,
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { $dayOfMonth: '$create_post_time' },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    day: '$_id',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { day: 1 },
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: '$count' },
+                    post_count_by_day: { $push: '$$ROOT' },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    total: 1,
+                    post_count_by_day: {
+                        $concatArrays: [
+                            {
+                                $map: {
+                                    input: daysArray,
+                                    as: 'day',
+                                    in: {
+                                        day: '$$day',
+                                        count: {
+                                            $ifNull: [
+                                                { $arrayElemAt: [{ $filter: { input: '$post_count_by_day', as: 'pc', cond: { $eq: ['$$pc.day', '$$day'] } } }, 0] },
+                                                0
+                                            ]
+                                        }
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ]);
 
         res.status(200).json({
             success: true,
-            count_accounts,
-            count_post_in_day,
-            count_post_in_week,
-            count_post_in_month
+            totals_accounts,
+            posts_in_current_day,
+            posts_in_current_week,
+            posts_in_current_month,
+            total: result[0]?.total || 0,
+            post_count_by_day: result[0]?.post_count_by_day || [],
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
