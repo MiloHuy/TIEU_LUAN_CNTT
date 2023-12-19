@@ -414,14 +414,19 @@ exports.update = (async (req, res) => {
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        if(post_img.publicId){
-            await cloudinary.uploader.destroy(user.avatar.publicId)
+        if(!post.user_id.equals(req.user._id))
+        {
+            return res.status(400).json({
+                success: false,
+                code: 2024,
+                message: 'Không thể sửa viết của người khác.',
+            });
         }
         if (!req.files.post_img || !req.files.post_img.data) {
             return res.status(400).json({
                 success: false,
                 code: 2014,
-                message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
+                message: 'Cập nhật thất bại. Chưa có ảnh.',
             });
         }
 
@@ -432,7 +437,7 @@ exports.update = (async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 2015,
-                message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+                message: 'Cập nhật thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
             });
         }
 
@@ -441,8 +446,12 @@ exports.update = (async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 2016,
-                message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+                message: 'Cập nhật thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
             });
+        }
+
+        if(post.post_img.publicId){
+            await cloudinary.uploader.destroy(post.post_img.publicId)
         }
 
         // Tạo một thư mục tạm thời nếu nó chưa tồn tại
@@ -508,7 +517,7 @@ exports.destroy = (async (req, res) => {
             });
         }
         if(post.post_img.publicId){
-            await cloudinary.uploader.destroy(post_img.publicId)
+            await cloudinary.uploader.destroy(post.post_img.publicId)
         }
         await Post.deleteOne({ _id: req.params.id})
 
@@ -589,7 +598,7 @@ exports.adminDestroy = (async (req, res) => {
             });
         }
         if(post.post_img.publicId){
-            await cloudinary.uploader.destroy(post_img.publicId)
+            await cloudinary.uploader.destroy(post.post_img.publicId)
         }
 
         const noti = await Notification.findOneAndDelete({
