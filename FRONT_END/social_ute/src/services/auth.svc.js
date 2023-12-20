@@ -6,7 +6,7 @@ export const API_AUTH_ENDPOINT = {
   POST: {
     login: "auth/login",
     register: "auth/register",
-    refresh_token: "auth/refresh",
+    refresh_token: "/auth/refresh-token",
     logout: "auth/logout",
   },
 };
@@ -27,5 +27,10 @@ export const register = async (payload) => {
 
 export const logout = async () => {
   const res = await AxiosInstance.post(API_AUTH_ENDPOINT.POST.logout);
+  return res;
+};
+
+export const refreshToken = async () => {
+  const res = await AxiosInstance.post(API_AUTH_ENDPOINT.POST.refresh_token);
   return res;
 };

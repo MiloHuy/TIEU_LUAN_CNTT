@@ -11,6 +11,7 @@ export const API_ME_ENDPOINT = {
     create_post: "/posts/create",
     store_post: "/posts/store/:id",
     like_post: "/posts/like/:id",
+    upload_avatar: "/me/avatar",
   },
   PUT: {
     update_info: "/me/account/info ",
@@ -48,5 +49,27 @@ export const changePassWord = (payload) => {
 
 export const getListFriends = () => {
   const res = AxiosInstance.get(API_ME_ENDPOINT.GET.me_friends);
+  return res;
+};
+
+export const uploadImageAvatar = (payload) => {
+  const res = AxiosInstance.post(
+    API_ME_ENDPOINT.POST.upload_avatar,
+    payload,
+    {
+      headers: {
+        "Content-Type": `multipart/form-data`,
+      },
+    },
+    {
+      onUploadProgress: (progressEvent) => {
+        console.log(
+          "upload progress " +
+            Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+            "%",
+        );
+      },
+    },
+  );
   return res;
 };

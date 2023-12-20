@@ -1,5 +1,5 @@
 import { Modal, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
-import FormUploadImageFile from 'features/form/form-upload-image-file';
+import FormUploadImageAvatar from 'features/form/form-upload-image-avatar';
 
 const ModalChangeAvatar = ({ isOpen, onOpenChange, onClose }) => {
     return (
@@ -20,11 +20,11 @@ const ModalChangeAvatar = ({ isOpen, onOpenChange, onClose }) => {
                     <>
                         <ModalHeader
                             className="flex gap-1 justify-center text-white">
-                            Tạo bài viết mới - File
+                            Thay đổi ảnh đại diện
                         </ModalHeader>
 
                         <ModalBody>
-                            <FormUploadImageFile />
+                            <FormUploadImageAvatar />
                         </ModalBody>
                     </>
                 )}

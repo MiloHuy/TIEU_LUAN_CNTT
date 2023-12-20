@@ -1,9 +1,12 @@
 import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
+import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import { RELATIONSHIP } from "constants/user.const";
+import ModalChangeAvatar from "features/modal/modal-change-avatar/ModalChangeAvatar";
 import ModalChangePassword from "features/modal/modal-change-password";
 import ModalUpdateUser from "features/modal/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
+import { useSelector } from 'react-redux';
 import { getMeInfo } from "services/me.svc";
 import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest } from "services/user.svc";
 
@@ -24,6 +27,9 @@ const HeaderHome = (props) => {
     const add_friend = userInfo ? userInfo.add_friend : null
     const following = userInfo ? userInfo.following : null
     const request_add_friend = userInfo ? userInfo.friend_request : null
+    const user = useSelector(selectCurrenUser)
+
+    console.log('user: ' + Object.entries(user.avatar.url))
 
     const INIT_CHECK = {
         relationship: friend,
@@ -201,20 +207,36 @@ const HeaderHome = (props) => {
                     {
                         userAvatar
                             ?
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <img
+
+                                        loading='lazy'
+                                        alt='avatar'
+                                        src={user.avatar.url}
+                                        className='rounded-full w-1/2 cursor-pointer'
+                                    />
+                                </DropdownTrigger>
+                                <DropdownMenu aria-label="Static Actions">
+                                    <DropdownItem
+                                        onClick={handleChangeAvatar}
+                                        key="avatar">Thay đổi ảnh đại diện
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                            :
                             <img
-                                onClick={handleChangeAvatar}
-                                loading='lazy'
-                                alt='avatar'
-                                src={userAvatar}
-                                className='rounded-full w-1/2 cursor-pointer'
-                            />
-                            : <img
                                 loading='lazy'
                                 alt='avatar'
                                 src={avatar_URL}
                                 className='rounded-full w-1/2'
                             />
                     }
+                    <ModalChangeAvatar
+                        isOpen={openModal.change_avatar}
+                        onOpenChange={handleChangeAvatar}
+                        onClose={handleCloseModal}
+                    />
                 </div>
 
                 <div className="col-span-5">
