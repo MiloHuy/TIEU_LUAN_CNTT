@@ -5,6 +5,7 @@ const verifyToken = async (req, res, next) => {
     if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer')) {
         return res.status(401).json({
             success: false,
+            code: 900,
             message: 'Không đủ quyền truy cập.' 
         });
     }
@@ -13,6 +14,7 @@ const verifyToken = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({ 
                 success: false, 
+                code: 901,
                 message: 'Không đủ quyền truy cập.' 
             });
         }
@@ -21,6 +23,7 @@ const verifyToken = async (req, res, next) => {
         if (!user.is_active) {
             return res.status(401).json({ 
                 success: false, 
+                code: 902,
                 message: 'Tài khoản đã bị khóa' 
             });
         }
@@ -29,6 +32,7 @@ const verifyToken = async (req, res, next) => {
     } catch (err) {
         res.status(401).json({ 
             success: false, 
+            code: 903,
             message: err.message 
         });
     }
@@ -38,6 +42,7 @@ const isUser = (req, res, next) => {
     if (!req.user || req.user.role_id !== 1) {
         return res.status(401).json({ 
             success: false, 
+            code: 904,
             message: 'Không đủ quyền truy cập.' 
         });
     }
@@ -48,7 +53,19 @@ const isAdmin = (req, res, next) => {
     if (!req.user || req.user.role_id !== 0) {
         return res.status(401).json({ 
             success: false, 
+            code: 905,
             message: 'Không đủ quyền truy cập vào admin.' 
+        });
+    }
+    next();
+};
+
+const isAdminOrUser = (req, res, next) => {
+    if (!req.user || (req.user.role_id !== 0 && req.user.role_id !== 1)) {
+        return res.status(401).json({ 
+            success: false, 
+            code: 906,
+            message: 'Không đủ quyền truy cập.' 
         });
     }
     next();
@@ -57,5 +74,6 @@ const isAdmin = (req, res, next) => {
 module.exports = {
     verifyToken,
     isUser,
-    isAdmin
+    isAdmin,
+    isAdminOrUser,
 }

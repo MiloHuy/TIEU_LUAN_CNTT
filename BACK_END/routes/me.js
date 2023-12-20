@@ -22,22 +22,22 @@ const {
 const {
     verifyToken,
     isUser,
+    isAdmin,
+    isAdminOrUser,
 } = require('../middlewares/authMiddleware.js');
 
 router.get('/posts', verifyToken, isUser, getMyPosts);
 router.get('/stored/posts', verifyToken, isUser, getPosts);
 router.get('/stored/stories', verifyToken, isUser, getStories);
-router.get('/account/info', verifyToken, isUser, getInfo);
 router.get('/friend-request', verifyToken, isUser, getFriendRequest);
 router.get('/friends', verifyToken, isUser, getFriends);
 router.get('/friends/search', verifyToken, isUser, searchFriends);
 router.get('/notis', verifyToken, isUser, getNotis);
 router.post('/notis/read/:id', verifyToken, isUser, readNoti);
-router.put('/account/info', verifyToken, isUser, updateInfo);
-router.put('/account/password', verifyToken, isUser, updatePassword);
-router.post('/avatar', verifyToken, isUser, uploadAvatar);
 
-
-
+router.get('/account/info', verifyToken, isAdminOrUser, getInfo);
+router.put('/account/info', verifyToken, isAdminOrUser, updateInfo);
+router.put('/account/password', verifyToken, isAdminOrUser, updatePassword);
+router.post('/avatar', verifyToken, isAdminOrUser, uploadAvatar);
 
 module.exports = router;
