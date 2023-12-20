@@ -6,7 +6,7 @@ const Follow = require('../models/Follow')
 const Friend = require('../models/Friend')
 const User = require('../models/User')
 
-//GET /statistics/admin
+//POST /statistics/admin
 exports.getAdminStatistics = (async (req, res) => {
     try {
         const totals_accounts = await User.countDocuments({ role_id: { $ne: 0 } })

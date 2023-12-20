@@ -12,7 +12,7 @@ const {
     isAdmin
 } = require('../middlewares/authMiddleware.js');
 
-router.get('/admin', verifyToken, isAdmin, getAdminStatistics);
+router.post('/admin', verifyToken, isAdmin, getAdminStatistics);
 
 router.get('/:id', verifyToken, isUser, getStatistics);
 
