@@ -9,6 +9,7 @@ import PopupNofication from 'features/popup/popup-nofication';
 import Cookies from 'js-cookie';
 import { AlignJustify, Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
 
@@ -20,6 +21,7 @@ const SidebarBody = (props) => {
         modal_search: false,
         modal_file: false,
     })
+    const dispatch = useDispatch()
 
     const handleNavigateUser = () => {
         navigate(`home-user/${userID}`)
@@ -27,13 +29,6 @@ const SidebarBody = (props) => {
 
     const handleNavigateRequest = () => {
         navigate('request-friend')
-    }
-
-    const handleOpenModelCreate01 = () => {
-        setOpenModal((prev) => ({
-            ...prev,
-            modal_search: true
-        }))
     }
 
     const handleOpenModelCreate02 = () => {
@@ -58,11 +53,15 @@ const SidebarBody = (props) => {
         try {
             await logout()
 
+            dispatch(logout)
+
             Cookies.remove(USERCOOKIES.userID)
             Cookies.remove(USERCOOKIES.userName)
             Cookies.remove(SSOCOOKIES.access)
 
             window.location.reload();
+
+            navigate('/login')
         }
         catch (err) {
             console.log('err: ', err)
@@ -70,7 +69,6 @@ const SidebarBody = (props) => {
     }
 
     const handleOpenModal = () => {
-        console.log('adads')
         if (openModal.modal_search === true && openModal.modal_file !== true) {
             onOpen()
         }

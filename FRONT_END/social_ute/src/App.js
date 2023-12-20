@@ -4,18 +4,21 @@ import NotFound from "pages/404-not_found/NotFound";
 import PostDetail from "pages/[...post_id]/PostDetail";
 import Admin from "pages/admin";
 import HomeUser from "pages/home-user";
+import About from "pages/main/About";
+import Home from "pages/main/Home";
+import Report from "pages/main/Report";
 import Manage from "pages/manage";
 import ManageAccount from "pages/manage-account";
 import ManagePosts from "pages/manage-posts";
 import RequestFriend from "pages/request-friend";
+import Authentication from "pages/role-base-router/authentication";
+import Authorization from "pages/role-base-router/authorization";
 import User from "pages/user";
 import Welcome from "pages/welcome";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import AuthRequirement from "./pages/auth-require";
 import Authen from "./pages/authen";
-import Layout from "./pages/layout";
 import Main from "./pages/main";
 
 const HomeG = lazy(() => import("pages/home-guests"));
@@ -25,11 +28,16 @@ function App() {
     <NextUIProvider>
       <Suspense fallback="loading">
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Main />} />
-            <Route path="login" element={<Authen />} />
+          <Route path="/" element={<Main />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/report" element={<Report />} />
+          </Route>
 
-            <Route element={<AuthRequirement />}>
+          <Route path="login" element={<Authen />} />
+
+          <Route element={<Authentication />}>
+            <Route element={<Authorization roles={1} />}>
               <Route path="welcome" element={<Welcome />}>
                 <Route index element={<User />} />
                 <Route path="home-user/:userId" element={<HomeUser />} />
@@ -48,19 +56,18 @@ function App() {
                 <Route path="*" element={<NotFound />} />
                 <Route path="request-friend" element={<RequestFriend />} />
               </Route>
+            </Route>
 
+            <Route element={<Authorization roles={0} />}>
               <Route path="manage" element={<Manage />}>
                 <Route index element={<Admin />} />
                 <Route path="accounts" element={<ManageAccount />} />
 
                 <Route path="posts" element={<ManagePosts />} />
-
-                <Route path="request-friend" element={<RequestFriend />} />
               </Route>
             </Route>
-
-            <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </NextUIProvider>

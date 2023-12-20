@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button, Input } from '@nextui-org/react'
@@ -15,9 +15,9 @@ import { getFullName } from 'utils/user.utils'
 import { object, string } from 'yup'
 
 const FormLogin = (props) => {
-    const [errMsg, setErrMsg] = useState('')
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const [userData, setUserData] = useState()
 
     const initFormLogin = {
         phone_number: '',
@@ -25,9 +25,14 @@ const FormLogin = (props) => {
     }
     const [formLogin, setFormLogin] = useState(initFormLogin)
 
-    useEffect(() => {
-        setErrMsg('')
-    }, [formLogin.phone_number, formLogin.pass_word])
+    const handleCheckRole = (role) => {
+        if (role === 1) {
+            navigate('/welcome')
+        }
+        if (role === 0) {
+            navigate('/manage')
+        }
+    }
 
     const handleSubmitLogin = async (e) => {
         e.preventDefault()
@@ -35,7 +40,12 @@ const FormLogin = (props) => {
         try {
             const userData = await login(values)
             console.log('User data: ', userData)
+            setUserData(userData.data)
             dispatch(setInfoUser({ ...userData }))
+
+            const { role_id } = userData.user
+
+            handleCheckRole(role_id)
 
             Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
             Cookies.set(USERCOOKIES.userAvatar, userData.user.avatar, { expires: 1 })
@@ -52,7 +62,7 @@ const FormLogin = (props) => {
                 progress: undefined,
                 theme: "light",
             });
-            setTimeout(() => { navigate('/welcome') }, 2000)
+            // setTimeout(() => { navigate('/welcome') }, 2000)
 
         } catch (err) {
             console.error(err)
