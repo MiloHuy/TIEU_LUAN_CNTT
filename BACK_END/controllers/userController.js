@@ -144,9 +144,12 @@ exports.getAll = (async (req, res, next) => {
             .pagination(size);
 
         allUser = await apiFeaturesPagination.query;
+
+        const count_user = allUser.length
         
         return res.status(200).json({
             success: true,
+            count_user,
             totals,
             allUser, 
         });
