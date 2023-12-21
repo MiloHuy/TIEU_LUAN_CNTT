@@ -1,6 +1,5 @@
 import { Image, useDisclosure } from "@nextui-org/react";
 import { setInfoPost } from "app/slice/post/post.slice";
-import FormUploadImageDetail from "features/form/form-upload-image-detail";
 import ModalPostUser from "features/modal/modal-post-user";
 import { useDispatch } from 'react-redux';
 import { getPostById } from "services/post.svc";
@@ -50,7 +49,11 @@ const ListPostUserDetail = (props) => {
                 />
             </div >
             :
-            <FormUploadImageDetail />
+            <div className="w-full h-full flex items-center justify-center">
+                <p className="text-black dark:text-white font-mono text-md">
+                    Chưa có bài viết hiện tại
+                </p>
+            </div>
     )
 }
 

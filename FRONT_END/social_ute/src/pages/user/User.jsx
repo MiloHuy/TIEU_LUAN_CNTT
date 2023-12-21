@@ -32,8 +32,14 @@ const User = () => {
     return (
         <div className='grid grid-cols-5 gap-1 w-full h-screen overflow-y-scroll'>
             <div className='flex flex-col col-span-3 gap-2 '>
-                <div className="w-full h-[80px] flex flex-row gap-1 overflow-hidden mx-2 px-2 py-2">
-                    <Header />
+                <div className="w-full h-[80px] flex flex-row items-end gap-1 overflow-hidden mx-2 px-2 py-2">
+                    {
+                        posts.data ?
+                            <Header />
+                            :
+                            ''
+                    }
+
                 </div>
 
                 <div className="flex flex-col items-center pt-3 gap-3 ">

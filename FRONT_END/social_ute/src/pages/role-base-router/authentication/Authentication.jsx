@@ -1,3 +1,4 @@
+import { Spinner } from "@nextui-org/react";
 import { authFail, authSuccess } from 'app/slice/auth/auth.slice.js';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,6 +26,12 @@ export default function Authentication() {
         fetchInfoMySelf()
         setHasRun(true);
     }, [fetchInfoMySelf]);
+
+    if (!loading) {
+        return <div className='w-full h-full flex items-center justify-center'>
+            <Spinner color="default" size="lg" />
+        </div >
+    }
 
     if (isAuthenticated) {
         return <Outlet />;

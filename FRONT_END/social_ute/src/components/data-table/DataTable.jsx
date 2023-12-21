@@ -19,10 +19,10 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
                         {getFullName(user.first_name, user.last_name)}
                     </h1>
                 );
-            case "phone":
+            case "phone_number":
                 return (
                     <h1 className='text-md text-black dark:text-white font-open_sans'>
-                        {user.phone}
+                        {user.phone_number}
                     </h1>
                 );
             case "id":
@@ -33,7 +33,7 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
                 );
             case "gmail":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                    <h1 className='text-md text-black dark:text-white font-open_sans truncate'>
                         {user.gmail}
                     </h1>
                 );
@@ -68,8 +68,12 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
 
     return (
         <div
-            className='w-full h-full border'>
+            className='w-full h-full border-black dark:border-white'>
             <Table
+                classNames={{
+                    th: 'border-b rounded-none border-black dark:border-white',
+                    tbody: 'border-b'
+                }}
                 removeWrapper
                 layout="fixed"
             >

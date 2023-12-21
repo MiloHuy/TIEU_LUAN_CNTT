@@ -134,13 +134,12 @@ const FormLogin = (props) => {
                 onChange={formik.handleChange}
             />
 
-            <div className='flex flex-col gap-2 justify-center'>
-                <Button onClick={handleSubmitLogin} className='text-sm font-merriweather'>LOGIN</Button>
-                <div className='grid grid-cols-4 gap-2 mt-2'>
+            <div className='flex gap-2 justify-center w-4/5'>
+                <Button className=' w-4/5'>
                     <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">SIGN UP</Link>
+                </Button>
 
-                </div>
-
+                <Button onClick={handleSubmitLogin} className='text-sm font-merriweather w-4/5'>LOGIN</Button>
             </div>
         </form>
     )

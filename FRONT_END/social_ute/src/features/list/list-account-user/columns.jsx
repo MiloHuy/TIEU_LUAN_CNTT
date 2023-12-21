@@ -6,7 +6,7 @@ const columns = [
         allowsSorting: false
     },
     {
-        key: "phone",
+        key: "phone_number",
         label: "PHONE",
         allowsSorting: false
     },

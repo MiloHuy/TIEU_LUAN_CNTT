@@ -24,8 +24,8 @@ const About = () => {
                     <TableBody >
                         <TableRow key="1">
                             <TableCell className='text-lg font-serif '>Huỳnh Hùng Phú</TableCell>
-                            <TableCell className='text-lg font-serif  '>20110</TableCell>
-                            <TableCell className='text-lg font-serif  truncate'>20110@student.hcmute.edu.vn</TableCell>
+                            <TableCell className='text-lg font-serif  '>20110540</TableCell>
+                            <TableCell className='text-lg font-serif  truncate'>20110540@student.hcmute.edu.vn</TableCell>
                             <TableCell className='text-lg font-serif  '>Nguyễn Hữu Trung</TableCell>
                         </TableRow>
                         <TableRow key="2">

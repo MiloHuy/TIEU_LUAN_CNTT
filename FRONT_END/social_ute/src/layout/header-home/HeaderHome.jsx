@@ -1,10 +1,10 @@
-import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
+import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import { RELATIONSHIP } from "constants/user.const";
 import ModalChangeAvatar from "features/modal/modal-change-avatar/ModalChangeAvatar";
 import ModalChangePassword from "features/modal/modal-change-password";
 import ModalUpdateUser from "features/modal/modal-update-user";
-import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
+import { Check, MailPlus, Settings, UserCheck, UserMinus, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -335,14 +335,25 @@ const HeaderHome = (props) => {
                                 avatar_URL ?
                                     RELATIONSHIP.FRIEND === friend ?
                                         <div className='flex gap-2'>
-                                            <Button
-                                                isLoading={check.isLoadingFriend}
-                                                radius="sm"
-                                                className="w-50 h-7"
-                                                onClick={handleUnfriend}
-                                            >
-                                                {check.relationship ? 'Bạn bè' : 'Thêm bạn bè'}
-                                            </Button>
+                                            <Popover placement="bottom">
+                                                <PopoverTrigger>
+                                                    <Button
+                                                        isLoading={check.isLoadingFriend}
+                                                        radius="sm"
+                                                        className="w-50 h-7"
+
+                                                    >
+                                                        Bạn bè
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className='h-10 w-[120px]'>
+                                                    <div className="flex gap-1 items-center justify-between w-full cursor-pointer">
+                                                        <p className="text-md" onClick={handleUnfriend}>Hủy kết bạn</p>
+                                                        <UserMinus size={18} strokeWidth={0.75} />
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+
 
                                             <Button
                                                 isLoading={check.isLoadingFollow}

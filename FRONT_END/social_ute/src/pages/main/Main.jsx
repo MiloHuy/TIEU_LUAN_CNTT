@@ -13,20 +13,15 @@ const Public = () => {
                     <NavbarBrand justify="start">
                         <p className="text-2xl font-serif">SOCIAL HCMUTE</p>
                     </NavbarBrand>
-                    <NavbarContent className="gap-4 mr-10 -translate-x-10" >
+                    <NavbarContent className="gap-4 " >
                         <NavbarItem>
                             <Link color="foreground" to="/home">
-                                <p className="text-lg font-serif">TRANG CHỦ</p>
+                                <p className="text-lg font-serif hover:underline">TRANG CHỦ</p>
                             </Link>
                         </NavbarItem>
                         <NavbarItem>
                             <Link to="/about" aria-current="page">
-                                <p className="text-lg font-serif">GIỚI THIỆU</p>
-                            </Link>
-                        </NavbarItem>
-                        <NavbarItem>
-                            <Link color="foreground" to="/report">
-                                <p className="text-lg font-serif ">NHÓM THỰC HIỆN</p>
+                                <p className="text-lg font-serif hover:underline">GIỚI THIỆU</p>
                             </Link>
                         </NavbarItem>
                     </NavbarContent>
@@ -41,8 +36,6 @@ const Public = () => {
                         {token ? <Link to='./welcome'>welcome</Link> : <Link to='./login'>Login</Link>}
                     </Button>
                 </div>
-
-
             </div>
 
             <div className='w-full h-full flex'>

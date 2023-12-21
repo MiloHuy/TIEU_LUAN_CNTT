@@ -154,7 +154,6 @@ const CardPostUser = (props) => {
                                 onClick={handleLikePost}
                             >
                                 <Heart
-                                    color={statusPost.isLiked === true ? 'red' : '#ffffff'}
                                     strokeWidth={1.5}
                                     absoluteStrokeWidth
                                     size={20}

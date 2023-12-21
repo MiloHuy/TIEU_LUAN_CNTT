@@ -18,7 +18,7 @@ const Manage = () => {
                 <SidebarAdmin
                     icons={sidebarIcons}
                     handleController={handleDarkMode}
-                    className='relative w-full h-full border' />
+                    className='relative w-full h-full border border-black dark:border-white' />
             </div>
 
             <div className={`col-span-6 ${darkmode}`}>

@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
@@ -19,13 +20,19 @@ const Calendar = () => {
                     </h1>
 
                     <div className="flex gap-8 items-center">
-                        <GrFormPrevious
-                            color='#ffffff'
-                            className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
-                            onClick={() => {
-                                setToday(today.month(today.month() - 1));
-                            }}
-                        />
+                        <Button
+                            className='w-[20px]'
+                            size="sm"
+                            isIconOnly
+                            variant="light"
+                        >
+                            <GrFormPrevious
+                                className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
+                                onClick={() => {
+                                    setToday(today.month(today.month() - 1));
+                                }}
+                            />
+                        </Button>
                         <h1
                             className=" cursor-pointer hover:scale-105 transition-all dark:text-white text-black font-mono"
                             onClick={() => {
@@ -34,13 +41,20 @@ const Calendar = () => {
                         >
                             Today
                         </h1>
-                        <GrFormNext
-                            color='#FFFFFF'
-                            className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
-                            onClick={() => {
-                                setToday(today.month(today.month() + 1));
-                            }}
-                        />
+
+                        <Button
+                            className='w-[20px]'
+                            size="sm"
+                            isIconOnly
+                            variant="light"
+                        >
+                            <GrFormNext
+                                className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
+                                onClick={() => {
+                                    setToday(today.month(today.month() + 1));
+                                }}
+                            />
+                        </Button>
                     </div>
                 </div>
 

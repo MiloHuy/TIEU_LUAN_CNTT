@@ -182,7 +182,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id, statusPost, handleCallbackL
                         textValue='Yêu thích bài viết'
                         startContent={
                             <Heart
-                                color={statusPost.isLiked === true ? 'red' : '#ffffff'}
+
                                 size={18}
                                 strokeWidth={0.75}
                                 fill={statusPost.isLiked === true ? 'red' : 'none'}

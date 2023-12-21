@@ -1,8 +1,10 @@
 import { Button, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
+import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import clsx from "clsx";
 import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
 import { useFormik } from "formik";
 import { useMemo, useState } from "react";
+import { useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { updateUserInfo } from "services/me.svc";
@@ -15,16 +17,19 @@ const FormUpdateUser = (props) => {
     const [department_t, setDeparements] = useState(null)
     const { updateUser } = props
     const [isLoading, setIsLoading] = useState(false)
+    const user = useSelector(selectCurrenUser)
+
+    console.log('user: ' + Object.entries(user))
 
     const initFormUpdateUser = {
-        first_name: updateUser.user.first_name,
-        last_name: updateUser.user.last_name,
-        gmail: '',
-        phone_number: updateUser?.phone_number,
-        id: updateUser?.id,
-        birth_day: updateUser?.birth_day,
-        gender: updateUser?.gender,
-        department: ''
+        first_name: user.first_name,
+        last_name: user.last_name,
+        gmail: user.gmail,
+        phone_number: user.phone_number,
+        id: user.id,
+        birth_day: user.birth_day,
+        gender: user.gender,
+        department: user.department 
     }
 
     const [FormUpdateUser, setFormUpdateUser] = useState(initFormUpdateUser)

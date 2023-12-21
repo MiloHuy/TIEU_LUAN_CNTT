@@ -2,7 +2,6 @@ import { Spinner } from "@nextui-org/react";
 import clsx from "clsx";
 import DataTable from "components/data-table";
 import DataTablePagination from "components/data-table-pagination";
-import SearchBlockDebounce from "components/search-block-debounce";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { getAllAccountUser } from "services/admin.svc";
@@ -34,7 +33,7 @@ const ListAccountUser = (props) => {
 
             setIsLoading(false)
 
-            const { size, totals } = initialData.data
+            const { totals } = initialData.data
             setPagination((prev) => (({
                 ...prev,
                 totals: totals
@@ -121,26 +120,23 @@ const ListAccountUser = (props) => {
                 DANH SÁCH TÀI KHOẢN CỦA NGƯỜI DÙNG.
             </h1>
 
-            <div className="grid grid-cols-1 gap-5 h-[470px] items-center border rounded-lg">
-                <div className='w-full flex items-end px-2'>
-                    <SearchBlockDebounce
-                        className='flex items-start'
-                        onSubmit={handleSearch} />
-                </div>
-
+            <div className="grid grid-cols-1 gap-5 h-[350px] items-center border border-black dark:border-white rounded-lg">
                 {
                     data ?
                         <DataTable
                             isLoading={isLoading}
                             columns={columns}
-                            data={data.allUser}
+                            data={data.all_user}
                             onDelete={handleDeleteAccount}
-                        /> :
-                        <Spinner
-                            size="lg"
-                            label="Loading"
-                            color="default"
                         />
+                        :
+                        <div className='w-full h-full flex items-center justify-center'>
+                            <Spinner
+                                size="lg"
+                                label="Loading"
+                                color="default"
+                            />
+                        </div>
                 }
 
                 <DataTablePagination

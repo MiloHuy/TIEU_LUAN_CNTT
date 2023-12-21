@@ -1,16 +1,21 @@
 import { Button } from '@nextui-org/react';
+import { logOut } from 'app/slice/auth/auth.slice';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
 
 const SidebarBody = (props) => {
     const { icons, className } = props
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleLogout = async () => {
         await logout()
+
+        dispatch(logOut)
     }
 
     const handleNaviageSidebar = (link) => {

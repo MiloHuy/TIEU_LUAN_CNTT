@@ -112,7 +112,7 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                         variant="light"
                     >
                         <Heart
-                            color={postStatus.liked === true ? 'red' : '#ffffff'}
+                            color={postStatus.liked === true ? 'red' : '#000000'}
                             size={25}
                             strokeWidth={2}
                             fill={postStatus.liked === true ? 'red' : 'none'}

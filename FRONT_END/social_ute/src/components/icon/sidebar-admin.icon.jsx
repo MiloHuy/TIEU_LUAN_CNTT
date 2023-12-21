@@ -24,6 +24,6 @@ export const sidebarIcons = [
     {
         name: "Logout",
         icon: <LogOut size={20} strokeWidth={1} />,
-        link: ''
+        link: '/logout'
     },
 ]
