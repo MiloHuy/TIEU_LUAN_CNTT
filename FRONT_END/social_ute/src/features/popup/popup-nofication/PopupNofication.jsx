@@ -35,6 +35,8 @@ const PopupNofication = ({ trigger }) => {
             backdrop='opaque'
             placement="right"
             showArrow={false}
+            radius='sm'
+            offset={12}
             classNames={{
                 content: [
                     "py-3 px-4 border",

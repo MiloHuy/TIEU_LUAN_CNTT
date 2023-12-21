@@ -9,6 +9,10 @@ const DataTablePagination = (props) => {
 
     const totalPages = Math.ceil(totals / size)
 
+    console.log('totals: ' + totals)
+    console.log('size: ' + size)
+    console.log('Total pages: ' + totalPages)
+
     useEffect(() => {
         onPageChange(currentPage)
     }, [currentPage, onPageChange])
@@ -22,7 +26,7 @@ const DataTablePagination = (props) => {
     }
 
     return (
-        totalPages !== 0 ? (<div className='flex flex-row gap-2'>
+        totalPages !== 0 ? (<div className='flex flex-row gap-2 w-full justify-center'>
             <Button
                 variant="light"
                 isIconOnly

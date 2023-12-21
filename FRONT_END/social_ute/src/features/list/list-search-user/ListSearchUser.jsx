@@ -37,7 +37,7 @@ const ListSearchUser = ({ userSearch, onCloseModal }) => {
                                     </p>
 
                                     <p className='text-lg font-mono text-black'>
-                                        Đoàn khoa
+                                        {user.department}
                                     </p>
                                 </div>
                             </div>

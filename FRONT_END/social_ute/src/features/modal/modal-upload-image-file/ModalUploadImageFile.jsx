@@ -20,7 +20,7 @@ const ModalUploadImageFile = ({ isOpen, onOpenChange, onClose }) => {
                     <>
                         <ModalHeader
                             className="flex gap-1 justify-center text-white font-mono">
-                            Tạo bài viết mới - File
+                            Tạo bài viết mới
                         </ModalHeader>
 
                         <ModalBody>

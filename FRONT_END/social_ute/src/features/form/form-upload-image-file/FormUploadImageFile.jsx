@@ -113,7 +113,7 @@ const FormUploadImageFile = () => {
                         :
                         <label
                             for="post_img"
-                            className="flex flex-col items-center justify-center w-full h-80 rounded-lg bg-bg_popup_secondary border-dashed cursor-pointer">
+                            className="flex flex-col items-center justify-center w-full h-80 rounded-lg bg-bg_popup_secondary border-dashed cursor-pointer bg-origin-conten">
 
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <Camera size={50} strokeWidth={1} color='#000000' />

@@ -7,8 +7,9 @@ import ModalUpdateUser from "features/modal/modal-update-user";
 import { Check, MailPlus, Settings, UserCheck, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { getMeInfo } from "services/me.svc";
-import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest } from "services/user.svc";
+import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest, unFriend } from "services/user.svc";
 
 const HeaderHome = (props) => {
     const { userStatisics, userInfo, userName, userAvatar } = props
@@ -28,8 +29,6 @@ const HeaderHome = (props) => {
     const following = userInfo ? userInfo.following : null
     const request_add_friend = userInfo ? userInfo.friend_request : null
     const user = useSelector(selectCurrenUser)
-
-    console.log('user: ' + Object.entries(user.avatar.url))
 
     const INIT_CHECK = {
         relationship: friend,
@@ -67,6 +66,49 @@ const HeaderHome = (props) => {
         }
         catch (err) {
             console.log("err:" + err)
+        }
+    }
+
+    const handleUnfriend = async () => {
+        try {
+            setCheck((prev) => ({
+                ...prev,
+                isLoadingFriend: true
+            }))
+
+            await unFriend(userInfo.user._id)
+
+            setCheck((prev) => ({
+                ...prev,
+                isLoadingFriend: false
+            }))
+
+            toast.success('Hủy kết bạn thành công!!!', {
+                position: "bottom-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
+            setTimeout(() => { window.location.reload() }, 2500)
+        }
+        catch (err) {
+            console.log('err :' + err)
+
+            toast.error('Hủy kết bạn thất bạn!!!', {
+                position: "bottom-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 
@@ -297,7 +339,7 @@ const HeaderHome = (props) => {
                                                 isLoading={check.isLoadingFriend}
                                                 radius="sm"
                                                 className="w-50 h-7"
-                                                onClick={handleAddOrCancelFriend}
+                                                onClick={handleUnfriend}
                                             >
                                                 {check.relationship ? 'Bạn bè' : 'Thêm bạn bè'}
                                             </Button>
