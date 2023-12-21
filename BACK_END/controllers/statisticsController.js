@@ -90,31 +90,6 @@ exports.getAdminStatistics = (async (req, res) => {
                     post_count_by_day: { $push: '$$ROOT' },
                 },
             },
-            {
-                $project: {
-                    _id: 0,
-                    total: 1,
-                    post_count_by_day: {
-                        $concatArrays: [
-                            {
-                                $map: {
-                                    input: daysArray,
-                                    as: 'day',
-                                    in: {
-                                        day: '$$day',
-                                        count: {
-                                            $ifNull: [
-                                                { $arrayElemAt: [{ $filter: { input: '$post_count_by_day', as: 'pc', cond: { $eq: ['$$pc.day', '$$day'] } } }, 0] },
-                                                0
-                                            ]
-                                        }
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-            },
         ]);
 
         res.status(200).json({
