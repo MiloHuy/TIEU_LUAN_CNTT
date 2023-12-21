@@ -369,11 +369,8 @@ exports.like = (async (req, res) => {
             liked.user_id.push(req.user._id);
             await liked.save();
 
-            // if(!post.user_id.equals(req.user._id)){
-                
-            // }
-
-            const currentDate = new Date();
+            if(!post.user_id.equals(req.user._id)){
+                const currentDate = new Date();
                 const content = req.user.first_name + ' ' + req.user.last_name +' yêu thích bài viết của bạn.';
 
                 const noti = await Notification.create({
@@ -383,11 +380,12 @@ exports.like = (async (req, res) => {
                     noti_create_time: currentDate
                 })
 
-            await Noti_user.findOneAndUpdate(
-                { user_id: post.user_id },
-                { $push: { 'detail': { noti_id: noti._id } } },
-                { new: true, upsert: true }
-            );
+                await Noti_user.findOneAndUpdate(
+                    { user_id: post.user_id },
+                    { $push: { 'detail': { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
 
             res.status(201).json({
                 success: true,
