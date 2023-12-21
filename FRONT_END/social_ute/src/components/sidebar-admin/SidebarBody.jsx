@@ -31,13 +31,13 @@ const SidebarBody = (props) => {
                     return (
                         <div key={item.name} className='flex flex-row gap-2'>
                             <Button
-                                className='w-full flex justify-start'
+                                className='w-full flex justify-start h-[60px]'
                                 color="default"
                                 variant="bordered"
                                 startContent={item.icon}
                                 onClick={() => handleNaviageSidebar(item.link)}
                             >
-                                <h1 className='text-sm text-black dark:text-white font-bold font-merriweather text-center'>
+                                <h1 className='text-md text-black dark:text-white font-bold font-merriweather text-center'>
                                     {item.name}
                                 </h1>
                             </Button>

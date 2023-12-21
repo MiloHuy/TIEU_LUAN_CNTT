@@ -5,6 +5,7 @@ import DataTablePagination from "components/data-table-pagination";
 import SearchBlockDebounce from "components/search-block-debounce";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
+import { getAllAccountUser } from "services/admin.svc";
 import columns from "./columns";
 
 const ListAccountUser = (props) => {
@@ -13,33 +14,31 @@ const ListAccountUser = (props) => {
 
     const [pagination, setPagination] = useState({
         pagIndex: 1,
-        size: 2,
+        size: 4,
         totals: 2
     })
 
     const [filter, setFilter] = useState({
         page: 1,
         size: 4,
-        search: '',
     })
 
-    const fetchAccounts = useCallback(async (page, pageSize, search) => {
+    const fetchAccounts = useCallback(async (page, pageSize) => {
         try {
-            // const initialData = await getAllAccounts({
-            //     page: page,
-            //     size: pageSize,
-            //     search: search
-            // })
-            // setData(initialData)
+            setIsLoading(true)
+            const initialData = await getAllAccountUser({
+                page: page,
+                size: pageSize,
+            })
+            setData(initialData.data)
 
-            setIsLoading(!isLoading)
+            setIsLoading(false)
 
-            // const { size, totals } = initialData.data
-            // setPagination((prev) => (({
-            //     ...prev,
-            //     size: size,
-            //     totals: totals
-            // })))
+            const { size, totals } = initialData.data
+            setPagination((prev) => (({
+                ...prev,
+                totals: totals
+            })))
 
         } catch (error) {
             console.log(error)
@@ -62,9 +61,9 @@ const ListAccountUser = (props) => {
         fetchAccounts(
             filter.page,
             filter.size,
-            filter.search)
+        )
 
-    }, [fetchAccounts, filter.page, filter.size, filter.search])
+    }, [fetchAccounts, filter.page, filter.size])
 
     const handleSearch = useCallback((newFilter) => {
         setFilter((prev) => ({
@@ -117,36 +116,37 @@ const ListAccountUser = (props) => {
     }
 
     return (
-        <div className={clsx('flex items-center justify-center flex-col gap-3', props.className)}>
-            <h1 className='text-sm text-black dark:text-white font-bold font-merriweather text-center'>
+        <div className={clsx('flex items-center justify-center flex-col gap-5', props.className)}>
+            <h1 className='text-lg text-black dark:text-white font-bold font-merriweather text-center'>
                 DANH SÁCH TÀI KHOẢN CỦA NGƯỜI DÙNG.
             </h1>
 
-            <div className='w-full flex items-start mt-2'>
-                <SearchBlockDebounce
-                    className='flex items-start w-1/3'
-                    onSubmit={handleSearch} />
+            <div className="grid grid-cols-1 gap-5 h-[470px] items-center border rounded-lg">
+                <div className='w-full flex items-end px-2'>
+                    <SearchBlockDebounce
+                        className='flex items-start'
+                        onSubmit={handleSearch} />
+                </div>
+
+                {
+                    data ?
+                        <DataTable
+                            isLoading={isLoading}
+                            columns={columns}
+                            data={data.allUser}
+                            onDelete={handleDeleteAccount}
+                        /> :
+                        <Spinner
+                            size="lg"
+                            label="Loading"
+                            color="default"
+                        />
+                }
+
+                <DataTablePagination
+                    pagination={pagination}
+                    onPageChange={handlePageChange} />
             </div>
-
-            {
-                data ?
-                    <DataTable
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={[]}
-                        onDelete={handleDeleteAccount}
-                    /> :
-                    <Spinner
-                        size="lg"
-                        label="Loading"
-                        color="default"
-                    />
-            }
-
-
-            <DataTablePagination
-                pagination={pagination}
-                onPageChange={handlePageChange} />
         </div>
     )
 

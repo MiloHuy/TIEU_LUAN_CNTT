@@ -1,4 +1,5 @@
 import { Button, useDisclosure } from '@nextui-org/react';
+import { logOut } from 'app/slice/auth/auth.slice';
 import clsx from 'clsx';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
@@ -53,13 +54,13 @@ const SidebarBody = (props) => {
         try {
             await logout()
 
-            dispatch(logout)
+            dispatch(logOut)
 
             Cookies.remove(USERCOOKIES.userID)
             Cookies.remove(USERCOOKIES.userName)
             Cookies.remove(SSOCOOKIES.access)
 
-            window.location.reload();
+            // window.location.reload();
 
             navigate('/login')
         }
@@ -110,21 +111,6 @@ const SidebarBody = (props) => {
                             Trang chủ
                         </p>
                     </Button>
-
-                    {/* <PopupSearch
-                        trigger={
-                            <Button
-                                className='w-full flex justify-start gap-6'
-                                color="default"
-                                variant="light"
-                                startContent={<Search size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
-                            >
-                                <p className='font-mono text-xl '>
-                                    Tìm kiếm
-                                </p>
-                            </Button>
-                        }
-                    /> */}
 
                     <Button
                         onClick={handleOpenModelSearch}

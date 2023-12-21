@@ -139,7 +139,6 @@ const FormLogin = (props) => {
                 <div className='grid grid-cols-4 gap-2 mt-2'>
                     <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">SIGN UP</Link>
 
-                    <Link className='text-sm col-span-3 font-merriweather' href="#">FORGET YOUR PASSWORD?</Link>
                 </div>
 
             </div>

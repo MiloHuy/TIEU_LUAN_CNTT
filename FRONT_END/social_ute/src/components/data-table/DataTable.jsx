@@ -1,78 +1,64 @@
-import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from "@nextui-org/react";
-import { PenSquare, Trash2 } from 'lucide-react';
-import { useCallback, useState } from "react";
-import { dateTimeFormat, hourTimeFormat } from "utils/format-date.utils";
+import { Button, Popover, PopoverContent, PopoverTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Ban, CheckCircle2 } from 'lucide-react';
+import { useCallback } from "react";
+import { getFullName } from "utils/user.utils";
 
 const DataTable = ({ columns, data, isLoading, onDelete }) => {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [usernameInfo, setUserInfo] = useState({
-        username: '',
-        _id: ''
-    })
-
     const handleOnDelete = (id) => {
         if (!onDelete) return
         onDelete(id)
-    }
-
-    const handleEditPassWord = (username, id) => {
-        try {
-            if (!onDelete) return
-            onOpen()
-            setUserInfo({
-                ...username,
-                username: username,
-                _id: id
-            })
-        } catch (error) {
-
-        }
     }
 
     const renderCell = useCallback((user, columnKey) => {
         const cellValue = user[columnKey];
 
         switch (columnKey) {
-            case "name":
-                return (
-                    <h1 className='text-sm text-black dark:text-white '>
-                        {user.name}
-                    </h1>
-                );
             case "username":
                 return (
-                    <h1 className='text-sm text-black dark:text-white '>
-                        {user.username}
+                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                        {getFullName(user.first_name, user.last_name)}
                     </h1>
                 );
-            case "role":
+            case "phone":
                 return (
-                    <h1 className='text-sm text-black dark:text-white '>
-                        {user.role}
+                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                        {user.phone}
                     </h1>
                 );
-            case "createdAt":
+            case "id":
                 return (
-                    <h1 className='text-sm text-black dark:text-white '>
-                        {[hourTimeFormat(new Date(user.createdAt)), dateTimeFormat(new Date(user.createdAt))].join(" - ")}
+                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                        {user.id}
                     </h1>
                 );
-            case "updatedAt":
+            case "gmail":
                 return (
-                    <h1 className='text-sm text-black dark:text-white '>
-                        {[hourTimeFormat(new Date(user.updatedAt)), dateTimeFormat(new Date(user.updatedAt))].join(" - ")}
+                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                        {user.gmail}
+                    </h1>
+                );
+            case "department":
+                return (
+                    <h1 className='text-md text-black dark:text-white font-open_sans'>
+                        {user.department}
                     </h1>
                 );
             case "action":
                 return (
                     <div className="relative flex items-center gap-2">
-                        <Button className=' dark:bg-white' isIconOnly variant="light" onClick={() => handleEditPassWord(user.name, user._id)}>
-                            <PenSquare size={16} color="#0a0a0a" />
-                        </Button>
-
-                        <Button className=' dark:bg-white' isIconOnly variant="light" onClick={() => handleOnDelete(user._id)}>
-                            <Trash2 size={16} color="#be2d2d" />
-                        </Button>
+                        <Popover placement="bottom" radius='sm'>
+                            <PopoverTrigger>
+                                <Button className=' dark:bg-white' isIconOnly variant="light" >
+                                    <Ban size={16} color="#be2d2d" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className='h-10 w-[120px]'>
+                                <div className="flex gap-1 items-center justify-between w-full cursor-pointer">
+                                    <p className="text-md" onClick={() => handleOnDelete(user._id)}>Xác nhận</p>
+                                    <CheckCircle2 size={18} strokeWidth={1} />
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 );
             default:
@@ -82,10 +68,11 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
 
     return (
         <div
-            className='max-w-[800px] min-w-[700px] min-h-[300px] p-4 overflow-x-hidden'>
+            className='w-full h-full border'>
             <Table
-                isStriped
-                layout="fixed">
+                removeWrapper
+                layout="fixed"
+            >
                 <TableHeader columns={columns} >
                     {(column) => <TableColumn
                         key={column.key}
@@ -99,7 +86,9 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
                         <TableBody
                             items={data}
                             isLoading={isLoading}
-                            loadingContent={<Spinner label="Loading..." />}
+                            className='gap-2'
+                            loadingContent={<Spinner label="Loading..." />
+                            }
                         >
                             {(item) => (
                                 <TableRow key={item.username}>
@@ -112,23 +101,7 @@ const DataTable = ({ columns, data, isLoading, onDelete }) => {
                 }
 
             </Table >
-
-            {/* <Modal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                placement="top-center"
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalBody>
-                                <FormSetPassword usernameInfo={usernameInfo} />
-                            </ModalBody>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal> */}
-        </div>
+        </div >
 
     )
 }

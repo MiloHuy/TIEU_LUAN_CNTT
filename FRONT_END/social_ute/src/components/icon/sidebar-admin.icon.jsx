@@ -3,7 +3,7 @@ import { BarChartBig, BookImage, Home, LogOut } from "lucide-react";
 export const sidebarIcons = [
     {
         name: "Home",
-        icon: <Home />,
+        icon: <Home size={20} strokeWidth={1} />,
         link: '/manage'
     },
     {
@@ -23,7 +23,7 @@ export const sidebarIcons = [
     },
     {
         name: "Logout",
-        icon: <LogOut />,
+        icon: <LogOut size={20} strokeWidth={1} />,
         link: ''
     },
 ]

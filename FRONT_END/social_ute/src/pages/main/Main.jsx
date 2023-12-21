@@ -7,42 +7,47 @@ const Public = () => {
     const token = Cookies.get(SSOCOOKIES.access)
 
     return (
-        <div>
-            <Navbar>
-                <NavbarBrand justify="start">
-                    <p className="font-bold text-xl text-mono">SOCIAL HCMUTE</p>
-                </NavbarBrand>
-                <NavbarContent className="hidden sm:flex gap-4" justify="center">
-                    <NavbarItem>
-                        <Link color="foreground" to="/home">
-                            <p className="font-bold text-lg text-mono">TRANG CHỦ</p>
-                        </Link>
-                    </NavbarItem>
-                    <NavbarItem isActive>
-                        <Link to="/about" aria-current="page">
-                            <p className="font-bold text-lg text-mono">GIỚI THIỆU</p>
-                        </Link>
-                    </NavbarItem>
-                    <NavbarItem>
-                        <Link color="foreground" to="/report">
-                            <p className="font-bold text-lg text-mono ">BÁO CÁO</p>
-                        </Link>
-                    </NavbarItem>
-                </NavbarContent>
-                <NavbarContent justify="end">
-                    <NavbarItem>
-                        <Button
-                            as={Link}
-                            to="#"
-                            variant="flat"
-                        >
-                            {token ? <Link to='./welcome'>welcome</Link> : <Link to='./login'>Login</Link>}
-                        </Button>
-                    </NavbarItem>
-                </NavbarContent>
-            </Navbar>
+        <div className="grid grid-cols-1 gap-6">
+            <div className='w-full flex px-4 border'>
+                <Navbar className="w-full flex justify-start items-center">
+                    <NavbarBrand justify="start">
+                        <p className="text-2xl font-serif">SOCIAL HCMUTE</p>
+                    </NavbarBrand>
+                    <NavbarContent className="gap-4 mr-10 -translate-x-10" >
+                        <NavbarItem>
+                            <Link color="foreground" to="/home">
+                                <p className="text-lg font-serif">TRANG CHỦ</p>
+                            </Link>
+                        </NavbarItem>
+                        <NavbarItem>
+                            <Link to="/about" aria-current="page">
+                                <p className="text-lg font-serif">GIỚI THIỆU</p>
+                            </Link>
+                        </NavbarItem>
+                        <NavbarItem>
+                            <Link color="foreground" to="/report">
+                                <p className="text-lg font-serif ">NHÓM THỰC HIỆN</p>
+                            </Link>
+                        </NavbarItem>
+                    </NavbarContent>
+                </Navbar>
+                <div className="flex items-center">
+                    <Button
+                        as={Link}
+                        to="#"
+                        variant="light"
+                        className="text-md font-serif"
+                    >
+                        {token ? <Link to='./welcome'>welcome</Link> : <Link to='./login'>Login</Link>}
+                    </Button>
+                </div>
 
-            <Outlet />
+
+            </div>
+
+            <div className='w-full h-full flex'>
+                <Outlet />
+            </div>
         </div>
     )
 }

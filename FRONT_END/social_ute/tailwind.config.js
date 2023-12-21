@@ -47,6 +47,8 @@ module.exports = {
         bg_dropdown_primary: "#323232",
 
         bg_button_delete: "#2F2F2F",
+
+        table_background: "#A3A3A3",
         focus: "#9BAE96",
       },
       keyframes: {

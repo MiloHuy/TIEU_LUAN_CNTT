@@ -13,12 +13,12 @@ const Manage = () => {
     // const Id = getUserIdFromCookie()
 
     return (
-        <div className={`w-screen grid grid-cols-8 gap-1 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
+        <div className={`w-screen grid grid-cols-8 gap-3 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
             <div className='col-span-2'>
                 <SidebarAdmin
                     icons={sidebarIcons}
                     handleController={handleDarkMode}
-                    className='relative max-w-[250px] h-full' />
+                    className='relative w-full h-full border' />
             </div>
 
             <div className={`col-span-6 ${darkmode}`}>
