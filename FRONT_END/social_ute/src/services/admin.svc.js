@@ -3,6 +3,7 @@ import AxiosInstance from "./axios-instance.svc";
 export const API_ADMIN_ENDPOINT = {
   GET: {
     all_accounts: "/users/admin",
+    all_posts: "/posts/admin",
   },
 
   POST: {
@@ -39,5 +40,12 @@ export const getStatisticsUser = async (payload) => {
     API_ADMIN_ENDPOINT.POST.statistics_user,
     payload,
   );
+  return res;
+};
+
+export const getAllPosts = async (payload) => {
+  const res = AxiosInstance.get(API_ADMIN_ENDPOINT.GET.all_posts, {
+    params: payload,
+  });
   return res;
 };

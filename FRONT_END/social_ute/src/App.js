@@ -72,6 +72,15 @@ function App() {
                 </Route>
               </Route>
             </Route>
+
+            <Route
+              path="*"
+              element={
+                <div clasName="w-full h-screen">
+                  <NotFound />
+                </div>
+              }
+            />
           </Route>
           <Route
             path="*"

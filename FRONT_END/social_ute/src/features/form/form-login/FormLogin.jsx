@@ -89,8 +89,8 @@ const FormLogin = (props) => {
     }
 
     const formLabel = useMemo(() => ({
-        phone_number: 'Phone',
-        pass_word: 'Password',
+        phone_number: 'Số điện thoại',
+        pass_word: 'Mật khẩu',
     }), [])
 
     const formLoginSchema = useMemo(() => {
@@ -115,14 +115,14 @@ const FormLogin = (props) => {
             onSubmit={formik.handleSubmit}
         >
 
-            <h1 className='text-lg text-blue-950 font-bold font-merriweather text-center'>LOGIN</h1>
+            <h1 className='text-lg text-blue-950 font-bold font-merriweather text-center'>Đăng nhập</h1>
 
             <Input
                 name='phone_number'
                 type='text'
                 className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full'
                 errorMessage={errors.phone_number?.message}
-                placeholder='Please enter a phone number'
+                placeholder='Vui lòng nhập số điện thoại'
                 onChange={formik.handleChange}
             />
 
@@ -130,16 +130,16 @@ const FormLogin = (props) => {
                 name='pass_word'
                 type='password'
                 className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full'
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 onChange={formik.handleChange}
             />
 
             <div className='flex gap-2 justify-center w-4/5'>
                 <Button className=' w-4/5'>
-                    <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">SIGN UP</Link>
+                    <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">Đăng ký</Link>
                 </Button>
 
-                <Button onClick={handleSubmitLogin} className='text-sm font-merriweather w-4/5'>LOGIN</Button>
+                <Button onClick={handleSubmitLogin} className='text-sm font-merriweather w-4/5'>Đăng nhập</Button>
             </div>
         </form>
     )

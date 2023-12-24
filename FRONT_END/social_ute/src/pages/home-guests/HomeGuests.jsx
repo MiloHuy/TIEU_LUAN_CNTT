@@ -1,9 +1,10 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
-import Loading from "components/loading";
+import PropagateLoader from "components/propagate-loading/PropagateLoader";
 import ListPostUserDetail from "features/list/list-post-user-detail";
 import HeaderHome from "layout/header-home";
 import { Grid3X3 } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { getAllPostsGuest, getUserInfo, statistics } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
@@ -14,13 +15,13 @@ const HomeGuests = () => {
     const [selected, setSelected] = useState("posts");
     const [posts, setPosts] = useState()
     const { guestId } = useParams()
+    const dispatch = useDispatch()
     const userName = getFullName(userInfo?.data.user?.first_name, userInfo?.data.user?.last_name)
 
     const fetchUserStatisics = useCallback(async () => {
         try {
             const data_statistics = await statistics(guestId)
             setUserStatisics(data_statistics)
-
         }
         catch (error) {
             console.log("Error: ", error)
@@ -31,6 +32,7 @@ const HomeGuests = () => {
         try {
             const data_info = await getUserInfo(guestId)
             setUserInfo(data_info)
+            dispatch(data_info.data)
         }
         catch (error) {
             console.log("Error: ", error)
@@ -110,7 +112,12 @@ const HomeGuests = () => {
                 </div>
             </div>
             :
-            <Loading />
+            <div className='grid grid-rows-3 p-2 h-screen overflow-auto  justify-center items-center'>
+                <PropagateLoader
+                    color="#9aa19f"
+                    size={18}
+                />
+            </div>
     )
 }
 

@@ -1,5 +1,5 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
-import Loading from "components/loading";
+import PropagateLoader from "components/propagate-loading/PropagateLoader";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListFriendsUser from "features/list/list-friends-user";
 import ListPostUserDetail from 'features/list/list-post-user-detail';
@@ -16,8 +16,6 @@ import { getUserAvatarFromCookie, getUserNameFromCookie } from "utils/user.utils
 
 const HomeUser = () => {
     const [selected, setSelected] = useState("posts");
-
-
 
     const { userId } = useParams()
     const userName = getUserNameFromCookie()
@@ -237,7 +235,13 @@ const HomeUser = () => {
                 </div>
             </div>
             :
-            <Loading />
+            <div className='grid grid-rows-3 p-2 h-screen overflow-auto  justify-center items-center'>
+                <PropagateLoader
+                    color="#9aa19f"
+                    size={18}
+                />
+            </div>
+
 
     )
 }

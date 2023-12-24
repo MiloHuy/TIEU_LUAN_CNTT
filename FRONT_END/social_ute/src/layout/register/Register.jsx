@@ -12,10 +12,10 @@ const Register = (props) => {
             <div className="flex justify-center col-span-2 items-center top-0 left-0 h-full w-full z-20">
                 <FormRegister handleFunction={handleFunction} />
             </div>
+
             <div className="flex justify-center items-center">
                 <Image
                     radius='lg'
-                    isZoomed
                     alt="HCMUTE"
                     src={logo}
                 />

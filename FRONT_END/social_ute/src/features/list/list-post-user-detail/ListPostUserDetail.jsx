@@ -32,7 +32,7 @@ const ListPostUserDetail = (props) => {
                                 <Image
                                     isZoomed
                                     loading="lazy"
-                                    className="object-fill h-80 w-96 opacity-10 block  transition duration-500 ease-in-out hover:opacity-30 cursor-pointer"
+                                    className="object-fill h-80 w-96 opacity-10 block transition duration-500 ease-in-out hover:opacity-30 cursor-pointer"
                                     src={post.post_img.url}
                                     alt='image1'
                                     onClick={() => handleOpenPostDetails(post._id)}

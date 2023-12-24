@@ -1,3 +1,4 @@
+import { Button } from "@nextui-org/react";
 import { AlarmClock } from 'lucide-react';
 import { useState } from "react";
 
@@ -13,12 +14,14 @@ const Clock = () => {
     setInterval(updateTime, 1000)
 
     return (
-        <div className="w-[200px] border dark:border-white border-black rounded-lg flex justify-between px-2 items-center h-full">
+        <div className="w-[220px] border dark:border-white border-black rounded-lg flex justify-between px-2 items-center h-full">
             <h1 className="dark:text-white text-black font-mono text-2xl">
                 {currentTime}
             </h1>
 
-            <AlarmClock size={23} strokeWidth={1} color='#ffffff' />
+            <Button isIconOnly variant="light" size='sm'>
+                <AlarmClock size={23} strokeWidth={1} />
+            </Button>
         </div>
     )
 }
