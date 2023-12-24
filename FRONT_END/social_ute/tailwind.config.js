@@ -25,6 +25,8 @@ module.exports = {
         noto: ["Noto Sans", "serif"],
         open_sans: ["Open Sans", "sans-serif"],
         mont: ["Montserrat", "sans-serif"],
+        maven: ["Maven Pro", "sans-serif"],
+        roboto: ["Roboto", "sans-serif"],
       },
 
       backgroundImage: {

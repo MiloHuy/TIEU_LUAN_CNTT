@@ -6,6 +6,7 @@ import { getPostById } from "services/post.svc";
 
 const ListPostUserDetail = (props) => {
     const { posts } = props
+
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const dispatch = useDispatch()
 
@@ -22,11 +23,11 @@ const ListPostUserDetail = (props) => {
     }
 
     return (
-        posts.posts.length !== 0
+        posts.length !== 0
             ?
             <div className='grid grid-cols-3 gap-2 w-full h-screen'>
                 {
-                    posts.posts.map((post) => {
+                    posts.map((post) => {
                         return (
                             <div className="relative group w-full h-full rounded-[15px] ">
                                 <Image

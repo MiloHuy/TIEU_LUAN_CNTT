@@ -139,7 +139,6 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
                     variant="light"
                 >
                     <Bookmark
-                        color={postStatus.saved === true ? 'yellow' : '#ffffff'}
                         size={25}
                         strokeWidth={2}
                         fill={postStatus.saved === true ? 'yellow' : 'none'}

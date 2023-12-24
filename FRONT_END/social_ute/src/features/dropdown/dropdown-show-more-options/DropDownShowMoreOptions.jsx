@@ -1,6 +1,6 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
 import ModalConfirm from "features/modal/modal-confirm";
-import { Bookmark, Heart, MoreHorizontal, SendHorizontal, Trash2 } from 'lucide-react';
+import { Bookmark, Heart, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useCallback, useState } from "react";
 import { toast } from 'react-toastify';
 import { deletePost } from "services/post.svc";
@@ -211,7 +211,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id, statusPost, handleCallbackL
                         </p>
                     </DropdownItem>
 
-                    <DropdownItem
+                    {/* <DropdownItem
                         className='text-white '
                         key="share"
                         onClick={CopyURL}
@@ -223,7 +223,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id, statusPost, handleCallbackL
                                 className='transform -rotate-28 -translate-y-0.5' />}
                     >
                         <p className='text-md font-mono dark:text-white gap-2'> Chia sẻ bài viết</p>
-                    </DropdownItem>
+                    </DropdownItem> */}
 
                     {
                         user_id._id === id

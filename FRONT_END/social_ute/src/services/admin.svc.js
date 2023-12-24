@@ -11,6 +11,9 @@ export const API_ADMIN_ENDPOINT = {
     create_account: "/api/v1/admin/users",
     follow_unfollow_guest: "/interacts/follow/:id",
   },
+  DELETE: {
+    delete_post: "/posts/admin/:id",
+  },
 };
 
 export const getAllAccountUser = (payload) => {
@@ -47,5 +50,12 @@ export const getAllPosts = async (payload) => {
   const res = AxiosInstance.get(API_ADMIN_ENDPOINT.GET.all_posts, {
     params: payload,
   });
+  return res;
+};
+
+export const deletePostAdmin = async (id) => {
+  const res = AxiosInstance.delete(
+    API_ADMIN_ENDPOINT.DELETE.delete_post.replace(":id", id),
+  );
   return res;
 };

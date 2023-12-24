@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { getFullName } from 'utils/user.utils';
 
 const ListSearchUser = ({ userSearch, onCloseModal }) => {
     const totals = userSearch.totals
@@ -33,7 +34,7 @@ const ListSearchUser = ({ userSearch, onCloseModal }) => {
 
                                 <div className='flex flex-col'>
                                     <p className='text-lg font-mono text-black'>
-                                        {user.last_name}
+                                        {getFullName(user.first_name, user.last_name)}
                                     </p>
 
                                     <p className='text-lg font-mono text-black'>

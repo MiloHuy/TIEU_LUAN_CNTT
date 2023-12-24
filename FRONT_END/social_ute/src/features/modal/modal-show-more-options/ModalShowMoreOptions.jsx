@@ -1,9 +1,12 @@
 import { Button, Divider, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import { selectRole } from "app/slice/auth/auth.slice";
 import { selectPostId, selectStatusLikedPost, selectStatusSavedPost } from "app/slice/post/post.slice";
+import { ROLECHECK } from "constants/app.const";
 import { SendHorizontal, Trash2 } from 'lucide-react';
 import { useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { deletePostAdmin } from "services/admin.svc";
 import { deletePost } from "services/post.svc";
 import ModalConfirm from "../modal-confirm";
 
@@ -17,12 +20,21 @@ const ModalShowMoreOptions = ({ isOpenShowMore, onOpenChangeShowMore }) => {
     const [isOpenConfirm, setOpenConfirm] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const { onOpen, onClose } = useDisclosure();
+    const role = useSelector(selectRole)
+
+    console.log('role: ' + role)
 
     const handleDeletePost = async () => {
         setIsLoading(true)
 
         try {
-            await deletePost(post_id)
+            if (ROLECHECK.role_admin === role) {
+                await deletePostAdmin(post_id)
+            }
+
+            if (ROLECHECK.role_user === role) {
+                await deletePost(post_id)
+            }
 
             toast.success('Xóa bài viết thành công!!!', {
                 position: "bottom-right",

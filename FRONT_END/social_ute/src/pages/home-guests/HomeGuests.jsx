@@ -42,7 +42,7 @@ const HomeGuests = () => {
     const fetchPosts = async () => {
         try {
             const posts = await getAllPostsGuest(guestId)
-            setPosts(posts)
+            setPosts([...posts.data.posts])
         }
         catch (error) {
             console.log("Error: ", error)
@@ -100,7 +100,7 @@ const HomeGuests = () => {
                                 {
                                     posts ?
                                         <ListPostUserDetail
-                                            posts={posts.data}
+                                            posts={posts}
                                             userName={userName}
                                         />
                                         :

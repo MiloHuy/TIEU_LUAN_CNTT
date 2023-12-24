@@ -39,6 +39,7 @@ const SidebarBody = (props) => {
                                 className='w-full flex justify-start h-[60px]'
                                 color="default"
                                 variant="bordered"
+                                radius='sm'
                                 startContent={item.icon}
                                 onClick={() => handleNaviageSidebar(item.link)}
                             >

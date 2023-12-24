@@ -1,4 +1,4 @@
-import ChartUser from "features/chart"
+import ChartUser from "features/chart";
 
 const Statiscal = () => {
     return (

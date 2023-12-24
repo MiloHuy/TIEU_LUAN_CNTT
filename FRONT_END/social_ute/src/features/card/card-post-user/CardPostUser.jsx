@@ -5,10 +5,10 @@ import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
 import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import ModalPostUser from "features/modal/modal-post-user";
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getPostById, likePost, storePost } from "services/post.svc";
+import { getPostById, likePost, postComment, storePost } from "services/post.svc";
 import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 
 const CardPostUser = (props) => {
@@ -32,6 +32,15 @@ const CardPostUser = (props) => {
 
     const userName = getFullName(user_id?.first_name, user_id?.last_name)
     const ID = getUserIdFromCookie()
+    const [commentInput, setCommentInput] = useState({
+        comment_content: ''
+    })
+    const [active, setActive] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleOnChange = (e) => {
+        setCommentInput({ comment_content: e.target.value })
+    }
 
     const handleLikePost = async () => {
         try {
@@ -80,6 +89,20 @@ const CardPostUser = (props) => {
         }
     }
 
+    const handlePostComment = async () => {
+        try {
+            setIsLoading(true)
+            await postComment(post_id, commentInput)
+
+            setCommentInput({ comment_content: '' })
+            setIsLoading(false)
+
+        }
+        catch (err) {
+            console.log("err: " + err)
+        }
+    }
+
     const CopyURL = () => {
         const el = document.createElement("input");
         el.value = `http://localhost:8080/welcome/post/${post_id}`;
@@ -99,6 +122,16 @@ const CardPostUser = (props) => {
             theme: "light",
         });
     };
+
+    useEffect(() => {
+        if (commentInput.comment_content !== '') {
+            setActive(false)
+        }
+        else {
+            setActive(true)
+        }
+
+    }, [commentInput.comment_content])
 
     return (
         <div className='w-10/12 p-2'>
@@ -186,7 +219,6 @@ const CardPostUser = (props) => {
                             onClick={handleSavePost}
                         >
                             <Bookmark
-                                color={statusPost.isSaved === true ? 'yellow' : '#ffffff'}
                                 size={20}
                                 strokeWidth={1.5}
                                 fill={statusPost.isSaved === true ? 'yellow' : 'none'} />
@@ -203,7 +235,26 @@ const CardPostUser = (props) => {
                             <h2 className="text-md text-black dark:text-white  font-mono ">{`${userName}: ${post_description}`}</h2>
                         </div>
 
-                        <Input variant='underlined' placeholder="Thêm bình luận..." />
+                        <Input
+                            name='comment_content'
+                            value={commentInput.comment_content}
+                            onChange={handleOnChange}
+                            variant='underlined'
+                            isLoading={isLoading}
+                            placeholder="Thêm bình luận..."
+                            className='text-black dark:placeholder:text-black border-black px-1'
+                            endContent={
+                                <Button
+                                    size="sm"
+                                    variant="bordered"
+                                    onClick={handlePostComment}
+                                    isDisabled={active}
+                                    className={`hover:bg-black border-black text-black hover:text-white font-mont dark:text-white  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                    color="primary"
+                                >
+                                    Đăng
+                                </Button>}
+                        />
                     </div>
                 </div >
             </Card >
