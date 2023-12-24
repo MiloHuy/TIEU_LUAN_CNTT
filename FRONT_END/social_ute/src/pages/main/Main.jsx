@@ -21,7 +21,7 @@ const Public = () => {
                         </NavbarItem>
                         <NavbarItem>
                             <Link to="/about" aria-current="page">
-                                <p className="text-lg font-serif hover:underline">GIỚI THIỆU</p>
+                                <p className="text-lg font-serif hover:underline">NHÓM THỰC HIỆN</p>
                             </Link>
                         </NavbarItem>
                     </NavbarContent>

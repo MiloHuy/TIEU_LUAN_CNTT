@@ -9,9 +9,9 @@ const SidebarFooter = (props) => {
 
     useMemo(() => {
         if (isSelected === true)
-            props.handleSwitch('dark')
-        else
             props.handleSwitch('light')
+        else
+            props.handleSwitch('dark')
     }, [isSelected, props])
 
     return (

@@ -67,13 +67,13 @@ const FormRegister = (props) => {
     }
 
     const formLabel = useMemo(() => ({
-        first_name: 'First Name',
-        last_name: 'Last Name',
+        first_name: 'Họ',
+        last_name: 'Tên',
         email: 'Gmail',
-        phone_number: 'Phone',
-        id: 'ID',
-        pass_word: 'Passwords',
-        department: 'Department',
+        phone_number: 'Số điện thoại',
+        id: 'MSSV',
+        pass_word: 'Mật khẩu',
+        department: 'Khoa/Phòng ban',
     }), [])
 
     const formRegisterSchema = useMemo(() => {
@@ -90,8 +90,7 @@ const FormRegister = (props) => {
     const handleRegisterForm = async (e) => {
         try {
             faculty ? values['department'] = faculty : values['department'] = department_t
-            const user_data = await register(values)
-            console.log("user_data: ", user_data)
+            await register(values)
 
             toast.success('Đăng ký thành công!!!', {
                 position: "bottom-right",
@@ -108,7 +107,6 @@ const FormRegister = (props) => {
 
         }
         catch (err) {
-            console.log("Error: ", err)
 
             toast.error('Đăng ký thất bại!!!', {
                 position: "bottom-right",
@@ -130,16 +128,15 @@ const FormRegister = (props) => {
         handleSubmit: { handleRegisterForm }
     })
     const { values, errors } = formik
-    console.log('Values:', Object.values(values))
 
     return (
         <form
-            className={clsx('flex flex-col gap-2 items-center justify-center p-4 w-full h-full ', props.className)}
+            className={clsx('flex flex-col gap-3 items-center justify-center p-4 w-full h-full ', props.className)}
             onSubmit={formik.handleSubmit}
             onReset={formik.resetForm}
         >
             <h1 className="text-lg font-bold font-merriweather text-center">
-                Sign up
+                Đăng ký
             </h1>
 
             <div className='grid grid-cols-2 gap-2 w-full'>
@@ -218,12 +215,12 @@ const FormRegister = (props) => {
             <div className='grid grid-cols-2 gap-2 w-full'>
                 <Select
                     isRequired
-                    label="Faculty"
+                    label="Khoa"
                     name='faculty'
                     value={values['department']}
                     defaultValue='null'
                     isDisabled={isDisabledFaculity}
-                    placeholder="Select Faculty"
+                    placeholder="Chọn khoa"
                     className="w-full"
                     onChange={handleInputSelectFaculity}
                 >
@@ -238,11 +235,11 @@ const FormRegister = (props) => {
 
                 <Select
                     isRequired
-                    label="Department"
+                    label="Phòng ban"
                     name='department'
                     isDisabled={isDisabledDepartment}
                     value={values['department']}
-                    placeholder="Select department"
+                    placeholder="Chọn phòng ban"
                     className="w-full"
                     defaultValue='null'
                     onChange={handleInputSelectDepartment}
@@ -257,19 +254,27 @@ const FormRegister = (props) => {
                 </Select>
             </div>
 
-            <Button
-                className="w-3/4 text-sm font-merriweather"
-                // onClick={handleOpenRegiser}
-                onClick={handleRegisterForm}
-                type='submit'
-            >Sign up
-            </Button>
+            <div className="w-4/5 flex items-center gap-5">
+                <Button
+                    radius="sm"
+                    className="w-3/4 text-sm font-merriweather"
+                    type='submit'
+                >
+                    <Link
+                        className='text-sm col-span-1 font-merriweather'
+                        onClick={handleOpenRegiser} href="#">
+                        Đăng nhập
+                    </Link>
+                </Button>
 
-            <Link
-                className='text-sm col-span-1 font-merriweather'
-                onClick={handleOpenRegiser} href="#">
-                Login
-            </Link>
+                <Button
+                    radius="sm"
+                    className="w-3/4 text-sm font-merriweather"
+                    onClick={handleRegisterForm}
+                    type='submit'
+                >Đăng ký
+                </Button>
+            </div>
         </form>
     )
 }
