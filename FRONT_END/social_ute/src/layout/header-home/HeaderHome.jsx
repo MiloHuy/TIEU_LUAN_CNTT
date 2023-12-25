@@ -400,7 +400,7 @@ const HeaderHome = (props) => {
                                                                 radius="sm"
                                                                 className="w-50 h-7"
                                                                 variant="solid"
-                                                                endContent={<MailPlus size={20} color="#ededed" strokeWidth={0.75} />}
+                                                                endContent={<MailPlus size={20}  strokeWidth={0.75} />}
                                                             >
                                                                 Đã gửi lời mời
                                                             </Button>

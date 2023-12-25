@@ -190,7 +190,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                                 </Button>
 
                                 <Button
-                                    onClick={handleRefusedFriend}
+                                    onClick={()=>handleRefusedFriend(request._id)}
                                     isLoading={isLoading.isLoadingRefused}
                                     className="border"
                                     variant="ghost"
