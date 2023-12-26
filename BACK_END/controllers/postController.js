@@ -14,7 +14,6 @@ const Noti_user = require('../models/Noti_user');
 //GET /posts
 exports.getAll = (async (req, res) => {
     try {
-        // xem xét thay hàm find thành findOne
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
 
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
@@ -291,7 +290,6 @@ exports.like = (async (req, res) => {
             { new: true, upsert: true }
         );
         if(liked.user_id.includes(req.user._id)){
-            // console.log(user)
             liked.user_id.pull(req.user._id);
             await liked.save();
 
@@ -307,9 +305,13 @@ exports.like = (async (req, res) => {
                 );
             }
 
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
             res.status(201).json({
                 success: true,
                 message: 'Bỏ yêu thích.',
+                likes
             });
         } else{
             liked.user_id.push(req.user._id);
@@ -333,9 +335,13 @@ exports.like = (async (req, res) => {
                 );
             }
 
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
             res.status(201).json({
                 success: true,
                 message: 'Yêu thích bài viết thành công.',
+                likes
             });
         }
     } catch (error) {
@@ -408,6 +414,7 @@ exports.update = (async (req, res) => {
             tempFilePath,
             { folder: 'post_imgs'},
         );
+
         await fs.unlink(tempFilePath);
         await fs.rmdir(tempDir, { recursive: true });
 
