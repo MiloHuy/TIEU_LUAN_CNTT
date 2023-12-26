@@ -11,12 +11,12 @@ const Manage = () => {
     }
 
     return (
-        <div className={`w-screen grid grid-cols-8 gap-1 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
-            <div className='col-span-2'>
+        <div className={`w-screen grid grid-cols-8 gap-2 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
+            <div className='col-span-2 max-w-[250px]'>
                 <SidebarAdmin
                     icons={sidebarIcons}
                     handleController={handleDarkMode}
-                    className='relative w-full h-full border-r border-black dark:border-white' />
+                    className='relative w-4/5 h-full border-r border-black dark:border-white' />
             </div>
 
             <div className={`col-span-6 ${darkmode}`}>
