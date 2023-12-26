@@ -11,6 +11,8 @@ exports.getAdminStatistics = (async (req, res) => {
     try {
         const totals_accounts = await User.countDocuments({ role_id: { $ne: 0 } })
 
+        const totals_posts = await Post.countDocuments()
+
         const today = new Date();
         const start_of_current_day = moment(today).startOf('day').toDate();
         const end_of_current_day = moment(today).endOf('day').toDate();
@@ -38,16 +40,6 @@ exports.getAdminStatistics = (async (req, res) => {
               $lte: end_of_current_month,
             },
         })
-
-        // if(!res.body){
-        //     return res.status(200).json({
-        //         success: true,
-        //         count_accounts,
-        //         post_in_current_day,
-        //         post_in_current_week,
-        //         post_in_current_month
-        //     });
-        // }
 
         const month = parseInt(req.body.month);
         const year = moment().year();
@@ -95,6 +87,7 @@ exports.getAdminStatistics = (async (req, res) => {
         res.status(200).json({
             success: true,
             totals_accounts,
+            totals_posts,
             posts_in_current_day,
             posts_in_current_week,
             posts_in_current_month,
