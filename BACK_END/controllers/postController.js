@@ -398,26 +398,18 @@ exports.update = (async (req, res) => {
             await cloudinary.uploader.destroy(post.post_img.publicId)
         }
 
-        // Tạo một thư mục tạm thời nếu nó chưa tồn tại
         const tempDir = path.join(__dirname, 'temp');
         await fs.mkdir(tempDir, { recursive: true });
-
-        // Tạo một bộ đệm từ dữ liệu tệp
         const buffer = req.files.post_img.data;
-
-        // Tạo một đường dẫn tạm thời để lưu trữ tệp
         const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
-
-        // Ghi dữ liệu vào tệp tạm thời
         await fs.writeFile(tempFilePath, buffer);
 
         const result = await cloudinary.uploader.upload(
             tempFilePath,
             { folder: 'post_imgs'},
         );
-
-        // Xóa tệp tạm thời
         await fs.unlink(tempFilePath);
+        await fs.rmdir(tempDir, { recursive: true });
 
         const post_img = {
             publicId: result.public_id,
