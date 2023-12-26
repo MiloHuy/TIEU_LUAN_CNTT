@@ -2,7 +2,7 @@ import ChartUser from "features/chart";
 
 const Statiscal = () => {
     return (
-        <div>
+        <div className="w-full h-full">
             <ChartUser />
         </div>
     )
