@@ -50,13 +50,22 @@ exports.login = (async (req, res) => {
         });
     }
 
-    const user = await User.findOne({ phone_number }).select('+pass_word');
+    const user = await User.findOne({ phone_number })
+    // .select('+pass_word');
 
     if (!user) {
         return res.status(401).json({
             success: false,
             code: 1002,
             message: 'Đăng nhập thất bại. Không tìm thấy người dùng. Vui lòng kiểm tra số điện thoại',
+        });
+    }
+
+    if (!user.is_active) {
+        return res.status(401).json({
+            success: false,
+            code: 1008,
+            message: 'Đăng nhập thất bại. Tài khoản đã bị vô hiệu',
         });
     }
 
@@ -68,6 +77,7 @@ exports.login = (async (req, res) => {
             message: 'Đăng nhập thất bại. Sai mật khẩu' 
         });
     }
+
     const refreshToken = await getRefreshToken(user);
 
     return sendToken(user, refreshToken, res);
