@@ -36,7 +36,7 @@ const SidebarBody = (props) => {
                     return (
                         <div key={item.name} className='flex flex-row gap-2'>
                             <Button
-                                className='w-full flex justify-start h-[60px]'
+                                className='w-full flex justify-start h-[60px] border border-black dark:border-white'
                                 color="default"
                                 variant="bordered"
                                 radius='sm'
