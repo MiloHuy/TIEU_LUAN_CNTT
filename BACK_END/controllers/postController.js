@@ -19,7 +19,11 @@ exports.getAll = (async (req, res) => {
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
         following_User_Ids.push(req.user._id);
     
-        const posts = await Post
+        
+
+        const { size } = req.query;
+        
+        const posts = Post
             .find({ user_id: { $in: following_User_Ids } })
             .sort({ create_post_time: -1 })
             .populate('user_id', 'first_name last_name avatar.url')
@@ -31,11 +35,22 @@ exports.getAll = (async (req, res) => {
                 posts: [],
             });
         }
+    
+        const apiFeatures = new PostAPIFeatures(posts, req.query)
+        
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(Post.find(posts), req.query)
+            .pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
 
         const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
         const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
 
-        const postsAfferCheck = posts.map(post => {
+        const postsAfferCheck = allPosts.map(post => {
             const isLiked = check_liked.some(like => like.post_id.equals(post._id));
             const isStored = check_stored.some(store => {
                   return store.post_id.some(storeId => storeId.equals(post._id));
@@ -59,11 +74,59 @@ exports.getAll = (async (req, res) => {
             };
         }));
 
-        
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
+            totals,
             posts: postsAfferCountLike,
         });
+
+
+        
+        // const posts = await Post
+        //     .find({ user_id: { $in: following_User_Ids } })
+        //     .sort({ create_post_time: -1 })
+        //     .populate('user_id', 'first_name last_name avatar.url')
+        //     .select('-post_img.publicId');
+
+        // if(posts.length === 0){
+        //     return res.status(200).json({
+        //         success: true,
+        //         posts: [],
+        //     });
+        // }
+
+        // const check_liked = await Post_liked.find({user_id:req.user._id}).select('post_id')
+        // const check_stored = await Post_stored.find({user_id:req.user._id}).select('post_id')
+
+        // const postsAfferCheck = posts.map(post => {
+        //     const isLiked = check_liked.some(like => like.post_id.equals(post._id));
+        //     const isStored = check_stored.some(store => {
+        //           return store.post_id.some(storeId => storeId.equals(post._id));
+        //     });
+        //     return {
+        //         ...post.toObject(),
+        //         liked: isLiked,
+        //         stored: isStored,
+        //     };
+        // });
+
+        // const postsAfferCountLike = await Promise.all(postsAfferCheck.map(async (post) => {
+        //     const post_like = await Post_liked.findOne({ post_id: post._id });
+        //     const likes = post_like ? post_like.user_id.length : 0;
+
+        //     //Làm thêm phần count_cmt
+        
+        //     return {
+        //         ...post,
+        //         likes,
+        //     };
+        // }));
+
+        
+        // res.status(200).json({
+        //     success: true,
+        //     posts: postsAfferCountLike,
+        // });
     } catch (error) {
         res.status(500).json({
             success: false,
