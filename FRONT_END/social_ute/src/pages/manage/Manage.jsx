@@ -19,7 +19,7 @@ const Manage = () => {
                     className='relative w-4/5 h-full border-r border-black dark:border-white' />
             </div>
 
-            <div className={`col-span-6 ${darkmode}`}>
+            <div className={`col-span-6 ${darkmode} -translate-x-12`}>
                 <Outlet />
             </div>
         </div>

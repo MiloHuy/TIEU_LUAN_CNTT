@@ -40,6 +40,7 @@ const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
             setUserSearch(initialData)
             setIsLoading(false)
         } catch (error) {
+            setIsLoading(false)
             console.log(error)
         }
     }, [])
@@ -65,7 +66,7 @@ const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
             backdrop='blur'
             scrollBehavior='outside'
             classNames={{
-                base: "border-[#ffffff] bg-[#929292] dark:bg-black text-[#a8b0d3] h-[350px] py-3 px-6",
+                base: "border-[#ffffff] bg-[#CCD9E7] dark:bg-black text-[#a8b0d3] h-[350px] py-3 px-6",
             }}
         >
             <ModalContent>
@@ -80,6 +81,7 @@ const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
                                 userSearch ?
                                     <div className='w-full h-4/5 overflow-auto'>
                                         <ListSearchUser
+                                            isLoading={isLoading}
                                             userSearch={userSearch.data}
                                         // onCloseModal={onClose}
                                         />

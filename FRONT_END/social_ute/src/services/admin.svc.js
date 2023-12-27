@@ -10,6 +10,7 @@ export const API_ADMIN_ENDPOINT = {
     statistics_user: "/statistics/admin",
     create_account: "/api/v1/admin/users",
     follow_unfollow_guest: "/interacts/follow/:id",
+    active_user: "/users/admin/:id",
   },
   DELETE: {
     delete_post: "/posts/admin/:id",
@@ -56,6 +57,13 @@ export const getAllPosts = async (payload) => {
 export const deletePostAdmin = async (id) => {
   const res = AxiosInstance.delete(
     API_ADMIN_ENDPOINT.DELETE.delete_post.replace(":id", id),
+  );
+  return res;
+};
+
+export const activeUserAdmin = async (id) => {
+  const res = AxiosInstance.post(
+    API_ADMIN_ENDPOINT.POST.active_user.replace(":id", id),
   );
   return res;
 };

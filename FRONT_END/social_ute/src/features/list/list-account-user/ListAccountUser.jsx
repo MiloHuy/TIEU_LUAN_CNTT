@@ -4,12 +4,13 @@ import DataTable from "components/data-table";
 import DataTablePagination from "components/data-table-pagination";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
-import { getAllAccountUser } from "services/admin.svc";
+import { activeUserAdmin, getAllAccountUser } from "services/admin.svc";
 import columns from "./columns";
 
 const ListAccountUser = (props) => {
     const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [isActive, setIsActive] = useState(false)
 
     const [pagination, setPagination] = useState({
         pagIndex: 1,
@@ -64,30 +65,26 @@ const ListAccountUser = (props) => {
 
     }, [fetchAccounts, filter.page, filter.size])
 
-    const handleSearch = useCallback((newFilter) => {
-        setFilter((prev) => ({
-            ...prev,
-            page: 1,
-            search: newFilter.searchTerm
-        }))
-
-        setPagination((prev) => ({
-            ...prev,
-            pagIndex: 1
-        }))
-    }, [])
-
-    const handleDeleteAccount = async (id) => {
+    const handleActiveAccount = async (id) => {
         try {
-            // const account = await deleteAccounts(id)
+            setIsActive(true)
+            const account = await activeUserAdmin(id)
 
-            // setData(account)
+            setData(account)
+
+            setPagination((prev) => ({
+                ...prev,
+                pagIndex: 1
+            }))
+
             setFilter((prev) => ({
                 ...prev,
                 page: 1
             }))
 
-            toast.success('Xóa account thành công!!!', {
+            setIsActive(false)
+
+            toast.success('Thao tác thành công.', {
                 position: "bottom-right",
                 autoClose: 2000,
                 hideProgressBar: true,
@@ -97,11 +94,13 @@ const ListAccountUser = (props) => {
                 progress: undefined,
                 theme: "light",
             })
+
         }
         catch (err) {
-            console.log(err)
+            setIsActive(false)
+            console.log(err.response)
 
-            toast.success('Xóa account thất bại!!!', {
+            toast.success('Thao tác thất bại!!!', {
                 position: "bottom-right",
                 autoClose: 2000,
                 hideProgressBar: true,
@@ -127,7 +126,14 @@ const ListAccountUser = (props) => {
                             isLoading={isLoading}
                             columns={columns}
                             data={data.all_user}
-                            onDelete={handleDeleteAccount}
+                            onDelete={handleActiveAccount}
+                            bottomContent={
+                                <DataTablePagination
+                                    pagination={pagination}
+                                    onPageChange={handlePageChange}
+                                    isActive={isActive}
+                                />
+                            }
                         />
                         :
                         <div className='w-full h-full flex items-center justify-center'>
@@ -138,14 +144,9 @@ const ListAccountUser = (props) => {
                             />
                         </div>
                 }
-
-                <DataTablePagination
-                    pagination={pagination}
-                    onPageChange={handlePageChange} />
             </div>
         </div>
     )
-
 }
 
 export default ListAccountUser

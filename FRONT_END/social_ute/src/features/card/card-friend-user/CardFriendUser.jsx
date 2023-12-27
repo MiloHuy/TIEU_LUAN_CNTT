@@ -14,6 +14,7 @@ const CardFriendUser = ({ friend }) => {
         confirm_modal: false,
     })
     const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleOpenDropDown = () => {
         setOpenModal((prev) => ({
@@ -65,8 +66,10 @@ const CardFriendUser = ({ friend }) => {
 
     const handleUnFriend = async () => {
         try {
+            setIsLoading(true)
             await unFriend(friend._id)
 
+            setIsLoading(false)
             toast.success('Hủy kết bạn thành công!!!', {
                 position: "bottom-right",
                 autoClose: 1000,
@@ -78,9 +81,10 @@ const CardFriendUser = ({ friend }) => {
                 theme: "light",
             });
 
-            setTimeout(() => { window.location.reload() }, 2500)
+            setTimeout(() => { window.location.reload() }, 1500)
         }
         catch (err) {
+            setIsLoading(false)
             console.log('err :' + err)
 
             toast.error('Hủy kết bạn thất bạn!!!', {
@@ -161,6 +165,7 @@ const CardFriendUser = ({ friend }) => {
                 isOpen={openModal.confirm_modal}
                 onOpenChange={handleOpenModal}
                 onClose={handleCloseModal}
+                isLoading={isLoading}
 
                 handleCallback={handleUnFriend}
             />

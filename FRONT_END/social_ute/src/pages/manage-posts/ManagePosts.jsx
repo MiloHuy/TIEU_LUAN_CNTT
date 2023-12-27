@@ -13,7 +13,6 @@ const ManagePosts = () => {
 
     const [hasMore, setHasMore] = useState(true)
     const elementRef = useRef(null)
-    const [isInitialFetch, setIsInitialFetch] = useState(false);
 
     const onIntersection = useCallback((entries) => {
         const firstEntries = entries[0]
@@ -28,7 +27,6 @@ const ManagePosts = () => {
 
     const fetchAllPost = async (page, size) => {
         try {
-            setIsInitialFetch(true);
 
             const data_posts = await getAllPosts(
                 {
@@ -74,7 +72,6 @@ const ManagePosts = () => {
             }
         }
     }, [postsData])
-    // console.log('postsData: ' + Object.entries(postsData.posts))
 
     return (
         <div className='w-full h-screen overflow-y-scroll grid grid-cols-1'>
@@ -83,15 +80,11 @@ const ManagePosts = () => {
 
                 <div>
                     {
-                        isInitialFetch ?
-                            postsData ?
-                                <ListPostUserDetail
-                                    posts={postsData} />
-                                :
-                                <div div className='flex items-center justify-center h-full'>
-                                    <Spinner color="default" />
-                                </div>
-                            : 'Loading...'
+                        postsData ?
+                            <ListPostUserDetail
+                                posts={postsData} />
+                            :
+                            ''
                     }
 
                     {

@@ -30,6 +30,8 @@ const CardPostUser = (props) => {
     const [statusPost, setStatusPosts] = useState(initStatusPost)
     const dispatch = useDispatch()
 
+    const [numberLikes, setNumberLikes] = useState(number_likes)
+
     const userName = getFullName(user_id?.first_name, user_id?.last_name)
     const ID = getUserIdFromCookie()
     const [commentInput, setCommentInput] = useState({
@@ -49,7 +51,9 @@ const CardPostUser = (props) => {
                 isLiked: !prev.isLiked,
             }))
 
-            await likePost(post_id)
+            const data_numberLike = await likePost(post_id)
+
+            setNumberLikes(data_numberLike.data.likes)
         }
         catch (err) {
             console.log(err)
@@ -227,7 +231,7 @@ const CardPostUser = (props) => {
 
                     <div className='flex flex-col gap-2 px-2'>
                         <div className="flex-row flex gap-1">
-                            <h2 className='text-md text-black dark:text-white font-mono '>{number_likes}</h2>
+                            <h2 className='text-md text-black dark:text-white font-mono '>{numberLikes}</h2>
                             <span className='text-md text-black dark:text-white font-mono '>lượt thích</span>
                         </div>
 
@@ -249,7 +253,7 @@ const CardPostUser = (props) => {
                                     variant="bordered"
                                     onClick={handlePostComment}
                                     isDisabled={active}
-                                    className={`hover:bg-black border-black text-black hover:text-white font-mont dark:text-white  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                    className={`hover:bg-black border-black text-black hover:text-white font-mont font-bold dark:text-white  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
                                     color="primary"
                                 >
                                     Đăng

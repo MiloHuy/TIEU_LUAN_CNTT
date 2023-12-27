@@ -3,19 +3,21 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from "react";
 
 const DataTablePagination = (props) => {
-    const { pagination, onPageChange } = props
+    const { pagination, onPageChange, isActive } = props
     const { totals, size, pagIndex } = pagination
     const [currentPage, setCurrentPage] = useState(1);
 
     const totalPages = Math.ceil(totals / size)
 
-    console.log('totals: ' + totals)
-    console.log('size: ' + size)
-    console.log('Total pages: ' + totalPages)
+    console.log('currentPage: ' + currentPage)
+    console.log('isActive: ' + isActive)
 
     useEffect(() => {
         onPageChange(currentPage)
-    }, [currentPage, onPageChange])
+        if (isActive === true) {
+            setCurrentPage(1)
+        }
+    }, [currentPage, onPageChange, isActive])
 
     const handleCurrentPageChangePrevious = () => {
         setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))

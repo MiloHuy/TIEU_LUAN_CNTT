@@ -44,10 +44,13 @@ const Admin = () => {
     }, [fetchStatistical])
 
     return (
-        <div className='flex gap-3 -translate-x-12 items-start justify-center w-full mt-3'>
+        <div className='flex gap-3 items-start justify-center w-full mt-3'>
 
             <div className='w-full h-full flex gap-5 flex-col justify-around'>
-                <h3 className="text-black dark:text-white font-mono text-2xl px-1 handswipe">Chào : {user.last_name} ✋✋✋</h3>
+                <div className='flex gap-1 items-center'>
+                    <h3 className="text-black dark:text-white font-mono text-2xl px-1 ">Chào : {user.last_name} </h3>
+                    <h3 className='transform ease-in-out animate-handswipe top-2/4 right-2/4'>✋✋✋✋</h3>
+                </div>
 
                 <div className="grid grid-cols-2 gap-5 w-full border-black ">
                     <div className='border border-black w-full max-h-[180px] rounded-xl flex justify-center bg-[#B7DBE1] drop-shadow-lg'>
@@ -76,19 +79,19 @@ const Admin = () => {
                 </div>
 
 
-                <div className='w-full h-90 max-h-[280px] flex justify-center items-start mt-3'>
+                <div className='w-full h-[200px] max-h-[200px] flex justify-center items-start mt-3'>
                     <Card
                         isBlurred
                         className="border-none bg-background/60 dark:bg-default-100/50 w-full h-full"
                         shadow="lg"
                         radius="lg"
                     >
-                        <CardBody className="bg-[#D2D2CB] flex items-center justify-center">
-                            <div className="flex w-full gap-3 h-4/5 items-center justify-center ">
-                                <div className="h-2/3 flex items-center w-4/5">
+                        <CardBody className="bg-[#efefed] flex items-center justify-center">
+                            <div className="flex w-full gap-3 h-full items-center justify-center ">
+                                <div className="h-full flex items-center w-4/5">
                                     <img
                                         alt="Album cover"
-                                        className="object-fill w-full rounded-md "
+                                        className="object-fill w-full h-full rounded-md "
                                         shadow="md"
                                         src={user.avatar.url}
                                     />
@@ -118,7 +121,7 @@ const Admin = () => {
                     <Clock />
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
