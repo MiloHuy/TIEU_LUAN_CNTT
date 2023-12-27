@@ -51,7 +51,6 @@ exports.login = (async (req, res) => {
     }
 
     const user = await User.findOne({ phone_number })
-    // .select('+pass_word');
 
     if (!user) {
         return res.status(401).json({
@@ -62,7 +61,7 @@ exports.login = (async (req, res) => {
     }
 
     if (!user.is_active) {
-        return res.status(401).json({
+        return res.status(400).json({
             success: false,
             code: 1008,
             message: 'Đăng nhập thất bại. Tài khoản đã bị vô hiệu',
@@ -71,7 +70,7 @@ exports.login = (async (req, res) => {
 
     const isPasswordMatched = await user.comparePassword(pass_word);
     if (!isPasswordMatched) {
-        return res.status(401).json({
+        return res.status(400).json({
             success: false,
             code: 1003,
             message: 'Đăng nhập thất bại. Sai mật khẩu' 
