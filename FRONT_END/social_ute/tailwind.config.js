@@ -68,9 +68,21 @@ module.exports = {
             transform: "translateX(0)",
           },
         },
+        swipe: {
+          "0%": {
+            margin: 0,
+            transform: "rotate(0deg)",
+          },
+
+          "100%": {
+            "margin-right": "20px",
+            transform: "rotate(-5deg)",
+          },
+        },
       },
       animation: {
         loading: "loader infinite 2s",
+        handswipe: "swipe 0.8s alternate infinite",
       },
       transitionDelay: {
         400: "400ms",

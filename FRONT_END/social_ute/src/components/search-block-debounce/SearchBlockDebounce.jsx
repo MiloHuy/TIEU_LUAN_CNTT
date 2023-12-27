@@ -1,4 +1,6 @@
+import { Input } from "@nextui-org/react";
 import clsx from "clsx";
+import { Search } from 'lucide-react';
 import { useRef, useState } from "react";
 
 const SearchBlockDebounce = (props) => {
@@ -26,15 +28,16 @@ const SearchBlockDebounce = (props) => {
     }
 
     return (
-        <form className={clsx('relative border h-10 w-60 rounded-md border-black dark:border-white', props.className)}>
-            <input
+        <form className={clsx('relative rounded-sm', props.className)}>
+            <Input
                 type='text'
                 value={search}
                 size='sm'
                 variant="bordered"
                 onChange={handlesearchChange}
                 placeholder="Nhập nội dung cần tìm kiếm."
-                className='text-sm text-black dark:text-white h-full w-full rounded-md bg-transparent'
+                startContent={<Search size={20} strokeWidth={1} />}
+                className='text-sm text-black h-full w-full  rounded-sm bg-transparent'
             />
         </form>
     )

@@ -2,7 +2,7 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
 import { useFormik } from "formik";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,7 @@ const FormRegister = (props) => {
     const [isDisabledDepartment, setDisabledDepartment] = useState(false)
     const [faculty, setFaculty] = useState(null)
     const [department_t, setDeparements] = useState(null)
+    const [isDisabled, setIsDisabled] = useState(true)
 
     const handleOpenRegiser = () => {
         formik.resetForm();
@@ -81,7 +82,7 @@ const FormRegister = (props) => {
             first_name: string(),
             last_name: string(),
             gmail: string().typeError(`${formLabel.email} is not a valid email`).matches(/hcmute.edu.vn/, { message: "Gmail phải chứa hcmute.edu.vn.", excludeEmptyString: false }),
-            phone_number: string().typeError(`${formLabel.phone_number} is not a vailid`).required(`${formLabel.phone_number} is required`).max(10, "Hãy điền đủ 10 số."),
+            phone_number: string().typeError(`${formLabel.phone_number} is not a vailid`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
             id: string().typeError(`${formLabel.phone_number} is not a vailid`).required(`${formLabel.id} is required`).max(8, "ID phải có đủ 8 số."),
             pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
         })
@@ -128,6 +129,15 @@ const FormRegister = (props) => {
         handleSubmit: { handleRegisterForm }
     })
     const { values, errors } = formik
+
+    useEffect(() => {
+        if (Object.keys(errors).length === 0) {
+            setIsDisabled(false)
+        }
+        else {
+            setIsDisabled(true)
+        }
+    }, [errors])
 
     return (
         <form
@@ -268,6 +278,7 @@ const FormRegister = (props) => {
                 </Button>
 
                 <Button
+                    isDisabled={isDisabled}
                     radius="sm"
                     className="w-3/4 text-sm font-merriweather"
                     onClick={handleRegisterForm}

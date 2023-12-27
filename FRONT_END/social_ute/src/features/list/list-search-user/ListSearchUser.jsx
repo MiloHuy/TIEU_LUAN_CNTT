@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { getFullName } from 'utils/user.utils';
 
-const ListSearchUser = ({ userSearch, onCloseModal }) => {
+const ListSearchUser = ({ userSearch, isLoading }) => {
     const totals = userSearch.totals
     const navigate = useNavigate()
 
@@ -11,6 +11,8 @@ const ListSearchUser = ({ userSearch, onCloseModal }) => {
         setTimeout(() => { window.location.reload() }, 1000)
         // onCloseModal()
     }
+
+    console.log('isLoading: ' + isLoading)
 
     return (
         totals !== 0 ?
@@ -33,11 +35,11 @@ const ListSearchUser = ({ userSearch, onCloseModal }) => {
                                 />
 
                                 <div className='flex flex-col'>
-                                    <p className='text-lg font-mono text-black'>
+                                    <p className='text-lg font-maven text-black'>
                                         {getFullName(user.first_name, user.last_name)}
                                     </p>
 
-                                    <p className='text-lg font-mono text-black'>
+                                    <p className='text-lg font-maven text-black'>
                                         {user.department}
                                     </p>
                                 </div>
@@ -45,9 +47,10 @@ const ListSearchUser = ({ userSearch, onCloseModal }) => {
                         )
                     })}
             </div>
-            : <p className="text-lg font-mono text-black">
+            : <p className="text-lg font-maven text-black">
                 Không có kết quả tìm kiếm
             </p>
+
     )
 }
 

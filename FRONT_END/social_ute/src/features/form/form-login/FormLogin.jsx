@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button, Input } from '@nextui-org/react'
@@ -18,6 +18,7 @@ const FormLogin = (props) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [userData, setUserData] = useState()
+    const [isDisabled, setIsDisabled] = useState(true)
 
     const initFormLogin = {
         phone_number: '',
@@ -95,7 +96,7 @@ const FormLogin = (props) => {
 
     const formLoginSchema = useMemo(() => {
         return object().shape({
-            phone_number: string().typeError(`${formLabel.phone_number}`).required(`${formLabel.phone_number} is required`).max(10, { message: "Hãy điền đủ 10 số.", excludeEmptyString: false }),
+            phone_number: string().typeError(`${formLabel.phone_number}`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
             pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
         })
     }, [formLabel])
@@ -109,6 +110,15 @@ const FormLogin = (props) => {
 
     const { values, errors } = formik
 
+    useEffect(() => {
+        if (Object.keys(errors).length === 0) {
+            setIsDisabled(false)
+        }
+        else {
+            setIsDisabled(true)
+        }
+    }, [errors])
+
     return (
         <form
             className={clsx('h-full w-full flex flex-col items-center justify-center', props.className)}
@@ -121,7 +131,7 @@ const FormLogin = (props) => {
                 name='phone_number'
                 type='text'
                 className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full'
-                errorMessage={errors.phone_number?.message}
+                errorMessage={errors?.phone_number}
                 placeholder='Vui lòng nhập số điện thoại'
                 onChange={formik.handleChange}
             />
@@ -135,11 +145,17 @@ const FormLogin = (props) => {
             />
 
             <div className='flex gap-2 justify-center w-4/5'>
-                <Button className=' w-4/5'>
+                <Button
+                    className=' w-4/5'>
                     <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">Đăng ký</Link>
                 </Button>
 
-                <Button onClick={handleSubmitLogin} className='text-sm font-merriweather w-4/5'>Đăng nhập</Button>
+                <Button
+                    isDisabled={isDisabled}
+                    onClick={handleSubmitLogin}
+                    className='text-sm font-merriweather w-4/5'>
+                    Đăng nhập
+                </Button>
             </div>
         </form>
     )
