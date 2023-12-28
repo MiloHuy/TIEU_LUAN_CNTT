@@ -53,7 +53,7 @@ exports.login = (async (req, res) => {
     const user = await User.findOne({ phone_number })
 
     if (!user) {
-        return res.status(401).json({
+        return res.status(400).json({
             success: false,
             code: 1002,
             message: 'Đăng nhập thất bại. Không tìm thấy người dùng. Vui lòng kiểm tra số điện thoại',
