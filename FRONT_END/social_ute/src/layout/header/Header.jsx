@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getFullName } from "utils/user.utils";
 
 const Header = (props) => {
-    const { imgs, userNames, className } = props
+    const { className } = props
 
     const user = useSelector(selectCurrenUser)
 

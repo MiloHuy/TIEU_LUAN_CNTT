@@ -19,8 +19,6 @@ const FormUpdateUser = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const user = useSelector(selectCurrenUser)
 
-    console.log('user: ' + Object.entries(user))
-
     const initFormUpdateUser = {
         first_name: user.first_name,
         last_name: user.last_name,
@@ -29,7 +27,7 @@ const FormUpdateUser = (props) => {
         id: user.id,
         birth_day: user.birth_day,
         gender: user.gender,
-        department: user.department 
+        department: user.department
     }
 
     const [FormUpdateUser, setFormUpdateUser] = useState(initFormUpdateUser)

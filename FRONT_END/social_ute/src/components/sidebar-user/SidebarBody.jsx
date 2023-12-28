@@ -56,7 +56,6 @@ const SidebarBody = (props) => {
             dispatch(logOut)
 
             Cookies.remove(USERCOOKIES.userID)
-            Cookies.remove(USERCOOKIES.userName)
             Cookies.remove(SSOCOOKIES.access)
 
             navigate('/login')

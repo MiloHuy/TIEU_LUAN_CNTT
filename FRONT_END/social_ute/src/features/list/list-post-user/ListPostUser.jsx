@@ -1,10 +1,9 @@
-import { Spinner } from "@nextui-org/react";
 import CardPostUser from "features/card/card-post-user";
 
 const ListPostUser = ({ posts }) => {
 
     return (
-        posts ?
+        posts.length !== 0 ?
             posts.map((post) => {
                 return (
                     <CardPostUser
@@ -18,8 +17,9 @@ const ListPostUser = ({ posts }) => {
                         save_posts={post.stored}
                     />
                 )
-            }) : <Spinner color="default" size="lg" />
-
+            })
+            :
+            ''
     )
 }
 

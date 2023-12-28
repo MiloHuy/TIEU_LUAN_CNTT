@@ -5,13 +5,14 @@ import { Button, Input } from '@nextui-org/react'
 import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
 import { SSOCOOKIES } from 'constants/app.const'
+import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
-import { getFullName } from 'utils/user.utils'
+import { checkCodeInArray } from 'utils/code-error.utils'
 import { object, string } from 'yup'
 
 const FormLogin = (props) => {
@@ -49,9 +50,7 @@ const FormLogin = (props) => {
             handleCheckRole(role_id)
 
             Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
-            Cookies.set(USERCOOKIES.userAvatar, userData.user.avatar, { expires: 1 })
             Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
-            Cookies.set(USERCOOKIES.userName, getFullName(userData.user.first_name, userData.user.last_name), { expires: 1 })
 
             toast.success('Đăng nhập thành công!!!', {
                 position: "bottom-right",
@@ -68,7 +67,11 @@ const FormLogin = (props) => {
         } catch (err) {
             console.error(err)
 
-            toast.error('Đăng nhập thất bại!!!', {
+            const { code } = err.response.data
+
+            const messageError = checkCodeInArray(ERROR_LOGIN, code)
+
+            toast.error(messageError, {
                 position: "bottom-right",
                 autoClose: 1000,
                 hideProgressBar: true,

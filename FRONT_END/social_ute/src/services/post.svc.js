@@ -22,8 +22,10 @@ export const API_POST_ENDPOINT = {
   },
 };
 
-export const getAllPost = async () => {
-  const res = AxiosInstance.get(API_POST_ENDPOINT.GET.all_posts);
+export const getAllPost = async (payload) => {
+  const res = AxiosInstance.get(API_POST_ENDPOINT.GET.all_posts, {
+    params: payload,
+  });
   return res;
 };
 

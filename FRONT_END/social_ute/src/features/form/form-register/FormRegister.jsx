@@ -1,12 +1,14 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
 import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
+import { ERROR_REGISTER } from "constants/error.const";
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "services/auth.svc";
+import { checkCodeInArray } from "utils/code-error.utils";
 import { object, string } from "yup";
 
 const FormRegister = (props) => {
@@ -109,7 +111,11 @@ const FormRegister = (props) => {
         }
         catch (err) {
 
-            toast.error('Đăng ký thất bại!!!', {
+            const { code } = err.response.data
+
+            const messageError = checkCodeInArray(ERROR_REGISTER, code)
+
+            toast.error(messageError, {
                 position: "bottom-right",
                 autoClose: 1000,
                 hideProgressBar: true,

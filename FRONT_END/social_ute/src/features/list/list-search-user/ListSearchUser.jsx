@@ -17,7 +17,7 @@ const ListSearchUser = ({ userSearch, isLoading }) => {
     return (
         totals !== 0 ?
             <div
-                className="grid grid-cols-1 gap-3 w-4/5 h-full items-start justify-start px-3"
+                className="grid grid-cols-1 gap-3 w-4/5 h-full items-start justify-start"
             >
                 {
                     userSearch.allUser.map((user) => {

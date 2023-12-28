@@ -79,11 +79,10 @@ const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
                             />
                             {
                                 userSearch ?
-                                    <div className='w-full h-4/5 overflow-auto'>
+                                    <div className='w-full h-4/5 overflow-auto '>
                                         <ListSearchUser
                                             isLoading={isLoading}
                                             userSearch={userSearch.data}
-                                        // onCloseModal={onClose}
                                         />
                                     </div>
 

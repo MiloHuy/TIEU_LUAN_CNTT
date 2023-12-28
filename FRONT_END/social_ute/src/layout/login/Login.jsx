@@ -1,5 +1,4 @@
 import { Image } from '@nextui-org/react'
-import logo from 'assets/images/logo.png'
 import clsx from 'clsx'
 import FormLogin from 'features/form/form-login'
 
@@ -17,7 +16,7 @@ const Login = (props) => {
                     loading='lazy'
                     radius='lg'
                     alt="HCMUTE"
-                    src={logo}
+                    // src={logo}
                     className='object-cover p-4'
                 />
             </div>

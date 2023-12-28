@@ -57,28 +57,5 @@ AxiosInstance.interceptors.response.use(
     }
     return Promise.reject(error);
   },
-  // async (res) => {
-  //   console.log("response:" + res);
-  //   const { data, config } = res;
-  //   const { code } = data;
-
-  //   if (allErrorCode.includes(code)) {
-  //     const token_fail_code = [
-  //       ErrorCodeApi.JwtCodeRefreshToken,
-  //       ErrorCodeApi.JwtCodeRefreshTokenNotExistCookie,
-  //       ErrorCodeApi.JwtCodeRefreshTokenBeUsed,
-  //       ErrorCodeApi.JwtCodeRefreshTokenNotExistSystem,
-  //     ];
-
-  //     switch (true) {
-  //       case token_fail_code.include(code): {
-  //         return handleRefreshTokenFail(config);
-  //       }
-  //       default:
-  //         return handleErrorMessageToken(res);
-  //     }
-  //   }
-  //   return res;
-  // },
 );
 export default AxiosInstance;

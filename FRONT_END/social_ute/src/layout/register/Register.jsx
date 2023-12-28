@@ -1,5 +1,4 @@
 import { Image } from "@nextui-org/image"
-import logo from 'assets/images/logo.png'
 import clsx from 'clsx'
 import FormRegister from "features/form/form-register"
 
@@ -17,7 +16,7 @@ const Register = (props) => {
                 <Image
                     radius='lg'
                     alt="HCMUTE"
-                    src={logo}
+                // src={logo}
                 />
             </div>
         </div>

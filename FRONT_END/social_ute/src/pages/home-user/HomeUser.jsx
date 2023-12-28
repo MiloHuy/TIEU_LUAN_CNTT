@@ -1,4 +1,5 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
+import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import PropagateLoader from "components/propagate-loading/PropagateLoader";
 import ListFriendsUser from "features/list/list-friends-user";
 import ListPostUserDetail from 'features/list/list-post-user-detail';
@@ -6,19 +7,20 @@ import ListStoryUserDetail from 'features/list/list-story-user-detail';
 import HeaderHome from "layout/header-home";
 import { Book, Bookmark, Grid3X3, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllMePosts, getListFriends } from "services/me.svc";
 import { getPostSaved } from "services/post.svc";
 import { getAllStory } from "services/story.svc";
 import { statistics } from "services/user.svc";
-import { getUserAvatarFromCookie, getUserNameFromCookie } from "utils/user.utils";
+import { getFullName } from "utils/user.utils";
 
 const HomeUser = () => {
     const [selected, setSelected] = useState("posts");
 
     const { userId } = useParams()
-    const userName = getUserNameFromCookie()
-    const userAvatar = getUserAvatarFromCookie()
+    const user = useSelector(selectCurrenUser)
+
     const navigate = useNavigate()
     const initHomeUser = {
         userStatisics: '',
@@ -127,8 +129,8 @@ const HomeUser = () => {
                 <div className='p-4 row-span-1'>
                     <HeaderHome
                         userStatisics={homeUser.userStatisics.data}
-                        userName={userName}
-                        userAvatar={userAvatar}
+                        userName={getFullName(user.first_name, user.last_name)}
+                        userAvatar={user.avatar.url}
                     />
                 </div>
 
@@ -158,7 +160,7 @@ const HomeUser = () => {
                                 {
                                     homeUser.mePosts ?
                                         <ListPostUserDetail
-                                            userName={userName}
+                                            userName={getFullName(user.first_name, user.last_name)}
                                             posts={homeUser.mePosts}
                                         />
                                         :
@@ -214,7 +216,7 @@ const HomeUser = () => {
                                 {
                                     homeUser.postSaved ?
                                         <ListPostUserDetail
-                                            userName={userName}
+                                            userName={getFullName(user.first_name, user.last_name)}
                                             posts={homeUser.postSaved}
                                         />
                                         :
