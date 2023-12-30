@@ -29,7 +29,7 @@ const User = () => {
         try {
             const allPosts = await getAllPost(
                 {
-                    page: page + 1,
+                    page: page,
                     size: size
                 })
 

@@ -9,6 +9,11 @@ export const ERROR_LOGIN = [
     code: 1003,
     label: "Vui lòng kiểm tra lại mật khẩu.",
   },
+  {
+    type: "ERR_IS_ACTIVE",
+    code: 1008,
+    label: "Tài khoản đã bị vô hiệu hóa.",
+  },
 ];
 
 export const ERROR_REGISTER = [

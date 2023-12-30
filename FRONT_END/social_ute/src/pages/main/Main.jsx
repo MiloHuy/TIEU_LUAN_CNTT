@@ -1,4 +1,5 @@
 import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
+import Image from "components/image";
 import { SSOCOOKIES } from 'constants/app.const';
 import Cookies from 'js-cookie';
 import { Link, Outlet } from 'react-router-dom';
@@ -41,6 +42,11 @@ const Public = () => {
             <div className='w-full h-full flex'>
                 <Outlet />
             </div>
+
+            <div className="card flex justify-content-center">
+                <Image src="https://primefaces.org/cdn/primereact/images/galleria/galleria10.jpg" alt="Image" width="250" preview />
+            </div>
+
         </div>
     )
 }

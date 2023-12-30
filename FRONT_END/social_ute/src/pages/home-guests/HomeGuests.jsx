@@ -104,7 +104,9 @@ const HomeGuests = () => {
                                             userName={userName}
                                         />
                                         :
-                                        <Spinner color="default" size="lg" />
+                                        <div className='w-full h-full flex items-center justify-center'>
+                                            <Spinner color="default" size="lg" />
+                                        </div >
                                 }
                             </Tab>
                         </Tabs>

@@ -164,7 +164,9 @@ const HomeUser = () => {
                                             posts={homeUser.mePosts}
                                         />
                                         :
-                                        <Spinner color="default" size="lg" />
+                                        <div className='w-full h-full flex items-center justify-center'>
+                                            <Spinner color="default" size="lg" />
+                                        </div >
                                 }
                             </Tab>
 
@@ -236,8 +238,6 @@ const HomeUser = () => {
                     size={18}
                 />
             </div>
-
-
     )
 }
 

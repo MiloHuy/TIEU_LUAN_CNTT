@@ -103,7 +103,7 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateHome}
                         startContent={<Home size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Trang chủ
                         </p>
                     </Button>
@@ -115,7 +115,7 @@ const SidebarBody = (props) => {
                         variant="light"
                         startContent={<Search size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Tìm kiếm
                         </p>
                     </Button>
@@ -134,7 +134,7 @@ const SidebarBody = (props) => {
                                 variant="light"
                                 startContent={<Bell size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                             >
-                                <p className='font-mono  text-lg '>
+                                <p className='font-kanit   text-lg '>
                                     Thông báo
                                 </p>
                             </Button>
@@ -148,7 +148,7 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateUser}
                         startContent={<UserCircle2 size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Trang cá nhân
                         </p>
                     </Button>
@@ -160,7 +160,7 @@ const SidebarBody = (props) => {
                         onClick={handleNavigateRequest}
                         startContent={<UserPlus size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Yêu cầu
                         </p>
                     </Button>
@@ -172,7 +172,7 @@ const SidebarBody = (props) => {
                         onClick={handleOpenModelCreate02}
                         startContent={<PlusSquare size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Tạo
                         </p>
                     </Button>
@@ -189,7 +189,7 @@ const SidebarBody = (props) => {
                         variant="light"
                         startContent={<AlignJustify size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Xem thêm
                         </p>
                     </Button>
@@ -201,7 +201,7 @@ const SidebarBody = (props) => {
                         onClick={handleLogOut}
                         startContent={<LogOut size={24} strokeWidth={1} className='hover:animate-ping duration-200 transform' />}
                     >
-                        <p className='font-mono  text-lg '>
+                        <p className='font-kanit   text-lg '>
                             Đăng xuất
                         </p>
                     </Button>

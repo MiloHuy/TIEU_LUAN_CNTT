@@ -70,6 +70,8 @@ const ListAccountUser = (props) => {
             setIsActive(true)
             const account = await activeUserAdmin(id)
 
+            console.log('account: ' + Object.entries(account))
+
             setData(account)
 
             setPagination((prev) => ({
