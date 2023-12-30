@@ -60,7 +60,7 @@ const Admin = () => {
                                 <Button isIconOnly variant="light" size='sm'>
                                     <BookImage size={20} strokeWidth={1} color='#000000' />
                                 </Button>
-                                <p className='text-black font-mono text-xl'>{data ? data.total : <Spinner color="primary" size="sm" />} bài viết</p>
+                                <p className='text-black font-mono text-xl'>{data ? data.totals_posts : <Spinner color="primary" size="sm" />} bài viết</p>
                             </div>
                         </div>
                     </div>

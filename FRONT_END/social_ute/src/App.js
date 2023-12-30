@@ -1,5 +1,6 @@
 import { NextUIProvider } from "@nextui-org/system";
 import { ROLECHECK } from "constants/app.const";
+import StatisticLayout from "layout/statistic-layout";
 import NotFound from "pages/404-not_found/NotFound";
 import PostDetail from "pages/[...post_id]/PostDetail";
 import Admin from "pages/admin";
@@ -9,12 +10,13 @@ import About from "pages/main/About";
 import Home from "pages/main/Home";
 import Report from "pages/main/Report";
 import Manage from "pages/manage";
-import ManageAccount from "pages/manage-account";
-import ManagePosts from "pages/manage-posts";
+import ManageAccount from "pages/manage/manage-account";
+import ManagePosts from "pages/manage/manage-posts";
+import StatiscalMonthDetails from "pages/manage/statistical/statistical-month-details";
+import StatisticalSystems from "pages/manage/statistical/statistical-systems";
 import RequestFriend from "pages/request-friend";
 import Authentication from "pages/role-base-router/authentication";
 import Authorization from "pages/role-base-router/authorization";
-import Statistical from "pages/statistical";
 import User from "pages/user";
 import Welcome from "pages/welcome";
 import { Suspense, lazy } from "react";
@@ -22,6 +24,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Authen from "./pages/authen";
 import Main from "./pages/main";
+import StatisticalMonth from "pages/manage/statistical/statistical-month";
 
 const HomeG = lazy(() => import("pages/home-guests"));
 
@@ -60,7 +63,15 @@ function App() {
                   <Route path="accounts" element={<ManageAccount />} />
 
                   <Route path="posts" element={<ManagePosts />} />
-                  <Route path="statistics" element={<Statistical />} />
+
+                  <Route path="statistics" element={<StatisticLayout />}>
+                    <Route index element={<StatisticalSystems />} />
+                    <Route path="month" element={<StatisticalMonth />} />
+                    <Route
+                      path="month-details"
+                      element={<StatiscalMonthDetails />}
+                    />
+                  </Route>
                 </Route>
               </Route>
             </Route>

@@ -9,7 +9,7 @@ import { registerables } from 'chart.js';
 import { monthYear } from "constants/month.const";
 Chart.register(...registerables);
 
-const ChartUser = () => {
+const ChartUserMonthDetail = () => {
     const monthCurrent = new Date()
     const [monthDay, setMonth] = useState(
         {
@@ -37,11 +37,7 @@ const ChartUser = () => {
 
             const { posts_in_current_day, posts_in_current_month, posts_in_current_week, totals_accounts, total } = data_statistics.data
 
-            dataChart.push(posts_in_current_day)
-            dataChart.push(posts_in_current_month)
-            dataChart.push(posts_in_current_week)
             dataChart.push(total)
-            dataChart.push(totals_accounts)
 
             setChart(dataChart)
         }
@@ -63,7 +59,7 @@ const ChartUser = () => {
         fetchStatisticsUser()
     }, [fetchStatisticsUser])
 
-    const labels = ["Số bài viết trong ngày", "Số bài viết trong tháng", "Số bài viết trong tuần", "Tất cả bài bài viết", "Tổng số tài khoản"];
+    const labels = ["Số bài viết"];
     const data = {
         labels: labels,
         datasets: [
@@ -161,4 +157,4 @@ const ChartUser = () => {
     )
 }
 
-export default ChartUser
+export default ChartUserMonthDetail
