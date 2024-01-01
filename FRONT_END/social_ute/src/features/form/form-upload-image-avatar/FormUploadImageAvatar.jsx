@@ -55,7 +55,7 @@ const FormUploadImageAvatar = () => {
                 theme: "light",
             });
 
-            setTimeout(() => { window.location.reload() }, 2500)
+            setTimeout(() => { window.location.reload() }, 1500)
         }
         catch (err) {
 

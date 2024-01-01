@@ -60,7 +60,7 @@ const HeaderHome = (props) => {
                 ...prev,
                 relationship: !prev.relationship,
                 add_friend: !prev.add_friend,
-                follow: !prev.follow,
+                // follow: !prev.follow,
                 isLoadingFriend: false,
             }))
         }
@@ -94,7 +94,7 @@ const HeaderHome = (props) => {
                 theme: "light",
             });
 
-            setTimeout(() => { window.location.reload() }, 2500)
+            setTimeout(() => { window.location.reload() }, 1500)
         }
         catch (err) {
             console.log('err :' + err)
@@ -120,16 +120,40 @@ const HeaderHome = (props) => {
             }))
             await AcceptFriend(userInfo.user._id)
 
+            // await handleFollow(userInfo.user._id)
+
             setCheck((prev) => ({
                 ...prev,
                 request_add_friend: !prev.request_add_friend,
                 isLoadingRequest: false,
             }))
 
+            toast.success('Thao tác thành công.', {
+                position: "bottom-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
             window.location.reload();
         }
         catch (err) {
             console.log("err:" + err)
+
+            toast.error('Thao tác thất bại.', {
+                position: "bottom-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 
@@ -397,10 +421,11 @@ const HeaderHome = (props) => {
                                                     <Dropdown>
                                                         <DropdownTrigger>
                                                             <Button
+                                                                isLoading={check.isLoadingRequest}
                                                                 radius="sm"
                                                                 className="w-50 h-7"
                                                                 variant="solid"
-                                                                endContent={<MailPlus size={20}  strokeWidth={0.75} />}
+                                                                endContent={<MailPlus size={20} strokeWidth={0.75} />}
                                                             >
                                                                 Đã gửi lời mời
                                                             </Button>

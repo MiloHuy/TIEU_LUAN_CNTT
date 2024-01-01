@@ -106,7 +106,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id, statusPost, handleCallbackL
             });
             setIsLoading(false);
 
-            setTimeout(() => { window.location.reload() }, 2500)
+            setTimeout(() => { window.location.reload() }, 1500)
         }
         catch (err) {
 

@@ -31,6 +31,8 @@ module.exports = {
         roboto: ["Roboto", "sans-serif"],
         lato_off: ["Lato", "sans-serif"],
         kanit: ["Kanit", "sans-serif"],
+        fira: ["Fira Sans", "sans-serif"],
+        roboto_slap: ["Roboto Slab", "sans-serif"],
       },
 
       backgroundImage: {
@@ -56,6 +58,13 @@ module.exports = {
 
         table_background: "#A3A3A3",
         focus: "#9BAE96",
+
+        bg_main: "#000000",
+      },
+      boxShadow: {
+        "3xl": "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
+        custom_shadow:
+          "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;",
       },
       keyframes: {
         loader: {
