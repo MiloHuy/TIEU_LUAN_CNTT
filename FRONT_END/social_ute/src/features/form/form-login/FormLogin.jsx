@@ -149,11 +149,13 @@ const FormLogin = (props) => {
 
             <div className='flex gap-2 justify-center w-4/5'>
                 <Button
+                    radius='sm'
                     className=' w-4/5'>
                     <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">Đăng ký</Link>
                 </Button>
 
                 <Button
+                    radius='sm'
                     isDisabled={isDisabled}
                     onClick={handleSubmitLogin}
                     className='text-sm font-merriweather w-4/5'>

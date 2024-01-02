@@ -33,10 +33,13 @@ module.exports = {
         kanit: ["Kanit", "sans-serif"],
         fira: ["Fira Sans", "sans-serif"],
         roboto_slap: ["Roboto Slab", "sans-serif"],
+        young_serif: ["Young Serif", "sans-serif"],
+        libre: ["Libre Baskerville", "serif"],
       },
 
       backgroundImage: {
-        bg_hcmute: "url('./assets/images/bg-hcmute-02.jpg')",
+        bg_hcmute_01: "url('./assets/images/bg-hcmute-01.jpg')",
+        bg_hcmute_02: "url('./assets/images/bg-hcmute-02.jpg')",
       },
       rotate: {
         28: "28deg",
@@ -60,11 +63,16 @@ module.exports = {
         focus: "#9BAE96",
 
         bg_main: "#000000",
+        text_color_gray: "#973737",
       },
       boxShadow: {
         "3xl": "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
         custom_shadow:
           "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;",
+      },
+      brightness: {
+        25: ".25",
+        175: "1.75",
       },
       keyframes: {
         loader: {
@@ -92,10 +100,22 @@ module.exports = {
             transform: "rotate(-5deg)",
           },
         },
+        updown: {
+          "0%": {
+            transform: "translateX(-10%)",
+          },
+          "50%": {
+            transform: "translateX(10%)",
+          },
+          "100%": {
+            transform: "translateX(-10%)",
+          },
+        },
       },
       animation: {
         loading: "loader infinite 2s",
         handswipe: "swipe 0.8s alternate infinite",
+        UpAndDown: "updown infinite 1.2s",
       },
       transitionDelay: {
         400: "400ms",

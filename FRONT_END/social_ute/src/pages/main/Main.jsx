@@ -1,13 +1,10 @@
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
-import { SSOCOOKIES } from 'constants/app.const';
-import Cookies from 'js-cookie';
 import { useRef } from "react";
 import { Link } from 'react-router-dom';
 import About from "./About";
 import Home from "./Home";
 
 const Public = () => {
-    const token = Cookies.get(SSOCOOKIES.access)
+
     const home = useRef(null)
     const about = useRef(null)
 
@@ -19,35 +16,26 @@ const Public = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 gap-6">
-            <div className='w-full flex px-4 border '>
-                <Navbar className="w-full flex justify-start items-center">
-                    <NavbarBrand justify="start">
-                        <p className="text-2xl font-serif">SOCIAL HCMUTE</p>
-                    </NavbarBrand>
-                    <NavbarContent className="gap-4 " >
-                        <NavbarItem>
-                            <Link color="foreground" to="/home" onClick={() => scrollSection(home)}>
-                                <p className="text-lg font-serif hover:underline">TRANG CHỦ</p>
-                            </Link>
-                        </NavbarItem>
+        <div className="grid grid-cols-1">
+            <div className='w-full flex justify-items-stretch h-[8vh]'>
+                <div className="w-full h-full grid grid-cols-2 justify-between items-end border-b border-black px-4">
+                    <div className="flex justify-start items-center h-full" >
+                        <p className="text-2xl font-young_serif tracking-wide">SOCIAL HCMUTE</p>
+                    </div>
 
-                        <NavbarItem>
-                            <Link to="/about" aria-current="page" onClick={() => scrollSection(about)}>
-                                <p className="text-lg font-serif hover:underline">NHÓM THỰC HIỆN</p>
+                    <div className="w-full gap-4 justify-end flex h-full items-center" >
+                        <div>
+                            <Link color="foreground" to="/home" onClick={() => scrollSection(home)}>
+                                <p className="text-sm font-bold font-merriweather tracking-wide  hover:underline">TRANG CHỦ</p>
                             </Link>
-                        </NavbarItem>
-                    </NavbarContent>
-                </Navbar>
-                <div className="flex items-center">
-                    <Button
-                        as={Link}
-                        to="#"
-                        variant="light"
-                        className="text-md font-serif"
-                    >
-                        {token ? <Link to='./welcome'>welcome</Link> : <Link to='./login'>Login</Link>}
-                    </Button>
+                        </div>
+
+                        <div>
+                            <Link to="/about" aria-current="page" onClick={() => scrollSection(about)}>
+                                <p className="text-sm font-bold font-merriweather tracking-wide hover:underline">NHÓM THỰC HIỆN</p>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </div>
 
