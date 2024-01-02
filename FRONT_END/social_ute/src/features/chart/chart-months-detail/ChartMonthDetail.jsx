@@ -33,9 +33,7 @@ const ChartUserMonthDetail = () => {
         try {
             const data_statistics = await getStatisticsUser(monthDay)
 
-            // console.log('data_statistics', data_statistics.data)
-
-            const { posts_in_current_day, posts_in_current_month, posts_in_current_week, totals_accounts, total } = data_statistics.data
+            const { total } = data_statistics.data
 
             dataChart.push(total)
 
@@ -59,7 +57,7 @@ const ChartUserMonthDetail = () => {
         fetchStatisticsUser()
     }, [fetchStatisticsUser])
 
-    const labels = ["Số bài viết"];
+    const labels = ["Số bài viết trong tháng"];
     const data = {
         labels: labels,
         datasets: [

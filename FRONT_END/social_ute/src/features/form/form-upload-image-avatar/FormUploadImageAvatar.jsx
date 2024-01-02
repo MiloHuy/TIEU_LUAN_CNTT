@@ -1,10 +1,12 @@
 import { Button } from "@nextui-org/react";
+import { ERR_CHANGE_AVATAR } from "constants/error.const";
 import { useFormik } from "formik";
 import { Camera } from 'lucide-react';
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { uploadImageAvatar } from "services/me.svc";
+import { checkCodeInArray } from "utils/code-error.utils";
 
 
 const FormUploadImageAvatar = () => {
@@ -58,11 +60,13 @@ const FormUploadImageAvatar = () => {
             setTimeout(() => { window.location.reload() }, 1500)
         }
         catch (err) {
-
-            console.log('error:', err)
             setIsLoading(false)
 
-            toast.error('Thay đổi thất bại!!!', {
+            const { code } = err.response.data
+
+            const messageError = checkCodeInArray(ERR_CHANGE_AVATAR, code)
+
+            toast.error(messageError, {
                 position: "bottom-right",
                 autoClose: 1000,
                 hideProgressBar: true,

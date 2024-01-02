@@ -1,10 +1,12 @@
 import { Button, Input } from "@nextui-org/react";
+import { ERR_CREATE_POST } from "constants/error.const";
 import { useFormik } from "formik";
 import { Camera } from 'lucide-react';
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createPost } from "services/post.svc";
+import { checkCodeInArray } from "utils/code-error.utils";
 
 
 const FormUploadImageFile = () => {
@@ -62,9 +64,12 @@ const FormUploadImageFile = () => {
         }
         catch (err) {
             setIsLoading(false)
-            console.log("error", err);
 
-            toast.error('Đăng bài viết thất bại!!!', {
+            const { code } = err.response.data
+
+            const messageError = checkCodeInArray(ERR_CREATE_POST, code)
+
+            toast.error(messageError, {
                 position: "bottom-right",
                 autoClose: 1000,
                 hideProgressBar: true,
@@ -117,7 +122,7 @@ const FormUploadImageFile = () => {
 
                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 <Camera size={50} strokeWidth={1} color='#000000' />
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Nhấn vào để chọn ảnh</span> </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">JPEG, PNG, JPG  </p>
                             </div>
 
