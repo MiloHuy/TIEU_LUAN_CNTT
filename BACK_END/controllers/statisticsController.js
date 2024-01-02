@@ -42,13 +42,12 @@ exports.getAdminStatistics = (async (req, res) => {
         })
 
         const month = parseInt(req.body.month);
-        const year = moment().year();
-
+        const year = parseInt(req.body.year);
+        
         const startOfMonth = moment({ year, month: month - 1, day: 1 }).startOf('day').toDate();
         const endOfMonth = moment({ year, month: month - 1, day: 1 }).endOf('month').toDate();
 
         const daysInMonth = moment(endOfMonth).diff(startOfMonth, 'days') + 1;
-        const daysArray = [...Array(daysInMonth).keys()].map(day => moment(startOfMonth).add(day, 'days').date());
 
         const result = await Post.aggregate([
             {
