@@ -1,8 +1,8 @@
 
 const About = () => {
+
     return (
         <div className='relative w-full h-full'>
-
             <div className="flex flex-col items-center justify-around px-3 w-full h-full">
                 <p className="text-black text-center font-mono font-bold text-3xl mt-3">
                     Danh sách sinh viên tham gia

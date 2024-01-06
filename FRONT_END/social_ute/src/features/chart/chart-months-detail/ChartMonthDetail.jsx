@@ -1,4 +1,3 @@
-import { Select, SelectItem } from "@nextui-org/react";
 import { Chart } from "chart.js";
 import { useCallback, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -6,32 +5,29 @@ import { toast } from 'react-toastify';
 import { getStatisticsUser } from "services/admin.svc";
 
 import { registerables } from 'chart.js';
-import { monthYear } from "constants/month.const";
+import DatePicker from "components/date-picker";
 Chart.register(...registerables);
 
 const ChartUserMonthDetail = () => {
-    const monthCurrent = new Date()
-    const [monthDay, setMonth] = useState(
-        {
-            "month": monthCurrent.getMonth() + 1
+    const date = new Date()
+    const [valueDateTime, setValueDateTime] = useState({
+        month: date.getMonth() + 1,
+        year: date.getFullYear()
+    })
+
+    const handleChangeDateTime = (newValue) => {
+        if (newValue) {
+            console.log('New value: ', newValue)
+            setValueDateTime(newValue)
         }
-    )
-
-    const [value, setValue] = useState(12);
-
-    const handleSelectionChange = (e) => {
-        setValue(e.target.value);
-        setMonth({
-            "month": e.target.value
-        })
-    };
+    }
 
     const [chart, setChart] = useState()
     const dataChart = []
 
     const fetchStatisticsUser = useCallback(async () => {
         try {
-            const data_statistics = await getStatisticsUser(monthDay)
+            const data_statistics = await getStatisticsUser(valueDateTime)
 
             const { total } = data_statistics.data
 
@@ -51,7 +47,7 @@ const ChartUserMonthDetail = () => {
                 theme: "light",
             });
         }
-    }, [monthDay])
+    }, [valueDateTime])
 
     useEffect(() => {
         fetchStatisticsUser()
@@ -104,51 +100,20 @@ const ChartUserMonthDetail = () => {
 
     return (
         <div className="w-full h-screen flex flex-col items-center justify-center px-2 gap-3">
-            <div className='w-full h-ull flex items-start'>
-                <Select
-                    placeholder="Hãy chọn tháng muốn xem"
-                    label="Tháng"
-                    variant="bordered"
-                    radius="sm"
-                    selectedKeys={[value]}
-                    className="max-w-xs border border-black dark:border-white rounded-lg"
-                    onChange={handleSelectionChange}
-
-                    listboxProps={{
-                        itemClasses: {
-                            base: [
-                                "rounded-md",
-                                "text-default-500",
-                                "transition-opacity",
-                                "data-[hover=true]:text-foreground",
-                                "data-[hover=true]:bg-default-100",
-                                "dark:data-[hover=true]:bg-default-50",
-                                "data-[selectable=true]:focus:bg-default-50",
-                                "data-[pressed=true]:opacity-70",
-                                "data-[focus-visible=true]:ring-default-500",
-                            ],
-                        },
-                    }}
-
-                    popoverProps={{
-                        classNames: {
-                            base: "before:bg-default-200",
-                            content: "p-0 border-small border-divider bg-background",
-                        },
-                    }}
-
-                >
-                    {
-                        monthYear.map((month) =>
-                            <SelectItem key={month.value} value={month.value}>
-                                {month.label}
-                            </SelectItem>
-                        )
-                    }
-                </Select>
+            <div className='w-full h-full flex items-center justify-start'>
+                <div className='w-1/2'>
+                    <DatePicker
+                        value={valueDateTime}
+                        asSingle={true}
+                        popoverDirection="down"
+                        onChange={handleChangeDateTime}
+                        onlyMonthAndYear
+                    />
+                </div>
             </div>
+
             <h1 className='text-lg text-black dark:text-white font-bold font-merriweather text-center'>
-                Thống kê dữ liệu - tháng {value}
+                Thống kê dữ liệu - tháng {valueDateTime.month}
             </h1>
             <Bar data={data} options={options} />
         </div>

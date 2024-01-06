@@ -64,6 +64,8 @@ module.exports = {
 
         bg_main: "#000000",
         text_color_gray: "#973737",
+
+        bg_date_picker_primary: "#3F89E3",
       },
       boxShadow: {
         "3xl": "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
@@ -111,11 +113,21 @@ module.exports = {
             transform: "translateX(-10%)",
           },
         },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
       },
       animation: {
         loading: "loader infinite 2s",
         handswipe: "swipe 0.8s alternate infinite",
         UpAndDown: "updown infinite 1.2s",
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
       transitionDelay: {
         400: "400ms",
@@ -153,6 +165,6 @@ module.exports = {
         },
       },
     }),
-    require("./tailwind-animate"),
+    require("tailwindcss-animate"),
   ],
 };
