@@ -74,7 +74,7 @@ const ManagePosts = () => {
     }, [postsData])
 
     return (
-        <div className='w-full h-screen overflow-y-scroll translate-x-12 grid grid-cols-1'>
+        <div className='w-full h-screen overflow-y-scroll translate-x-12 grid grid-cols-1  overflow-x-auto'>
             <div className='flex flex-col gap-3 h-full w-full p-4'>
                 <p className="text-black dark:text-white font-kanit text-center text-2xl">Danh sách bài viết của người dùng</p>
 

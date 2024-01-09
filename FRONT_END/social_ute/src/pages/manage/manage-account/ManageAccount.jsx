@@ -2,7 +2,7 @@ import ListAccountUser from "features/list/list-account-user"
 
 const ManageAccount = () => {
     return (
-        <div className='w-full h-full p-2 flex '>
+        <div className='w-full h-full px-2 flex '>
             <ListAccountUser />
         </div>
     )

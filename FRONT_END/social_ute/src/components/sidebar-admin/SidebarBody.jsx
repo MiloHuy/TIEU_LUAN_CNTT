@@ -1,6 +1,7 @@
 import { Accordion, AccordionItem, Button } from '@nextui-org/react';
 import { logOut } from 'app/slice/auth/auth.slice';
 import clsx from 'clsx';
+import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
 import Cookies from 'js-cookie';
 import { BarChartBig } from "lucide-react";
@@ -24,7 +25,7 @@ const SidebarBody = (props) => {
             navigate('/login')
             handleLogout()
             Cookies.remove(USERCOOKIES.userID)
-            Cookies.remove(USERCOOKIES.access)
+            Cookies.remove(SSOCOOKIES.access)
         }
         else {
             navigate(link)

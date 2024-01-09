@@ -115,7 +115,7 @@ const ListAccountUser = (props) => {
 
     return (
         <div className={clsx('flex items-center justify-center flex-col gap-5', props.className)}>
-            <h1 className='text-lg text-black dark:text-white font-bold font-merriweather text-center'>
+            <h1 className='text-lg text-black dark:text-white font-bold font-questrial text-center'>
                 DANH SÁCH TÀI KHOẢN CỦA NGƯỜI DÙNG.
             </h1>
 
