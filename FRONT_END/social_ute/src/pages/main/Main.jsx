@@ -26,13 +26,13 @@ const Public = () => {
                     <div className="w-full gap-4 justify-end flex h-full items-center" >
                         <div>
                             <Link color="foreground" to="/home" onClick={() => scrollSection(home)}>
-                                <p className="text-sm font-bold font-merriweather tracking-wide  hover:underline">TRANG CHỦ</p>
+                                <p className="text-sm font-bold font-questrial tracking-wide  hover:underline">TRANG CHỦ</p>
                             </Link>
                         </div>
 
                         <div>
                             <Link to="/about" aria-current="page" onClick={() => scrollSection(about)}>
-                                <p className="text-sm font-bold font-merriweather tracking-wide hover:underline">NHÓM THỰC HIỆN</p>
+                                <p className="text-sm font-bold font-questrial tracking-wide hover:underline">NHÓM THỰC HIỆN</p>
                             </Link>
                         </div>
                     </div>

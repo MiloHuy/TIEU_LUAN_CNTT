@@ -151,7 +151,7 @@ const FormRegister = (props) => {
             onSubmit={formik.handleSubmit}
             onReset={formik.resetForm}
         >
-            <h1 className="text-lg font-bold font-merriweather text-center">
+            <h1 className="text-2xl font-bold font-questrial text-center">
                 Đăng ký
             </h1>
 
@@ -273,11 +273,11 @@ const FormRegister = (props) => {
             <div className="w-4/5 flex items-center gap-5">
                 <Button
                     radius="sm"
-                    className="w-3/4 text-sm font-merriweather"
+                    className="w-3/4 text-sm font-questrial"
                     type='submit'
                 >
                     <Link
-                        className='text-sm col-span-1 font-merriweather'
+                        className='text-sm col-span-1 font-questrial'
                         onClick={handleOpenRegiser} href="#">
                         Đăng nhập
                     </Link>
@@ -286,7 +286,7 @@ const FormRegister = (props) => {
                 <Button
                     isDisabled={isDisabled}
                     radius="sm"
-                    className="w-3/4 text-sm font-merriweather"
+                    className="w-3/4 text-sm font-questrial"
                     onClick={handleRegisterForm}
                     type='submit'
                 >Đăng ký

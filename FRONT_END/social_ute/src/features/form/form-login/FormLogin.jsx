@@ -128,7 +128,7 @@ const FormLogin = (props) => {
             onSubmit={formik.handleSubmit}
         >
 
-            <h1 className='text-lg text-blue-950 font-bold font-merriweather text-center'>Đăng nhập</h1>
+            <h1 className='text-2xl text-blue-950 font-bold font-questrial text-center'>Đăng nhập</h1>
 
             <Input
                 name='phone_number'
@@ -151,14 +151,14 @@ const FormLogin = (props) => {
                 <Button
                     radius='sm'
                     className=' w-4/5'>
-                    <Link className='text-sm col-span-1 font-merriweather' onClick={handleOpenLogin} href="#">Đăng ký</Link>
+                    <Link className='text-md col-span-1 font-questrial' onClick={handleOpenLogin} href="#">Đăng ký</Link>
                 </Button>
 
                 <Button
                     radius='sm'
                     isDisabled={isDisabled}
                     onClick={handleSubmitLogin}
-                    className='text-sm font-merriweather w-4/5'>
+                    className='text-md font-questrial w-4/5'>
                     Đăng nhập
                 </Button>
             </div>

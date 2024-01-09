@@ -35,6 +35,7 @@ module.exports = {
         roboto_slap: ["Roboto Slab", "sans-serif"],
         young_serif: ["Young Serif", "sans-serif"],
         libre: ["Libre Baskerville", "serif"],
+        questrial: ["Questrial", "sans-serif"],
       },
 
       backgroundImage: {
