@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getStatisticsUser } from "services/admin.svc";
-import { dateTimeFormat } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 
 const Admin = () => {
@@ -99,7 +98,7 @@ const Admin = () => {
 
                                 <div className='flex flex-col gap-2 w-full items-center'>
                                     <p className="text-black  font-mono text-md">{getFullName(user.first_name, user.last_name)}</p>
-                                    <p className="text-black  font-mono text-md">{dateTimeFormat(new Date(user.birth_day))}</p>
+                                    <p className="text-black  font-mono text-md">12/06/2002</p>
                                     <p className="text-black  font-mono text-md">{user.gender}</p>
                                     <p className="text-black  font-mono text-md">{user.phone_number}</p>
                                     <p className="text-black  font-mono text-md">{user.id}</p>

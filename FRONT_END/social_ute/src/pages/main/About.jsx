@@ -20,7 +20,7 @@ const About = () => {
 
                             <div className='flex flex-col gap-2 w-full items-center'>
                                 <p className="text-black  font-questrial font-bold text-md">Huỳnh Hùng Phú</p>
-                                <p className="text-black  font-questrial font-bold text-md">01/02/2002</p>
+                                <p className="text-black  font-questrial font-bold text-md">12/06/2002</p>
                                 <p className="text-black  font-questrial font-bold text-md">Nam</p>
                                 <p className="text-black  font-questrial font-bold text-md">0764455931</p>
                                 <p className="text-black  font-questrial font-bold text-md">20110540</p>
