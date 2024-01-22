@@ -1,9 +1,9 @@
-import { Avatar } from "@nextui-org/avatar";
-import { Card, CardHeader } from "@nextui-org/card";
-import { Button, Image, Input, Link, useDisclosure } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
+import Input from "components/input";
 import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import ModalPostUser from "features/modal/modal-post-user";
+import HeaderPostUser from "layout/header-post-user";
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
@@ -138,47 +138,30 @@ const CardPostUser = (props) => {
     }, [commentInput.comment_content])
 
     return (
-        <div className='w-10/12 p-2'>
-            <Card
-                classNames={{
-                    base: 'border-black border dark:border-none'
-                }}
-                className="grid grid-rows-8 w-full h-[550px] "
-                radius='sm'
-                shadow='sm'>
-                <CardHeader className="flex gap-3 justify-between row-span-1">
-                    <div className="flex flex-row gap-3 items-center">
-                        <Avatar src={post_avatar} />
+        <div className='max-w-[40vw] w-[40vw] p-2'>
+            <div className="flex flex-col w-full max-h-[80vh] h-max border border-black dark:border-white rounded-lg justify-between items-center">
+                <HeaderPostUser
+                    className='h-20 w-full border-b'
+                    img={post_avatar}
+                    name={userName}
+                    href={user_id._id !== ID ? `/welcome/home-guest/${user_id._id}` : `/welcome/home-user/${ID}`}
+                    action={
+                        <DropdownShowMoreOptions
+                            user_id={user_id}
+                            post_id={post_id}
+                            statusPost={statusPost}
 
-                        <Link
-                            color="foreground"
-                            href={user_id._id !== ID ? `welcome/home-guest/${user_id._id}` : `welcome/home-user/${ID}`}
-                            underline="active"
-                        >
-                            <p className="text-md hover:underline text-md text-black dark:text-white font-mono  ">
-                                {userName}
-                            </p>
-                        </Link>
+                            handleCallbackLikedPost={handleLikePost}
+                            handleCallbackSavedPost={handleSavePost}
+                        />
+                    }
+                />
 
-                    </div>
-
-                    <DropdownShowMoreOptions
-                        user_id={user_id}
-                        post_id={post_id}
-
-                        statusPost={statusPost}
-                        handleCallbackLikedPost={handleLikePost}
-                        handleCallbackSavedPost={handleSavePost}
-                    />
-
-                </CardHeader>
-
-                <div className="w-full flex flex-col gap-2 row-span-6 h-[500px] overflow-hidden">
-                    <Image
-                        removeWrapper
+                <div className="w-full flex flex-col gap-2 h-[50rem] overflow-hidden">
+                    <img
                         loading="lazy"
                         alt="img"
-                        className="object-fill h-3/5 w-full rounded-md"
+                        className="object-fill h-3/5 w-full "
                         src={post_img}
                     />
                     <div className='flex justify-between'>
@@ -229,39 +212,50 @@ const CardPostUser = (props) => {
                         </Button>
                     </div>
 
-                    <div className='flex flex-col gap-2 px-2'>
+                    <div className='flex flex-col px-2 max-h-[25rem]'>
                         <div className="flex-row flex gap-1">
-                            <h2 className='text-md text-black dark:text-white font-mono '>{numberLikes}</h2>
-                            <span className='text-md text-black dark:text-white font-mono '>lượt thích</span>
+                            <h2 className='text-sm text-black dark:text-white font-nunito_sans font-bold'>{numberLikes}</h2>
+                            <span className='text-sm text-black dark:text-white font-nunito_sans font-bold'>lượt thích</span>
                         </div>
 
-                        <div className="flex-row flex gap-1">
-                            <h2 className="text-md text-black dark:text-white  font-mono ">{`${userName}: ${post_description}`}</h2>
+                        <div className="flex-1 w-full max-h-[30px]">
+                            <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold line-clamp-3 truncate">
+                                {`${userName} : `}
+                                <span className="font-normal ">{` ${post_description}`}</span>
+                            </p>
                         </div>
+                    </div>
+
+                    <div className='w-full flex gap-1 justify-start items-center px-2 mt-3'>
+                        <img
+                            alt='avatar'
+                            src={post_avatar}
+                            className="rounded-full w-8 h-8"
+                        />
 
                         <Input
                             name='comment_content'
                             value={commentInput.comment_content}
                             onChange={handleOnChange}
-                            variant='underlined'
-                            isLoading={isLoading}
+                            size="sm"
                             placeholder="Thêm bình luận..."
-                            className='text-black dark:placeholder:text-black border-black px-1'
+                            className='text-black dark:placeholder:text-black border rounded-lg border-black w-full dark:border-white'
                             endContent={
                                 <Button
                                     size="sm"
                                     variant="bordered"
                                     onClick={handlePostComment}
                                     isDisabled={active}
-                                    className={`hover:bg-black border-black text-black hover:text-white font-mont font-bold dark:text-white  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
+                                    className={`hover:bg-black border-black text-black hover:text-white font-nunito_sans  dark:text-white  text-sm shadow-lg  ${active ? 'invisible delay-150' : ''}`}
                                     color="primary"
                                 >
                                     Đăng
-                                </Button>}
+                                </Button>
+                            }
                         />
                     </div>
                 </div >
-            </Card >
+            </div >
 
             <ModalPostUser
                 isOpen={isOpen}

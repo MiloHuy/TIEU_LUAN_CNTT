@@ -125,7 +125,7 @@ const HomeUser = () => {
     return (
         homeUser.userStatisics
             ?
-            <div className='grid grid-rows-3 p-2 h-screen overflow-auto '>
+            <div className='grid grid-rows-3 p-2 h-full w-full overflow-auto '>
                 <div className='p-4 row-span-1'>
                     <HeaderHome
                         userStatisics={homeUser.userStatisics.data}
@@ -134,8 +134,8 @@ const HomeUser = () => {
                     />
                 </div>
 
-                <div className='grid grid-rows-1 justify-center w-full h-screen'>
-                    <div className="flex w-full flex-col">
+                <div className='grid grid-rows-1 justify-center w-full h-screen '>
+                    <div className="flex w-full flex-col ">
                         <Tabs
                             color="default"
                             variant="light"
@@ -153,7 +153,9 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Grid3X3 size={20} />
-                                        <span className="dark:text-white font-mono">Posts</span>
+                                        <span className="dark:text-white font-nunito_sans">
+                                            Bài viết
+                                        </span>
                                     </div>
                                 }
                             >
@@ -175,7 +177,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Book size={20} />
-                                        <span className="dark:text-white font-mono">Story</span>
+                                        <span className="dark:text-white font-nunito_sans">Story</span>
                                     </div>
                                 }
                             >
@@ -187,14 +189,17 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Users size={20} />
-                                        <span className="dark:text-white font-mono">Friends</span>
+                                        <span className="dark:text-white font-nunito_sans">
+                                            Bạn bè
+                                        </span>
                                     </div>
                                 }
                             >
                                 {
                                     homeUser.friends ?
-                                        <div className="grid grid-cols-1 w-full gap-3">
-                                            <ListFriendsUser friends={homeUser.friends.data} />
+                                        <div className='min-w-[70vw]'>
+                                            <ListFriendsUser
+                                                friends={homeUser.friends.data} />
                                         </div>
                                         :
                                         <div className='w-full h-full flex items-center justify-center'>
@@ -211,12 +216,15 @@ const HomeUser = () => {
                                             size={20}
                                             strokeWidth={1.5}
                                         />
-                                        <span className="dark:text-white text-black font-mono">Post Saved</span>
+                                        <span className="dark:text-white text-black font-nunito_sans">
+                                            Bài viết đã lưu
+                                        </span>
                                     </div>
                                 }
                             >
                                 {
-                                    homeUser.postSaved ?
+                                    homeUser.postSaved
+                                        ?
                                         <ListPostUserDetail
                                             userName={getFullName(user.first_name, user.last_name)}
                                             posts={homeUser.postSaved}

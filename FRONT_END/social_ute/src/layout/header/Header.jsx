@@ -12,7 +12,7 @@ const Header = (props) => {
 
     return (
         <div className={clsx("px-2", className)}>
-            <p className="text-black dark:text-white font-mono text-lg text-center">
+            <p className="text-black dark:text-white font-nunito_sans text-lg text-center">
                 Chào mừng {userName} đến với mạng xã hội cho sinh viên Sư Phạm Kỹ Thuật 😊😊😊
             </p>
 

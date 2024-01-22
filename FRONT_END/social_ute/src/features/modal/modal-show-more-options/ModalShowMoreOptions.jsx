@@ -139,32 +139,7 @@ const ModalShowMoreOptions = ({ isOpenShowMore, onOpenChangeShowMore }) => {
                 {() => (
                     <div className="flex flex-col gap-4 justify-between items-center w-full h-full py-3">
                         <div className="grid grid-cols-1 gap-2 h-full">
-                            {/* <Button
-                                variant="light"
-                                className='text-white w-full flex justify-start text-lg font-normal'
-                                key="like"
-                                startContent={
-                                    <Heart
-                                        fill={postStatus.liked === true ? 'red' : 'none'}
-                                        size={19}
-                                        strokeWidth={1} />}
-                            >
-                                <p className='text-md font-open_sans font-bold dark:text-white gap-2'>
-                                    {postStatus.liked === true ? 'Hủy yêu thích' : 'Yêu thích bài viết'}
-                                </p>
-                            </Button>
-
-                            <Button
-                                variant="light"
-                                className='text-white w-full flex justify-start text-lg font-normal'
-                                key="save"
-                                startContent={<Bookmark size={19} strokeWidth={1} fill={postStatus.saved === true ? 'yellow' : 'none'} />}
-                            >
-                                <p className='text-md font-open_sans font-bold gap-2'>
-                                    {postStatus.saved === true ? 'Hủy lưu bài viêt' : 'Lưu bài viết'}
-                                </p>
-                            </Button> */}
-                            <p className='text-2xl font-mono font-bold text-white gap-2 text-center'>Tùy chọn</p>
+                            <p className='text-2xl font-nunito_sans font-bold text-white gap-2 text-center'>Tùy chọn</p>
                             <Divider className="w-full bg-white" />
                             <div className="flex flex-col gap-3">
                                 <Button
@@ -178,7 +153,7 @@ const ModalShowMoreOptions = ({ isOpenShowMore, onOpenChangeShowMore }) => {
                                             strokeWidth={1}
                                             className='transform -rotate-28 -translate-y-0.5' />}
                                 >
-                                    <p className='text-md font-mono font-bold dark:text-white gap-2'> Chia sẻ bài viết</p>
+                                    <p className='text-md font-nunito_sans font-bold dark:text-white gap-2'> Chia sẻ bài viết</p>
                                 </Button>
 
                                 <Button
@@ -193,7 +168,7 @@ const ModalShowMoreOptions = ({ isOpenShowMore, onOpenChangeShowMore }) => {
                                             strokeWidth={1}
                                         />}
                                 >
-                                    <p className='text-md font-mono font-bold dark:text-white gap-2'> Xóa bài viết</p>
+                                    <p className='text-md font-nunito_sans font-bold dark:text-white gap-2'> Xóa bài viết</p>
                                 </Button>
 
                                 <ModalConfirm

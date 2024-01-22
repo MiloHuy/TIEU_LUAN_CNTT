@@ -3,12 +3,11 @@ import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import { RELATIONSHIP } from "constants/user.const";
 import ModalChangeAvatar from "features/modal/modal-change-avatar/ModalChangeAvatar";
 import ModalChangePassword from "features/modal/modal-change-password";
-import ModalUpdateUser from "features/modal/modal-update-user";
+import SheetUpdateInfo from "features/sheet/sheet-update-info";
 import { Check, MailPlus, Settings, UserCheck, UserMinus, UserPlus, X } from 'lucide-react';
 import { useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getMeInfo } from "services/me.svc";
 import { AcceptFriend, AddCancelFriend, RefuseRequest, followGuest, unFriend } from "services/user.svc";
 
 const HeaderHome = (props) => {
@@ -41,10 +40,9 @@ const HeaderHome = (props) => {
     }
 
     const [check, setCheck] = useState(INIT_CHECK)
-    const [updateUser, setUpdateUser] = useState()
+
     const [openModal, setOpenModal] = useState({
         change_password: false,
-        change_user_info: false,
         change_avatar: false,
     })
 
@@ -119,8 +117,6 @@ const HeaderHome = (props) => {
                 isLoadingRequest: true
             }))
             await AcceptFriend(userInfo.user._id)
-
-            // await handleFollow(userInfo.user._id)
 
             setCheck((prev) => ({
                 ...prev,
@@ -197,26 +193,9 @@ const HeaderHome = (props) => {
         }
     }
 
-    const handleUpdateUser = async () => {
-        setOpenModal(() => ({
-            change_user_info: true,
-            change_password: false,
-            change_avatar: false
-        }))
-
-        try {
-            const data_Info = await getMeInfo()
-            setUpdateUser({ ...data_Info })
-        }
-        catch (err) {
-            console.log("err:" + err)
-        }
-    }
-
     const hanldeChangePassword = async () => {
         setOpenModal(() => ({
             change_password: true,
-            change_user_info: false,
             change_avatar: false,
         }))
     }
@@ -225,39 +204,28 @@ const HeaderHome = (props) => {
         setOpenModal(() => ({
             change_avatar: true,
             change_password: false,
-            change_user_info: false
+
         }))
     }
 
     const handleOpenModal = () => {
-        if (openModal.change_user_info === true && openModal.change_password !== true && openModal.change_avatar !== true) {
+        if (openModal.change_password === true && openModal.change_avatar !== true) {
             onOpen()
         }
-        else if (openModal.change_password === true && openModal.change_user_info !== true && openModal.change_avatar !== true) {
-            onOpen()
-        }
-        else if (openModal.change_avatar === true && openModal.change_password !== true && openModal.change_user_info !== true) {
+        else if (openModal.change_avatar === true && openModal.change_password !== true) {
             onOpen()
         }
     }
 
     const handleCloseModal = () => {
-        if (openModal.change_user_info === true && openModal.change_password !== true && openModal.change_avatar !== true) {
-            setOpenModal((prev) => ({
-                ...prev,
-                change_user_info: false
-            }))
-
-            onClose()
-        }
-        else if (openModal.change_password === true && openModal.change_user_info !== true && openModal.change_avatar !== true) {
+        if (openModal.change_password === true && openModal.change_avatar !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 change_password: false
             }))
             onClose()
         }
-        else if (openModal.change_avatar === true && openModal.change_user_info !== true && openModal.change_password !== true) {
+        else if (openModal.change_avatar === true && openModal.change_password !== true) {
             setOpenModal((prev) => ({
                 ...prev,
                 change_avatar: false
@@ -268,7 +236,7 @@ const HeaderHome = (props) => {
 
     return (
         <div className="grid grid-rows-2 ">
-            <div className='grid grid-cols-7 gap-2'>
+            <div className='grid grid-cols-7 gap-2 items-center'>
                 <div className='col-span-2 justify-center flex'>
                     {
                         userAvatar
@@ -276,7 +244,6 @@ const HeaderHome = (props) => {
                             <Dropdown>
                                 <DropdownTrigger>
                                     <img
-
                                         loading='lazy'
                                         alt='avatar'
                                         src={user.avatar.url}
@@ -300,6 +267,7 @@ const HeaderHome = (props) => {
                     }
                     <ModalChangeAvatar
                         isOpen={openModal.change_avatar}
+
                         onOpenChange={handleChangeAvatar}
                         onClose={handleCloseModal}
                     />
@@ -308,27 +276,22 @@ const HeaderHome = (props) => {
                 <div className="col-span-5">
                     <div className='grid grid-rows-2 gap-6'>
                         <div className="flex gap-2 w-full items-center">
-                            <p className='dark:text-white text-black font-mono text-center'>
+                            <p className='dark:text-white text-black font-nunito_sans text-center'>
                                 {userName}
                             </p>
 
                             {
                                 userAvatar ?
                                     <div className='flex gap-2'>
-                                        <Button
-                                            radius="sm"
-                                            className="w-50 h-7 font-mono"
-                                            onClick={handleUpdateUser}
-                                        >
-                                            Chỉnh sửa trang cá nhân
-                                        </Button>
-
-                                        <ModalUpdateUser
-                                            isOpen={openModal.change_user_info}
-                                            onOpenChange={handleOpenModal}
-                                            onClose={handleCloseModal}
-
-                                            updateUser={updateUser}
+                                        <SheetUpdateInfo
+                                            trigger={
+                                                <Button
+                                                    radius="sm"
+                                                    className="w-50 h-7 font-nunito_sans font-bold"
+                                                >
+                                                    Chỉnh sửa trang cá nhân
+                                                </Button>
+                                            }
                                         />
 
                                         <Button
@@ -491,18 +454,18 @@ const HeaderHome = (props) => {
 
                         <div className="flex flex-row gap-7">
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-mono text-black">{count_posts}</p>
-                                <p className="dark:text-white font-mono text-black">Bài viết</p>
+                                <p className="dark:text-white font-nunito_sans text-black">{count_posts}</p>
+                                <p className="dark:text-white font-nunito_sans text-black">Bài viết</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-mono text-black">{count_followers}</p>
-                                <p className="dark:text-white font-mono text-black">người theo dõi</p>
+                                <p className="dark:text-white font-nunito_sans text-black">{count_followers}</p>
+                                <p className="dark:text-white font-nunito_sans text-black">người theo dõi</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-mono text-black">Đang theo dõi:</p>
-                                <p className="dark:text-white font-mono text-black">{`${count_followings || 0} người dùng`}</p>
+                                <p className="dark:text-white font-nunito_sans text-black">Đang theo dõi:</p>
+                                <p className="dark:text-white font-nunito_sans text-black">{`${count_followings || 0} người dùng`}</p>
                             </div>
                         </div>
                     </div>

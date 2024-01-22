@@ -56,7 +56,7 @@ const FormUploadImageDetail = () => {
 
             </div>
 
-            <p className='dark:text-white font-mono text-black'>
+            <p className='dark:text-white font-nunito_sans text-black'>
                 Hãy chia sẻ bức ảnh đầu tiên của bạn nào.
             </p>
         </div>

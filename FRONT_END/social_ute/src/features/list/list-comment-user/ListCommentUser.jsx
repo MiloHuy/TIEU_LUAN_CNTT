@@ -32,11 +32,11 @@ const ListCommentUser = ({ comment }) => {
 
                 <p
                     onClick={handleNaviageUser}
-                    className=" text-sm text-black dark:text-white font-open_sans font-bold hover:underline cursor-pointer">
+                    className=" text-sm text-black dark:text-white font-nunito_sans font-bold hover:underline cursor-pointer">
                     {getFullName(comment.user_id.first_name, comment.user_id.last_name)}
                 </p>
 
-                <p className=" text-sm text-black dark:text-white font-open_sans font-bold ">{comment.comment_content}</p>
+                <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold ">{comment.comment_content}</p>
 
             </div>
 

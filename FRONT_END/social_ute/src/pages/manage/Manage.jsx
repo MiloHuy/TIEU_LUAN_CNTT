@@ -1,5 +1,5 @@
 import { sidebarIcons } from "components/icon/sidebar-admin.icon"
-import SidebarAdmin from "components/sidebar-admin"
+import SidebarAdmin from "layout/sidebar-admin"
 import { useState } from "react"
 import { Outlet } from 'react-router'
 
@@ -11,16 +11,16 @@ const Manage = () => {
     }
 
     return (
-        <div className={`w-screen grid grid-cols-8 gap-2 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
-            <div className='col-span-2 max-w-[250px]'>
+        <div className={`w-[100vw] flex gap-2 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
+            <div className='w-[20vw]'>
                 <SidebarAdmin
                     icons={sidebarIcons}
                     darkmode={darkmode}
                     handleController={handleDarkMode}
-                    className='relative w-4/5 h-full border-r border-black dark:border-white' />
+                    className='relative w-3/4 h-full border-r border-black dark:border-white' />
             </div>
 
-            <div className={`col-span-6 ${darkmode} -translate-x-12`}>
+            <div className={`min-w-[77vw] ${darkmode}`}>
                 <Outlet />
             </div>
         </div>

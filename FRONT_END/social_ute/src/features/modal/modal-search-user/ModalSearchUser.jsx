@@ -87,7 +87,7 @@ const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
                                     </div>
 
                                     :
-                                    <p className="text-lg font-mono text-black">
+                                    <p className="text-lg font-nunito_sans text-black">
                                         Chưa có ai hiện tại
                                     </p>
                             }

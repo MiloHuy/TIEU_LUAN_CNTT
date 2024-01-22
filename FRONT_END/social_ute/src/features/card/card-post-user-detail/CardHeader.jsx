@@ -15,7 +15,7 @@ const CardHeader = ({ handleCallbackLikePost, handleCallbackSavedPost }) => {
         <div className="flex flex-row gap-3 items-center h-full">
             <Avatar src={user_img} />
 
-            <p className="text-md text-lg text-black dark:text-white font-open_sans font-bold ">
+            <p className="text-md text-lg text-black dark:text-white font-nunito_sans">
                 {getFullName(userFirstName, userLastName)}
             </p>
 

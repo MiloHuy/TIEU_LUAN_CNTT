@@ -25,7 +25,7 @@ module.exports = {
       fontFamily: {
         merriweather: ["Merriweather", "serif"],
         noto: ["Noto Sans", "serif"],
-        open_sans: ["Open Sans", "sans-serif"],
+        nunito_sans: ["Nunito Sans", "sans-serif"],
         mont: ["Montserrat", "sans-serif"],
         maven: ["Maven Pro", "sans-serif"],
         roboto: ["Roboto", "sans-serif"],
@@ -67,6 +67,38 @@ module.exports = {
         text_color_gray: "#973737",
 
         bg_date_picker_primary: "#3F89E3",
+
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        border: "hsl(var(--border))",
       },
       boxShadow: {
         "3xl": "0 35px 60px -15px rgba(0, 0, 0, 0.3)",

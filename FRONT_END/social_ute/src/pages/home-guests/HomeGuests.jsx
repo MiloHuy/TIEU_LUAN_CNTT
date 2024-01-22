@@ -93,7 +93,7 @@ const HomeGuests = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Grid3X3 size={20} />
-                                        <span className="dark:text-white font-mono">Posts</span>
+                                        <span className="dark:text-white font-nunito_sans">Posts</span>
                                     </div>
                                 }
                             >

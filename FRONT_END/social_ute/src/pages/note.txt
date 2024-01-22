@@ -1,2 +1,0 @@
-- Là các pages như page home chứa nhiều component để tạo thành 1 page hoàn chỉnh
-- Ví dụ: Page home, admin, login, register

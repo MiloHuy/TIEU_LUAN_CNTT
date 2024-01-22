@@ -1,1 +1,0 @@
-- Folder chứa các components tĩnh (Là nhận props từ lớp cha or không để render không có xử lý state or data ở folder này)

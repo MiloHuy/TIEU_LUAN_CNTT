@@ -6,7 +6,7 @@ import { USERCOOKIES } from 'constants/user.const';
 import Cookies from 'js-cookie';
 import { BarChartBig } from "lucide-react";
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 import { logout } from 'services/auth.svc';
 
 const SidebarBody = (props) => {

@@ -6,25 +6,25 @@ const MyInput = extendVariants(Input, {
         color: {
             stone: {
                 inputWrapper: [
-                    "bg-zinc-100",
+                    "bg-white",
                     "border",
                     "shadow",
                     "transition-colors",
-                    "focus-within:bg-zinc-100",
+                    "focus-within:bg-primary",
                     "data-[hover=true]:border-zinc-600",
                     "data-[hover=true]:bg-zinc-100",
                     "group-data-[focus=true]:border-zinc-600",
                     // dark theme
-                    "dark:bg-zinc-900",
-                    "dark:border-zinc-800",
+                    "dark:bg-primary",
+                    "dark:border-white",
                     "dark:data-[hover=true]:bg-zinc-900",
                     "dark:focus-within:bg-zinc-900",
                 ],
                 input: [  // <- Input element slot
-                    "text-zinc-800",
+                    "text-black",
                     "placeholder:text-zinc-600",
                     // dark theme
-                    "dark:text-zinc-400",
+                    "dark:text-white",
                     "dark:placeholder:text-zinc-600",
                 ],
             },
