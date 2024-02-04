@@ -2,15 +2,16 @@ import { useDisclosure } from '@nextui-org/react';
 import { logOut } from 'app/slice/auth/auth.slice';
 import clsx from 'clsx';
 import { Button } from 'components/button';
-import { Users } from 'components/icon/bonus.icon';
+import { MessIcon, Users } from 'components/icon/bonus.icon';
 import { Toggle } from 'components/toggle';
 import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
+import ModalGroup from 'features/modal/modal-group';
 import ModalSearchUser from 'features/modal/modal-search-user';
 import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
 import Cookies from 'js-cookie';
-import { Bell, Home, LogOut, MessagesSquare, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
+import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -109,7 +110,7 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Trang chủ
                         </p>
                     </Toggle>
@@ -125,7 +126,7 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans  text-lg '>
+                        <p className='font-quick_sans   text-lg '>
                             Tìm kiếm
                         </p>
                     </Button>
@@ -141,12 +142,16 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
                         variant="ghost"
                     >
-                        <MessagesSquare
+                        {/* <MessagesSquare
                             size={24}
                             strokeWidth={1.5}
+                        /> */}
+                        <MessIcon
+                            height={24}
+                            width={24}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Tin nhắn
                         </p>
                     </Button>
@@ -162,7 +167,7 @@ const SidebarBody = (props) => {
                                     strokeWidth={1.5}
                                 />
 
-                                <p className='font-nunito_sans  text-lg '>
+                                <p className='font-quick_sans   text-lg '>
                                     Thông báo
                                 </p>
                             </Button>
@@ -180,20 +185,35 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Trang cá nhân
                         </p>
                     </Button>
 
-                    <Button
+
+                    {/* <Button
                         className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105 '
                         variant="ghost"
                     >
                         <Users />
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Nhóm
                         </p>
-                    </Button>
+                    </Button> */}
+
+                    <ModalGroup
+                        trigger={
+                            <Button
+                                className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105 '
+                                variant="ghost"
+                            >
+                                <Users />
+                                <p className='font-quick_sans  text-lg '>
+                                    Nhóm
+                                </p>
+                            </Button>
+                        }
+                    />
 
                     <Button
                         className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
@@ -206,7 +226,7 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Yêu cầu
                         </p>
                     </Button>
@@ -222,7 +242,7 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Tạo
                         </p>
                     </Button>
@@ -244,7 +264,7 @@ const SidebarBody = (props) => {
                             strokeWidth={1.5}
                         />
 
-                        <p className='font-nunito_sans text-lg '>
+                        <p className='font-quick_sans  text-lg '>
                             Đăng xuất
                         </p>
                     </Button>

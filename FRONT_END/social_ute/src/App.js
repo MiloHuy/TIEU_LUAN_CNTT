@@ -5,6 +5,8 @@ import NotFound from "pages/404-not_found/NotFound";
 import PostDetail from "pages/[...post_id]/PostDetail";
 import Admin from "pages/admin";
 import AuthRequirement from "pages/auth-require/AuthRequirement";
+import AllGroup from "pages/group/all";
+import CreateGroup from "pages/group/create";
 import HomeUser from "pages/home-user";
 import About from "pages/main/About";
 import Home from "pages/main/Home";
@@ -12,6 +14,7 @@ import Report from "pages/main/Report";
 import Manage from "pages/manage";
 import ManageAccount from "pages/manage/manage-account";
 import ManagePosts from "pages/manage/manage-posts";
+import StatisticalMonth from "pages/manage/statistical/statistical-month";
 import StatiscalMonthDetails from "pages/manage/statistical/statistical-month-details";
 import StatisticalSystems from "pages/manage/statistical/statistical-systems";
 import RequestFriend from "pages/request-friend";
@@ -24,7 +27,6 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Authen from "./pages/authen";
 import Main from "./pages/main";
-import StatisticalMonth from "pages/manage/statistical/statistical-month";
 
 const HomeG = lazy(() => import("pages/home-guests"));
 
@@ -54,6 +56,9 @@ function App() {
 
                   <Route path="*" element={<NotFound />} />
                   <Route path="request-friend" element={<RequestFriend />} />
+
+                  <Route path="create-group" element={<CreateGroup />} />
+                  <Route path="all-group" element={<AllGroup />} />
                 </Route>
               </Route>
 

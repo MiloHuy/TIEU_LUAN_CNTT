@@ -1,4 +1,4 @@
-import PropagateLoader from "components/propagate-loading"
+import PropagateLoader from "components/loading/propagate-loading"
 import { Sheet, SheetContent, SheetTrigger } from "components/sheet"
 import FormUpdateUser from "features/form/form-update-user"
 import { useCallback, useEffect, useState } from "react"

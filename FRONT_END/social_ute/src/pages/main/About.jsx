@@ -1,9 +1,10 @@
+import LoadingDotV2 from "components/loading/loading-dot-v2"
 
 const About = () => {
 
     return (
         <div className='relative w-full h-full'>
-            <div className="flex flex-col items-center justify-around px-3 w-full h-full">
+            {/* <div className="flex flex-col items-center justify-around px-3 w-full h-full">
                 <p className="text-black text-center font-nunito_sans  font-bold text-[50px] mt-3">
                     Danh sách sinh viên tham gia
                 </p>
@@ -53,6 +54,10 @@ const About = () => {
                         </div>
                     </div>
                 </div>
+            </div> */}
+            <div className='w-full h-full flex flex-col gap-3 items-center justify-center'>
+                <p className="text-black  font-nunito_sans font-bold text-md">Loading...</p>
+                <LoadingDotV2 />
             </div>
         </div>
     )

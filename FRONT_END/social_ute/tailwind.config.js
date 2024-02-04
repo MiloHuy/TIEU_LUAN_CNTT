@@ -3,6 +3,7 @@ const { nextui } = require("@nextui-org/react");
 
 module.exports = {
   content: [
+    "./src/**/*.{html,js}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -36,6 +37,9 @@ module.exports = {
         young_serif: ["Young Serif", "sans-serif"],
         libre: ["Libre Baskerville", "serif"],
         questrial: ["Questrial", "sans-serif"],
+        lixend: ["Lexend", "sans-serif"],
+        inknut: ["Inknut Antiqua", "sans-serif"],
+        quick_sans: ["Quicksand", ["sans-serif"]],
       },
 
       backgroundImage: {
@@ -109,6 +113,10 @@ module.exports = {
         25: ".25",
         175: "1.75",
       },
+      transformOrigin: {
+        "top-left-1/3-3/4": "33% 75%",
+        "top-bottom-1/2": "50% 50%",
+      },
       keyframes: {
         loader: {
           "15%": {
@@ -154,11 +162,45 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "loading-dot": {
+          "0%": {
+            top: "60px",
+            height: "5px",
+            "border-radius": "50px 50px 25px 25px",
+            transform: "scaleX(1.7)",
+          },
+
+          "40%": {
+            height: "20px",
+            "border-radius": "50%",
+            transform: "scaleX(1)",
+          },
+          "100%": {
+            top: "0%",
+          },
+        },
+        shadow: {
+          "0%": {
+            transform: "scaleX(1.5)",
+          },
+
+          "40%": {
+            transform: "scaleX(1)",
+            opacity: 0.7,
+          },
+
+          "100%": {
+            transform: "scaleX(.2)",
+            opacity: 0.4,
+          },
+        },
       },
       animation: {
         loading: "loader infinite 2s",
+        loading_dot_v2: "loading-dot alternate infinite .5s",
         handswipe: "swipe 0.8s alternate infinite",
         UpAndDown: "updown infinite 1.2s",
+        shadow: "shadow .5s alternate infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

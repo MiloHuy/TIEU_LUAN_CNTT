@@ -1,5 +1,5 @@
 import { authFail, authSuccess } from 'app/slice/auth/auth.slice.js';
-import PropagateLoader from 'components/propagate-loading/PropagateLoader';
+import PropagateLoader from 'components/loading/propagate-loading/PropagateLoader';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';

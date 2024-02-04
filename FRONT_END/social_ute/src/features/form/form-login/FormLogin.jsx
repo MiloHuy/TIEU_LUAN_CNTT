@@ -128,7 +128,7 @@ const FormLogin = (props) => {
             className={clsx('h-full w-full flex flex-col items-center justify-center gap-3', props.className)}
             onSubmit={formik.handleSubmit}
         >
-            <h1 className='text-2xl text-black font-bold font-nunito_sans text-center'>
+            <h1 className='text-[40px] text-white font-[1000] font-inknut  text-center'>
                 ĐĂNG NHẬP
             </h1>
 
