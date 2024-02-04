@@ -1,3 +1,0 @@
-- Chứa các components động (Thường là các components cha truyền props xuống các components con để thực hiện render hoặc các component tĩnh)
-- Các components ở folder này sẽ thực hiện xử lý logic or data or state
-- VD: Form Login, Register or Dialog create table data user

@@ -1,20 +1,19 @@
 import { Button } from "@nextui-org/react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "components/carousel";
-import Input from "components/input";
+import { ShareIcon } from "components/icon/bonus.icon";
 import HeaderPostUser from "layout/header-post-user";
-import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
+import { Bookmark, Heart, MessageCircle } from 'lucide-react';
 
 const CardPostUserMock = () => {
-
     return (
-        <div className='max-w-[40vw] w-[40vw] p-2'>
-            <div className="flex flex-col w-full max-h-[80vh] h-[80vh] border border-black dark:border-white rounded-lg justify-between items-center">
+        <div className='max-w-[40vw] w-[38vw] p-2'>
+            <div className="flex flex-col gap-2 py-2 w-full max-h-[80vh] h-max border border-black dark:border-white rounded-lg items-center">
                 <HeaderPostUser
-                    className='h-[10vh] w-full border-b'
+                    className='min-h-[8vh] h-[8vh] rounded-[30px] w-[34vw] '
                 />
 
-                <div className="w-full h-[65vh] flex-1 flex-col gap-2 justify-between">
-                    <Carousel className="w-full h-3/5">
+                <div className="w-full min-h-[70vh] h-[70vh] flex-col gap-2 justify-between">
+                    <Carousel className="w-full h-3/5 ">
                         <CarouselContent>
                             {
                                 Array.from({ length: 5 }).map((_, index) => (
@@ -53,7 +52,10 @@ const CardPostUserMock = () => {
                                 isIconOnly
                                 variant="light"
                             >
-                                <MessageCircle size={20} strokeWidth={1.5} />
+                                <MessageCircle
+                                    size={20}
+                                    strokeWidth={1.5}
+                                />
                             </Button>
 
                             <Button
@@ -62,7 +64,12 @@ const CardPostUserMock = () => {
                                 variant="light"
 
                             >
-                                <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
+                                {/* <SendHorizontal
+                                    size={20}
+                                    strokeWidth={1.5}
+                                    className='transform -rotate-28 -translate-y-0.5'
+                                /> */}
+                                <ShareIcon />
                             </Button>
                         </div>
                         <Button
@@ -83,30 +90,14 @@ const CardPostUserMock = () => {
                             <span className='text-sm text-black dark:text-white font-nunito_sans font-bold'>lượt thích</span>
                         </div>
 
-                        <div className="flex-1 w-full max-h-[30px]">
-                            <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold line-clamp-3 truncate">
+                        <div className="flex  w-full max-h-[30px]">
+                            <p className=" text-sm text-black dark:text-white gap-3 font-nunito_sans font-bold line-clamp-3 truncate">
                                 userName:
-                                <span className="font-normal ">post_description</span>
+                                <span className="font-normal gap-3">post_description</span>
                             </p>
                         </div>
                     </div>
 
-                    <div className='w-full flex gap-1 justify-start items-center px-2 mt-3'>
-                        <img
-                            alt='avatar'
-                            src='https://github.com/shadcn.png'
-                            className="rounded-full w-8 h-8"
-                        />
-
-                        <Input
-                            name='comment_content'
-
-                            size="sm"
-                            placeholder="Thêm bình luận..."
-                            className='text-black dark:placeholder:text-black border rounded-lg border-black w-full dark:border-white'
-
-                        />
-                    </div>
                 </div >
             </div >
 
