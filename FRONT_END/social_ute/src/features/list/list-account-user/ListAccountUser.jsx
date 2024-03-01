@@ -98,7 +98,6 @@ const ListAccountUser = (props) => {
         }
         catch (err) {
             setIsActive(false)
-            console.log(err.response)
 
             toast.success('Thao tác thất bại!!!', {
                 position: "bottom-right",

@@ -9,9 +9,6 @@ const DataTablePagination = (props) => {
 
     const totalPages = Math.ceil(totals / size)
 
-    console.log('currentPage: ' + currentPage)
-    console.log('isActive: ' + isActive)
-
     useEffect(() => {
         onPageChange(currentPage)
         if (isActive === true) {
@@ -28,40 +25,41 @@ const DataTablePagination = (props) => {
     }
 
     return (
-        totalPages !== 0 ? (<div className='flex flex-row gap-2 w-full justify-center'>
-            <Button
-                variant="light"
-                isIconOnly
-                onClick={handleCurrentPageChangePrevious}
-                disabled={currentPage === 1}
-                className='-translate-y-1'
-            >
-                <ChevronLeft size={20} />
-            </Button>
+        totalPages !== 0 ? (
+            <div className='flex flex-row gap-2 w-full justify-center'>
+                <Button
+                    variant="light"
+                    isIconOnly
+                    onClick={handleCurrentPageChangePrevious}
+                    disabled={currentPage === 1}
+                    className='-translate-y-1'
+                >
+                    <ChevronLeft size={20} />
+                </Button>
 
-            <Pagination
-                classNames={{
-                    item: "w-8 h-8 text-small",
-                    cursor:
-                        "bg-table_background shadow-lg from-default-500 to-default-800 dark:from-default-300 dark:to-default-100 text-white font-bold",
-                }}
-                variant='bordered'
-                total={totalPages}
-                initialPage={1}
-                page={pagIndex}
-                onChange={setCurrentPage}
-            />
+                <Pagination
+                    classNames={{
+                        item: "w-8 h-8 text-small",
+                        cursor:
+                            "bg-table_background shadow-lg from-default-500 to-default-800 dark:from-default-300 dark:to-default-100 text-white font-bold",
+                    }}
+                    variant='bordered'
+                    total={totalPages}
+                    initialPage={1}
+                    page={pagIndex}
+                    onChange={setCurrentPage}
+                />
 
-            <Button
-                variant="light"
-                isIconOnly
-                onClick={handleCurrentPageChangeNext}
-                disabled={currentPage >= totalPages}
-                className='-translate-y-1'
-            >
-                <ChevronRight size={20} />
-            </Button>
-        </div>) : (<div></div>)
+                <Button
+                    variant="light"
+                    isIconOnly
+                    onClick={handleCurrentPageChangeNext}
+                    disabled={currentPage >= totalPages}
+                    className='-translate-y-1'
+                >
+                    <ChevronRight size={20} />
+                </Button>
+            </div>) : (<div></div>)
     )
 }
 

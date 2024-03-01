@@ -10,8 +10,9 @@ const SidebarUser = (props) => {
         props.handleController(value)
     }
     return (
-        <div className={clsx('grid grid-cols-1 gap-2 left-0 w-full border-r border-black dark:border-white', props.className)}>
-            <SidebarHeader className='w-2/3' />
+        <div className={clsx(' grid grid-cols-1 gap-2 left-0 w-full border-r border-black dark:border-white', props.className)}>
+            <SidebarHeader className='w-full' />
+
             <SidebarBody
                 userID={userID}
                 className='flex items-start justify-center' />

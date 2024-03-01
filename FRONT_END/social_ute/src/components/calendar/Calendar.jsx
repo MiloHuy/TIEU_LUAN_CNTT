@@ -34,7 +34,7 @@ const Calendar = () => {
                             />
                         </Button>
                         <h1
-                            className=" cursor-pointer hover:scale-105 transition-all dark:text-white text-black font-mono"
+                            className=" cursor-pointer hover:scale-105 transition-all dark:text-white text-black font-nunito_sans"
                             onClick={() => {
                                 setToday(currentDate);
                             }}
@@ -83,15 +83,15 @@ const Calendar = () => {
                                 >
                                     <h1
                                         className={cn(
-                                            currentMonth ? "" : "dark:text-white text-black font-mono",
+                                            currentMonth ? "" : "dark:text-white text-black font-nunito_sans",
                                             today
-                                                ? "bg-red-600 text-white font-mono"
+                                                ? "bg-red-600 text-white font-nunito_sans"
                                                 : "",
                                             selectDate
                                                 .toDate()
                                                 .toDateString() ===
                                                 date.toDate().toDateString()
-                                                ? "bg-black text-white font-mono"
+                                                ? "bg-black text-white font-nunito_sans"
                                                 : "",
                                             "h-10 w-10 dark:text-white text-black rounded-full grid place-content-center hover:bg-black hover:text-white transition-all cursor-pointer select-none"
                                         )}

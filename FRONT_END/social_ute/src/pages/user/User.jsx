@@ -82,9 +82,9 @@ const User = () => {
     }, [posts])
 
     return (
-        <div className='grid grid-cols-5 gap-1 w-full h-screen overflow-y-scroll'>
+        <div className='flex gap-1 w-full h-screen overflow-y-scroll'>
             <div className='flex flex-col col-span-3 gap-2 '>
-                <div className="w-full h-[80px] flex flex-row items-end gap-1 overflow-hidden mx-2 px-2 py-2">
+                <div className="w-full h-[80px] flex flex-row items-end gap-1 pt-3">
                     {
                         posts ?
                             <Header />
@@ -100,6 +100,7 @@ const User = () => {
                             ?
                             <ListPostUser
                                 posts={posts} />
+                            // <CardPostUserMock />
                             :
                             <Spinner color="default" size="lg" />
                     }
@@ -121,6 +122,7 @@ const User = () => {
                             <div className='relative w-full flex'>
                                 <ProfileUser userName={userName} />
                             </div>
+
                             <div className='h-max w-full border border-black dark:border-white rounded-lg'>
                                 <Calendar />
                             </div>

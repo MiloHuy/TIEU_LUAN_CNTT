@@ -1,5 +1,4 @@
-import SidebarUser from 'components/sidebar-user'
-
+import SidebarUser from 'layout/sidebar-user'
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { getUserIdFromCookie } from 'utils/user.utils'
@@ -14,15 +13,15 @@ const Welcome = () => {
     const Id = getUserIdFromCookie()
 
     return (
-        <div className={`w-screen grid grid-cols-8 gap-1 h-screen bg-background text-primary absolute overflow-auto ${darkmode}`}>
-            <div className='col-span-2'>
+        <div className={`w-screen h-screen gap-3 flex bg-background text-primary ${darkmode}`}>
+            <div className='w-[20vw] border-r'>
                 <SidebarUser
                     userID={Id}
                     handleController={handleDarkMode}
-                    className='relative max-w-[250px] h-full' />
+                    className='relative h-full' />
             </div>
 
-            <div className={`col-span-6 ${darkmode} min-w-[70vw]`}>
+            <div className={`min-w-[80vw] max-w-[80vw] ${darkmode}`}>
                 <Outlet />
             </div>
         </div>

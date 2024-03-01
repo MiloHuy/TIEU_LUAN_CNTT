@@ -1,6 +1,9 @@
-import { Button, Input, Select, SelectItem, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import clsx from "clsx";
+import { Button } from "components/button";
+import { InputWithLabel } from "components/input-v2";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "components/select";
 import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
 import { useFormik } from "formik";
 import { useMemo, useState } from "react";
@@ -65,12 +68,12 @@ const FormUpdateUser = (props) => {
     }
 
     const formLabel = useMemo(() => ({
-        first_name: 'First Name',
-        last_name: 'Last Name',
-        email: 'Gmail',
-        phone_number: 'Phone',
-        id: 'ID',
-        department: 'Department',
+        first_name: 'Họ:',
+        last_name: 'Tên:',
+        email: 'Gmail:',
+        phone_number: 'Số điện thoại:',
+        id: 'Mã số:',
+        department: 'Khoa:',
     }), [])
 
     const FormUpdateUserSchema = useMemo(() => {
@@ -128,125 +131,143 @@ const FormUpdateUser = (props) => {
     return (
         updateUser ?
             <form
-                className={clsx('flex flex-col gap-2 items-center justify-center p-4 w-full h-full ', props.className)}
+                className={clsx('flex flex-col gap-2 items-center justify-between p-4 w-full h-full', props.className)}
                 onSubmit={formik.handleSubmit}
             >
-                <h1 className="text-lg font-bold font-merriweather text-center text-white dark:text-black">
-                    Cập nhật thông tin cá nhân
-                </h1>
+                <div className="w-full flex justify-start items-start">
+                    <h1 className="text-2xl font-bold font-nunito_sans text-start text-white dark:text-black">
+                        CẬP NHẬT THÔNG TIN CÁ NHÂN
+                    </h1>
+                </div>
 
-                <div className='grid grid-cols-2 gap-2 w-full'>
-                    <Input
+                <div className='grid grid-cols-2 gap-4 w-full'>
+                    <InputWithLabel
                         isRequired
                         type="text"
                         name='first_name'
-                        variant="bordered"
                         defaultValue={updateUser.user.first_name}
                         label={formLabel.first_name}
                         value={values['first_name']}
-                        className="w-full text-white"
+                        className=" text-white h-15 text-lg font-nunito_sans flex-1"
                         onChange={formik.handleChange}
                     />
 
-                    <Input
+                    <InputWithLabel
                         isRequired
                         type="text"
-                        variant="bordered"
                         name='last_name'
                         label={formLabel.last_name}
                         value={values['last_name']}
                         defaultValue={updateUser.user.last_name}
-                        className="w-full text-white"
+                        className="w-full text-white  h-15 text-lg font-nunito_sans"
                         onChange={formik.handleChange}
                     />
                 </div>
-                <Input
+
+                <div className='grid grid-cols-2 gap-4 w-full'>
+                    <InputWithLabel
+                        isRequired
+                        type="text"
+                        name='phone_number'
+                        label={formLabel.phone_number}
+                        errorMessage={errors?.phone_number}
+                        defaultValue={updateUser.user.phone_number}
+                        className="w-full text-white h-15 text-lg font-nunito_sans"
+                        onChange={formik.handleChange}
+                    />
+
+                    <InputWithLabel
+                        isRequired
+                        type="text"
+                        name='id'
+                        label={formLabel.id}
+                        errorMessage={errors?.id}
+                        defaultValue={updateUser.user.id}
+                        className="w-full text-white h-15 text-lg font-nunito_sans"
+                        onChange={formik.handleChange}
+                    />
+                </div>
+
+                <InputWithLabel
                     isRequired
                     type="email"
                     name="gmail"
-                    variant="bordered"
                     label={formLabel.email}
                     defaultValue={updateUser.user.gmail}
                     placeholder="a@hcmute.edu.vn"
                     errorMessage={errors?.gmail}
-                    className="w-full text-white"
-                    onChange={formik.handleChange}
-                />
-
-                <Input
-                    isRequired
-                    type="text"
-                    name='phone_number'
-                    variant="bordered"
-                    label={formLabel.phone_number}
-                    errorMessage={errors?.phone_number}
-                    defaultValue={updateUser.user.phone_number}
-                    className="w-full text-white"
-                    onChange={formik.handleChange}
-                />
-
-                <Input
-                    isRequired
-                    type="text"
-                    name='id'
-                    label={formLabel.id}
-                    variant="bordered"
-                    errorMessage={errors?.id}
-                    defaultValue={updateUser.user.id}
-                    className="w-full text-white"
+                    className="w-full text-white h-15 text-lg font-nunito_sans"
                     onChange={formik.handleChange}
                 />
 
                 <div className='grid grid-cols-2 gap-2 w-full'>
                     <Select
-                        isRequired
-                        label="Faculty"
-                        variant="bordered"
                         name='faculty'
-                        defaultValue='null'
-                        isDisabled={isDisabledFaculity}
                         placeholder="Select Faculty"
-                        className="w-full text-white"
                         onChange={handleInputSelectFaculity}
                     >
-                        {
-                            DATA_FACULITY.map((item) => {
-                                return (
-                                    <SelectItem key={item.value}>{item.label}</SelectItem>
-                                )
-                            })
-                        }
+                        <SelectTrigger className="w-full text-white h-15 text-lg font-nunito_sans">
+                            <SelectValue placeholder="CHỌN KHOA" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>CHỌN 1 KHOA</SelectLabel>
+                                {
+                                    DATA_FACULITY.map((item) => {
+                                        return (
+                                            <SelectItem key={item.value} value={item.value}>
+                                                {item.label}
+                                            </SelectItem>
+                                        )
+                                    })
+                                }
+                            </SelectGroup>
+                        </SelectContent>
                     </Select>
 
                     <Select
-                        isRequired
-                        label="Department"
                         name='department'
-                        variant="bordered"
-                        isDisabled={isDisabledDepartment}
                         placeholder="Select department"
-                        className="w-full text-white"
-                        defaultValue='null'
                         onChange={handleInputSelectDepartment}
                     >
-                        {
-                            DATA_DEPARTMENT.map((item) => {
-                                return (
-                                    <SelectItem key={item.value}>{item.label}</SelectItem>
-                                )
-                            })
-                        }
+                        <SelectTrigger className="w-full text-white h-15 text-lg font-nunito_sans">
+                            <SelectValue placeholder="CHỌN PHÒNG BAN" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>CHỌN 1 PHÒNG BAN</SelectLabel>
+                                {
+                                    DATA_DEPARTMENT.map((item) => {
+                                        return (
+
+                                            <SelectItem key={item.value} value={item.value}>
+                                                {item.label}
+                                            </SelectItem>
+
+                                        )
+                                    })
+                                }
+                            </SelectGroup>
+                        </SelectContent>
                     </Select>
                 </div>
 
-                <Button
-                    isLoading={isLoading}
-                    className="w-3/4 text-sm font-merriweather"
-                    onClick={handleUpdateForm}
-                    type='submit'
-                >Cập nhật
-                </Button>
-            </form> : <Spinner color="default" size="lg" />
+                <div className="w-full flex justify-end">
+                    <Button
+                        isLoading={isLoading}
+                        className="w-[20vw] text-lg font-nunito_sans font-bold"
+                        onClick={handleUpdateForm}
+                        variant='outline'
+                        type='submit'
+                    >
+                        CẬP NHẬT
+                    </Button>
+                </div>
+            </form>
+            :
+            <Spinner color="default" size="lg" />
     )
 }
 

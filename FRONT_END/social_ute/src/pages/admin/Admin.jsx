@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getStatisticsUser } from "services/admin.svc";
-import { dateTimeFormat } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 
 const Admin = () => {
@@ -48,31 +47,31 @@ const Admin = () => {
 
             <div className='w-full h-full flex gap-5 flex-col justify-around'>
                 <div className='flex gap-1 items-center'>
-                    <h3 className="text-black dark:text-white font-mono text-2xl px-1 ">Chào : {user.last_name} </h3>
+                    <h3 className="text-black dark:text-white font-nunito_sans text-2xl px-1 ">Chào : {user.last_name} </h3>
                     <h3 className='transform ease-in-out animate-handswipe top-2/4 right-2/4'>✋✋✋✋</h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-5 w-full border-black ">
                     <div className='border border-black w-full max-h-[180px] rounded-xl flex justify-center bg-[#B7DBE1] drop-shadow-lg'>
                         <div className='p-4 flex flex-col gap-4'>
-                            <p className='text-black  font-mono text-xl'>Tổng số bài viết</p>
+                            <p className='text-black  font-nunito_sans text-xl'>Tổng số bài viết</p>
                             <div className='flex gap-1 items-center'>
                                 <Button isIconOnly variant="light" size='sm'>
                                     <BookImage size={20} strokeWidth={1} color='#000000' />
                                 </Button>
-                                <p className='text-black font-mono text-xl'>{data ? data.totals_posts : <Spinner color="primary" size="sm" />} bài viết</p>
+                                <p className='text-black font-nunito_sans text-xl'>{data ? data.totals_posts : <Spinner color="primary" size="sm" />} bài viết</p>
                             </div>
                         </div>
                     </div>
 
                     <div className='border border-white w-full max-h-[180px] rounded-xl flex justify-center bg-[#272727] drop-shadow-lg'>
                         <div className='p-4 flex flex-col gap-4'>
-                            <p className='text-white font-mono text-xl'>Tổng số tài khoản</p>
+                            <p className='text-white font-nunito_sans text-xl'>Tổng số tài khoản</p>
                             <div className='flex gap-1 items-center'>
                                 <Button isIconOnly variant="light" size='sm'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-user"><rect width="18" height="18" x="3" y="3" rx="2" /><circle cx="12" cy="10" r="3" /><path d="M7 21v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" /></svg>
                                 </Button>
-                                <p className='text-white font-mono text-xl'>{data ? data.totals_accounts : <Spinner color="default" size="sm" />} tài khoản</p>
+                                <p className='text-white font-nunito_sans text-xl'>{data ? data.totals_accounts : <Spinner color="default" size="sm" />} tài khoản</p>
                             </div>
                         </div>
                     </div>
@@ -98,12 +97,12 @@ const Admin = () => {
                                 </div>
 
                                 <div className='flex flex-col gap-2 w-full items-center'>
-                                    <p className="text-black  font-mono text-md">{getFullName(user.first_name, user.last_name)}</p>
-                                    <p className="text-black  font-mono text-md">{dateTimeFormat(new Date(user.birth_day))}</p>
-                                    <p className="text-black  font-mono text-md">{user.gender}</p>
-                                    <p className="text-black  font-mono text-md">{user.phone_number}</p>
-                                    <p className="text-black  font-mono text-md">{user.id}</p>
-                                    <p className="text-black  font-mono text-md">{user.department}</p>
+                                    <p className="text-black  font-nunito_sans text-md">{getFullName(user.first_name, user.last_name)}</p>
+                                    <p className="text-black  font-nunito_sans text-md">12/06/2002</p>
+                                    <p className="text-black  font-nunito_sans text-md">{user.gender}</p>
+                                    <p className="text-black  font-nunito_sans text-md">{user.phone_number}</p>
+                                    <p className="text-black  font-nunito_sans text-md">{user.id}</p>
+                                    <p className="text-black  font-nunito_sans text-md">{user.department}</p>
 
                                 </div>
                             </div>

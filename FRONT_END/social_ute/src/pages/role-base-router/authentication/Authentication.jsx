@@ -1,8 +1,8 @@
-import { Spinner } from "@nextui-org/react";
 import { authFail, authSuccess } from 'app/slice/auth/auth.slice.js';
+import PropagateLoader from 'components/propagate-loading/PropagateLoader';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { getMeInfo } from 'services/me.svc.js';
 import Unauthorized from '../authorization/UnAuthorization';
 
@@ -10,7 +10,6 @@ export default function Authentication() {
     const { isAuthenticated, loading } = useSelector((state) => state.auth);
     const [hasRun, setHasRun] = useState(false);
     const dispatch = useDispatch()
-    const navigator = useNavigate()
 
     const fetchInfoMySelf = useCallback(async () => {
         try {
@@ -28,14 +27,18 @@ export default function Authentication() {
     }, [fetchInfoMySelf]);
 
     if (!loading) {
-        return <div className='w-full h-full flex items-center justify-center'>
-            <Spinner color="default" size="lg" />
-        </div >
+        return (
+            <div className='w-full h-full flex items-center justify-center'>
+                <PropagateLoader
+                    color="#9aa19f"
+                    size={18}
+                />
+            </div >
+        )
     }
 
     if (isAuthenticated) {
         return <Outlet />;
     }
-    // or navigate route Unauthenticated
     return <Unauthorized />;
 }

@@ -25,7 +25,7 @@ const ListPostUserDetail = (props) => {
     return (
         posts.length !== 0
             ?
-            <div className='grid grid-cols-3 gap-2 w-full h-screen'>
+            <div className='grid grid-cols-3 gap-2 w-full h-full'>
                 {
                     posts.map((post) => {
                         return (
@@ -40,8 +40,7 @@ const ListPostUserDetail = (props) => {
                                 />
                             </div>
                         )
-                    }
-                    )
+                    })
                 }
                 <ModalPostUser
                     isOpen={isOpen}
@@ -51,7 +50,7 @@ const ListPostUserDetail = (props) => {
             </div >
             :
             <div className="w-full h-full flex items-center justify-center">
-                <p className="text-black dark:text-white font-mono text-md">
+                <p className="text-black dark:text-white font-nunito_sans text-md">
                     Chưa có bài viết hiện tại
                 </p>
             </div>

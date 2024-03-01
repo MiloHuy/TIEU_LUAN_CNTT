@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { Button, Input } from '@nextui-org/react'
+import { Button } from '@nextui-org/react'
 import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
+import Input from 'components/input'
 import { SSOCOOKIES } from 'constants/app.const'
 import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
@@ -124,34 +125,42 @@ const FormLogin = (props) => {
 
     return (
         <form
-            className={clsx('h-full w-full flex flex-col items-center justify-center', props.className)}
+            className={clsx('h-full w-full flex flex-col items-center justify-center gap-3', props.className)}
             onSubmit={formik.handleSubmit}
         >
+            <h1 className='text-2xl text-black font-bold font-nunito_sans text-center'>
+                ĐĂNG NHẬP
+            </h1>
 
-            <h1 className='text-2xl text-blue-950 font-bold font-questrial text-center'>Đăng nhập</h1>
+            <div className='w-full px-3 grid grid-cols-1 gap-8'>
+                <Input
+                    name='phone_number'
+                    type='text'
+                    className='text-sm font-nunito_sans mx-0 rounded-sm '
+                    errorMessage={errors?.phone_number}
+                    placeholder='Vui lòng nhập số điện thoại'
+                    onChange={formik.handleChange}
+                />
 
-            <Input
-                name='phone_number'
-                type='text'
-                className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full'
-                errorMessage={errors?.phone_number}
-                placeholder='Vui lòng nhập số điện thoại'
-                onChange={formik.handleChange}
-            />
-
-            <Input
-                name='pass_word'
-                type='password'
-                className='py-[10px] px-[15px] text-sm my-[8px] mx-0 rounded-sm w-full'
-                placeholder="Mật khẩu"
-                onChange={formik.handleChange}
-            />
+                <Input
+                    name='pass_word'
+                    type='password'
+                    className=' text-sm  mx-0 rounded-sm w-full'
+                    placeholder="Mật khẩu"
+                    onChange={formik.handleChange}
+                />
+            </div>
 
             <div className='flex gap-2 justify-center w-4/5'>
                 <Button
                     radius='sm'
                     className=' w-4/5'>
-                    <Link className='text-md col-span-1 font-questrial' onClick={handleOpenLogin} href="#">Đăng ký</Link>
+                    <Link
+                        className='text-md col-span-1 font-questrial'
+                        onClick={handleOpenLogin} href="#"
+                    >
+                        Đăng ký
+                    </Link>
                 </Button>
 
                 <Button

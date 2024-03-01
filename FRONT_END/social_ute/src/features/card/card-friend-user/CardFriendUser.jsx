@@ -105,7 +105,7 @@ const CardFriendUser = ({ friend }) => {
     }
 
     return (
-        <div className="relative group w-full h-[100px] rounded-[15px] border flex border-black dark:border-white">
+        <div className="relative group max-w-[30rem] max-h-[6rem] rounded-[15px] border flex border-black dark:border-white">
             <img
                 className="h-full rounded-[15px] p-2"
                 alt='friend'
@@ -117,12 +117,12 @@ const CardFriendUser = ({ friend }) => {
                 <div
                     onClick={() => handleNavigateFriend(friend._id)}
                     className="flex flex-col gap-2 h-full justify-center cursor-pointer">
-                    <p className="text-sm text-black dark:text-white font-open_sans font-bold">
+                    <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
                         {getFullName(friend.first_name, friend.last_name)}
                     </p>
 
-                    <p className="text-sm text-black dark:text-white font-open_sans font-bold">
-                        Đoàn khoa
+                    <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
+                        {friend.department}
                     </p>
                 </div>
 
@@ -152,7 +152,7 @@ const CardFriendUser = ({ friend }) => {
                             className="text-white"
                             endContent={<XCircle size={20} strokeWidth={0.75} />}
                         >
-                            <p className='text-md font-open_sans font-bold gap-2'>
+                            <p className='text-md font-nunito_sans font-bold gap-2'>
                                 Hủy kết bạn
                             </p>
                         </DropdownItem>
