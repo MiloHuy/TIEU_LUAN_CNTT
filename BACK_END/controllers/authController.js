@@ -23,24 +23,42 @@ exports.register = async (req, res) => {
         if (!registerOtp) {
             return res.status(404).json({
                 success: false,
-                code: 1016,
+                code: 1018,
                 message: "Gmail chưa được gửi OTP.",
             });
         }
         if (req.body.otp != registerOtp.otp) {
             return res.status(400).json({
                 success: false,
-                code: 1011,
+                code: 1019,
                 message: "OTP không đúng.",
             });
         }
         if (registerOtp.otp_expires_at < Date.now()) {
             return res.status(400).json({
                 success: false,
-                code: 1012,
+                code: 1020,
                 message: "OTP hết hạn. Hãy yêu cầu gửi lại OTP",
             });
         }
+
+        const check_phone = await User.findOne({ phone_number: req.body.phone_number });
+        if (check_phone) {
+            return res.status(400).json({
+                success: false,
+                code: 1021,
+                message: "Số điện thoại đã được đăng ký.",
+            });
+        }
+        const check_id = await User.findOne({ id: req.body.id });
+        if (check_id) {
+            return res.status(400).json({
+                success: false,
+                code: 2022,
+                message: "Mã số sinh viên đã được đăng ký.",
+            });
+        }
+
         const hashedPassword = await bcrypt.hash(req.body.pass_word, 10);
         const newUser = {
             first_name: req.body.first_name,
@@ -317,7 +335,23 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.sendRegisterOtp = async (req, res) => {
-    const { gmail } = req.body;
+    const { gmail, phone_number } = req.body;
+    const check_phone = await User.findOne({ phone_number: phone_number });
+    if (check_phone) {
+        return res.status(400).json({
+            success: false,
+            code: 1015,
+            message: "Số điện thoại được đã đăng ký.",
+        });
+    }
+    const check_gmail = await User.findOne({ gmail: gmail });
+    if (check_gmail) {
+        return res.status(400).json({
+            success: false,
+            code: 1016,
+            message: "Gmail đã được đăng ký.",
+        });
+    }
     const otp = generateOTP(6);
     const registerOtp = await Register_otp.findOneAndUpdate(
         { gmail: gmail },
@@ -331,7 +365,7 @@ exports.sendRegisterOtp = async (req, res) => {
         },
         {
             upsert: true,
-            new: true, // Trả về đối tượng mới đã tạo hoặc đã cập nhật
+            new: true,
         }
     );
 
@@ -345,15 +379,13 @@ exports.sendRegisterOtp = async (req, res) => {
         });
         res.json({
             success: true,
-            otp: otp,
-            registerOtp: registerOtp,
             message: `Đã gửi OTP đến: ${gmail}`,
         });
     } catch (error) {
         await registerOtp.deleteOne();
         return res.status(500).json({
             success: false,
-            code: 1015,
+            code: 1017,
             message: error.message,
         });
     }
