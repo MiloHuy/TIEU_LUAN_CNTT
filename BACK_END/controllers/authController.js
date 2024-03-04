@@ -255,8 +255,6 @@ exports.verifyOTP = async (req, res, next) => {
     const user = await User.findOne({
         phone_number,
         gmail,
-        "forgot_password.otp": otp,
-        "forgot_password.otp_expires_at": { $gt: Date.now() },
     });
     if (!user) {
         return res.status(404).json({
@@ -313,13 +311,14 @@ exports.resetPassword = async (req, res) => {
         });
     }
 
-    if (req.body.new_password !== req.body.confirm) {
-        return res.status(400).json({
-            success: false,
-            code: 1014,
-            message: "Nhập lại mật khẩu không trùng khớp.",
-        });
-    }
+    // Mất code 1014
+    // if (req.body.new_password !== req.body.confirm) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         code: 1014,
+    //         message: "Nhập lại mật khẩu không trùng khớp.",
+    //     });
+    // }
 
     const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
 
