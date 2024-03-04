@@ -1,7 +1,4 @@
 const cloudinary = require('cloudinary').v2;
-const fileUpload = require('express-fileupload');
-const fs = require('fs').promises;
-const path = require('path');
 
 const Post = require('../models/Post')
 const Post_liked = require('../models/Post_liked')
@@ -79,7 +76,7 @@ exports.getAll = (async (req, res) => {
             totals,
             posts: postsAfferCountLike,
         });
-        
+
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -131,59 +128,64 @@ const maxFileSize = 10 * 1024 * 1024;
 //POST /posts/create
 exports.create = (async (req, res) => {
     try {
-        if (!req.files.post_img || !req.files.post_img.data) {
+        if (!req.files.post_img || req.files.post_img.length === 0) {
             return res.status(400).json({
                 success: false,
                 code: 2003,
-                message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
+                message: 'Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh.',
             });
         }
 
-        const allowedExtensions = validImageFormats.map(format => `.${format}`);
-        const fileExtension = path.extname(req.files.post_img.name).toLowerCase();
+        const postImages = [];
 
-        if (!allowedExtensions.includes(fileExtension)) {
-            return res.status(400).json({
-                success: false,
-                code: 2004,
-                message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+        for (const file of req.files.post_img) {
+            const fileExtension = path.extname(file.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(format => `.${format}`);
+            
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2004,
+                    message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+                });
+            }
+
+            const fileSize = file.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2005,
+                    message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+                });
+            }
+
+            const tempDir = path.join(__dirname, 'temp');
+            await fs.mkdir(tempDir, { recursive: true });
+            const buffer = file.data;
+            const tempFilePath = path.join(tempDir, file.name);
+            await fs.writeFile(tempFilePath, buffer);
+
+            const result = await cloudinary.uploader.upload(
+                tempFilePath,
+                { folder: 'post_imgs'},
+            );
+
+            await fs.unlink(tempFilePath);
+
+            postImages.push({
+                publicId: result.public_id,
+                url: result.secure_url,
             });
+
+            await fs.rmdir(tempDir, { recursive: true });
         }
-
-        const fileSize = req.files.post_img.data.length;
-        if (fileSize > maxFileSize) {
-            return res.status(400).json({
-                success: false,
-                code: 2005,
-                message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
-            });
-        }
-        
-        const tempDir = path.join(__dirname, 'temp');
-        await fs.mkdir(tempDir, { recursive: true });
-        const buffer = req.files.post_img.data;
-        const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
-        await fs.writeFile(tempFilePath, buffer);
-
-        const result = await cloudinary.uploader.upload(
-            tempFilePath,
-            { folder: 'post_imgs'},
-        );
-
-        await fs.unlink(tempFilePath);
-        await fs.rmdir(tempDir, { recursive: true });
-
-        const post_img = {
-            publicId: result.public_id,
-            url: result.secure_url,
-        };
 
         const currentDate = new Date();
         const post = await Post.create({
             user_id: req.user._id,
             ...req.body,
             create_post_time: currentDate,
-            post_img,
+            post_img: postImages,
         });
 
         const content = req.user.first_name + ' ' + req.user.last_name +' vừa mới đăng bài.';
@@ -193,18 +195,14 @@ exports.create = (async (req, res) => {
             noti_content: content,
             post_id: post._id,
             noti_create_time: currentDate
-        })
+        });
 
-        const follower_Users = await Follow.find({user_id: req.user._id})
-            .select('follower_user_id');
+        const followerUsers = await Follow.find({user_id: req.user._id}).select('follower_user_id');
+        const followerUserIds = followerUsers.map(follow => follow.follower_user_id).flat();
 
-        const follower_user_ids = follower_Users
-            .map(follow => follow.follower_user_id)
-            .flat();
-
-        for (const user_id of follower_user_ids) {
+        for (const userId of followerUserIds) {
             await Noti_user.findOneAndUpdate(
-                { user_id: user_id },
+                { user_id: userId },
                 { $push: { 'detail': { noti_id: noti._id } } },
                 { new: true, upsert: true }
             );
@@ -215,6 +213,93 @@ exports.create = (async (req, res) => {
             message: 'Đăng bài thành công.',
             post,
         });
+
+
+
+        // if (!req.files.post_img || !req.files.post_img.data) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2003,
+        //         message: 'Đăng bài thất bại. Bài đăng phải có ảnh.',
+        //     });
+        // }
+
+        // const allowedExtensions = validImageFormats.map(format => `.${format}`);
+        // const fileExtension = path.extname(req.files.post_img.name).toLowerCase();
+
+        // if (!allowedExtensions.includes(fileExtension)) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2004,
+        //         message: 'Đăng bài thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+        //     });
+        // }
+
+        // const fileSize = req.files.post_img.data.length;
+        // if (fileSize > maxFileSize) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2005,
+        //         message: 'Đăng bài thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+        //     });
+        // }
+        
+        // const tempDir = path.join(__dirname, 'temp');
+        // await fs.mkdir(tempDir, { recursive: true });
+        // const buffer = req.files.post_img.data;
+        // const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
+        // await fs.writeFile(tempFilePath, buffer);
+
+        // const result = await cloudinary.uploader.upload(
+        //     tempFilePath,
+        //     { folder: 'post_imgs'},
+        // );
+
+        // await fs.unlink(tempFilePath);
+        // await fs.rmdir(tempDir, { recursive: true });
+
+        // const post_img = {
+        //     publicId: result.public_id,
+        //     url: result.secure_url,
+        // };
+
+        // const currentDate = new Date();
+        // const post = await Post.create({
+        //     user_id: req.user._id,
+        //     ...req.body,
+        //     create_post_time: currentDate,
+        //     post_img,
+        // });
+
+        // const content = req.user.first_name + ' ' + req.user.last_name +' vừa mới đăng bài.';
+
+        // const noti = await Notification.create({
+        //     user_id: req.user._id,
+        //     noti_content: content,
+        //     post_id: post._id,
+        //     noti_create_time: currentDate
+        // })
+
+        // const follower_Users = await Follow.find({user_id: req.user._id})
+        //     .select('follower_user_id');
+
+        // const follower_user_ids = follower_Users
+        //     .map(follow => follow.follower_user_id)
+        //     .flat();
+
+        // for (const user_id of follower_user_ids) {
+        //     await Noti_user.findOneAndUpdate(
+        //         { user_id: user_id },
+        //         { $push: { 'detail': { noti_id: noti._id } } },
+        //         { new: true, upsert: true }
+        //     );
+        // }
+
+        // res.status(201).json({
+        //     success: true,
+        //     message: 'Đăng bài thành công.',
+        //     post,
+        // });
     } catch (error) {
         // console.error('Lỗi:', error);
         res.status(500).json({
@@ -459,26 +544,54 @@ exports.update = (async (req, res) => {
 //DELETE /posts/:id
 exports.destroy = (async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
-        if(!post){
+        // một ảnh
+        // const post = await Post.findById(req.params.id)
+        // if(!post){
+        //     return res.status(404).json({
+        //         success: false,
+        //         code: 2018,
+        //         message: 'Không tìm thấy bài viết.', 
+        //     });
+        // }
+        // if(!post.user_id.equals(req.user._id))
+        // {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2019,
+        //         message: 'Không thể xóa bài viết của người khác.',
+        //     });
+        // }
+        // if(post.post_img.publicId){
+        //     await cloudinary.uploader.destroy(post.post_img.publicId)
+        // }
+        // await Post.deleteOne({ _id: req.params.id})
+
+        // nhiều ảnh
+        const post = await Post.findById(req.params.id);
+        if (!post) {
             return res.status(404).json({
                 success: false,
                 code: 2018,
                 message: 'Không tìm thấy bài viết.', 
             });
         }
-        if(!post.user_id.equals(req.user._id))
-        {
+        if (!post.user_id.equals(req.user._id)) {
             return res.status(400).json({
                 success: false,
                 code: 2019,
                 message: 'Không thể xóa bài viết của người khác.',
             });
         }
-        if(post.post_img.publicId){
-            await cloudinary.uploader.destroy(post.post_img.publicId)
+        if (post.post_img && post.post_img.length > 0) {
+            // Xóa từng ảnh trong mảng post_img trên Cloudinary
+            await Promise.all(post.post_img.map(async (image) => {
+                if (image.publicId) {
+                    await cloudinary.uploader.destroy(image.publicId);
+                }
+            }));
         }
-        await Post.deleteOne({ _id: req.params.id})
+        // Xóa bài viết từ MongoDB
+        await Post.deleteOne({ _id: req.params.id });
 
         const noti = await Notification.findOneAndDelete({
             user_id: post.user_id,

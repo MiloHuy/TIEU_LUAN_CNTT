@@ -84,7 +84,8 @@ User.methods.comparePassword = async function (enteredPassword) {
 
 User.methods.getAccessToken = function () {
   return jwt.sign({ id: this._id }, process.env.SECRET_KEY, {
-    expiresIn: "5m",
+    // expiresIn: "5m",
+    expiresIn: "1d",
   });
 };
 

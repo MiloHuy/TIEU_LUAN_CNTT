@@ -10,14 +10,14 @@ const Post = new Schema({
     post_description: {
         type: String,
     },
-    post_img: {
+    post_img: [{
         publicId: {
             type: String,
         },
         url: {
             type: String,
         },
-    },
+    }],
     create_post_time: {
         type: Date,
         required: true,
