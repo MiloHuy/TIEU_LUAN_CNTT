@@ -1,4 +1,6 @@
 const cloudinary = require('cloudinary').v2;
+const fs = require('fs').promises;
+const path = require('path');
 
 const Post = require('../models/Post')
 const Post_liked = require('../models/Post_liked')
@@ -135,6 +137,8 @@ exports.create = (async (req, res) => {
                 message: 'Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh.',
             });
         }
+
+        console.log(req.files)
 
         const postImages = [];
 
