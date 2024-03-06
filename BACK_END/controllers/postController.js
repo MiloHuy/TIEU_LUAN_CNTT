@@ -157,7 +157,7 @@ exports.create = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 2003,
-                message: "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh.",
+                message: "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
             });
         }
 
