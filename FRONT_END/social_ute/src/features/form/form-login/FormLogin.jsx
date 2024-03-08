@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
-import { Button } from '@nextui-org/react'
 import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
+import { Button } from 'components/button'
 import Input from 'components/input'
 import { SSOCOOKIES } from 'constants/app.const'
 import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
+import { Eye, Smartphone } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
 import { checkCodeInArray } from 'utils/code-error.utils'
@@ -63,8 +63,6 @@ const FormLogin = (props) => {
                 progress: undefined,
                 theme: "light",
             });
-            // setTimeout(() => { navigate('/welcome') }, 2000)
-
         } catch (err) {
             console.error(err)
 
@@ -125,39 +123,45 @@ const FormLogin = (props) => {
 
     return (
         <form
-            className={clsx('h-full w-full flex flex-col items-center justify-center gap-3', props.className)}
+            className={clsx('h-full w-full flex flex-col items-center justify-center gap-y-8 overflow-hidden', props.className)}
             onSubmit={formik.handleSubmit}
         >
-            <h1 className='text-[40px] text-white font-[1000] font-inknut  text-center'>
+            <h1 className='text-[40px] text-black font-extrabold font-quick_sans text-center'>
                 ĐĂNG NHẬP
             </h1>
 
-            <div className='w-full px-3 grid grid-cols-1 gap-8'>
+            <div className='w-full px-3 flex flex-col  gap-8 justify-center items-center'>
                 <Input
                     name='phone_number'
                     type='text'
-                    className='text-sm font-nunito_sans mx-0 rounded-sm '
+                    className='text-sm font-nunito_sans mx-0 rounded-sm w-3/4'
                     errorMessage={errors?.phone_number}
                     placeholder='Vui lòng nhập số điện thoại'
                     onChange={formik.handleChange}
+                    endContent={
+                        <Smartphone size={27} strokeWidth={1.25} />
+                    }
                 />
 
                 <Input
                     name='pass_word'
                     type='password'
-                    className=' text-sm  mx-0 rounded-sm w-full'
+                    className='text-sm  mx-0 rounded-sm w-3/4'
                     placeholder="Mật khẩu"
                     onChange={formik.handleChange}
+                    endContent={
+                        <Eye size={27} strokeWidth={1.25} />
+                    }
                 />
             </div>
 
-            <div className='flex gap-2 justify-center w-4/5'>
+            <div className='flex gap-2 justify-center w-3/4 px-3'>
                 <Button
                     radius='sm'
-                    className=' w-4/5'>
+                    className='w-3/5 rounded-[40px] bg-[#1F1F24]'>
                     <Link
-                        className='text-md col-span-1 font-questrial'
-                        onClick={handleOpenLogin} href="#"
+                        className='text-lg font-questrial font-bold'
+                        to="/register"
                     >
                         Đăng ký
                     </Link>
@@ -167,9 +171,22 @@ const FormLogin = (props) => {
                     radius='sm'
                     isDisabled={isDisabled}
                     onClick={handleSubmitLogin}
-                    className='text-md font-questrial w-4/5'>
+                    className='w-3/5 rounded-[40px] text-lg bg-[#1C30E3]'>
                     Đăng nhập
                 </Button>
+            </div>
+
+
+            <div className='font-quick_sans text-center text-lg grid gap-2 font-bold'>
+                <Link to='/forgot_password'>
+                    <p className='hover:underline cursor-pointer'>
+                        Bạn quên mật khẩu sao?
+                    </p>
+                </Link>
+
+                <p className='cursor-pointer'>
+                    Trở về trang chủ
+                </p>
             </div>
         </form>
     )

@@ -9,7 +9,6 @@ const ModalGroup = ({ trigger }) => {
         if (!link) return;
 
         navigate(link)
-        // window.location.reload()
     }
 
     return (
@@ -19,7 +18,7 @@ const ModalGroup = ({ trigger }) => {
             </DialogTrigger>
 
             <DialogContent
-                hideCloseButton={false}
+                hideCloseButton={true}
                 className='w-[40vw] bg-bg_popup_secondary'>
                 <div className="relative grid grid-cols-2 gap-4 justify-center w-full items-center h-[20vh]">
                     <div

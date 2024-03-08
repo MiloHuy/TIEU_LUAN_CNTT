@@ -69,6 +69,7 @@ module.exports = {
 
         bg_main: "#000000",
         text_color_gray: "#973737",
+        red: '#E11F1F',
 
         bg_date_picker_primary: "#3F89E3",
 
@@ -108,6 +109,7 @@ module.exports = {
         "3xl": "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
         custom_shadow:
           "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;",
+        button_pressed_shadow: "-5px 6px #222",
       },
       brightness: {
         25: ".25",
@@ -206,6 +208,7 @@ module.exports = {
       },
       transitionDelay: {
         400: "400ms",
+        1500: "1500ms",
       },
     },
   },

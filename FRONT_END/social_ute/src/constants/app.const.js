@@ -7,3 +7,7 @@ export const ROLECHECK = {
   role_admin: 0,
   role_user: 1,
 };
+
+export const timeCountDown ={
+  otp: 90
+} 

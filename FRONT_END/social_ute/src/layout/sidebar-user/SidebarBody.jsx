@@ -9,6 +9,7 @@ import { USERCOOKIES } from 'constants/user.const';
 import ModalGroup from 'features/modal/modal-group';
 import ModalSearchUser from 'features/modal/modal-search-user';
 import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
+import ModalUploadFile from 'features/modal/modal-upload-image-file/ModalUploadFile';
 import PopupNofication from 'features/popup/popup-nofication';
 import Cookies from 'js-cookie';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
@@ -142,10 +143,6 @@ const SidebarBody = (props) => {
                         className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
                         variant="ghost"
                     >
-                        {/* <MessagesSquare
-                            size={24}
-                            strokeWidth={1.5}
-                        /> */}
                         <MessIcon
                             height={24}
                             width={24}
@@ -190,17 +187,6 @@ const SidebarBody = (props) => {
                         </p>
                     </Button>
 
-
-                    {/* <Button
-                        className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105 '
-                        variant="ghost"
-                    >
-                        <Users />
-                        <p className='font-quick_sans  text-lg '>
-                            Nhóm
-                        </p>
-                    </Button> */}
-
                     <ModalGroup
                         trigger={
                             <Button
@@ -231,21 +217,23 @@ const SidebarBody = (props) => {
                         </p>
                     </Button>
 
-                    <Button
-                        className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-                        variant="ghost"
+                    <ModalUploadFile
+                        trigger={
+                            <Button
+                                className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
+                                variant="ghost"
+                            >
+                                <PlusSquare
+                                    size={24}
+                                    strokeWidth={1.5}
+                                />
 
-                        onClick={handleOpenModelCreate02}
-                    >
-                        <PlusSquare
-                            size={24}
-                            strokeWidth={1.5}
-                        />
-
-                        <p className='font-quick_sans  text-lg '>
-                            Tạo
-                        </p>
-                    </Button>
+                                <p className='font-quick_sans  text-lg '>
+                                    Tạo
+                                </p>
+                            </Button>
+                        }
+                    />
 
                     <ModalUploadImageFile
                         isOpen={openModal.modal_file}

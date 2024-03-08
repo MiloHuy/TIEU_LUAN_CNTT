@@ -328,7 +328,6 @@ const HeaderHome = (props) => {
                                                         isLoading={check.isLoadingFriend}
                                                         radius="sm"
                                                         className="w-50 h-7"
-
                                                     >
                                                         Bạn bè
                                                     </Button>
@@ -340,7 +339,6 @@ const HeaderHome = (props) => {
                                                     </div>
                                                 </PopoverContent>
                                             </Popover>
-
 
                                             <Button
                                                 isLoading={check.isLoadingFollow}

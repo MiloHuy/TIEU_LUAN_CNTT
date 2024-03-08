@@ -5,6 +5,8 @@ import NotFound from "pages/404-not_found/NotFound";
 import PostDetail from "pages/[...post_id]/PostDetail";
 import Admin from "pages/admin";
 import AuthRequirement from "pages/auth-require/AuthRequirement";
+import ForgotPassword from "pages/authen/ForgotPassword";
+import Register from "pages/authen/Register";
 import AllGroup from "pages/group/all";
 import CreateGroup from "pages/group/create";
 import HomeUser from "pages/home-user";
@@ -42,6 +44,8 @@ function App() {
           </Route>
 
           <Route path="login" element={<Authen />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot_password" element={<ForgotPassword />} />
 
           <Route element={<AuthRequirement />}>
             <Route element={<Authentication />}>

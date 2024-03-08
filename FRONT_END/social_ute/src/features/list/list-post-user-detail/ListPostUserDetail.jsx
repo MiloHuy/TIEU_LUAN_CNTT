@@ -1,5 +1,6 @@
 import { useDisclosure } from "@nextui-org/react";
 import { setInfoPost } from "app/slice/post/post.slice";
+import { MultipleImages } from "components/icon/bonus.icon";
 import ModalPostUser from "features/modal/modal-post-user";
 import { motion } from "framer-motion";
 import { useDispatch } from 'react-redux';
@@ -36,14 +37,26 @@ const ListPostUserDetail = (props) => {
                 {
                     posts.map((post) => {
                         return (
-                            <motion.img
-                                loading="lazy"
-                                className="object-fill h-80 w-96 cursor-pointer rounded-[15px]"
-                                src={post.post_img.url}
-                                alt='image1'
-                                onClick={() => handleOpenPostDetails(post._id)}
-                                variants={item}
-                            />
+                            <div className='relative w-full h-full'>
+                                <motion.div
+                                    className="absolute top-3 right-3"
+                                    variants={item}
+                                >
+                                    <MultipleImages
+                                        height='30'
+                                        width='30'
+                                    />
+                                </motion.div>
+
+                                <motion.img
+                                    loading="lazy"
+                                    className="object-fill h-80 w-96 cursor-pointer rounded-[15px]"
+                                    src={post.post_img.url}
+                                    alt='image1'
+                                    onClick={() => handleOpenPostDetails(post._id)}
+                                    variants={item}
+                                />
+                            </div>
                         )
                     })
                 }

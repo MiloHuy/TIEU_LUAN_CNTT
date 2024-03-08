@@ -20,8 +20,8 @@ export const DATA_FACULITY = [
     label: "Khoa Cơ khí Động Lực",
   },
   {
-    value: "Khoa kinh tế",
-    label: "Khoa kinh tế",
+    value: "Khoa Kinh tế",
+    label: "Khoa Kinh tế",
   },
   {
     value: "Khoa Công nghệ thông tin",
@@ -40,12 +40,12 @@ export const DATA_FACULITY = [
     label: "Khoa Công nghệ Hóa học và Thực phẩm",
   },
   {
-    value: "Khoa Xâu dựng",
-    label: "Khoa Xâu dựng",
+    value: "Khoa Xây dựng",
+    label: "Khoa Xây dựng",
   },
   {
-    value: "Khoa ngoại ngữ",
-    label: "Khoa ngoại ngữ",
+    value: "Khoa Ngoại ngữ",
+    label: "Khoa Ngoại ngữ",
   },
   {
     value: "Khoa Đào tạo chất lượng cao",

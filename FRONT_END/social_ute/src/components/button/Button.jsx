@@ -17,6 +17,8 @@ const buttonVariants = cva(
                     "bg-secondary text-secondary-foreground hover:bg-secondary/80",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
+                press:
+                    "appearance-none border-none bg-none cursor-pointer outline-none my-4 px-6 py-4 bg-[#ddd] tracking-wide rounded-md opacity-90 transition-opacity duration-1500 ease-in-out hover:opacity-1 shadow-button_pressed_shadow transform-gpu transition-transform duration-1500 translate-x-2 -translate-y-2 ease-in-out active:translate-x-0 active:-translate-y-0 active:shadow-none flex flex-col gap-1 overflow-hidden items-center justify-center min-w-[180px]"
             },
             size: {
                 default: "h-10",
