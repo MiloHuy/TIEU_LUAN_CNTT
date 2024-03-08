@@ -20,11 +20,23 @@ exports.getAll = async (req, res) => {
         const following_User_Ids = following_Users
             .map((follow) => follow.following_user_id)
             .flat();
-        following_User_Ids.push(req.user._id);
+        // following_User_Ids.push(req.user._id);
 
         const { size } = req.query;
 
-        const posts = Post.find({ user_id: { $in: following_User_Ids } })
+        const posts = Post.find({
+            $or: [
+                { privacy: 2 }, 
+                { 
+                    user_id: { $in: following_User_Ids }, 
+                    privacy: 1 
+                }, 
+                { 
+                    user_id: req.user._id, 
+                    privacy: { $in: [0, 1] } 
+                }
+            ]
+        })
             .sort({ create_post_time: -1 })
             .populate("user_id", "first_name last_name avatar.url")
             .select("-post_img.publicId");
@@ -278,8 +290,6 @@ exports.create = async (req, res) => {
         //     post,
         // });
 
-
-
         // Nhiều anh
         if (!Array.isArray(req.files.post_img)) {
             req.files.post_img = [req.files.post_img];
@@ -354,22 +364,30 @@ exports.create = async (req, res) => {
             post_img: postImages,
         });
 
-        const content = req.user.first_name + ' ' + req.user.last_name +' vừa mới đăng bài.';
+        const content =
+            req.user.first_name +
+            " " +
+            req.user.last_name +
+            " vừa mới đăng bài.";
 
         const noti = await Notification.create({
             user_id: req.user._id,
             noti_content: content,
             post_id: post._id,
-            noti_create_time: currentDate
+            noti_create_time: currentDate,
         });
 
-        const followerUsers = await Follow.find({user_id: req.user._id}).select('follower_user_id');
-        const followerUserIds = followerUsers.map(follow => follow.follower_user_id).flat();
+        const followerUsers = await Follow.find({
+            user_id: req.user._id,
+        }).select("follower_user_id");
+        const followerUserIds = followerUsers
+            .map((follow) => follow.follower_user_id)
+            .flat();
 
         for (const userId of followerUserIds) {
             await Noti_user.findOneAndUpdate(
                 { user_id: userId },
-                { $push: { 'detail': { noti_id: noti._id } } },
+                { $push: { detail: { noti_id: noti._id } } },
                 { new: true, upsert: true }
             );
         }
@@ -808,6 +826,5 @@ exports.adminDestroy = async (req, res) => {
         });
     }
 };
-
 
 // code: 2024
