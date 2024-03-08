@@ -1,27 +1,22 @@
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
 import clsx from "clsx";
-import { DATA_DEPARTMENT, DATA_FACULITY } from "constants/data/data.const";
+import { Button } from "components/button";
+import Input from "components/input";
+import { DATA_DEPARTMENT } from "constants/data/data.const";
 import { ERROR_REGISTER } from "constants/error.const";
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { register } from "services/auth.svc";
 import { checkCodeInArray } from "utils/code-error.utils";
 import { object, string } from "yup";
 
-const FormRegister = (props) => {
+const FormRegister = ({ className, handleNextPage, nextForm }) => {
     const [isDisabledFaculity, setDisabledFaculity] = useState(false)
     const [isDisabledDepartment, setDisabledDepartment] = useState(false)
     const [faculty, setFaculty] = useState(null)
     const [department_t, setDeparements] = useState(null)
     const [isDisabled, setIsDisabled] = useState(true)
-
-    const handleOpenRegiser = () => {
-        formik.resetForm();
-        props.handleFunction('hidden')
-    }
 
     const initFormRegister = {
         first_name: '',
@@ -32,25 +27,11 @@ const FormRegister = (props) => {
         id: '',
         birth_day: '',
         gender: '',
-        department: ''
+        department: '',
+        role: ''
     }
 
     const [formRegister, setFormRegister] = useState(initFormRegister)
-
-    const handleInputSelectFaculity = (e) => {
-        if (faculty && isDisabledDepartment === true) {
-            setDisabledDepartment(false)
-        }
-
-        if (isDisabledDepartment === true) {
-            setFaculty(e.target.value)
-        }
-
-        if (isDisabledDepartment === false) {
-            setDisabledDepartment(!isDisabledDepartment)
-            setFaculty(e.target.value)
-        }
-    }
 
     const handleInputSelectDepartment = (e) => {
         if (department_t && isDisabledFaculity === true)
@@ -77,6 +58,7 @@ const FormRegister = (props) => {
         id: 'MSSV',
         pass_word: 'Mật khẩu',
         department: 'Khoa/Phòng ban',
+        role: 'Vai trò'
     }), [])
 
     const formRegisterSchema = useMemo(() => {
@@ -87,30 +69,28 @@ const FormRegister = (props) => {
             phone_number: string().typeError(`${formLabel.phone_number} is not a vailid`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
             id: string().typeError(`${formLabel.phone_number} is not a vailid`).required(`${formLabel.id} is required`).max(8, "ID phải có đủ 8 số."),
             pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
+            role: string()
         })
     }, [formLabel])
 
     const handleRegisterForm = async (e) => {
         try {
             faculty ? values['department'] = faculty : values['department'] = department_t
-            await register(values)
+            // await register(values)
 
-            toast.success('Đăng ký thành công!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-
-            setTimeout(() => { handleOpenRegiser() }, 2000)
-
+            // toast.success('Đăng ký thành công!!!', {
+            //     position: "bottom-right",
+            //     autoClose: 1000,
+            //     hideProgressBar: true,
+            //     closeOnClick: true,
+            //     pauseOnHover: true,
+            //     draggable: true,
+            //     progress: undefined,
+            //     theme: "light",
+            // });
+            handleNextPage && handleNextPage()
         }
         catch (err) {
-
             const { code } = err.response.data
 
             const messageError = checkCodeInArray(ERROR_REGISTER, code)
@@ -147,149 +127,133 @@ const FormRegister = (props) => {
 
     return (
         <form
-            className={clsx('flex flex-col gap-3 items-center justify-center p-4 w-full h-full ', props.className)}
+            className={clsx(
+                'flex flex-col gap-3 items-center justify-center p-4 min-w-[55vw] min-h-[75vh]',
+                `${nextForm === true ? '-translate-x-[700px]' : ''} transform duration-500 ease-in`,
+                className
+            )}
             onSubmit={formik.handleSubmit}
             onReset={formik.resetForm}
         >
-            <h1 className="text-2xl font-bold font-questrial text-center">
+            <h1 className="text-2xl font-bold font-quick_sans text-center">
                 Đăng ký
             </h1>
 
             <div className='grid grid-cols-2 gap-2 w-full'>
                 <Input
-                    isRequired
+                    // isRequired
                     type="text"
                     name='first_name'
-                    label={formLabel.first_name}
+                    placeholder={formLabel.first_name}
                     value={values['first_name']}
                     defaultValue=""
-                    className="w-full"
+                    className="w-full text-lg font-quick_sans"
                     onChange={formik.handleChange}
                 />
 
                 <Input
-                    isRequired
+                    // isRequired
                     type="text"
                     name='last_name'
                     value={values['last_name']}
-                    label={formLabel.last_name}
+                    placeholder={formLabel.last_name}
                     defaultValue=""
-                    className="w-full"
+                    className="w-full text-lg font-quick_sans"
                     onChange={formik.handleChange}
                 />
             </div>
-            <Input
-                isRequired
-                type="email"
-                name="gmail"
-                value={values['gmail']}
-                label={formLabel.email}
-                defaultValue=""
-                placeholder="a@hcmute.edu.vn"
-                errorMessage={errors?.gmail}
-                className="w-full"
-                onChange={formik.handleChange}
-            />
+
+            <div className='grid grid-cols-2 gap-2 w-full'>
+                <Input
+                    // isRequired
+                    type="email"
+                    name="gmail"
+                    value={values['gmail']}
+                    defaultValue=""
+                    placeholder="a@hcmute.edu.vn"
+                    // errorMessage={errors?.gmail}
+                    className="w-full text-lg font-quick_sans"
+                    onChange={formik.handleChange}
+                />
+
+                <Input
+                    // isRequired
+                    type="text"
+                    name='phone_number'
+                    value={values['phone_number']}
+                    placeholder={formLabel.phone_number}
+                    // errorMessage={errors?.phone_number}
+                    defaultValue=""
+                    className="w-full text-lg font-quick_sans"
+                    onChange={formik.handleChange}
+                />
+            </div>
 
             <Input
-                isRequired
-                type="text"
-                name='phone_number'
-                value={values['phone_number']}
-                label={formLabel.phone_number}
-                errorMessage={errors?.phone_number}
+                // isRequired
+                type="password"
+                name='pass_word'
+                value={values['pass_word']}
+                placeholder={formLabel.pass_word}
                 defaultValue=""
-                className="w-full"
+                className="w-full text-lg font-quick_sans"
                 onChange={formik.handleChange}
             />
 
             <div className='grid grid-cols-2 gap-2 w-full'>
                 <Input
-                    isRequired
-                    type="password"
-                    name='pass_word'
-                    value={values['pass_word']}
-                    label={formLabel.pass_word}
+                    // isRequired
+                    type="text"
+                    name='id'
+                    value={values['role']}
+                    placeholder={formLabel.role}
+                    // errorMessage={errors?.role}
                     defaultValue=""
-                    className="w-full"
+                    className="w-full text-lg font-quick_sans"
                     onChange={formik.handleChange}
                 />
 
                 <Input
-                    isRequired
+                    // isRequired
                     type="text"
                     name='id'
                     value={values['id']}
-                    label={formLabel.id}
-                    errorMessage={errors?.id}
+                    placeholder={formLabel.id}
+                    // errorMessage={errors?.id}
                     defaultValue=""
-                    className="w-full"
+                    className="w-full text-lg font-quick_sans"
                     onChange={formik.handleChange}
                 />
+
             </div>
 
-            <div className='grid grid-cols-2 gap-2 w-full'>
-                <Select
-                    isRequired
-                    label="Khoa"
-                    name='faculty'
-                    value={values['department']}
-                    defaultValue='null'
-                    isDisabled={isDisabledFaculity}
-                    placeholder="Chọn khoa"
-                    className="w-full"
-                    onChange={handleInputSelectFaculity}
-                >
-                    {
-                        DATA_FACULITY.map((item) => {
-                            return (
-                                <SelectItem key={item.value}>{item.label}</SelectItem>
-                            )
-                        })
-                    }
-                </Select>
+            <Select
+                // isRequired
+                placeholder="Phòng ban"
+                name='department'
+                isDisabled={isDisabledDepartment}
+                value={values['department']}
+                className="w-full text-lg font-quick_sans"
+                defaultValue='null'
+                onChange={handleInputSelectDepartment}
+            >
+                {
+                    DATA_DEPARTMENT.map((item) => {
+                        return (
+                            <SelectItem key={item.value}>{item.label}</SelectItem>
+                        )
+                    })
+                }
+            </Select>
 
-                <Select
-                    isRequired
-                    label="Phòng ban"
-                    name='department'
-                    isDisabled={isDisabledDepartment}
-                    value={values['department']}
-                    placeholder="Chọn phòng ban"
-                    className="w-full"
-                    defaultValue='null'
-                    onChange={handleInputSelectDepartment}
-                >
-                    {
-                        DATA_DEPARTMENT.map((item) => {
-                            return (
-                                <SelectItem key={item.value}>{item.label}</SelectItem>
-                            )
-                        })
-                    }
-                </Select>
-            </div>
-
-            <div className="w-4/5 flex items-center gap-5">
-                <Button
-                    radius="sm"
-                    className="w-3/4 text-sm font-questrial"
-                    type='submit'
-                >
-                    <Link
-                        className='text-sm col-span-1 font-questrial'
-                        onClick={handleOpenRegiser} href="#">
-                        Đăng nhập
-                    </Link>
-                </Button>
-
+            <div className="w-full flex justify-center gap-5">
                 <Button
                     isDisabled={isDisabled}
                     radius="sm"
-                    className="w-3/4 text-sm font-questrial"
+                    className="text-lg text-white font-bold font-quick_sans w-1/2 bg-[#3C43B7] rounded-lg"
                     onClick={handleRegisterForm}
-                    type='submit'
-                >Đăng ký
+                    type='submit'>
+                    Tiếp theo
                 </Button>
             </div>
         </form>

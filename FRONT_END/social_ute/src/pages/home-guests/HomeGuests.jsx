@@ -1,5 +1,5 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
-import PropagateLoader from "components/propagate-loading/PropagateLoader";
+import PropagateLoader from "components/loading/propagate-loading/PropagateLoader";
 import ListPostUserDetail from "features/list/list-post-user-detail";
 import HeaderHome from "layout/header-home";
 import { Grid3X3 } from 'lucide-react';

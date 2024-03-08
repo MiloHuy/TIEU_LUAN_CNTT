@@ -1,10 +1,10 @@
 import { Button, useDisclosure } from "@nextui-org/react";
 import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
-import Input from "components/input";
+import { ShareIcon } from "components/icon/bonus.icon";
 import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import ModalPostUser from "features/modal/modal-post-user";
 import HeaderPostUser from "layout/header-post-user";
-import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
+import { Bookmark, Heart, MessageCircle } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -139,9 +139,9 @@ const CardPostUser = (props) => {
 
     return (
         <div className='max-w-[40vw] w-[40vw] p-2'>
-            <div className="flex flex-col w-full max-h-[80vh] h-max border border-black dark:border-white rounded-lg justify-between items-center">
+            <div className="flex flex-col gap-2 py-2 w-full max-h-[80vh] h-max border border-black dark:border-white rounded-lg justify-between items-center">
                 <HeaderPostUser
-                    className='h-20 w-full border-b'
+                    className='min-h-[8vh] h-[8vh] rounded-[30px] w-[34vw]'
                     img={post_avatar}
                     name={userName}
                     href={user_id._id !== ID ? `/welcome/home-guest/${user_id._id}` : `/welcome/home-user/${ID}`}
@@ -157,11 +157,11 @@ const CardPostUser = (props) => {
                     }
                 />
 
-                <div className="w-full flex flex-col gap-2 h-[50rem] overflow-hidden">
+                <div className="w-full flex flex-col gap-2 h-[70rem] overflow-hidden">
                     <img
                         loading="lazy"
                         alt="img"
-                        className="object-fill h-3/5 w-full "
+                        className="object-fill h-3/4 w-full "
                         src={post_img}
                     />
                     <div className='flex justify-between'>
@@ -196,7 +196,10 @@ const CardPostUser = (props) => {
                                 variant="light"
 
                                 onClick={CopyURL}>
-                                <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
+                                <ShareIcon
+                                    height={18}
+                                    width={18}
+                                />
                             </Button>
                         </div>
                         <Button
@@ -219,14 +222,14 @@ const CardPostUser = (props) => {
                         </div>
 
                         <div className="flex-1 w-full max-h-[30px]">
-                            <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold line-clamp-3 truncate">
+                            <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold line-clamp-3">
                                 {`${userName} : `}
                                 <span className="font-normal ">{` ${post_description}`}</span>
                             </p>
                         </div>
                     </div>
 
-                    <div className='w-full flex gap-1 justify-start items-center px-2 mt-3'>
+                    {/* <div className='w-full flex gap-1 justify-start items-center px-2 mt-3'>
                         <img
                             alt='avatar'
                             src={post_avatar}
@@ -253,7 +256,7 @@ const CardPostUser = (props) => {
                                 </Button>
                             }
                         />
-                    </div>
+                    </div> */}
                 </div >
             </div >
 

@@ -1,8 +1,11 @@
-import { Image, useDisclosure } from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import { setInfoPost } from "app/slice/post/post.slice";
+import { MultipleImages } from "components/icon/bonus.icon";
 import ModalPostUser from "features/modal/modal-post-user";
+import { motion } from "framer-motion";
 import { useDispatch } from 'react-redux';
 import { getPostById } from "services/post.svc";
+import { container, item } from "./MotionListPostUser";
 
 const ListPostUserDetail = (props) => {
     const { posts } = props
@@ -25,18 +28,33 @@ const ListPostUserDetail = (props) => {
     return (
         posts.length !== 0
             ?
-            <div className='grid grid-cols-3 gap-2 w-full h-full'>
+            <motion.div
+                className='grid grid-cols-3 gap-2 w-full h-full'
+                variants={container}
+                initial="hidden"
+                animate="visible"
+            >
                 {
                     posts.map((post) => {
                         return (
-                            <div className="relative group w-full h-full rounded-[15px] ">
-                                <Image
-                                    isZoomed
+                            <div className='relative w-full h-full'>
+                                <motion.div
+                                    className="absolute top-3 right-3"
+                                    variants={item}
+                                >
+                                    <MultipleImages
+                                        height='30'
+                                        width='30'
+                                    />
+                                </motion.div>
+
+                                <motion.img
                                     loading="lazy"
-                                    className="object-fill h-80 w-96 opacity-10 block transition duration-500 ease-in-out hover:opacity-30 cursor-pointer"
+                                    className="object-fill h-80 w-96 cursor-pointer rounded-[15px]"
                                     src={post.post_img.url}
                                     alt='image1'
                                     onClick={() => handleOpenPostDetails(post._id)}
+                                    variants={item}
                                 />
                             </div>
                         )
@@ -47,7 +65,7 @@ const ListPostUserDetail = (props) => {
                     onOpenChange={onOpenChange}
 
                 />
-            </div >
+            </motion.div >
             :
             <div className="w-full h-full flex items-center justify-center">
                 <p className="text-black dark:text-white font-nunito_sans text-md">

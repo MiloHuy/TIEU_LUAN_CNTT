@@ -1,5 +1,5 @@
 
-const Loading = () => {
+const LoadingDot = () => {
     const dots = 6
 
     return (
@@ -24,4 +24,4 @@ const Loading = () => {
     )
 }
 
-export default Loading
+export default LoadingDot

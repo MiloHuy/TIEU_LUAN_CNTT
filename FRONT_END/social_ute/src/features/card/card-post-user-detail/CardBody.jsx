@@ -1,11 +1,13 @@
 import { Spinner } from "@nextui-org/react";
 import { selectPostId } from "app/slice/post/post.slice";
 import { selectGuestFrienndCheck } from "app/slice/user/guest.slice";
+import { ERR_POST } from "constants/error.const";
 import ListCommentUser from "features/list/list-comment-user";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getCommentPost } from "services/post.svc";
+import { checkCodeInArray } from "utils/code-error.utils";
 
 const CardBody = ({ flag }) => {
     const [comments, setComment] = useState()
@@ -13,7 +15,6 @@ const CardBody = ({ flag }) => {
     const [isDisabled, setIsDisabled] = useState(true)
     const guest_friend_check = useSelector(selectGuestFrienndCheck)
 
-    console.log('guest_friend_check', guest_friend_check)
 
     const fetchAllComment = useCallback(async () => {
         try {
@@ -21,13 +22,13 @@ const CardBody = ({ flag }) => {
             setComment({ ...allCommnent.data })
         }
         catch (error) {
-            console.log("Error: ", error.response)
-
             const { code } = error.response.data
-            if (code) {
+
+            const messageError = checkCodeInArray(ERR_POST, code)
+            if (messageError) {
                 setIsDisabled(false)
 
-                toast.error('Không thể bình luận bài viết', {
+                toast.error(`${messageError}`, {
                     position: "bottom-right",
                     autoClose: 1000,
                     hideProgressBar: true,
@@ -46,8 +47,6 @@ const CardBody = ({ flag }) => {
             fetchAllComment()
         }
     }, [fetchAllComment, post_id, flag])
-
-    console.log('isDisabled : ' + isDisabled)
 
     return (
         comments
