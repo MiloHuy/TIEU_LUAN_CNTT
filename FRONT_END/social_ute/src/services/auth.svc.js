@@ -10,7 +10,7 @@ export const API_AUTH_ENDPOINT = {
     logout: "auth/logout",
     forgot_password: "auth/forgot-password",
     reset_password: "auth/reset-password/:token",
-    verifyOtp: "auth/verify-otp",
+    verifyOtp: "auth/verify-otp ",
   },
 };
 
@@ -38,7 +38,16 @@ export const forgotPassword = async (payload) => {
 
 export const verifyOtp = async (payload) => {
   const res = await AxiosInstance.post(
-    API_AUTH_ENDPOINT.POST.verify_otp,
+    API_AUTH_ENDPOINT.POST.verifyOtp,
+    payload,
+  );
+  return res;
+};
+
+export const resetPassWord = async (payload, tokenResetPassWord) => {
+  console.log("payload:", payload);
+  const res = await AxiosInstance.post(
+    API_AUTH_ENDPOINT.POST.reset_password.replace(":token", tokenResetPassWord),
     payload,
   );
   return res;

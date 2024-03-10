@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { checkCodeInArray } from "utils/code-error.utils";
 import { object, string } from "yup";
 
-const FormRegister = ({ className, handleNextPage, nextForm }) => {
+const FormRegister = ({ className, handleNextForm, stepForm }) => {
     const [isDisabledFaculity, setDisabledFaculity] = useState(false)
     const [isDisabledDepartment, setDisabledDepartment] = useState(false)
     const [faculty, setFaculty] = useState(null)
@@ -49,6 +49,17 @@ const FormRegister = ({ className, handleNextPage, nextForm }) => {
     const handleInput = (e) => {
         setFormRegister({ ...formRegister, [e.target.name]: e.target.value, department: faculty | department_t })
     }
+
+    const checkStepToNextForm = useMemo(() => {
+        switch (stepForm) {
+            case 0:
+                return ''
+            case 1:
+                return '-translate-x-full min-w-[35vw]'
+            default:
+                break
+        }
+    }, [stepForm])
 
     const formLabel = useMemo(() => ({
         first_name: 'Họ',
@@ -88,7 +99,7 @@ const FormRegister = ({ className, handleNextPage, nextForm }) => {
             //     progress: undefined,
             //     theme: "light",
             // });
-            handleNextPage && handleNextPage()
+            handleNextForm && handleNextForm()
         }
         catch (err) {
             const { code } = err.response.data
@@ -129,7 +140,7 @@ const FormRegister = ({ className, handleNextPage, nextForm }) => {
         <form
             className={clsx(
                 'flex flex-col gap-3 items-center justify-center p-4 min-w-[55vw] min-h-[75vh]',
-                `${nextForm === true ? '-translate-x-[700px]' : ''} transform duration-500 ease-in`,
+                `${checkStepToNextForm} transform duration-500 ease-in`,
                 className
             )}
             onSubmit={formik.handleSubmit}

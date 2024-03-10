@@ -1,3 +1,5 @@
+export const ERROR_SYSTEM = "Lỗi hệ thống vui lòng chờ giây phút";
+
 export const ERROR_LOGIN = [
   {
     type: "ERR_PHONE",
@@ -39,6 +41,19 @@ export const ERROR_FORGOT_PASSWORD = [
     type: "ERR_PHONE_MAIL",
     code: 1009,
     label: "Không tìm thấy người dùng vui lòng kiểm tra lại thông tin.",
+  },
+];
+
+export const ERROR_VERIFY_OTP = [
+  {
+    type: "ERR_OTP",
+    code: 1011,
+    label: "OTP không đúng vui lòng nhập lại mã.",
+  },
+  {
+    type: "ERR_OTP",
+    code: 1012,
+    label: "OTP hết hạn. Vui lòng gmail để lấy lại mã",
   },
 ];
 

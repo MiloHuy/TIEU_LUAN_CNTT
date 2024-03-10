@@ -1,12 +1,16 @@
 import { Button } from "@nextui-org/react";
 import clsx from "clsx";
 import Input from "components/input";
+import { ERROR_FORGOT_PASSWORD, ERROR_SYSTEM } from "constants/error.const";
 import { useFormik } from "formik";
 import { Mail, Smartphone } from 'lucide-react';
 import { useEffect, useMemo, useState } from "react";
+import { toast } from 'react-toastify';
+import { forgotPassword } from "services/auth.svc";
+import { checkCodeInArray } from "utils/code-error.utils";
 import { object, string } from 'yup';
 
-const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues }) => {
+const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues, setFormValues }) => {
     const [formForgotPassWord, setformForgotPassWord] = useState(formValues)
     const [checkLoadOrDisable, setCheckLoadOrDisable] = useState(
         {
@@ -36,46 +40,66 @@ const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues })
             case 0:
                 return ''
             case 1:
-                return '-translate-x-[700px] min-w-[55vw]'
+                return '-translate-x-full min-w-[55vw]'
             case 2:
-                return '-translate-x-[700px] min-w-[55vw]'
+                return '-translate-x-[100vw] min-w-[55vw]'
             default:
                 break
         }
     }, [stepForm])
 
     const handleSubitFormForgotPassWord = async () => {
-        // try {
-        //     setCheckLoadOrDisable((prev) => ({
-        //         ...prev,
-        //         isLoading: true
-        //     }))
-        //     await forgotPassword(values)
-        //     setCheckLoadOrDisable((prev) => ({
-        //         ...prev,
-        //         isLoading: false
-        //     }))
-        //     handleNextForm && handleNextForm()
-        // }
-        // catch (err) {
-        //     setCheckLoadOrDisable((prev) => ({
-        //         ...prev,
-        //         isLoading: false
-        //     }))
-        //     const { code } = err.response.data
-        //     const messageError = checkCodeInArray(ERROR_FORGOT_PASSWORD, code)
-        //     toast.error(messageError, {
-        //         position: "bottom-right",
-        //         autoClose: 1000,
-        //         hideProgressBar: true,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //         theme: "light",
-        //     });
-        // }
-        handleNextForm && handleNextForm()
+        try {
+            setCheckLoadOrDisable((prev) => ({
+                ...prev,
+                isLoading: true
+            }))
+            const res = await forgotPassword(values)
+            setCheckLoadOrDisable((prev) => ({
+                ...prev,
+                isLoading: false
+            }))
+
+            if (res.data.success === true) {
+                setFormValues({
+                    phone_number: values.phone_number,
+                    gmail: values.gmail,
+                })
+                handleNextForm && handleNextForm()
+            }
+        }
+        catch (err) {
+            setCheckLoadOrDisable((prev) => ({
+                ...prev,
+                isLoading: false
+            }))
+            if (err && err.response && err.response.code) {
+                const { code } = err.response.data
+                const messageError = checkCodeInArray(ERROR_FORGOT_PASSWORD, code)
+                toast.error(messageError, {
+                    position: "bottom-right",
+                    autoClose: 1000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            }
+            else {
+                toast.error(ERROR_SYSTEM, {
+                    position: "bottom-right",
+                    autoClose: 1000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            }
+        }
     }
 
     const formik = useFormik({
@@ -106,7 +130,7 @@ const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues })
         <div
             className={clsx(
                 'flex flex-col gap-5 items-center justify-center p-4 min-w-[35vw] min-h-[50vh]',
-                `${checkStepToNextForm} transform duration-500 ease-in`,
+                ` ${checkStepToNextForm}transform duration-500 ease-in`,
                 className)}
         >
             <h1 className='text-center text-xl text-black font-quick_sans font-bold'>

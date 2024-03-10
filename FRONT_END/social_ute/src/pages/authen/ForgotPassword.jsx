@@ -5,16 +5,15 @@ import FormResetPassWord from "features/form/form-forgot-password/FormResetPassW
 import { useMemo, useState } from "react"
 
 const ForgotPassword = () => {
-    const [nextForm, setNextPage] = useState(false)
     const [stepForm, handeStepForm] = useState(0)
 
     const [formValues, setFormValues] = useState({
         phone_number: '',
         gmail: '',
+        resetPassWordToken: ''
     })
 
     const handleNextForm = () => {
-        setNextPage(!nextForm)
         if (stepForm <= 2)
             handeStepForm(stepForm + 1)
     }
@@ -35,18 +34,22 @@ const ForgotPassword = () => {
     const multipleForm = [
         <FormForgotPassword
             formValues={formValues}
+            setFormValues={setFormValues}
             stepForm={stepForm}
             handleNextForm={handleNextForm}
         />,
 
         <FormConfirmOtp
             title='Quên mật khẩu'
-            nextForm={nextForm}
             stepForm={stepForm}
+            formValues={formValues}
+            setFormValues={setFormValues}
             handleNextForm={handleNextForm}
         />,
 
-        <FormResetPassWord stepForm={stepForm} />
+        <FormResetPassWord
+            resetPassWordToken={formValues.resetPassWordToken}
+            stepForm={stepForm} />
     ]
 
     return (
@@ -55,25 +58,10 @@ const ForgotPassword = () => {
                 'asbolute rounded-[20px] border bg-white/45 backdrop-blur-sm opacity-100 shadow-lg overflow-hidden',
                 `${transformNextForm}' transform duration-500 ease-in`
             )}>
-                <div className='flex gap-4'>
-                    {/* <FormForgotPassword
-                        formValues={formValues}
-                        nextForm={nextForm}
-                        stepForm={stepForm}
-                        handleNextForm={handleNextForm}
-                    />
-
-                    <FormConfirmOtp
-                        title='Quên mật khẩu'
-                        nextForm={nextForm}
-                    />
-
-                    <FormResetPassWord /> */}
+                <div className='flex'>
                     {
                         multipleForm.map((form, index) => {
-                            return (
-                                form
-                            )
+                            return form
                         })
                     }
                 </div>
