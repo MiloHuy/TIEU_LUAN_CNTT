@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const HeaderPostUser = ({ img, name, href, action, className }) => {
     return (
-        <div className={clsx('px-3 border border-black dark:border-white flex justify-between', className)}>
+        <div className={clsx('px-3 border border-black dark:border-white flex justify-between overflow-hidden', className)}>
             <div className='w-max h-full flex items-center gap-2 -translate-x-3'>
                 <div className='w-30 h-full '>
                     <img

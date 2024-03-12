@@ -1,7 +1,9 @@
+import clsx from 'clsx';
+import { PostType } from 'constants/post.const';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const CaroselVersion2 = ({ slides }) => {
+const CaroselVersion2 = ({ slides, className, type }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const prevSlide = () => {
@@ -20,20 +22,35 @@ const CaroselVersion2 = ({ slides }) => {
         setCurrentIndex(slideIndex);
     };
 
+    const background = useMemo(() => {
+        switch (type) {
+            case PostType.POST_IMG:
+                return `url(${slides[currentIndex].url})`
+            case PostType.IMAGE_PREVIEW:
+                return `url(${slides[currentIndex]})`
+            default:
+                return
+        }
+    }, [type, slides, currentIndex])
+
     return (
-        <div className='h-full max-h-[75vh] w-full max-w-[55vw] m-auto relative group'>
+        <div className={clsx('h-full max-h-[75vh] w-full max-w-[55vw] m-auto relative group', className)}>
             <div
-                style={{ backgroundImage: `url(${slides[currentIndex]})` }}
+                style={{ backgroundImage: background }}
                 className='w-full h-full rounded-2xl bg-center bg-cover duration-500 bg-no-repeat'
             ></div>
 
-            <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
-                <ChevronLeft onClick={prevSlide} size={30} />
-            </div>
+            {slides.length !== 1 ?
+                <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
+                    <ChevronLeft onClick={prevSlide} size={30} />
+                </div>
+                : ''}
 
-            <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
-                <ChevronRight onClick={nextSlide} size={30} />
-            </div>
+            {slides.length !== 1 ?
+                <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
+                    <ChevronRight onClick={nextSlide} size={30} />
+                </div>
+                : ''}
 
             <div className="absolute bottom-0 py-4 flex justify-center gap-3 w-full">
                 {slides.map((s, slideIndex) => {
@@ -41,7 +58,7 @@ const CaroselVersion2 = ({ slides }) => {
                         <div
                             onClick={() => goToSlide(slideIndex)}
                             key={"circle" + slideIndex}
-                            className={`rounded-full w-3 h-3 cursor-pointer  ${slideIndex === currentIndex ? "bg-white" : "bg-gray-500"
+                            className={`rounded-full w-2 h-2 cursor-pointer  ${slideIndex === currentIndex ? "bg-white" : "bg-gray-500"
                                 }`}
                         ></div>
                     );
