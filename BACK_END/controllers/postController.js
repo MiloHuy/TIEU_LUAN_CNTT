@@ -127,13 +127,16 @@ exports.getPost = async (req, res) => {
                 message: "Không tìm thấy bài viết.",
             });
         }
+
         const following_Users = await Follow.find({
             user_id: req.user._id,
         }).select("following_user_id");
         const following_User_Ids = following_Users
             .map((follow) => follow.following_user_id)
             .flat();
-        if (!following_User_Ids.some((id) => id.equals(post.user_id))) {
+        following_User_Ids.push(req.user._id);
+
+        if (!following_User_Ids.some((id) => id.equals(post.user_id._id))) {
             return res.status(400).json({
                 success: false,
                 code: 2029,
@@ -141,7 +144,8 @@ exports.getPost = async (req, res) => {
                     "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
             });
         }
-        if (post.user_id!=req.user._id && post.privacy==0) {
+
+        if (post.user_id != req.user._id && post.privacy == 0) {
             return res.status(404).json({
                 success: false,
                 code: 2030,
