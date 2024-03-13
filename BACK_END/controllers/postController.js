@@ -26,16 +26,16 @@ exports.getAll = async (req, res) => {
 
         const posts = Post.find({
             $or: [
-                { privacy: 2 }, 
-                { 
-                    user_id: { $in: following_User_Ids }, 
-                    privacy: 1 
-                }, 
-                { 
-                    user_id: req.user._id, 
-                    privacy: { $in: [0, 1] } 
-                }
-            ]
+                { privacy: 2 },
+                {
+                    user_id: { $in: following_User_Ids },
+                    privacy: 1,
+                },
+                {
+                    user_id: req.user._id,
+                    privacy: { $in: [0, 1] },
+                },
+            ],
         })
             .sort({ create_post_time: -1 })
             .populate("user_id", "first_name last_name avatar.url")
@@ -125,6 +125,27 @@ exports.getPost = async (req, res) => {
                 success: false,
                 code: 2001,
                 message: "Không tìm thấy bài viết.",
+            });
+        }
+        const following_Users = await Follow.find({
+            user_id: req.user._id,
+        }).select("following_user_id");
+        const following_User_Ids = following_Users
+            .map((follow) => follow.following_user_id)
+            .flat();
+        if (!following_User_Ids.some((id) => id.equals(post.user_id))) {
+            return res.status(400).json({
+                success: false,
+                code: 2029,
+                message:
+                    "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
+            });
+        }
+        if (post.user_id!=req.user._id && post.privacy==0) {
+            return res.status(404).json({
+                success: false,
+                code: 2030,
+                message: "Bạn không phù hợp với chế độ xem của bài viết",
             });
         }
 
@@ -290,7 +311,7 @@ exports.create = async (req, res) => {
         //     post,
         // });
 
-        // Nhiều anh
+        // Nhiều ảnh
         if (!Array.isArray(req.files.post_img)) {
             req.files.post_img = [req.files.post_img];
         }
@@ -744,6 +765,54 @@ exports.destroy = async (req, res) => {
     }
 };
 
+//PUT /posts/privacy/:id
+exports.changePrivacy = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2025,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if (!post.user_id.equals(req.user._id)) {
+            return res.status(400).json({
+                success: false,
+                code: 2026,
+                message: "Không thể thao tác trên bài viết của người khác.",
+            });
+        }
+        if (req.body.privacy === undefined || req.body.privacy === null) {
+            return res.status(400).json({
+                success: false,
+                code: 2027,
+                message: "Vui lòng chọn chế độ xem",
+            });
+        }
+
+        post.privacy = req.body.privacy;
+        await post.save();
+
+        // await Post.findByIdAndUpdate(
+        //     { _id: req.params.id },
+        //     { privacy: req.body.privacy},
+        //     { new: true, upsert: true }
+        // );
+
+        res.status(200).json({
+            success: true,
+            message: "Thay đổi chế độ xem thành công.",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 2028,
+            message: "Thay đổi chế độ xem thất bại : " + error.message,
+        });
+    }
+};
+
 //GET /posts/admin
 exports.adminGetAll = async (req, res) => {
     try {
@@ -827,4 +896,4 @@ exports.adminDestroy = async (req, res) => {
     }
 };
 
-// code: 2024
+// code: 2030

@@ -11,13 +11,14 @@ const {
     destroy,
     adminGetAll,
     adminDestroy,
+    changePrivacy,
 } = require('../controllers/postController.js');
 
 const {
     verifyToken,
     isUser,
     isAdmin,
-    isAdminOrUser
+    isAdminOrUser,
 } = require('../middlewares/authMiddleware.js');
 
 router.get('/admin', verifyToken, isAdmin, adminGetAll);
@@ -29,6 +30,7 @@ router.post('/store/:id', verifyToken, isUser, store);
 router.post('/like/:id', verifyToken, isUser, like);
 router.post('/create', verifyToken, isUser, create);
 router.put('/:id', verifyToken, isUser, update);
+router.put('/privacy/:id', verifyToken, isUser, changePrivacy);
 router.delete('/:id', verifyToken, isUser, destroy);
 
 router.get('/', verifyToken, isUser, getAll);
