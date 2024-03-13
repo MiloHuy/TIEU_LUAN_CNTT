@@ -1,6 +1,6 @@
 import { useDisclosure } from "@nextui-org/react";
 import { setInfoPost, setStatusPost } from "app/slice/post/post.slice";
-import PropagateLoader from "components/propagate-loading";
+import PropagateLoader from "components/loading/propagate-loading";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";

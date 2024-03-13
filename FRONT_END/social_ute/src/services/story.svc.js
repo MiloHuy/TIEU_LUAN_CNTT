@@ -4,6 +4,9 @@ export const API_STORY_ENDPOINT = {
   GET: {
     all_story: "/stories",
   },
+  POST: {
+    create_story: "/stories/create",
+  },
 };
 
 export const getAllStory = async () => {

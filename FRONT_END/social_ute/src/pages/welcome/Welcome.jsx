@@ -13,7 +13,7 @@ const Welcome = () => {
     const Id = getUserIdFromCookie()
 
     return (
-        <div className={`w-screen h-screen gap-3 flex bg-background text-primary ${darkmode}`}>
+        <div className={`w-screen h-screen gap-3 flex bg-background text-primary ${darkmode} `}>
             <div className='w-[20vw] border-r'>
                 <SidebarUser
                     userID={Id}
@@ -21,7 +21,7 @@ const Welcome = () => {
                     className='relative h-full' />
             </div>
 
-            <div className={`min-w-[80vw] max-w-[80vw] ${darkmode}`}>
+            <div className={`min-w-[80vw] max-w-[80vw] ${darkmode} `}>
                 <Outlet />
             </div>
         </div>

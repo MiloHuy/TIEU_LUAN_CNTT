@@ -1,178 +1,195 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
-import { Button } from '@nextui-org/react'
 import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
+import { Button } from 'components/button'
 import Input from 'components/input'
 import { SSOCOOKIES } from 'constants/app.const'
 import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
+import { Eye, Loader2, Smartphone } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
 import { checkCodeInArray } from 'utils/code-error.utils'
 import { object, string } from 'yup'
 
 const FormLogin = (props) => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [userData, setUserData] = useState()
-    const [isDisabled, setIsDisabled] = useState(true)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [isDisabled, setIsDisabled] = useState(false)
+  const [loading, setIsLoding] = useState(false)
 
-    const initFormLogin = {
-        phone_number: '',
-        pass_word: ''
+  const initFormLogin = {
+    phone_number: '',
+    pass_word: ''
+  }
+  const [formLogin, setFormLogin] = useState(initFormLogin)
+
+  const handleCheckRole = (role) => {
+    if (role === 1) {
+      navigate('/welcome')
     }
-    const [formLogin, setFormLogin] = useState(initFormLogin)
-
-    const handleCheckRole = (role) => {
-        if (role === 1) {
-            navigate('/welcome')
-        }
-        if (role === 0) {
-            navigate('/manage')
-        }
+    if (role === 0) {
+      navigate('/manage')
     }
+  }
 
-    const handleSubmitLogin = async (e) => {
-        e.preventDefault()
+  const handleSubmitLogin = async (e) => {
+    e.preventDefault()
 
-        try {
-            const userData = await login(values)
-            console.log('User data: ', userData)
-            setUserData(userData.data)
-            dispatch(setInfoUser({ ...userData }))
+    try {
+      setIsLoding(true)
+      setIsDisabled(true)
 
-            const { role_id } = userData.user
+      const userData = await login(values)
 
-            handleCheckRole(role_id)
+      setIsDisabled(false)
+      setIsLoding(false)
 
-            Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
-            Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
+      dispatch(setInfoUser({ ...userData }))
 
-            toast.success('Đăng nhập thành công!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-            // setTimeout(() => { navigate('/welcome') }, 2000)
+      const { role_id } = userData.user
+      handleCheckRole(role_id)
 
-        } catch (err) {
-            console.error(err)
+      Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
+      Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
 
-            const { code } = err.response.data
+      toast.success('Đăng nhập thành công!!!', {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (err) {
+      setIsLoding(false)
 
-            const messageError = checkCodeInArray(ERROR_LOGIN, code)
+      const { code } = err.response.data
+      const messageError = checkCodeInArray(ERROR_LOGIN, code)
 
-            toast.error(messageError, {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
+      toast.error(messageError, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
+  }
 
-    const handleInput = (e) => {
-        setFormLogin({ ...formLogin, [e.target.name]: e.target.value })
-    }
+  const handleInput = (e) => {
+    setFormLogin({ ...formLogin, [e.target.name]: e.target.value })
+  }
 
-    const handleOpenLogin = () => {
-        props.handleFunction('hidden')
-    }
+  const formLabel = useMemo(() => ({
+    phone_number: 'Số điện thoại',
+    pass_word: 'Mật khẩu',
+  }), [])
 
-    const formLabel = useMemo(() => ({
-        phone_number: 'Số điện thoại',
-        pass_word: 'Mật khẩu',
-    }), [])
-
-    const formLoginSchema = useMemo(() => {
-        return object().shape({
-            phone_number: string().typeError(`${formLabel.phone_number}`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
-            pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
-        })
-    }, [formLabel])
-
-    const formik = useFormik({
-        initialValues: formLogin,
-        validationSchema: formLoginSchema,
-        handleChange: { handleInput },
-        handleSubmit: { handleSubmitLogin }
+  const formLoginSchema = useMemo(() => {
+    return object().shape({
+      phone_number: string().typeError(`${formLabel.phone_number}`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
+      pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
     })
+  }, [formLabel])
 
-    const { values, errors } = formik
+  const formik = useFormik({
+    initialValues: formLogin,
+    validationSchema: formLoginSchema,
+    handleChange: { handleInput },
+    handleSubmit: { handleSubmitLogin }
+  })
 
-    useEffect(() => {
-        if (Object.keys(errors).length === 0) {
-            setIsDisabled(false)
-        }
-        else {
-            setIsDisabled(true)
-        }
-    }, [errors])
+  const { values, errors } = formik
 
-    return (
-        <form
-            className={clsx('h-full w-full flex flex-col items-center justify-center gap-3', props.className)}
-            onSubmit={formik.handleSubmit}
-        >
-            <h1 className='text-2xl text-black font-bold font-nunito_sans text-center'>
-                ĐĂNG NHẬP
-            </h1>
+  useEffect(() => {
+    if (Object.keys(errors).length === 0) {
+      setIsDisabled(false)
+    }
+    else {
+      setIsDisabled(true)
+    }
+  }, [errors])
 
-            <div className='w-full px-3 grid grid-cols-1 gap-8'>
-                <Input
-                    name='phone_number'
-                    type='text'
-                    className='text-sm font-nunito_sans mx-0 rounded-sm '
-                    errorMessage={errors?.phone_number}
-                    placeholder='Vui lòng nhập số điện thoại'
-                    onChange={formik.handleChange}
-                />
+  return (
+    <form
+      className={clsx('h-full w-full flex flex-col items-center justify-center gap-y-8 overflow-hidden', props.className)}
+      onSubmit={formik.handleSubmit}
+    >
+      <h1 className='text-[40px] text-black font-extrabold font-quick_sans text-center'>
+        ĐĂNG NHẬP
+      </h1>
 
-                <Input
-                    name='pass_word'
-                    type='password'
-                    className=' text-sm  mx-0 rounded-sm w-full'
-                    placeholder="Mật khẩu"
-                    onChange={formik.handleChange}
-                />
-            </div>
+      <div className='w-full px-3 flex flex-col  gap-8 justify-center items-center'>
+        <Input
+          name='phone_number'
+          type='text'
+          className='text-sm font-nunito_sans mx-0 rounded-sm w-3/4'
+          errorMessage={errors?.phone_number}
+          placeholder='Vui lòng nhập số điện thoại'
+          onChange={formik.handleChange}
+          endContent={
+            <Smartphone size={27} strokeWidth={1.25} />
+          }
+        />
 
-            <div className='flex gap-2 justify-center w-4/5'>
-                <Button
-                    radius='sm'
-                    className=' w-4/5'>
-                    <Link
-                        className='text-md col-span-1 font-questrial'
-                        onClick={handleOpenLogin} href="#"
-                    >
-                        Đăng ký
-                    </Link>
-                </Button>
+        <Input
+          name='pass_word'
+          type='password'
+          className='text-sm  mx-0 rounded-sm w-3/4'
+          placeholder="Mật khẩu"
+          onChange={formik.handleChange}
+          endContent={
+            <Eye size={27} strokeWidth={1.25} />
+          }
+        />
+      </div>
 
-                <Button
-                    radius='sm'
-                    isDisabled={isDisabled}
-                    onClick={handleSubmitLogin}
-                    className='text-md font-questrial w-4/5'>
-                    Đăng nhập
-                </Button>
-            </div>
-        </form>
-    )
+      <div className='flex gap-2 justify-center w-3/4 px-3'>
+        <Button
+          radius='sm'
+          className='w-3/5 rounded-[40px] bg-[#1F1F24]'>
+          <Link
+            className='text-lg font-questrial font-bold'
+            to="/register"
+          >
+            Đăng ký
+          </Link>
+        </Button>
+
+        <Button
+          radius='sm'
+          isDisabled={isDisabled}
+          onClick={handleSubmitLogin}
+          className='w-3/5 rounded-[40px] text-lg bg-[#1C30E3]'>
+          {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : ''}
+          Đăng nhập
+        </Button>
+      </div>
+
+
+      <div className='font-quick_sans text-center text-lg grid gap-2 font-bold'>
+        <Link to='/forgot_password'>
+          <p className='hover:underline cursor-pointer'>
+            Bạn quên mật khẩu sao?
+          </p>
+        </Link>
+
+        <p className='cursor-pointer'>
+          Trở về trang chủ
+        </p>
+      </div>
+    </form>
+  )
 }
 
 export default FormLogin

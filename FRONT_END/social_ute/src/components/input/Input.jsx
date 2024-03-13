@@ -8,6 +8,7 @@ const MyInput = extendVariants(Input, {
                 inputWrapper: [
                     "bg-white",
                     "border",
+                    "border-black",
                     "shadow",
                     "transition-colors",
                     "focus-within:bg-primary",
@@ -15,7 +16,7 @@ const MyInput = extendVariants(Input, {
                     "data-[hover=true]:bg-zinc-100",
                     "group-data-[focus=true]:border-zinc-600",
                     // dark theme
-                    "dark:bg-primary",
+                    "dark:bg-black",
                     "dark:border-white",
                     "dark:data-[hover=true]:bg-zinc-900",
                     "dark:focus-within:bg-zinc-900",
@@ -48,8 +49,11 @@ const MyInput = extendVariants(Input, {
                 inputWrapper: "rounded",
             },
             sm: {
-                inputWrapper: "rounded-[4px]",
+                inputWrapper: "rounded-[8px]",
             },
+            lg: {
+                inputWrapper: "rounded-[15px]",
+            }
         },
         textSize: {
             base: {

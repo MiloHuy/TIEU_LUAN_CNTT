@@ -1,6 +1,6 @@
 import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
-import PropagateLoader from "components/propagate-loading/PropagateLoader";
+import PropagateLoader from "components/loading/propagate-loading/PropagateLoader";
 import ListFriendsUser from "features/list/list-friends-user";
 import ListPostUserDetail from 'features/list/list-post-user-detail';
 import ListStoryUserDetail from 'features/list/list-story-user-detail';
