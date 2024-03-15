@@ -18,12 +18,12 @@ const HeaderPostUser = ({ img, name, href, action, className }) => {
 
                 <div className='flex flex-col items-start'>
                     <Link to={href}>
-                        <p className='text-lg font-nunito_sans text-black dark:text-white font-bold'>
+                        <p className='text-lg font-lixend text-black dark:text-white'>
                             {name ? name : 'User'}
                         </p>
                     </Link>
 
-                    <p className='text-sm font-nunito_sans text-black dark:text-white font-bold '>
+                    <p className='text-sm font-quick_sans text-black dark:text-white'>
                         3 ngày
                     </p>
                 </div>

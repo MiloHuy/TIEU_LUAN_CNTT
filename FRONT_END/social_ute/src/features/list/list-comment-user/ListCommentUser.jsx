@@ -1,57 +1,38 @@
-import { Avatar, Button } from "@nextui-org/react";
-import { Heart } from 'lucide-react';
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { likeComment } from "services/post.svc";
 import { getFullName } from "utils/user.utils";
 
-const ListCommentUser = ({ comment }) => {
-    const [like, setLike] = useState(comment.liked)
-    const navigate = useNavigate()
+import ArrayEmpty from 'combine/array-empty';
+import LoadingComponent from "combine/loading-component";
+import AvatarComponent from "components/avatar/Avatar";
+import { TYPELOADING } from "constants/type.const";
 
-    const handleNaviageUser = () => {
-        navigate('')
-    }
+const ListCommentUser = ({ comments }) => {
 
-    const handleLikeComment = async (id) => {
-        try {
-            setLike(!like)
-            await likeComment(id)
+  return (
+    <LoadingComponent type={TYPELOADING.TITLE} condition={comments.length !== 0} title='Đang lấy dữ liệu'>
+      <ArrayEmpty arr={comments} title='Chưa có bình luận ở bài viết này'>
+        {
+          comments.map((comment) => {
+            return (
+              <div className="w-full flex justify-between">
+                <div className="flex flex-row gap-3 items-center text-sm text-black dark:text-white font-quick_sans font-bold">
+                  <AvatarComponent.Avatar>
+                    <AvatarComponent.AvatarImage src={comment.user_id?.avatar?.url} />
+                    <AvatarComponent.AvatarFallback>Img</AvatarComponent.AvatarFallback>
+                  </AvatarComponent.Avatar>
+
+                  <p className="hover:underline cursor-pointer">
+                    {getFullName(comment.user_id?.first_name, comment.user_id?.last_name)}
+                  </p>
+
+                  <p>{comment.comment_content}</p>
+                </div>
+              </div>
+            )
+          })
         }
-        catch (err) {
-            console.log("err: " + err)
-        }
-    }
-
-    return (
-        <div className="w-full flex justify-between">
-            <div className="flex flex-row gap-3 items-center">
-                <Avatar
-                    size="sm"
-                    src={comment.user_id.avatar.url} />
-
-                <p
-                    onClick={handleNaviageUser}
-                    className=" text-sm text-black dark:text-white font-nunito_sans font-bold hover:underline cursor-pointer">
-                    {getFullName(comment.user_id.first_name, comment.user_id.last_name)}
-                </p>
-
-                <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold ">{comment.comment_content}</p>
-
-            </div>
-
-            <Button
-                onClick={() => handleLikeComment(comment._id)}
-                isIconOnly
-                variant="light" >
-                <Heart
-                    fill={like === true ? 'red' : 'none'}
-                    size={16}
-                    strokeWidth={0.75} />
-            </Button>
-        </div>
-
-    )
+      </ArrayEmpty>
+    </LoadingComponent>
+  )
 }
 
 export default ListCommentUser

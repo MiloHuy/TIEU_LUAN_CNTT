@@ -153,7 +153,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Grid3X3 size={20} />
-                                        <span className="dark:text-white font-nunito_sans">
+                                        <span className="dark:text-white font-quick_sans">
                                             Bài viết
                                         </span>
                                     </div>
@@ -177,7 +177,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Book size={20} />
-                                        <span className="dark:text-white font-nunito_sans">Story</span>
+                                        <span className="dark:text-white font-quick_sans">Story</span>
                                     </div>
                                 }
                             >
@@ -189,7 +189,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Users size={20} />
-                                        <span className="dark:text-white font-nunito_sans">
+                                        <span className="dark:text-white font-quick_sans">
                                             Bạn bè
                                         </span>
                                     </div>
@@ -216,7 +216,7 @@ const HomeUser = () => {
                                             size={20}
                                             strokeWidth={1.5}
                                         />
-                                        <span className="dark:text-white text-black font-nunito_sans">
+                                        <span className="dark:text-white text-black font-quick_sans">
                                             Bài viết đã lưu
                                         </span>
                                     </div>

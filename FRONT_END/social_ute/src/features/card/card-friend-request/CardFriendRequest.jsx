@@ -118,11 +118,11 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                             <div
                                 onClick={() => handleNavigateFriend(request._id)}
                                 className="flex flex-col gap-2 h-full justify-center cursor-pointer">
-                                <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
+                                <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
                                     {getFullName(request.first_name, request.last_name)}
                                 </p>
 
-                                <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
+                                <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
                                     {request.department}
                                 </p>
                             </div>
@@ -135,7 +135,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                                     variant="ghost"
                                     radius="sm"
                                 >
-                                    <p className='text-sm font-nunito_sans font-bold gap-2'>
+                                    <p className='text-sm font-quick_sans font-bold gap-2'>
                                         Chấp nhận yêu cầu
                                     </p>
                                 </Button>
@@ -147,7 +147,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                                     variant="ghost"
                                     radius="sm"
                                 >
-                                    <p className='text-sm font-nunito_sans font-bold gap-2'>
+                                    <p className='text-sm font-quick_sans font-bold gap-2'>
                                         Hủy yêu cầu
                                     </p>
                                 </Button>
@@ -158,7 +158,7 @@ const CardFriendRequest = ({ friends, handleCallback }) => {
                 )
             })
             :
-            <p className='text-black dark:text-white font-nunito_sans text-md'>
+            <p className='text-black dark:text-white font-quick_sans text-md'>
                 KHÔNG CÓ YÊU CẦU KẾT BẠN
             </p>
     )

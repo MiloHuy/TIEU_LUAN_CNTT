@@ -276,7 +276,7 @@ const HeaderHome = (props) => {
                 <div className="col-span-5">
                     <div className='grid grid-rows-2 gap-6'>
                         <div className="flex gap-2 w-full items-center">
-                            <p className='dark:text-white text-black font-nunito_sans text-center'>
+                            <p className='dark:text-white text-black font-quick_sans text-center'>
                                 {userName}
                             </p>
 
@@ -287,7 +287,7 @@ const HeaderHome = (props) => {
                                             trigger={
                                                 <Button
                                                     radius="sm"
-                                                    className="w-50 h-7 font-nunito_sans font-bold"
+                                                    className="w-50 h-7 font-quick_sans font-bold"
                                                 >
                                                     Chỉnh sửa trang cá nhân
                                                 </Button>
@@ -452,18 +452,18 @@ const HeaderHome = (props) => {
 
                         <div className="flex flex-row gap-7">
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-nunito_sans text-black">{count_posts}</p>
-                                <p className="dark:text-white font-nunito_sans text-black">Bài viết</p>
+                                <p className="dark:text-white font-quick_sans text-black">{count_posts}</p>
+                                <p className="dark:text-white font-quick_sans text-black">Bài viết</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-nunito_sans text-black">{count_followers}</p>
-                                <p className="dark:text-white font-nunito_sans text-black">người theo dõi</p>
+                                <p className="dark:text-white font-quick_sans text-black">{count_followers}</p>
+                                <p className="dark:text-white font-quick_sans text-black">người theo dõi</p>
                             </div>
 
                             <div className="flex gap-1">
-                                <p className="dark:text-white font-nunito_sans text-black">Đang theo dõi:</p>
-                                <p className="dark:text-white font-nunito_sans text-black">{`${count_followings || 0} người dùng`}</p>
+                                <p className="dark:text-white font-quick_sans text-black">Đang theo dõi:</p>
+                                <p className="dark:text-white font-quick_sans text-black">{`${count_followings || 0} người dùng`}</p>
                             </div>
                         </div>
                     </div>

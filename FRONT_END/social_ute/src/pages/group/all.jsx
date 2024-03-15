@@ -5,12 +5,12 @@ import ListGroupAttended from "features/list/list-group-attended"
 const AllGroup = () => {
     return (
         <div className='w-full h-full p-3 flex flex-col gap-4 overflow-auto'>
-            <h1 className="text-black dark:text-white font-lixend text-[40px]">
+            <h1 className="text-black dark:text-white font-quick_sans text-[40px]">
                 Nhóm bạn đã tham gia
             </h1>
 
             <div className='flex w-full justify-between gap-2'>
-                <h1 className="text-black dark:text-white font-nunito_sans font-bold text-[20px]">
+                <h1 className="text-black dark:text-white font-quick_sans font-bold text-[20px]">
                     Tất cả các nhóm đã tham gia (20)
                 </h1>
 

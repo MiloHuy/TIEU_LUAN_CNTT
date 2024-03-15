@@ -135,7 +135,7 @@ const FormUpdateUser = (props) => {
                 onSubmit={formik.handleSubmit}
             >
                 <div className="w-full flex justify-start items-start">
-                    <h1 className="text-2xl font-bold font-nunito_sans text-start text-white dark:text-black">
+                    <h1 className="text-2xl font-bold font-quick_sans text-start text-white dark:text-black">
                         CẬP NHẬT THÔNG TIN CÁ NHÂN
                     </h1>
                 </div>
@@ -148,7 +148,7 @@ const FormUpdateUser = (props) => {
                         defaultValue={updateUser.user.first_name}
                         label={formLabel.first_name}
                         value={values['first_name']}
-                        className=" text-white h-15 text-lg font-nunito_sans flex-1"
+                        className=" text-white h-15 text-lg font-quick_sans flex-1"
                         onChange={formik.handleChange}
                     />
 
@@ -159,7 +159,7 @@ const FormUpdateUser = (props) => {
                         label={formLabel.last_name}
                         value={values['last_name']}
                         defaultValue={updateUser.user.last_name}
-                        className="w-full text-white  h-15 text-lg font-nunito_sans"
+                        className="w-full text-white  h-15 text-lg font-quick_sans"
                         onChange={formik.handleChange}
                     />
                 </div>
@@ -172,7 +172,7 @@ const FormUpdateUser = (props) => {
                         label={formLabel.phone_number}
                         errorMessage={errors?.phone_number}
                         defaultValue={updateUser.user.phone_number}
-                        className="w-full text-white h-15 text-lg font-nunito_sans"
+                        className="w-full text-white h-15 text-lg font-quick_sans"
                         onChange={formik.handleChange}
                     />
 
@@ -183,7 +183,7 @@ const FormUpdateUser = (props) => {
                         label={formLabel.id}
                         errorMessage={errors?.id}
                         defaultValue={updateUser.user.id}
-                        className="w-full text-white h-15 text-lg font-nunito_sans"
+                        className="w-full text-white h-15 text-lg font-quick_sans"
                         onChange={formik.handleChange}
                     />
                 </div>
@@ -196,7 +196,7 @@ const FormUpdateUser = (props) => {
                     defaultValue={updateUser.user.gmail}
                     placeholder="a@hcmute.edu.vn"
                     errorMessage={errors?.gmail}
-                    className="w-full text-white h-15 text-lg font-nunito_sans"
+                    className="w-full text-white h-15 text-lg font-quick_sans"
                     onChange={formik.handleChange}
                 />
 
@@ -206,7 +206,7 @@ const FormUpdateUser = (props) => {
                         placeholder="Select Faculty"
                         onChange={handleInputSelectFaculity}
                     >
-                        <SelectTrigger className="w-full text-white h-15 text-lg font-nunito_sans">
+                        <SelectTrigger className="w-full text-white h-15 text-lg font-quick_sans">
                             <SelectValue placeholder="CHỌN KHOA" />
                         </SelectTrigger>
 
@@ -231,7 +231,7 @@ const FormUpdateUser = (props) => {
                         placeholder="Select department"
                         onChange={handleInputSelectDepartment}
                     >
-                        <SelectTrigger className="w-full text-white h-15 text-lg font-nunito_sans">
+                        <SelectTrigger className="w-full text-white h-15 text-lg font-quick_sans">
                             <SelectValue placeholder="CHỌN PHÒNG BAN" />
                         </SelectTrigger>
 
@@ -257,7 +257,7 @@ const FormUpdateUser = (props) => {
                 <div className="w-full flex justify-end">
                     <Button
                         isLoading={isLoading}
-                        className="w-[20vw] text-lg font-nunito_sans font-bold"
+                        className="w-[20vw] text-lg font-quick_sans font-bold"
                         onClick={handleUpdateForm}
                         variant='outline'
                         type='submit'

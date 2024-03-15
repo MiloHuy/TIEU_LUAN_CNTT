@@ -133,7 +133,7 @@ const FormLogin = (props) => {
         <Input
           name='phone_number'
           type='text'
-          className='text-sm font-nunito_sans mx-0 rounded-sm w-3/4'
+          className='text-sm font-quick_sans mx-0 rounded-sm w-3/4'
           errorMessage={errors?.phone_number}
           placeholder='Vui lòng nhập số điện thoại'
           onChange={formik.handleChange}

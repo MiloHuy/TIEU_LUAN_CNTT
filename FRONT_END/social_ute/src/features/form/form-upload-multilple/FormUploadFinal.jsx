@@ -132,7 +132,7 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
           />
         </div>
 
-        <div className='flex flex-col h-full w-full font-nunito_sans'>
+        <div className='flex flex-col h-full w-full font-quick_sans'>
           <p className=' text-2xl font-bold text-center p-4'>Hoàn thành</p>
 
           <hr className='border border-black' />

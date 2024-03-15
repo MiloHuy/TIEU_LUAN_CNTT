@@ -15,7 +15,7 @@ const Clock = () => {
 
     return (
         <div className="w-[220px] border dark:border-white border-black rounded-lg flex justify-between px-2 items-center h-full">
-            <h1 className="dark:text-white text-black font-nunito_sans text-2xl">
+            <h1 className="dark:text-white text-black font-quick_sans text-2xl">
                 {currentTime}
             </h1>
 

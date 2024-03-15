@@ -54,7 +54,7 @@ const PopupNofication = ({ trigger }) => {
             <PopoverContent className="w-[470px] h-[500px] overflow-auto">
                 {(titleProps) => (
                     <div className=" py-1 w-full h-full flex flex-col gap-2">
-                        <p className="text-2xl font-bold text-white font-nunito_sans" {...titleProps}>
+                        <p className="text-2xl font-bold text-white font-quick_sans" {...titleProps}>
                             THÔNG BÁO
                         </p>
 
@@ -103,7 +103,7 @@ const PopupNofication = ({ trigger }) => {
                                                                     className="text-white"
                                                                     endContent={<CheckCheck size={16} strokeWidth={0.75} />}
                                                                 >
-                                                                    <p className='text-md font-nunito_sans font-bold gap-2'>
+                                                                    <p className='text-md font-quick_sans font-bold gap-2'>
                                                                         Đánh dấu là đã đọc
                                                                     </p>
                                                                 </DropdownItem>

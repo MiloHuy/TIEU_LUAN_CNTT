@@ -22,7 +22,7 @@ const ProfileUser = (props) => {
             <Avatar
                 isBordered
                 src={user.avatar.url} />
-            <h2 className="text-xl text-black dark:text-white font-nunito_sans">{userName}</h2>
+            <h2 className="text-xl text-black dark:text-white font-quick_sans">{userName}</h2>
         </div>
     )
 }

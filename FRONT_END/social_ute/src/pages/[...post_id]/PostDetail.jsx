@@ -130,7 +130,7 @@ const PostDetail = () => {
             //                         href={postInfo.post.user_id._id !== ID ? `/welcome/home-guest/${postInfo.post.user_id._id}` : `/welcome/home-user/${ID}`}
             //                         underline="active"
             //                     >
-            //                         <p className="text-md hover:underline text-md text-black dark:text-white font-nunito_sans  ">
+            //                         <p className="text-md hover:underline text-md text-black dark:text-white font-quick_sans  ">
             //                             {userName}
             //                         </p>
             //                     </Link>
@@ -206,12 +206,12 @@ const PostDetail = () => {
 
             //                 <div className='flex flex-col gap-2 px-2'>
             //                     <div className="flex-row flex gap-1">
-            //                         <h2 className='text-md text-black dark:text-white font-nunito_sans '>{postInfo.post.likes}</h2>
-            //                         <span className='text-md text-black dark:text-white font-nunito_sans '>lượt thích</span>
+            //                         <h2 className='text-md text-black dark:text-white font-quick_sans '>{postInfo.post.likes}</h2>
+            //                         <span className='text-md text-black dark:text-white font-quick_sans '>lượt thích</span>
             //                     </div>
 
             //                     <div className="flex-row flex gap-1">
-            //                         <h2 className="text-md text-black dark:text-white  font-nunito_sans ">{postInfo.post.post_description}</h2>
+            //                         <h2 className="text-md text-black dark:text-white  font-quick_sans ">{postInfo.post.post_description}</h2>
             //                     </div>
 
             //                     <Input variant='underlined' placeholder="Thêm bình luận..." />

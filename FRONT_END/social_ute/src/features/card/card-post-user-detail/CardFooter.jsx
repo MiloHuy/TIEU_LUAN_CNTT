@@ -149,11 +149,11 @@ const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPos
             <div className='flex flex-col gap-2'>
                 <div className="flex-row flex gap-1 ">
                     <h2
-                        className='text-md text-black dark:text-white font-nunito_sans  translate-x-2'>
+                        className='text-md text-black dark:text-white font-quick_sans  translate-x-2'>
                         {number_likes}
                     </h2>
 
-                    <span className='text-md text-black dark:text-white font-nunito_sans  translate-x-2'>
+                    <span className='text-md text-black dark:text-white font-quick_sans  translate-x-2'>
                         lượt thích
                     </span>
                 </div>

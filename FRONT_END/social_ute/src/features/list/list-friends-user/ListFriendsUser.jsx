@@ -17,7 +17,7 @@ const ListFriendsUser = ({ friends }) => {
                 }
             </div >
             :
-            <p className="text-black dark:text-white font-nunito_sans">
+            <p className="text-black dark:text-white font-quick_sans">
                 Hiện không có bạn bè nào ở đây cả.
             </p>
 

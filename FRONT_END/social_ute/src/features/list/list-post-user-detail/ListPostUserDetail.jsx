@@ -68,7 +68,7 @@ const ListPostUserDetail = (props) => {
             </motion.div >
             :
             <div className="w-full h-full flex items-center justify-center">
-                <p className="text-black dark:text-white font-nunito_sans text-md">
+                <p className="text-black dark:text-white font-quick_sans text-md">
                     Chưa có bài viết hiện tại
                 </p>
             </div>

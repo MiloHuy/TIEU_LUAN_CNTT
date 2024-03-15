@@ -164,7 +164,7 @@ const FormUploadImageFile = () => {
                     </svg>
                 }
                 onClick={handleCreatePost}
-                className='text-lg font-nunito_sans w-1/2'>
+                className='text-lg font-quick_sans w-1/2'>
                 Đăng
             </Button>
         </form>
