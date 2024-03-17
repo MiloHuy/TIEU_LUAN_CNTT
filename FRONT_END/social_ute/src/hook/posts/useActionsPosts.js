@@ -1,5 +1,6 @@
+import { likePost, storePost } from "services/post/api-post.svc";
+
 const { useCallback, useState } = require("react");
-const { likePost, storePost } = require("services/post.svc");
 
 export const useActionsPosts = ({ liked_post, saved_posts, number_likes }) => {
   const initStatusPost = {

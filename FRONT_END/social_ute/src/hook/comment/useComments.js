@@ -1,18 +1,21 @@
 import { ERR_POST } from "constants/error.const";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import { getCommentPost, postComment } from "services/post.svc";
+import { getCommentPost } from "services/post/api-get.svc";
 import { checkCodeInArray } from "utils/code-error.utils";
 
 export const useComments = () => {
   const [comments, setComment] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchAllComments = useCallback(async (post_id) => {
+  const fetchAllComments = useCallback(async (postId) => {
     try {
-      const allCommnent = await getCommentPost(post_id);
+      setIsLoading(true);
+      const allCommnent = await getCommentPost(postId);
       setComment(allCommnent.data.comments);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       const { code } = error.response.data;
 
       const messageError = checkCodeInArray(ERR_POST, code);
@@ -31,22 +34,10 @@ export const useComments = () => {
     }
   }, []);
 
-  const handlePostComment = useCallback(async (post_id, commentInput) => {
-    try {
-      setIsLoading(true);
-      await postComment(post_id, { comment_content: commentInput });
-
-      setIsLoading(false);
-    } catch (err) {
-      console.log("err: " + err);
-    }
-  }, []);
-
   return {
     isLoading,
     comments,
 
     fetchAllComments,
-    handlePostComment,
   };
 };

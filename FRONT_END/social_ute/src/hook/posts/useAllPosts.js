@@ -1,5 +1,6 @@
+import { getAllPost } from "services/post/api-get.svc";
+
 const { useState, useRef, useCallback } = require("react");
-const { getAllPost } = require("services/post.svc");
 
 export const useAllPost = () => {
   const [posts, setPosts] = useState([]);

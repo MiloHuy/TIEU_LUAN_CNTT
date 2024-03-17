@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { deletePostAdmin } from "services/admin.svc";
-import { deletePost } from "services/post.svc";
+import { deletePost } from "services/post/api-delete.svc";
 import ModalConfirm from "../modal-confirm";
 
 const ModalShowMoreOptions = ({ isOpenShowMore, onOpenChangeShowMore }) => {

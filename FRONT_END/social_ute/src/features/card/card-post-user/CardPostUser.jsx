@@ -15,12 +15,12 @@ const CardPostUser = (props) => {
     post_avatar,
     liked,
     number_likes,
-    save_posts } = props
+    save_posts, privacy } = props
 
   const userName = getFullName(user_id?.first_name, user_id?.last_name);
   const ID = getUserIdFromCookie();
 
-  const { postDetail, fetchPostDetails, } = usePostDetail({ post_id })
+  const { postDetail, fetchPostDetails, } = usePostDetail()
 
   return (
     <div className='max-w-[40vw] w-[40vw] p-2'>
@@ -29,11 +29,13 @@ const CardPostUser = (props) => {
           className='min-h-[8vh] h-[8vh] rounded-[30px] w-[34vw]'
           img={post_avatar}
           name={userName}
+          privacy={privacy}
           href={user_id._id !== ID ? `/welcome/home-guest/${user_id._id}` : `/welcome/home-user/${ID}`}
           action={
             <DropdownShowMoreOptions
-              user_id={user_id}
+              user_id={user_id._id}
               post_id={post_id}
+              privacy={privacy}
             />
           }
         />
@@ -49,6 +51,7 @@ const CardPostUser = (props) => {
             fetchPostDetails={fetchPostDetails}
 
             postDetail={postDetail}
+            post_id={post_id}
             postDescription={post_description}
             userName={userName}
             liked_post={liked}

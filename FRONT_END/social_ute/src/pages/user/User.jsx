@@ -45,7 +45,7 @@ const User = () => {
         </div>
 
         <div className="flex flex-col items-center pt-3 gap-3 ">
-          <LoadingComponent type={TYPELOADING.SPINNER} condition={posts}>
+          <LoadingComponent type={TYPELOADING.TITLE} condition={posts} title='Đang lấy dữ liệu'>
             <ListPostUser
               posts={posts} />
           </LoadingComponent>

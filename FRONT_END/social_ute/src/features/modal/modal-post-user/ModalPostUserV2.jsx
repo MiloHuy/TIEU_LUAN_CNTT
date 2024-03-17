@@ -6,25 +6,21 @@ import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "components/resizable";
 import { PostType } from "constants/post.const";
 import { TYPELOADING } from "constants/type.const";
+import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import ListCommentUser from "features/list/list-comment-user";
-import { useComments } from "hook/posts/useComments";
+import { usePushComment } from "hook/comment/usePushComment";
 import HeaderPostUser from "layout/header-post-user";
-import { useEffect } from "react";
 import FieldAvatarNameTimeDes from "./FieldModalPostUser/FieldAvatarNameTimeDes";
 
 const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
-  const { comments, fetchAllComments, handlePostComment } = useComments()
+
+  const { isLoading, handlePostComment } = usePushComment({ postId: postDetail?._id })
 
   const handlePostCommnentInput = (commentInput) => {
     if (!commentInput) return;
-    handlePostComment(postDetail._id, commentInput)
+
+    handlePostComment(commentInput)
   }
-
-  useEffect(() => {
-    if (!postDetail) return;
-
-    fetchAllComments(postDetail._id)
-  }, [fetchAllComments, postDetail])
 
   return (
     <Dialog>
@@ -59,6 +55,12 @@ const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
                         className='min-h-[8vh] h-[8vh] rounded-[30px] w-[40vw]'
                         img={postDetail.user_id.avatar.url}
                         name={userName}
+                        action={
+                          <DropdownShowMoreOptions
+                            user_id={postDetail.user_id._id}
+                            post_id={postDetail._id}
+                          />
+                        }
                       />
                     </div>
                   </ResizablePanel>
@@ -73,10 +75,11 @@ const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
                         postDescription={postDetail.post_description}
                       />
 
-                      <ListCommentUser comments={comments} />
+                      <ListCommentUser postId={postDetail?._id} />
 
                       <div className='grid gap-1'>
                         <InputPush
+                          isLoading={isLoading}
                           onSubmit={handlePostCommnentInput}
                           className={clsx(
                             'px-1',

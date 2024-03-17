@@ -3,7 +3,7 @@ import { selectPostId, selectStatusLikedPost, selectStatusNumberLikes, selectSta
 import { Bookmark, Heart, MessageCircle, SendHorizontal } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { likePost, postComment, storePost } from "services/post.svc";
+import { likePost, postComment, storePost } from "services/post/api-post.svc";
 
 const CardFooter = ({ signalFlag, handleCallbackLikePost, handleCallbackSavedPost }) => {
     const [commentInput, setCommentInput] = useState({

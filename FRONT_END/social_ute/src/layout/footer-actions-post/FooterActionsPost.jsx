@@ -9,6 +9,7 @@ const FooterActionsPost = (
   {
     fetchPostDetails,
     postDetail,
+    post_id,
     hideComment = false,
     userName,
     postDescription,
@@ -21,6 +22,7 @@ const FooterActionsPost = (
   const {
     numberLikes,
     statusPost,
+
     handleLikePost,
     handleSavePost, } = useActionsPosts({ liked_post, number_likes, saved_posts })
 
@@ -29,7 +31,7 @@ const FooterActionsPost = (
       <div className={cn('flex justify-between px-1', className)}>
         <div className='flex flex-row gap-3'>
           <Button className='w-[20px]' variant="ghost"
-            onClick={handleLikePost}
+            onClick={() => handleLikePost(post_id)}
           >
             <Heart
               strokeWidth={statusPost.isLiked ? 0 : 1.5}
@@ -44,7 +46,7 @@ const FooterActionsPost = (
               <ModalPostUserV2
                 trigger={
                   <Button
-                    onClick={fetchPostDetails}
+                    onClick={() => fetchPostDetails(post_id)}
                     className='w-[20px]' variant="ghost">
                     <MessageCircle
                       size={20}
@@ -66,7 +68,7 @@ const FooterActionsPost = (
         </div>
 
         <Button className='w-[20px]' variant="ghost"
-          onClick={handleSavePost}
+          onClick={() => handleSavePost(post_id)}
         >
           <Bookmark
             size={20}
@@ -85,8 +87,8 @@ const FooterActionsPost = (
         <div className="flex w-full max-h-[30px]">
           <p className="line-clamp-3 truncate ...">
             {userName}:
-            <span className="font-normal pl-1">{postDescription}</span>
           </p>
+          <p>{postDescription} </p>
         </div>
       </div>
     </>

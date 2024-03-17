@@ -3,7 +3,7 @@ import AvatarComponent from "components/avatar";
 
 const FieldAvatarNameTimeDes = ({ imgAvatar, fullName, className, postDescription }) => {
   return (
-    <div className={clsx('w-full h-[10vh] flex items-start gap-2 overflow-auto', className)}>
+    <div className={clsx('w-full h-[10vh] flex items-start gap-2', className)}>
       <AvatarComponent.Avatar>
         <AvatarComponent.AvatarImage src={imgAvatar} />
         <AvatarComponent.AvatarFallback>Img</AvatarComponent.AvatarFallback>
@@ -11,14 +11,15 @@ const FieldAvatarNameTimeDes = ({ imgAvatar, fullName, className, postDescriptio
 
       <div className='grid text-sm text-black dark:text-white font-quick_sans'>
         <div className='flex gap-2'>
-          <p className="font-bold hover:underline cursor-pointer">
-            {fullName}:
+          <p className="font-bold hover:underline cursor-pointer gap-2">
+            {fullName}
           </p>
-          <p>{postDescription}</p>
+          <p >3 ngày</p>
         </div>
 
-        <p>3 ngày</p>
+        <p className="line-clamp-2">{postDescription}</p>
       </div>
+
     </div>
   )
 }

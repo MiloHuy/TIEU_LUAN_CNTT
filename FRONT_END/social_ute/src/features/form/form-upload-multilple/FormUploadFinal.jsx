@@ -1,21 +1,16 @@
 import clsx from "clsx"
 import { Button } from "components/button"
 import CaroselVersion2 from "components/carousel/Carosel-V2"
-import {
-  Select, SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "components/select"
 import { Textarea } from "components/textarea"
 import { ERROR_SYSTEM, ERR_CREATE_POST } from "constants/error.const"
 import { PostType } from "constants/post.const"
+import SelectPrivacy from "features/select/select-privacy"
+import { PrivacyPost } from "features/select/select-privacy/SelectPrivacy"
 import { useFormik } from "formik"
-import { Loader2, LockKeyhole } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
-import { createPost } from "services/post.svc"
+import { createPost } from "services/post/api-post.svc"
 import { checkCodeInArray } from "utils/code-error.utils"
 import { handleRevokeBlobUrl } from "utils/file.utils"
 
@@ -24,7 +19,8 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
 
   const initFormUpload = {
     post_description: '',
-    post_img: ''
+    post_img: '',
+    privacy: PrivacyPost.FOLLOWER
   }
   const [formUpload, setFormUpload] = useState(initFormUpload)
 
@@ -44,8 +40,8 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
   }, [stepForm])
 
   const handleInput = (e) => {
-    setFormUpload({ ...formUpload, [e.target.name]: e.target.value })
-  }
+    setFormUpload({ ...formUpload, [e.target.name]: e.target.value, });
+  };
 
   const handleCreatePost = async () => {
     try {
@@ -56,6 +52,7 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
       for (const file of files) {
         formData.append('post_img', file)
       }
+      formData.append('privacy', formUpload['privacy'])
 
       await createPost(formData)
       setIsLoading(false)
@@ -115,14 +112,13 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
     handleSubmit: { handleCreatePost }
   })
 
-  const { values, errors } = formik
+  const { values, errors, } = formik
 
   return (
     <div className={clsx(
       'absolute top-0 right-0 min-h-[80vh] min-w-[55vw]',
       `${checkStepToNextForm} transform duration-500 ease-in`,
-      className)}
-    >
+      className)}>
       <div className="grid grid-cols-2 max-h-[80vh] min-w-[55vw] overflow-auto">
         <div className='w-full h-full'>
           <CaroselVersion2
@@ -150,24 +146,12 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
             />
 
             <div className='flex gap-3 w-full justify-between items-center min-w-[50px]:flex-col'>
-              <p className='text-lg'>Phạm vi bài viết:</p>
-
-              <Select disabled={loading}>
-                <SelectTrigger className='w-1/2'>
-                  <SelectValue placeholder="Chọn phạm vi" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem className='text-md flex gap-1 w-full' value="0">
-                      <p className='text-md'>Công khai</p>
-                      <LockKeyhole size={16} strokeWidth={1.25} />
-                    </SelectItem>
-                    <SelectItem className='text-md' value="1">
-                      <p className='text-md'>Riêng tư</p>
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <SelectPrivacy
+                title='Phạm vi:'
+                loading={loading}
+                values={values['privacy']}
+                handleChange={setFormUpload}
+              />
             </div>
 
             <Button

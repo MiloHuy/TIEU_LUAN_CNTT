@@ -15,6 +15,7 @@ const ListPostUser = ({ posts }) => {
             liked={post.liked}
             number_likes={post.likes}
             save_posts={post.stored}
+            privacy={post.privacy}
           />
 
         )
