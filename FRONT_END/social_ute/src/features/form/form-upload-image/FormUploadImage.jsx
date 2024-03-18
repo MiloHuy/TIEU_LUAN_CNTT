@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createPost } from "services/post.svc";
+import { createPost } from "services/post/api-post.svc";
 
 const FormUploadImage = () => {
     const [selectFiled, setSelectFiles] = useState('')

@@ -45,7 +45,7 @@ const FormPreview = ({ className, stepForm, handleNextForm, files, setFilesAndIm
       {
         images && images.length !== 0
           ?
-          <div className='grid grid-cols-2 max-h-[80vh] min-w-[55vw] overflow-auto'>
+          <div className='grid grid-cols-2 max-h-[80vh] min-w-[55vw] font-quick_sans overflow-auto'>
             <div className='h-auto w-full grid gap-3'>
               <img
                 src={images[indexImg]}
@@ -56,7 +56,7 @@ const FormPreview = ({ className, stepForm, handleNextForm, files, setFilesAndIm
               <hr className='border border-black' />
 
               <div className='w-full flex flex-col items-center gap-3'>
-                <p className='font-nunito_sans text-md font-bold'>
+                <p className='font-quick_sans text-md font-bold'>
                   Bạn đã chọn : {images.length} ảnh
                 </p>
 
@@ -69,7 +69,7 @@ const FormPreview = ({ className, stepForm, handleNextForm, files, setFilesAndIm
             </div>
 
             <div className='flex flex-col h-full w-full'>
-              <p className='font-nunito_sans text-2xl font-bold text-center p-4'>Xem trước</p>
+              <p className='text-2xl font-bold text-center p-4'>Xem trước</p>
 
               <hr className='border border-black' />
 
@@ -77,7 +77,7 @@ const FormPreview = ({ className, stepForm, handleNextForm, files, setFilesAndIm
                 {
                   images.map((image, i) => {
                     return (
-                      <div className='w-full min-h-[30vh]'>
+                      <div className='w-full min-h-[30vh] grid gap-2'>
                         <img
                           loading="lazy"
                           src={image}
@@ -85,6 +85,8 @@ const FormPreview = ({ className, stepForm, handleNextForm, files, setFilesAndIm
                           className='object-fit rounded-lg cursor-pointer h-[30vh] w-full'
                           onClick={() => setIndexImg(i)}
                         />
+
+                        <p className='text-sm font-bold text-center'>Ảnh {i}</p>
                       </div>
                     )
                   })

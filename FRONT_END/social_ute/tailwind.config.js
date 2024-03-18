@@ -69,7 +69,7 @@ module.exports = {
 
         bg_main: "#000000",
         text_color_gray: "#973737",
-        red: '#E11F1F',
+        red: "#E11F1F",
 
         bg_date_picker_primary: "#3F89E3",
 
@@ -208,6 +208,7 @@ module.exports = {
       },
       transitionDelay: {
         400: "400ms",
+        500: "500ms",
         1500: "1500ms",
       },
     },

@@ -18,8 +18,6 @@ const authSlice = createSlice({
     },
 
     authSuccess: (state, action) => {
-      // const { user } = action.payload;
-      // console.log("action.payload: " + Object.entries(action.payload));
       state.loading = true;
       state.isAuthenticated = true;
       state.user = action.payload;

@@ -1,57 +1,53 @@
-import { Avatar, Button } from "@nextui-org/react";
-import { Heart } from 'lucide-react';
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { likeComment } from "services/post.svc";
 import { getFullName } from "utils/user.utils";
 
-const ListCommentUser = ({ comment }) => {
-    const [like, setLike] = useState(comment.liked)
-    const navigate = useNavigate()
+import clsx from "clsx";
+import ArrayEmpty from 'combine/array-empty';
+import LoadingComponent from "combine/loading-component";
+import AvatarComponent from "components/avatar/Avatar";
+import { TYPELOADING } from "constants/type.const";
+import { useComments } from "hook/comment/useComments";
+import { useEffect } from "react";
 
-    const handleNaviageUser = () => {
-        navigate('')
-    }
+const ListCommentUser = ({ postId }) => {
 
-    const handleLikeComment = async (id) => {
-        try {
-            setLike(!like)
-            await likeComment(id)
-        }
-        catch (err) {
-            console.log("err: " + err)
-        }
-    }
+  const { comments, fetchAllComments, isLoading } = useComments()
 
-    return (
-        <div className="w-full flex justify-between">
-            <div className="flex flex-row gap-3 items-center">
-                <Avatar
-                    size="sm"
-                    src={comment.user_id.avatar.url} />
+  useEffect(() => {
+    if (!postId) return;
 
-                <p
-                    onClick={handleNaviageUser}
-                    className=" text-sm text-black dark:text-white font-nunito_sans font-bold hover:underline cursor-pointer">
-                    {getFullName(comment.user_id.first_name, comment.user_id.last_name)}
-                </p>
+    fetchAllComments(postId)
+  }, [fetchAllComments, postId])
 
-                <p className=" text-sm text-black dark:text-white font-nunito_sans font-bold ">{comment.comment_content}</p>
+  return (
+    <LoadingComponent type={TYPELOADING.TITLE} condition={!isLoading} title='Đang lấy dữ liệu'>
+      <ArrayEmpty arr={comments} title='Chưa có bình luận ở bài viết này'>
+        <div className="mt-3 w-full grid items-start gap-2 h-full overflow-auto no-scrollbar">
+          {
+            comments.map((comment) => {
+              return (
+                <div className={clsx(
+                  'flex flex-row gap-3 items-center w-full h-20 px-2 bg-neutral-100',
+                  'text-sm text-black dark:text-white font-quick_sans font-bold',
+                  ' rounded-md'
+                )}>
+                  <AvatarComponent.Avatar>
+                    <AvatarComponent.AvatarImage src={comment.user_id?.avatar?.url} />
+                    <AvatarComponent.AvatarFallback>Img</AvatarComponent.AvatarFallback>
+                  </AvatarComponent.Avatar>
 
-            </div>
+                  <p className="hover:underline cursor-pointer">
+                    {getFullName(comment.user_id?.first_name, comment.user_id?.last_name)}
+                  </p>
 
-            <Button
-                onClick={() => handleLikeComment(comment._id)}
-                isIconOnly
-                variant="light" >
-                <Heart
-                    fill={like === true ? 'red' : 'none'}
-                    size={16}
-                    strokeWidth={0.75} />
-            </Button>
+                  <p className='font-normal line-clamp-2 w-full '>{comment.comment_content}</p>
+                </div>
+              )
+            })
+          }
         </div>
-
-    )
+      </ArrayEmpty>
+    </LoadingComponent>
+  )
 }
 
 export default ListCommentUser

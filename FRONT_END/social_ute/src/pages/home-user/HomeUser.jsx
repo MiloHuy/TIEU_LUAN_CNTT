@@ -2,7 +2,7 @@ import { Spinner, Tab, Tabs } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import PropagateLoader from "components/loading/propagate-loading/PropagateLoader";
 import ListFriendsUser from "features/list/list-friends-user";
-import ListPostUserDetail from 'features/list/list-post-user-detail';
+import ListPostUserDetail from "features/list/list-post-user-detail";
 import ListStoryUserDetail from 'features/list/list-story-user-detail';
 import HeaderHome from "layout/header-home";
 import { Book, Bookmark, Grid3X3, Users } from 'lucide-react';
@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllMePosts, getListFriends } from "services/me.svc";
-import { getPostSaved } from "services/post.svc";
+import { getPostSaved } from "services/post/api-get.svc";
 import { getAllStory } from "services/story.svc";
 import { statistics } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
@@ -153,7 +153,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Grid3X3 size={20} />
-                                        <span className="dark:text-white font-nunito_sans">
+                                        <span className="dark:text-white font-quick_sans">
                                             Bài viết
                                         </span>
                                     </div>
@@ -177,7 +177,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Book size={20} />
-                                        <span className="dark:text-white font-nunito_sans">Story</span>
+                                        <span className="dark:text-white font-quick_sans">Story</span>
                                     </div>
                                 }
                             >
@@ -189,7 +189,7 @@ const HomeUser = () => {
                                 title={
                                     <div className="flex items-center space-x-2">
                                         <Users size={20} />
-                                        <span className="dark:text-white font-nunito_sans">
+                                        <span className="dark:text-white font-quick_sans">
                                             Bạn bè
                                         </span>
                                     </div>
@@ -216,7 +216,7 @@ const HomeUser = () => {
                                             size={20}
                                             strokeWidth={1.5}
                                         />
-                                        <span className="dark:text-white text-black font-nunito_sans">
+                                        <span className="dark:text-white text-black font-quick_sans">
                                             Bài viết đã lưu
                                         </span>
                                     </div>

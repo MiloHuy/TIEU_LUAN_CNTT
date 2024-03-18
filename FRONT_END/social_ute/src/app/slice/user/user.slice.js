@@ -13,8 +13,6 @@ const userSlice = createSlice({
     setInfoUser: (state, action) => {
       const { user } = action.payload;
 
-      console.log("User: " + user);
-
       state.userId = user._id;
       state.first_name = user.first_name;
       state.last_name = user.last_name;

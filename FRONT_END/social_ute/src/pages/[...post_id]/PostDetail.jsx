@@ -5,7 +5,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { getPostById, likePost, storePost } from "services/post.svc";
+import { getPostById } from "services/post/api-get.svc";
+import { likePost, storePost } from "services/post/api-post.svc";
 import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 import PostDetailV2 from "./PostDetailV2";
 
@@ -112,123 +113,6 @@ const PostDetail = () => {
 
     return (
         postInfo ?
-            // <div className='w-full h-4/5'>
-            //     <div className="flex items-center justify-start p-3 w-full">
-            //         <Card
-            //             classNames={{
-            //                 base: 'border-black border dark:border-none'
-            //             }}
-            //             className="grid grid-rows-8 w-3/4 h-[600px] "
-            //             radius='sm'
-            //             shadow='sm'>
-            //             <CardHeader className="flex gap-3 justify-between row-span-1">
-            //                 <div className="flex flex-row gap-3 items-center">
-            //                     <Avatar src={postInfo.post.user_id.avatar.url} />
-
-            //                     <Link
-            //                         color="foreground"
-            //                         href={postInfo.post.user_id._id !== ID ? `/welcome/home-guest/${postInfo.post.user_id._id}` : `/welcome/home-user/${ID}`}
-            //                         underline="active"
-            //                     >
-            //                         <p className="text-md hover:underline text-md text-black dark:text-white font-nunito_sans  ">
-            //                             {userName}
-            //                         </p>
-            //                     </Link>
-
-            //                 </div>
-
-            //                 <DropdownShowMoreOptions
-            //                     user_id={postInfo.post.user_id._id}
-            //                     postId={postInfo.post._id}
-
-            //                     statusPost={statusPost}
-            //                     handleCallbackLikedPost={handleLikePost}
-            //                     handleCallbackSavedPost={handleSavePost}
-            //                 />
-
-            //             </CardHeader>
-
-            //             <div className="w-full flex flex-col gap-2 row-span-6 h-[550px] overflow-hidden">
-            //                 <Image
-            //                     removeWrapper
-            //                     loading="lazy"
-            //                     alt="img"
-            //                     className="object-fill h-3/5 w-full rounded-md"
-            //                     src={postInfo.post.post_img.url}
-            //                 />
-            //                 <div className='flex justify-between'>
-            //                     <div className='flex flex-row gap-1'>
-            //                         <Button
-            //                             className='w-[20px]'
-            //                             size="sm"
-            //                             isIconOnly
-            //                             variant="light"
-            //                             onClick={handleLikePost}
-            //                         >
-            //                             <Heart
-            //                                 strokeWidth={1.5}
-            //                                 absoluteStrokeWidth
-            //                                 size={20}
-            //                                 fill={statusPost.isLiked === true ? 'red' : 'none'} />
-            //                         </Button>
-
-            //                         <Button
-            //                             className='w-[20px]'
-            //                             size="sm"
-            //                             isIconOnly
-            //                             variant="light"
-            //                             onClick={handleCommentPost}
-            //                         >
-            //                             <MessageCircle size={20} strokeWidth={1.5} />
-            //                         </Button>
-
-            //                         <Button
-            //                             size="sm"
-            //                             isIconOnly
-            //                             variant="light"
-
-            //                             onClick={CopyURL}>
-            //                             <SendHorizontal size={20} strokeWidth={1.5} className='transform -rotate-28 -translate-y-0.5' />
-            //                         </Button>
-            //                     </div>
-            //                     <Button
-            //                         size="sm"
-            //                         isIconOnly
-            //                         variant="light"
-            //                         onClick={handleSavePost}
-            //                     >
-            //                         <Bookmark
-            //                             size={20}
-            //                             strokeWidth={1.5}
-            //                             fill={statusPost.isSaved === true ? 'yellow' : 'none'} />
-            //                     </Button>
-            //                 </div>
-
-            //                 <div className='flex flex-col gap-2 px-2'>
-            //                     <div className="flex-row flex gap-1">
-            //                         <h2 className='text-md text-black dark:text-white font-nunito_sans '>{postInfo.post.likes}</h2>
-            //                         <span className='text-md text-black dark:text-white font-nunito_sans '>lượt thích</span>
-            //                     </div>
-
-            //                     <div className="flex-row flex gap-1">
-            //                         <h2 className="text-md text-black dark:text-white  font-nunito_sans ">{postInfo.post.post_description}</h2>
-            //                     </div>
-
-            //                     <Input variant='underlined' placeholder="Thêm bình luận..." />
-            //                 </div>
-            //             </div >
-            //         </Card >
-
-            //         <ModalPostUser
-            //             isOpen={isOpen}
-            //             onOpenChange={onOpenChange}
-
-            //             userName={userName}
-            //             handleCallbackLikePost={handleLikePost}
-            //             handleCallbackSavedPost={handleSavePost}
-            //         />
-            //     </div>
-            // </div >
             <div className="w-full h-full flex items-center ">
                 <PostDetailV2 />
             </div>

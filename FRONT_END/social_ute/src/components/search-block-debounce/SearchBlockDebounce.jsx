@@ -1,10 +1,10 @@
 import clsx from "clsx";
-import MyInput from "components/input/Input";
+import Input from "components/input";
 import { Search } from 'lucide-react';
 import { useRef, useState } from "react";
 
 const SearchBlockDebounce = (props) => {
-    const { onSubmit } = props
+    const { onSubmit, className, placeholder } = props
     const [search, setSearch] = useState("")
     const typingTimeoutRef = useRef(null)
 
@@ -23,18 +23,18 @@ const SearchBlockDebounce = (props) => {
                 search: value
             }
 
-            onSubmit(formValues)
+            onSubmit && onSubmit(formValues)
         }, 300)
     }
 
     return (
-        <form className={clsx('relative rounded-sm', props.className)}>
-            <MyInput
+        <form className={clsx('relative rounded-sm', className)}>
+            <Input
                 type='text'
                 value={search}
                 size='sm'
                 onChange={handlesearchChange}
-                placeholder="Nhập nội dung cần tìm kiếm."
+                placeholder={placeholder}
                 startContent={<Search size={20} strokeWidth={1} />}
                 className='text-sm text-black h-full w-full  rounded-sm bg-transparent'
             />

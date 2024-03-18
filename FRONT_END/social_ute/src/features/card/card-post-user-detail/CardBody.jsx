@@ -6,7 +6,7 @@ import ListCommentUser from "features/list/list-comment-user";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getCommentPost } from "services/post.svc";
+import { getCommentPost } from "services/post/api-get.svc";
 import { checkCodeInArray } from "utils/code-error.utils";
 
 const CardBody = ({ flag }) => {

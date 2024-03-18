@@ -29,7 +29,7 @@ const ModalGroup = ({ trigger }) => {
                             size={20}
                             strokeWidth={1.5} />
 
-                        <p className='text-lg font-nunito_sans text-black font-bold cursor-pointer'>
+                        <p className='text-lg font-quick_sans text-black font-bold cursor-pointer'>
                             TẠO NHÓM MỚI
                         </p>
                     </div>
@@ -42,7 +42,7 @@ const ModalGroup = ({ trigger }) => {
                             size={20}
                             strokeWidth={1.5} />
 
-                        <p className='text-lg font-nunito_sans text-black font-bold'>
+                        <p className='text-lg font-quick_sans text-black font-bold'>
                             DANH SÁCH NHÓM
                         </p>
                     </div>

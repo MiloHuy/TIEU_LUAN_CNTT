@@ -5,6 +5,7 @@ import App from "./App";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "sonner";
 import { store } from "./app/store/store";
 import "./index.css";
 
@@ -28,5 +29,6 @@ root.render(
       pauseOnHover
       theme="light"
     />
+    <Toaster richColors position="top-center" />
   </Provider>,
 );

@@ -117,11 +117,11 @@ const CardFriendUser = ({ friend }) => {
                 <div
                     onClick={() => handleNavigateFriend(friend._id)}
                     className="flex flex-col gap-2 h-full justify-center cursor-pointer">
-                    <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
+                    <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
                         {getFullName(friend.first_name, friend.last_name)}
                     </p>
 
-                    <p className="text-sm text-black dark:text-white font-nunito_sans font-bold">
+                    <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
                         {friend.department}
                     </p>
                 </div>
@@ -152,7 +152,7 @@ const CardFriendUser = ({ friend }) => {
                             className="text-white"
                             endContent={<XCircle size={20} strokeWidth={0.75} />}
                         >
-                            <p className='text-md font-nunito_sans font-bold gap-2'>
+                            <p className='text-md font-quick_sans font-bold gap-2'>
                                 Hủy kết bạn
                             </p>
                         </DropdownItem>

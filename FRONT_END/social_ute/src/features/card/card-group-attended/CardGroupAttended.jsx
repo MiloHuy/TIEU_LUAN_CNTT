@@ -10,7 +10,7 @@ const CardGroupAttended = ({ groupInfo }) => {
             />
 
             <div className='grid grid-cols-1 items-start justify-center h-[15vh]'>
-                <p className="font-nunito_sans font-bold text-center hover:underline text-black dark:text-white">
+                <p className="font-quick_sans font-bold text-center hover:underline text-black dark:text-white">
                     {groupInfo.name}
                 </p>
 

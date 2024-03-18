@@ -12,7 +12,7 @@ const ListGroupAttended = ({ groups }) => {
                         )
                     })
                     :
-                    <p className="text-black dark:text-white font-nunito_sans">
+                    <p className="text-black dark:text-white font-quick_sans">
                         Bạn chưa tham gia nhóm nào.
                     </p>
             }

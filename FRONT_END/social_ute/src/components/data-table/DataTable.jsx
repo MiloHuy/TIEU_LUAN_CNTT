@@ -15,31 +15,31 @@ const DataTable = ({ columns, data, isLoading, onDelete, bottomContent }) => {
         switch (columnKey) {
             case "username":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-nunito_sans font-bold'>
+                    <h1 className='text-md text-black dark:text-white font-quick_sans font-bold'>
                         {getFullName(user.first_name, user.last_name)}
                     </h1>
                 );
             case "phone_number":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-nunito_sans font-bold'>
+                    <h1 className='text-md text-black dark:text-white font-quick_sans font-bold'>
                         {user.phone_number}
                     </h1>
                 );
             case "id":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-nunito_sans font-bold'>
+                    <h1 className='text-md text-black dark:text-white font-quick_sans font-bold'>
                         {user.id}
                     </h1>
                 );
             case "gmail":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-nunito_sans font-bold truncate'>
+                    <h1 className='text-md text-black dark:text-white font-quick_sans font-bold truncate'>
                         {user.gmail}
                     </h1>
                 );
             case "department":
                 return (
-                    <h1 className='text-md text-black dark:text-white font-nunito_sans font-bold'>
+                    <h1 className='text-md text-black dark:text-white font-quick_sans font-bold'>
                         {user.department}
                     </h1>
                 );

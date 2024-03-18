@@ -7,7 +7,7 @@ const ListSuggestFriends = () => {
                 className='border dark:border-white border-black'
                 itemClasses={{
                     base: "py-0 w-full ",
-                    title: "font-normal text-md font-nunito_sans",
+                    title: "font-normal text-md font-quick_sans",
                     indicator: "text-medium",
                     content: "text-small flex flex-col gap-2",
                 }}
@@ -18,7 +18,7 @@ const ListSuggestFriends = () => {
                     aria-label="Friends sugguest"
                     title="Danh sách bạn bè đề xuất"
                 >
-                    <p className='font-nunito_sans text-sm text-black dark:text-white'>
+                    <p className='font-quick_sans text-sm text-black dark:text-white'>
                         Chưa có lời gợi ý kết bạn nào
                     </p>
                 </AccordionItem>

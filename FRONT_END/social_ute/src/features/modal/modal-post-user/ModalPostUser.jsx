@@ -34,7 +34,6 @@ const ModalPostUser = ({ isOpen, onOpenChange, handleCallbackLikePost, handleCal
                                 handleCallbackLikePost={handleCallbackLikePost}
                                 handleCallbackSavedPost={handleCallbackSavedPost}
                             />
-
                         }
                     </>
                 )}

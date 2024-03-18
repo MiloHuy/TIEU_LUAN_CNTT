@@ -1,4 +1,3 @@
-
 import { extendVariants, Input } from "@nextui-org/react";
 
 const MyInput = extendVariants(Input, {

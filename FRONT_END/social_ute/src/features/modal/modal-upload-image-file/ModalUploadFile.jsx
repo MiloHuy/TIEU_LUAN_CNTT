@@ -67,7 +67,7 @@ const ModalUploadFile = ({ trigger }) => {
         {trigger}
       </DialogTrigger>
 
-      <DialogContent className={`${transformNextForm} sm:rounded-[20px] transform duration-500 ease-in overflow-hidden`}>
+      <DialogContent className={`${transformNextForm} sm:rounded-lg transform duration-500 ease-in overflow-hidden`}>
         <div className='flex'>
           {multipleForm.map((form) => { return form })}
         </div>
