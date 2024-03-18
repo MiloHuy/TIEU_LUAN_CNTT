@@ -39,7 +39,7 @@ exports.getAll = async (req, res) => {
         })
             .sort({ create_post_time: -1 })
             .populate("user_id", "first_name last_name avatar.url")
-            .select("-post_img.publicId");
+            .select("-post_img.publicId -post_img._id");
 
         if (posts.length === 0) {
             return res.status(200).json({
