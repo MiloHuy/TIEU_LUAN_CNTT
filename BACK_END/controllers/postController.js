@@ -116,18 +116,6 @@ exports.getAll = async (req, res) => {
 //GET /posts/:id
 exports.getPost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
-            .populate("user_id", "first_name last_name avatar.url")
-            .select("-post_img.publicId")
-            .lean();
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                code: 2001,
-                message: "Không tìm thấy bài viết.",
-            });
-        }
-
         const following_Users = await Follow.find({
             user_id: req.user._id,
         }).select("following_user_id");
@@ -135,6 +123,37 @@ exports.getPost = async (req, res) => {
             .map((follow) => follow.following_user_id)
             .flat();
         following_User_Ids.push(req.user._id);
+
+        const post = await Post.findById(req.params.id)
+            .populate("user_id", "first_name last_name avatar.url")
+            .select("-post_img.publicId")
+            .lean();
+        // Post.findOne({
+        //     $and: [
+        //         { _id: postId },
+        //         {
+        //             $or: [
+        //                 { privacy: 2 },
+        //                 {
+        //                     user_id: { $in: following_User_Ids },
+        //                     privacy: 1,
+        //                 },
+        //                 {
+        //                     user_id: req.user._id,
+        //                     privacy: { $in: [0, 1] },
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // });
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
 
         if (!following_User_Ids.some((id) => id.equals(post.user_id._id))) {
             return res.status(400).json({
@@ -145,7 +164,9 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        if (post.user_id != req.user._id && post.privacy == 0) {
+        if (post.privacy == 0 && !post.user_id._id.equals(req.user._id)) {
+            console.log(post.user_id._id);
+            console.log(req.user._id);
             return res.status(404).json({
                 success: false,
                 code: 2030,
@@ -419,8 +440,11 @@ exports.create = async (req, res) => {
         }
 
         for (const userId of followerUserIds) {
-            console.log('id'+ userId.toString());
-            req.app.get('io').emit(userId.toString(), { content: content, post_id: post._id})
+            console.log("id" + userId.toString());
+            req.app.get("io").emit(userId.toString(), {
+                content: content,
+                post_id: post._id,
+            });
         }
 
         // req.app.get('io').emit('notis', { content: content, post_id: post._id});
