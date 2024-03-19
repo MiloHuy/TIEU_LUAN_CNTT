@@ -405,6 +405,7 @@ exports.create = async (req, res) => {
         const followerUsers = await Follow.find({
             user_id: req.user._id,
         }).select("follower_user_id");
+
         const followerUserIds = followerUsers
             .map((follow) => follow.follower_user_id)
             .flat();
@@ -416,6 +417,13 @@ exports.create = async (req, res) => {
                 { new: true, upsert: true }
             );
         }
+
+        for (const userId of followerUserIds) {
+            console.log('id'+ userId.toString());
+            req.app.get('io').emit(userId.toString(), { content: content, post_id: post._id})
+        }
+
+        // req.app.get('io').emit('notis', { content: content, post_id: post._id});
 
         res.status(201).json({
             success: true,
