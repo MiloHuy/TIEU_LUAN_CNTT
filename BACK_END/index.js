@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
-
+const jwt = require('jsonwebtoken');
 const { Server } = require("socket.io");
 const { createServer } = require("node:http");
 const { join } = require("node:path");
@@ -44,13 +44,52 @@ route(app);
 const server = createServer(app);
 const io = new Server(server);
 
-app.set('io', io);
+app.set("io", io);
 
-io.on('connection', (socket) => {
-    socket.on('notis', (noti) => {
-      console.log('noti: ' + noti.content + ' post_id: ' + noti.post_id);
+io.engine.use((req, res, next) => {
+    const isHandshake = req._query.sid === undefined;
+    if (!isHandshake) {
+        return next();
+    }
+
+    const header = req.headers["authorization"];
+
+    if (!header) {
+        return res.status(404).json({ 
+            success: false, 
+            code: 800,
+            message: 'Không có token.' 
+        });
+    }
+
+    if (!header.startsWith("bearer ")) {
+        return res.status(400).json({ 
+            success: false, 
+            code: 801,
+            message: 'Token không hợp lệ.' 
+        });
+    }
+
+    const token = header.substring(7);
+
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(400).json({ 
+                success: false, 
+                code: 802,
+                message: 'Token không hợp lệ.' 
+            });
+        }
+        req.user = decoded.data;
+        next();
     });
-  });
+});
+
+io.on("connection", (socket) => {
+    socket.on("notis", (noti) => {
+        console.log("noti: " + noti.content + " post_id: " + noti.post_id);
+    });
+});
 
 app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "index.html"));
@@ -59,7 +98,6 @@ app.get("/", (req, res) => {
 app.get("/chat", (req, res) => {
     res.sendFile(join(__dirname, "index1.html"));
 });
-
 
 server.listen(port, () => {
     console.log("server running at http://localhost:3000");
