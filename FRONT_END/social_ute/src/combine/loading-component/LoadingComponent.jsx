@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import LoadingDotV2 from 'components/loading/loading-dot-v2'
+import PropagateLoader from 'components/loading/propagate-loading/PropagateLoader'
 import { TYPELOADING } from 'constants/type.const'
 import { Loader2 } from 'lucide-react'
 
@@ -16,6 +17,17 @@ const Dot = ({ condition, children, className }) => {
     :
     <div className={clsx('w-full h-full flex items-center justify-center', className)}>
       <LoadingDotV2 />
+    </div >
+}
+
+const Propagate = ({ condition, children, className }) => {
+  return condition ? children
+    :
+    <div className={clsx('w-full h-full flex items-center justify-center', className)}>
+      <PropagateLoader
+        color="#9aa19f"
+        size={18}
+      />
     </div >
 }
 
@@ -41,6 +53,8 @@ const LoadingComponent = ({ type, ...props }) => {
       return <Title {...props} />
     case TYPELOADING.NULL:
       return <Null {...props} />
+    case TYPELOADING.PROPAGATE:
+      return <Propagate {...props} />
     default:
       return
   }

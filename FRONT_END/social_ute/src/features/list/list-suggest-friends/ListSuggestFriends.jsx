@@ -1,30 +1,24 @@
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import clsx from "clsx";
+import CardUserActions from "combine/card-user-actions";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/accordion";
+import { Button } from "components/button";
+import { UserPlus } from 'lucide-react';
 
-const ListSuggestFriends = () => {
-    return (
-        <div className="w-full">
-            <Accordion
-                className='border dark:border-white border-black'
-                itemClasses={{
-                    base: "py-0 w-full ",
-                    title: "font-normal text-md font-quick_sans",
-                    indicator: "text-medium",
-                    content: "text-small flex flex-col gap-2",
-                }}
-                variant="bordered"
-            >
-                <AccordionItem
-                    key="1"
-                    aria-label="Friends sugguest"
-                    title="Danh sách bạn bè đề xuất"
-                >
-                    <p className='font-quick_sans text-sm text-black dark:text-white'>
-                        Chưa có lời gợi ý kết bạn nào
-                    </p>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    )
+const ListSuggestFriends = ({ suggestFriends }) => {
+  return (
+    <Accordion
+      className={clsx(
+        "border border-black rounded-lg px-2 font-quick_sans",
+        "dark:text-white dark:border dark:border-white",
+      )} type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger className='hover:no-underline font-bold'>Danh sách bạn bè đề xuất</AccordionTrigger>
+        <AccordionContent className='w-full'>
+          <CardUserActions action={<Button variant='outline' className='px-2 font-quick_sans'><UserPlus size={20} strokeWidth={1} /></Button>} />
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
 }
 
 export default ListSuggestFriends

@@ -1,6 +1,12 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from "@nextui-org/react";
+import { Button } from "components/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "components/dropdown";
 import ModalConfirm from "features/modal/modal-confirm";
-import { MoreHorizontal, XCircle } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -8,61 +14,8 @@ import { unFriend } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
 
 const CardFriendUser = ({ friend }) => {
-    const { onOpen, onClose } = useDisclosure();
-    const [openModal, setOpenModal] = useState({
-        drop_down: false,
-        confirm_modal: false,
-    })
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
-
-    const handleOpenDropDown = () => {
-        setOpenModal((prev) => ({
-            ...prev,
-            drop_down: true
-        }))
-    }
-
-    const handleOpenModelAlert = () => {
-        setOpenModal((prev) => ({
-            ...prev,
-            confirm_modal: true
-        }))
-    }
-
-    const handleOpenModal = () => {
-        if (openModal.drop_down === true && openModal.confirm_modal !== true) {
-            onOpen()
-        }
-        else if (openModal.confirm_modal === true && openModal.drop_down !== true) {
-            onOpen()
-        }
-    }
-
-    const handleCloseModal = () => {
-        if (openModal.drop_down === true && openModal.confirm_modal !== true) {
-            setOpenModal((prev) => ({
-                ...prev,
-                drop_down: false
-            }))
-
-            onClose()
-        }
-        else if (openModal.confirm_modal === true && openModal.drop_down !== true) {
-            setOpenModal((prev) => ({
-                ...prev,
-                confirm_modal: false
-            }))
-            onClose()
-        }
-    }
-
-    const handleActionByKey = (key) => {
-        if (key === 'unfriend') {
-            handleCloseModal()
-            handleOpenModelAlert()
-        }
-    }
 
     const handleUnFriend = async () => {
         try {
@@ -105,12 +58,12 @@ const CardFriendUser = ({ friend }) => {
     }
 
     return (
-        <div className="relative group max-w-[30rem] max-h-[6rem] rounded-[15px] border flex border-black dark:border-white">
+        <div className="relative group max-w-[30rem] max-h-[6rem] rounded-[15px] border flex border-black/80 dark:border-white">
             <img
+                loading="lazy"
                 className="h-full rounded-[15px] p-2"
                 alt='friend'
                 src={friend.avatar.url}
-            // src='https://i.pravatar.cc/150?u=a042581f4e29026024d'
             />
 
             <div className='flex justify-between items-center w-full'>
@@ -125,51 +78,35 @@ const CardFriendUser = ({ friend }) => {
                         {friend.department}
                     </p>
                 </div>
-
-                <Dropdown
-                    className='bg-bg_dropdown_primary '
-                >
-                    <DropdownTrigger>
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
                         <Button
-                            onClick={handleOpenDropDown}
-                            className='w-[20px] '
-                            size="sm"
-                            isIconOnly
+                            className='w-[20px]'
                             variant="light"
                         >
                             <MoreHorizontal size={28} strokeWidth={0.75} />
-
                         </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                        onAction={(key) => handleActionByKey(key)}
-                        aria-label="unfriend"
-                    >
-                        <DropdownItem
-                            showDivider
-                            key="unfriend"
-                            onClick={() => handleOpenModal(friend._id)}
-                            className="text-white"
-                            endContent={<XCircle size={20} strokeWidth={0.75} />}
-                        >
-                            <p className='text-md font-quick_sans font-bold gap-2'>
-                                Hủy kết bạn
-                            </p>
-                        </DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <ModalConfirm
+                            trigger={
+                                <DropdownMenuItem className='flex gap-2' onSelect={(e) => e.preventDefault()}>
+                                    <p className='text-md font-quick_sans font-bold gap-2'>
+                                        Hủy kết bạn
+                                    </p>
+                                </DropdownMenuItem>
+                            }
+                            title='Bạn có chắc chắn muốn hủy kết bạn?'
+                            isLoading={isLoading}
+
+                            handleCallback={handleUnFriend}
+                        />
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
-            <ModalConfirm
-                title='Bạn có chắc chắn muốn hủy kết bạn?'
-                isOpen={openModal.confirm_modal}
-                onOpenChange={handleOpenModal}
-                onClose={handleCloseModal}
-                isLoading={isLoading}
 
-                handleCallback={handleUnFriend}
-            />
-        </div>
+        </div >
     )
 }
 

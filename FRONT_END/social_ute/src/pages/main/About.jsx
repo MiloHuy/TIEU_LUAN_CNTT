@@ -1,3 +1,4 @@
+import Story from "combine/story"
 
 const About = () => {
 
@@ -55,7 +56,7 @@ const About = () => {
         //         </div>
         //     </div> */}
             {/* <Album /> */}
-
+            <Story />
         </div>
     )
 }
