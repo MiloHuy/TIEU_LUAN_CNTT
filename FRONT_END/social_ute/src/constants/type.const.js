@@ -1,6 +1,7 @@
 export const TYPELOADING = {
   SPINNER: "SPINNER",
   DOT: "DOT",
+  PROPAGATE: "PROPAGATE",
   TITLE: "TITLE",
   NULL: "NULL",
 };

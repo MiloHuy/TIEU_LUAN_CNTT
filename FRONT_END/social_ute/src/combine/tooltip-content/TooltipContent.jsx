@@ -8,8 +8,8 @@ const TooltipContentCombine = ({ trigger, title, side = 'right', className }) =>
         <TooltipTrigger>
           {trigger}
         </TooltipTrigger>
-        <TooltipContent side={side}>
-          <p className={clsx('font-quick_sans text-sm', className)}>{title}</p>
+        <TooltipContent side={side} className={clsx('font-quick_sans text-sm', className)}>
+          <p>{title}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

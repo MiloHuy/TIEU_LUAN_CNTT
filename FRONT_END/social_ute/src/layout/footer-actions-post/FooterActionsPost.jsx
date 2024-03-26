@@ -20,11 +20,7 @@ const FooterActionsPost = (
   }) => {
 
   const {
-    numberLikes,
-    statusPost,
-
-    handleLikePost,
-    handleSavePost, } = useActionsPosts({ liked_post, number_likes, saved_posts })
+    numberLikes, statusPost, handleLikePost, handleSavePost, } = useActionsPosts({ liked_post, number_likes, saved_posts })
 
   return (
     <>
@@ -78,9 +74,9 @@ const FooterActionsPost = (
         </Button>
       </div>
 
-      <div className='flex flex-col px-2 h-full text-sm text-black dark:text-white font-quick_sans font-bold'>
+      <div className='flex flex-col px-2 h-full text-sm text-black dark:text-white font-quick_sans '>
         <div className="flex-row flex gap-1">
-          <h2>{numberLikes}</h2>
+          <h2 >{numberLikes}</h2>
           <span>lượt thích</span>
         </div>
 
@@ -88,7 +84,7 @@ const FooterActionsPost = (
           <p className="line-clamp-3 truncate ...">
             {userName}:
           </p>
-          <p>{postDescription} </p>
+          <prev>{postDescription} </prev>
         </div>
       </div>
     </>

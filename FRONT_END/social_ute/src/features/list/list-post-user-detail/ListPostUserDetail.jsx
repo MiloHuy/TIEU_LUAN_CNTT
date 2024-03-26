@@ -19,7 +19,7 @@ const ListPostUserDetail = (props) => {
   return (
     <ArrayEmpty arr={posts} title='Chưa có bài viết ở hiện tại'>
       <motion.div
-        className='grid grid-cols-3 gap-2 w-full h-full'
+        className='grid lg:grid-cols-3 gap-2 w-full h-full md:grid-cols-1'
         variants={container}
         initial="hidden"
         animate="visible"
