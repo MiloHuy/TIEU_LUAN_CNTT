@@ -9,7 +9,6 @@ const Follow = require("../models/Follow");
 const { PostAPIFeatures } = require("../utils/APIFeatures");
 const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
-const { log } = require("console");
 
 //GET /posts
 exports.getAll = async (req, res) => {
@@ -129,24 +128,6 @@ exports.getPost = async (req, res) => {
             .populate("user_id", "first_name last_name avatar.url")
             .select("-post_img.publicId")
             .lean();
-        // Post.findOne({
-        //     $and: [
-        //         { _id: postId },
-        //         {
-        //             $or: [
-        //                 { privacy: 2 },
-        //                 {
-        //                     user_id: { $in: following_User_Ids },
-        //                     privacy: 1,
-        //                 },
-        //                 {
-        //                     user_id: req.user._id,
-        //                     privacy: { $in: [0, 1] },
-        //                 },
-        //             ],
-        //         },
-        //     ],
-        // });
 
         if (!post) {
             return res.status(404).json({
@@ -156,23 +137,39 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        if (!following_User_Ids.some((id) => id.equals(post.user_id._id))) {
-            return res.status(400).json({
-                success: false,
-                code: 2029,
-                message:
-                    "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
-            });
-        }
+        // if (!following_User_Ids.some((id) => id.equals(post.user_id._id))) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2029,
+        //         message:
+        //             "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
+        //     });
+        // }
 
-        if (post.privacy == 0 && !post.user_id._id.equals(req.user._id)) {
-            console.log(post.user_id._id);
-            console.log(req.user._id);
-            return res.status(404).json({
-                success: false,
-                code: 2030,
-                message: "Bạn không phù hợp với chế độ xem của bài viết",
-            });
+        // if (post.privacy == 0 && !post.user_id._id.equals(req.user._id)) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2030,
+        //         message: "Bạn không phù hợp với chế độ xem của bài viết",
+        //     });
+        // }
+
+        switch (true) {
+            case post.privacy == 2:
+                break;
+            case !following_User_Ids.some((id) => id.equals(post.user_id._id)):
+                return res.status(400).json({
+                    success: false,
+                    code: 2029,
+                    message:
+                        "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
+                });
+            case post.privacy == 0 && !post.user_id._id.equals(req.user._id):
+                return res.status(400).json({
+                    success: false,
+                    code: 2030,
+                    message: "Bạn không phù hợp với chế độ xem của bài viết",
+                });
         }
 
         const check_liked = await Post_liked.findOne({
@@ -468,15 +465,6 @@ exports.create = async (req, res) => {
 //POST /posts/store/:id
 exports.store = async (req, res) => {
     try {
-        const check_post = await Post.findOne({ _id: req.params.id });
-        if (!check_post) {
-            return res.status(404).json({
-                success: false,
-                code: 2007,
-                message: "Không tìm thấy bài viết.",
-            });
-        }
-
         const following_Users = await Follow.find({
             user_id: req.user._id,
         }).select("following_user_id");
@@ -484,13 +472,32 @@ exports.store = async (req, res) => {
             .map((follow) => follow.following_user_id)
             .flat();
         following_User_Ids.push(req.user._id);
-        if (!following_User_Ids.some((id) => id.equals(check_post.user_id))) {
-            return res.status(400).json({
+
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({
                 success: false,
-                code: 2008,
-                message:
-                    "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
+                code: 2007,
+                message: "Không tìm thấy bài viết.",
             });
+        }
+
+        switch (true) {
+            case post.privacy == 2:
+                break;
+            case !following_User_Ids.some((id) => id.equals(post.user_id._id)):
+                return res.status(400).json({
+                    success: false,
+                    code: 2008,
+                    message:
+                        "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
+                });
+            case post.privacy == 0 && !post.user_id._id.equals(req.user._id):
+                return res.status(400).json({
+                    success: false,
+                    code: 2031,
+                    message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+                });
         }
 
         const stored = await Post_stored.findOneAndUpdate(
@@ -525,6 +532,14 @@ exports.store = async (req, res) => {
 //POST /posts/like/:id
 exports.like = async (req, res) => {
     try {
+        const following_Users = await Follow.find({
+            user_id: req.user._id,
+        }).select("following_user_id");
+        const following_User_Ids = following_Users
+            .map((follow) => follow.following_user_id)
+            .flat();
+        following_User_Ids.push(req.user._id);
+
         const post = await Post.findOne({ _id: req.params.id });
         if (!post) {
             return res.status(404).json({
@@ -534,13 +549,6 @@ exports.like = async (req, res) => {
             });
         }
 
-        const following_Users = await Follow.find({
-            user_id: req.user._id,
-        }).select("following_user_id");
-        const following_User_Ids = following_Users
-            .map((follow) => follow.following_user_id)
-            .flat();
-        following_User_Ids.push(req.user._id);
         if (!following_User_Ids.some((id) => id.equals(post.user_id))) {
             return res.status(400).json({
                 success: false,
@@ -548,6 +556,24 @@ exports.like = async (req, res) => {
                 message:
                     "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
             });
+        }
+
+        switch (true) {
+            case post.privacy == 2:
+                break;
+            case !following_User_Ids.some((id) => id.equals(post.user_id._id)):
+                return res.status(400).json({
+                    success: false,
+                    code: 2011,
+                    message:
+                        "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
+                });
+            case post.privacy == 0 && !post.user_id._id.equals(req.user._id):
+                return res.status(400).json({
+                    success: false,
+                    code: 2032,
+                    message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+                });
         }
 
         const liked = await Post_liked.findOneAndUpdate(
@@ -933,4 +959,4 @@ exports.adminDestroy = async (req, res) => {
     }
 };
 
-// code: 2030
+// code: 2032
