@@ -47,6 +47,7 @@ const io = new Server(server);
 app.set("io", io);
 
 io.engine.use((req, res, next) => {
+    const socket = req.socket;
     const isHandshake = req._query.sid === undefined;
     if (!isHandshake) {
         return next();
@@ -55,30 +56,18 @@ io.engine.use((req, res, next) => {
     const header = req.headers["authorization"];
 
     if (!header) {
-        return res.status(404).json({ 
-            success: false, 
-            code: 800,
-            message: 'Không có token.' 
-        });
+        return next(new Error('Không có token'))
     }
 
     if (!header.startsWith("bearer ")) {
-        return res.status(400).json({ 
-            success: false, 
-            code: 801,
-            message: 'Token không hợp lệ.' 
-        });
+        return next(new Error('Token không hợp lệ.'))
     }
 
     const token = header.substring(7);
 
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
-            return res.status(400).json({ 
-                success: false, 
-                code: 802,
-                message: 'Token không hợp lệ.' 
-            });
+            return next(new Error('Token không hợp lệ.'))
         }
         req.user = decoded.data;
         next();

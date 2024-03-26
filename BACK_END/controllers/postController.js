@@ -9,6 +9,7 @@ const Follow = require("../models/Follow");
 const { PostAPIFeatures } = require("../utils/APIFeatures");
 const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
+const { log } = require("console");
 
 //GET /posts
 exports.getAll = async (req, res) => {
