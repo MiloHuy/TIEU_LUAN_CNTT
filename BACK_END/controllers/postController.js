@@ -496,7 +496,8 @@ exports.store = async (req, res) => {
                 return res.status(400).json({
                     success: false,
                     code: 2031,
-                    message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+                    message:
+                        "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
                 });
         }
 
@@ -572,7 +573,8 @@ exports.like = async (req, res) => {
                 return res.status(400).json({
                     success: false,
                     code: 2032,
-                    message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+                    message:
+                        "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
                 });
         }
 

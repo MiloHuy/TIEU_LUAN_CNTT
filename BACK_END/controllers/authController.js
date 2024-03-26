@@ -14,6 +14,8 @@ const {
 const { sendVerificationEmail } = require("../utils/authUtils.js");
 const { generateOTP } = require("../utils/authUtils.js");
 const Register_otp = require("../models/Register_otp.js");
+const Faculty = require("../models/Faculty");
+const Department = require("../models/Department");
 
 exports.register = async (req, res) => {
     try {
@@ -42,7 +44,9 @@ exports.register = async (req, res) => {
             });
         }
 
-        const check_phone = await User.findOne({ phone_number: req.body.phone_number });
+        const check_phone = await User.findOne({
+            phone_number: req.body.phone_number,
+        });
         if (check_phone) {
             return res.status(400).json({
                 success: false,
@@ -389,3 +393,47 @@ exports.sendRegisterOtp = async (req, res) => {
         });
     }
 };
+
+exports.getDepartment = async (req, res) => {
+    try {
+        switch (true) {
+            case req.body.role == 1:
+                const departments = await Department.find().select('name -_id');
+                return res.status(200).json({
+                    success: true,
+                    departments: departments,
+                });
+            case req.body.role == 0:
+                const faculties = await Faculty.find().select('name');
+                return res.status(200).json({
+                    success: true,
+                    departments: faculties,
+                });
+            default:
+                return res.status(400).json({
+                    success: false,
+                    code: 2024,
+                    message: "Role không hợp lệ.",
+                });
+        }
+        // if(req.body.role == 1){
+        //     const departments = await Department.find();
+        //     console.log(departments);
+        //         return res.status(200).json({
+        //             success: true,
+        //             departments: departments,
+        //         });
+        // }
+        // return res.status(200).json({
+        //     success: true,
+        // });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            code: 1025,
+            message: error.message,
+        });
+    }
+};
+
+// code 2024
