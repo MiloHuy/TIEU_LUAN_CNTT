@@ -153,8 +153,8 @@ exports.create = (async (req, res) => {
 //POST /comments/like/:cmt_id
 exports.like = (async (req, res) => {
     try {
-        const check_cmt = await Comment.findById(req.params.id);
-        if(!check_cmt){
+        const cmt = await Comment.findById(req.params.id);
+        if(!cmt){
             return res.status(404).json({
                 success: false,
                 code: 8007,
@@ -164,7 +164,7 @@ exports.like = (async (req, res) => {
         const following_Users = await Follow.find({ user_id: req.user._id }).select('following_user_id');
         const following_User_Ids = following_Users.map(follow => follow.following_user_id).flat();
         following_User_Ids.push(req.user._id);
-        if (!following_User_Ids.some(id => id.equals(check_cmt.user_id))){
+        if (!following_User_Ids.some(id => id.equals(cmt.user_id))){
             return res.status(400).json({
                 success: false,
                 code: 8008,
@@ -180,16 +180,24 @@ exports.like = (async (req, res) => {
         if(liked.user_id.includes(req.user._id)){
             liked.user_id.pull(req.user._id);
             await liked.save();
+
+            const comment_liked = await Comment_liked.findOne({ comment_id: cmt._id });
+            const likes = comment_liked ? comment_liked.user_id.length : 0;
+
             return res.status(201).json({
                 success: true,
                 message: 'Bỏ yêu thích.',
+                likes: likes,
             });
         } else{
             liked.user_id.push(req.user._id);
             await liked.save();
+            const comment_liked = await Comment_liked.findOne({ comment_id: cmt._id });
+            const likes = comment_liked ? comment_liked.user_id.length : 0;
             res.status(201).json({
                 success: true,
                 message: 'Yêu thích bình luận thành công.',
+                likes: likes,
             });
         }
     } catch (err) {
