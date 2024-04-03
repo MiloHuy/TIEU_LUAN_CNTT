@@ -10,11 +10,23 @@ const HeaderPostUser = ({ img, name, href, action, className, privacy }) => {
   const renderIconPrivacy = useMemo(() => {
     switch (privacy) {
       case PrivacyPost.ALONE:
-        return <TooltipContentCombine trigger={<LockKeyhole size={16} strokeWidth={1.25} />} title={PrivacyPostLabel.ALONE} />
+        return (
+          <TooltipContentCombine
+            trigger={<LockKeyhole size={16} strokeWidth={1.25} />}
+            title={PrivacyPostLabel.ALONE} />
+        )
       case PrivacyPost.FOLLOWER:
-        return <TooltipContentCombine trigger={<User size={16} strokeWidth={1.25} />} title={PrivacyPostLabel.FOLLOWER} />
+        return (
+          <TooltipContentCombine
+            trigger={<User size={16} strokeWidth={1.25} />}
+            title={PrivacyPostLabel.FOLLOWER} />
+        )
       case PrivacyPost.EVERYONE:
-        return <TooltipContentCombine trigger={<Earth size={16} strokeWidth={1.25} />} title={PrivacyPostLabel.EVERYONE} />
+        return (
+          <TooltipContentCombine
+            trigger={<Earth size={16} strokeWidth={1.25} />}
+            title={PrivacyPostLabel.EVERYONE} />
+        )
       default:
         return
     }

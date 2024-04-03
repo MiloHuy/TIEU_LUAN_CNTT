@@ -2,6 +2,7 @@ import AxiosInstance from "./axios-instance.svc";
 export const API_AUTH_ENDPOINT = {
   GET: {
     userInfo: "auth/userinfo",
+    department: "auth/departments",
   },
   POST: {
     login: "auth/login",
@@ -18,6 +19,14 @@ export const API_AUTH_ENDPOINT = {
 export const login = async (payload) => {
   const res = await AxiosInstance.post(API_AUTH_ENDPOINT.POST.login, payload);
   return res.data;
+};
+
+export const getDepartments = async (payload) => {
+  const res = await AxiosInstance.get(
+    API_AUTH_ENDPOINT.GET.department,
+    payload,
+  );
+  return res;
 };
 
 export const register = async (payload) => {
