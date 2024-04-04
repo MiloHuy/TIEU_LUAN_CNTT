@@ -550,15 +550,6 @@ exports.like = async (req, res) => {
             });
         }
 
-        if (!following_User_Ids.some((id) => id.equals(post.user_id))) {
-            return res.status(400).json({
-                success: false,
-                code: 2011,
-                message:
-                    "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
-            });
-        }
-
         switch (true) {
             case post.privacy == 2:
                 break;
