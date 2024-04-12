@@ -6,6 +6,7 @@ const interactsRouter = require('./interacts');
 const usersRouter = require('./users');
 const authRouter = require('./auth');
 const commentsRouter = require('./comments');
+const groupRouter = require('./group');
 
 function route(app) {
     app.use('/me', meRouter);
@@ -16,6 +17,7 @@ function route(app) {
     app.use('/users', usersRouter);
     app.use('/auth', authRouter);
     app.use('/comments', commentsRouter);
+    app.use('/group', groupRouter);
 }
 
 module.exports = route;
