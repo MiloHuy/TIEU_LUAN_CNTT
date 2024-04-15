@@ -37,7 +37,7 @@ exports.create = async (req, res) => {
                 success: false,
                 code: 10003,
                 message:
-                    "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                    "Tạo nhóm thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
             });
         }
 
@@ -47,7 +47,7 @@ exports.create = async (req, res) => {
                 success: false,
                 code: 10004,
                 message:
-                    "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                    "Tạo nhóm thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
             });
         }
 
