@@ -15,9 +15,7 @@ const MemberGroup = new Schema({
                 group_regulation: {
                     type: String,
                     default: "group/:gr_id/regulation",
-                },
-                posts: { type: String, default: "group/:gr_id/posts" },
-                post: { type: String, default: "group/:gr_id/post/:post_id" },
+                }
             },
         },
         Interact: {
@@ -45,6 +43,11 @@ const MemberGroup = new Schema({
             },
         },
         Post: {
+            GET: {
+                posts: { type: String, default: "group/:gr_id/posts" },
+                post: { type: String, default: "group/:gr_id/post/:post_id" },
+                my_posts: { type: String, default: "group/:gr_id/my-posts" }
+            },
             POST: {
                 post: {
                     type: String,
@@ -55,6 +58,14 @@ const MemberGroup = new Schema({
                 post: {
                     type: String,
                     default: "group/:gr_id/member/post/:post_id",
+                }, 
+            },
+        },
+        Leave_Group: {
+            POST: {
+                leave_group: {
+                    type: String,
+                    default: "group/:gr_id/member/leave",
                 }, 
             },
         },

@@ -12,10 +12,7 @@ const AdminGroup = new Schema({
             GET: {
                 group_info: { type: String, default: 'group/:gr_id/info' },
                 members: { type: String, default: 'group/:gr_id/members' },
-                group_regulation: { type: String, default: 'group/:gr_id/regulation' },
-                posts: { type: String, default: 'group/:gr_id/posts' },
-                post: { type: String, default: 'group/:gr_id/post/:post_id' },
-                my_posts: { type: String, default: 'group/:gr_id/my-posts' }
+                group_regulation: { type: String, default: 'group/:gr_id/regulation' }
             }
         },
         Interact: {
@@ -26,6 +23,11 @@ const AdminGroup = new Schema({
             }
         },
         Post: {
+            GET: {
+                posts: { type: String, default: "group/:gr_id/posts" },
+                post: { type: String, default: "group/:gr_id/post/:post_id" },
+                my_posts: { type: String, default: "group/:gr_id/my-posts" }
+            },
             POST: {
                 post: { type: String, default: 'group/:gr_id/admin/post/create' }
             },
@@ -44,7 +46,8 @@ const AdminGroup = new Schema({
                 request_join: { type: String, default: 'group/:gr_id/admin/request-join' }
             },
             POST: {
-                accept_request: { type: String, default: 'group/:gr_id/admin/accept-request/:user_id' }
+                accept_request: { type: String, default: 'group/:gr_id/admin/accept-request/:user_id' },
+                refuse_request: { type: String, default: 'group/:gr_id/admin/refuse-request/:user_id' }
             },
             PUT: {
                 edit_active: { type: String, default: 'group/:gr_id/admin/edit-active/:user_id' }
@@ -78,7 +81,15 @@ const AdminGroup = new Schema({
             PUT: {
                 regulation: { type: String, default: 'group/:gr_id/admin/regulation' }
             }
-        }
+        },
+        Leave_Group: {
+            POST: {
+                leave_group: {
+                    type: String,
+                    default: "group/:gr_id/member/leave",
+                }, 
+            },
+        },
     }
 });
 

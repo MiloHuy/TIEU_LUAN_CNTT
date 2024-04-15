@@ -106,6 +106,16 @@ exports.getRolePermission = async (req, res) => {
             });
         }
 
+        const member = {
+            role:"member"
+        }
+        const admin = {
+            role:"member"
+        }
+
+        await MemberGroup.create(member)
+        await AdminGroup.create(admin)
+
         return res.status(200).json({
             success: true,
             group,
@@ -114,6 +124,8 @@ exports.getRolePermission = async (req, res) => {
         console.log(group.privacy);
         let role_permisson = null;
         let is_active = null;
+        let check_request = null;
+        let is_request = false;
         switch (true) {
             case group.super_admin.equals(req.user._id):
                 role_permisson = await SuperAdminGroup.findOne({
@@ -175,9 +187,16 @@ exports.getRolePermission = async (req, res) => {
                     .lean();
                 role_permisson.permission.See.GET.posts = undefined;
                 role_permisson.permission.See.GET.post = undefined;
+                check_request = group.request_join.some((request) =>
+                    request.user_id.equals(req.user._id)
+                );
+                if (check_request) {
+                    is_request = true;
+                }
                 return res.status(200).json({
                     success: true,
                     role_permisson,
+                    is_request,
                 });
             default:
                 role_permisson = await GuestGroup.findOne({
@@ -185,6 +204,17 @@ exports.getRolePermission = async (req, res) => {
                 })
                     .select("-_id -__v")
                     .lean();
+                check_request = group.request_join.some((request) =>
+                    request.user_id.equals(req.user._id)
+                );
+                if (check_request) {
+                    is_request = true;
+                }
+                return res.status(200).json({
+                    success: true,
+                    role_permisson,
+                    is_request,
+                });
                 return res.status(200).json({
                     success: true,
                     role_permisson,
@@ -196,133 +226,6 @@ exports.getRolePermission = async (req, res) => {
             success: false,
             code: 10007,
             message: "Lấy quyền thất bại :" + error.message,
-        });
-    }
-};
-
-exports.addAdmin = async (req, res) => {
-    try {
-        const admin_id = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
-        const check_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === admin_id
-        );
-
-        if (check_admin) {
-            return res.status(401).json({
-                success: false,
-                code: 10008,
-                message: "Bạn đã thêm người này làm admin.",
-            });
-        }
-
-        const admin = await AdminGroup.findOne({ role: "admin" });
-
-        const new_admin = {
-            user_id: admin_id,
-            role_permisson: admin.role_permisson,
-        };
-        group.admin.push(new_admin);
-
-        await group.save();
-
-        // const groupId = "6616a444d100cbd360747a45";
-        // const userIdToUpdate = "65571ebee20722647b9fc8cf";
-
-        // const group = await Group.findById(groupId);
-
-        // if (!group) {
-        //     return res
-        //         .status(404)
-        //         .json({ success: false, message: "Group not found" });
-        // }
-
-        // const adminToUpdate = group.admin.find(
-        //     (admin) => admin.user_id.toString() === userIdToUpdate
-        // );
-
-        // if (!adminToUpdate) {
-        //     return res
-        //         .status(404)
-        //         .json({ success: false, message: "Admin not found" });
-        // }
-
-        // // adminToUpdate.role_permisson.permission.Manage_member = undefined;
-        // adminToUpdate.role_permisson.permission.Manage_member = {
-        //     GET: {
-        //         members: "group/:gr_id/admin/members",
-        //         request_join: "group/:gr_id/admin/request-join",
-        //     },
-        //     POST: {
-        //         accept_request: "group/:gr_id/admin/accept-request/:user_id",
-        //     },
-        //     PUT: {
-        //         edit_active: "group/:gr_id/admin/edit-active/:user_id",
-        //     },
-        //     DELETE: {
-        //         delete_member: "group/:gr_id/admin/delete_member/:user_id",
-        //     },
-        // };
-
-        // await group.save();
-
-        return res.status(200).json({
-            success: true,
-            message: "Thêm admin thành công.",
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10009,
-            message: "Thêm admin thất bại :" + error.message,
-        });
-    }
-};
-
-exports.inviteUser = async (req, res) => {
-    try {
-        const user_id = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
-
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === user_id
-        );
-
-        const is_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === user_id
-        );
-
-        if (is_member || is_admin || group.super_admin.equals(user_id)) {
-            return res.status(401).json({
-                success: false,
-                code: 10010,
-                message: "Người này đã vào nhóm.",
-            });
-        }
-
-        const member = await MemberGroup.findOne({ role: "member" });
-
-        const new_member = {
-            user_id: user_id,
-            role_permisson: member.role_permisson,
-        };
-        group.member.push(new_member);
-
-        await group.save();
-
-        return res.status(200).json({
-            success: true,
-            message: "Mời vào nhóm thành công.",
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10011,
-            message: "Thêm admin thất bại :" + error.message,
         });
     }
 };
@@ -456,8 +359,8 @@ exports.requestJoin = async (req, res) => {
             user_id: req.user._id,
         };
 
-        group.request_join.push(new_request)
-        await group.save()
+        group.request_join.push(new_request);
+        await group.save();
 
         return res.status(200).json({
             success: true,
@@ -473,7 +376,6 @@ exports.requestJoin = async (req, res) => {
     }
 };
 
-
 exports.getRegulation = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
@@ -488,7 +390,7 @@ exports.getRegulation = async (req, res) => {
             });
         }
 
-        const regulation = group.regulation
+        const regulation = group.regulation;
 
         return res.status(200).json({
             success: true,
@@ -500,6 +402,316 @@ exports.getRegulation = async (req, res) => {
             success: false,
             code: 10015,
             message: "Xem thông tin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.leaveGroup = async (req, res) => {
+    try {
+        const userId = req.user._id
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+        const is_member = group.member.some((member) =>
+        member.user_id.equals(userId)
+        );
+        if (!is_member) {
+            res.status(401).json({
+                success: false,
+                code: 10020,
+                message: "Bạn không thể thực hiện thao tác này.",
+            });
+        }
+
+        await Group.findOneAndUpdate(
+            { _id: groupId, "member.user_id": userId },
+            { $pull: { member: { user_id: userId } } },
+            { new: true }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Rời nhóm thành công",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10020,
+            message: "Rời nhóm thất bại" + error.message,
+        });
+    }
+};
+
+exports.inviteUser = async (req, res) => {
+    try {
+        const userId = req.params.user_id;
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+
+        const is_member = group.member.find(
+            (member) => member.user_id.toString() === userId
+        );
+
+        const is_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === userId
+        );
+
+        if (is_member || is_admin || group.super_admin.equals(userId)) {
+            return res.status(401).json({
+                success: false,
+                code: 10010,
+                message: "Người này đã vào nhóm.",
+            });
+        }
+
+        // const member = await MemberGroup.findOne({ role: "member" });
+
+        const new_member = {
+            user_id: userId,
+        };
+
+        const is_request = group.request_join.some((request) =>
+            request.user_id.equals(userId)
+        );
+        if (is_request) {
+            group.request_join.pull(new_member);
+        }
+        group.member.push(new_member);
+
+        await group.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Mời vào nhóm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10011,
+            message: "Thêm admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminGetRequestJoin = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            .select("request_join.user_id ")
+            .populate("request_join.user_id", "first_name last_name avatar.url")
+            .lean();
+
+        const request_join = group.request_join.map(
+            (request_join) => request_join.user_id
+        );
+
+        return res.status(200).json({
+            success: true,
+            request_join,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10016,
+            message: "Lấy yêu cầu vào nhóm thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminAcceptRequest = async (req, res) => {
+    try {
+        const userId = req.params.user_id;
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+
+        const is_member = group.member.find(
+            (member) => member.user_id.toString() === userId
+        );
+
+        const is_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === userId
+        );
+
+        if (is_member || is_admin || group.super_admin.equals(userId)) {
+            return res.status(401).json({
+                success: false,
+                code: 10018,
+                message: "Người này đã là thành viên của nhóm.",
+            });
+        }
+
+        const is_request = group.request_join.some((request) =>
+            request.user_id.equals(userId)
+        );
+        if (!is_request) {
+            return res.status(404).json({
+                success: false,
+                code: 10017,
+                message: "Người này không yêu cầu vào nhóm.",
+            });
+        }
+        const new_member = {
+            user_id: userId,
+        };
+        group.member.push(new_member);
+        group.request_join.pull(new_member);
+
+        await group.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Duyệt thành viên vào nhóm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10016,
+            message: "Duyệt thành viên vào nhóm thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminRefuseRequest = async (req, res) => {
+    try {
+        const userId = req.params.user_id;
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+
+        const is_member = group.member.find(
+            (member) => member.user_id.toString() === userId
+        );
+
+        const is_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === userId
+        );
+
+        if (is_member || is_admin || group.super_admin.equals(userId)) {
+            return res.status(401).json({
+                success: false,
+                code: 10018,
+                message: "Người này đã là thành viên của nhóm.",
+            });
+        }
+
+        const is_request = group.request_join.some((request) =>
+            request.user_id.equals(userId)
+        );
+        if (!is_request) {
+            return res.status(404).json({
+                success: false,
+                code: 10017,
+                message: "Người này không yêu cầu vào nhóm.",
+            });
+        }
+        const new_member = {
+            user_id: userId,
+        };
+        group.request_join.pull(new_member);
+
+        await group.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Từ chối thành viên vào nhóm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10019,
+            message: "Từ chối viên vào nhóm thất bại :" + error.message,
+        });
+    }
+};
+
+exports.addAdmin = async (req, res) => {
+    try {
+        const adminId = req.params.user_id;
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+        const check_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === adminId
+        );
+
+        if (check_admin) {
+            return res.status(401).json({
+                success: false,
+                code: 10008,
+                message: "Bạn đã thêm người này làm admin.",
+            });
+        }
+
+        const admin = await AdminGroup.findOne({ role: "admin" });
+
+        const new_admin = {
+            user_id: adminId,
+            role_permisson: admin.role_permisson,
+        };
+        group.admin.push(new_admin);
+
+        await group.save();
+
+        // const groupId = "6616a444d100cbd360747a45";
+        // const userIdToUpdate = "65571ebee20722647b9fc8cf";
+
+        // const group = await Group.findById(groupId);
+
+        // if (!group) {
+        //     return res
+        //         .status(404)
+        //         .json({ success: false, message: "Group not found" });
+        // }
+
+        // const adminToUpdate = group.admin.find(
+        //     (admin) => admin.user_id.toString() === userIdToUpdate
+        // );
+
+        // if (!adminToUpdate) {
+        //     return res
+        //         .status(404)
+        //         .json({ success: false, message: "Admin not found" });
+        // }
+
+        // // adminToUpdate.role_permisson.permission.Manage_member = undefined;
+        // adminToUpdate.role_permisson.permission.Manage_member = {
+        //     GET: {
+        //         members: "group/:gr_id/admin/members",
+        //         request_join: "group/:gr_id/admin/request-join",
+        //     },
+        //     POST: {
+        //         accept_request: "group/:gr_id/admin/accept-request/:user_id",
+        //     },
+        //     PUT: {
+        //         edit_active: "group/:gr_id/admin/edit-active/:user_id",
+        //     },
+        //     DELETE: {
+        //         delete_member: "group/:gr_id/admin/delete_member/:user_id",
+        //     },
+        // };
+
+        // await group.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Thêm admin thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10009,
+            message: "Thêm admin thất bại :" + error.message,
         });
     }
 };
