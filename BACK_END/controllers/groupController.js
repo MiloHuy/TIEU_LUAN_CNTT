@@ -402,7 +402,7 @@ exports.getRegulation = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10015,
-            message: "Xem thông tin thất bại :" + error.message,
+            message: "Xem nội quy thất bại :" + error.message,
         });
     }
 };
