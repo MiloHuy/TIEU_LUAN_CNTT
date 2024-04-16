@@ -14,6 +14,8 @@ const {
     adminAcceptRequest,
     adminRefuseRequest,
     leaveGroup,
+    getGroup,
+    getGroupAdmin,
 } = require('../controllers/groupController.js');
 
 const {
@@ -40,5 +42,7 @@ router.post('/:gr_id/admin/refuse-request/:user_id', verifyToken, isUser, isAdmi
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 
+router.get('/admin', verifyToken, isUser, getGroupAdmin);
+router.get('/', verifyToken, isUser, getGroup);
 
 module.exports = router;

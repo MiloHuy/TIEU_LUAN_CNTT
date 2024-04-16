@@ -6,6 +6,7 @@ const SuperAdminGroup = require("../models/SuperAdminGroup");
 const GuestGroup = require("../models/GuestGroup");
 const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
+const { group } = require("console");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -107,14 +108,14 @@ exports.getRolePermission = async (req, res) => {
         }
 
         const member = {
-            role:"member"
-        }
+            role: "member",
+        };
         const admin = {
-            role:"member"
-        }
+            role: "member",
+        };
 
-        await MemberGroup.create(member)
-        await AdminGroup.create(admin)
+        await MemberGroup.create(member);
+        await AdminGroup.create(admin);
 
         return res.status(200).json({
             success: true,
@@ -408,10 +409,9 @@ exports.getRegulation = async (req, res) => {
 
 exports.leaveGroup = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user._id;
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
-            .lean();
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -420,12 +420,12 @@ exports.leaveGroup = async (req, res) => {
             });
         }
         const is_member = group.member.some((member) =>
-        member.user_id.equals(userId)
+            member.user_id.equals(userId)
         );
         if (!is_member) {
             res.status(401).json({
                 success: false,
-                code: 10020,
+                code: 10021,
                 message: "Bạn không thể thực hiện thao tác này.",
             });
         }
@@ -712,6 +712,76 @@ exports.addAdmin = async (req, res) => {
             success: false,
             code: 10009,
             message: "Thêm admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.getGroup = async (req, res) => {
+    try {
+        const groups = await Group.find({
+            $or: [
+                { super_admin: req.user._id },
+                { "admin.user_id": req.user._id },
+                { "member.user_id": req.user._id },
+            ],
+        })
+            .select("_id name avatar member")
+            .lean();
+
+        groups.forEach((group) => {
+            let is_admin = true;
+
+            if (group.member && group.member.length > 0) {
+                const is_member = group.member.find(
+                    (member) =>
+                        member.user_id.toString() === req.user._id.toString()
+                );
+
+                if (is_member) {
+                    is_admin = false;
+                }
+            }
+
+            delete group.member
+
+            group.is_admin = is_admin;
+        });
+
+        return res.status(200).json({
+            success: true,
+            groups,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10022,
+            message: "Lấy danh sách nhóm thất bại :" + error.message,
+        });
+    }
+};
+
+exports.getGroupAdmin = async (req, res) => {
+    try {
+        const groups = await Group.find({
+            $or: [
+                { super_admin: req.user._id },
+                { "admin.user_id": req.user._id },
+            ],
+        })
+            .select("_id name avatar")
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            groups,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10023,
+            message: "Lấy danh sách nhóm vai trò quản trị viên thất bại :" + error.message,
         });
     }
 };
