@@ -497,7 +497,7 @@ exports.inviteUser = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10011,
-            message: "Thêm admin thất bại :" + error.message,
+            message: "Thêm thành viên thất bại :" + error.message,
         });
     }
 };
