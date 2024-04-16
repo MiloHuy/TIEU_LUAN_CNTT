@@ -107,20 +107,20 @@ exports.getRolePermission = async (req, res) => {
             });
         }
 
-        const member = {
-            role: "member",
-        };
-        const admin = {
-            role: "member",
-        };
+        // const member = {
+        //     role: "member",
+        // };
+        // const admin = {
+        //     role: "member",
+        // };
 
-        await MemberGroup.create(member);
-        await AdminGroup.create(admin);
+        // await MemberGroup.create(member);
+        // await AdminGroup.create(admin);
 
-        return res.status(200).json({
-            success: true,
-            group,
-        });
+        // return res.status(200).json({
+        //     success: true,
+        //     group,
+        // });
 
         console.log(group.privacy);
         let role_permisson = null;
@@ -785,3 +785,5 @@ exports.getGroupAdmin = async (req, res) => {
         });
     }
 };
+
+//10023
