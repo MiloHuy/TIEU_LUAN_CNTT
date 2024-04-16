@@ -7,6 +7,7 @@ const GuestGroup = require("../models/GuestGroup");
 const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
 const { group } = require("console");
+const User = require("../models/User");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -456,6 +457,16 @@ exports.inviteUser = async (req, res) => {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId);
 
+        const check_user = await User.findById(userId);
+
+        if(!check_user){
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
         );
@@ -534,6 +545,16 @@ exports.adminAcceptRequest = async (req, res) => {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId);
 
+        const check_user = await User.findById(userId);
+
+        if(!check_user){
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
         );
@@ -587,6 +608,16 @@ exports.adminRefuseRequest = async (req, res) => {
         const userId = req.params.user_id;
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId);
+
+        const check_user = await User.findById(userId);
+
+        if(!check_user){
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
 
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
@@ -644,6 +675,16 @@ exports.addAdmin = async (req, res) => {
             (admin) => admin.user_id.toString() === adminId
         );
 
+        const check_user = await User.findById(userId);
+
+        if(!check_user){
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+        
         if (check_admin) {
             return res.status(401).json({
                 success: false,
