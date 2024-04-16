@@ -307,7 +307,7 @@ exports.getMembers = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10012,
-            message: "Thêm admin thất bại :" + error.message,
+            message: "Lấy danh sách thành viên thất bại :" + error.message,
         });
     }
 };
