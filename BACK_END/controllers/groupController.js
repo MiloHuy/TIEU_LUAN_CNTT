@@ -13,6 +13,14 @@ const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
 exports.create = async (req, res) => {
     try {
+        if(req.privacy!=1 || req.privacy!=2){
+            return res.status(400).json({
+                success: false,
+                code: 10025,
+                message:
+                    "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
+            });
+        }
         if (!req.files || !req.files.group_avatar) {
             console.log(req.body);
             const Avatar = null;
