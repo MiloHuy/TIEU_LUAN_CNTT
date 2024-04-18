@@ -1,118 +1,91 @@
 import { Button } from 'components/button';
-import Input from 'components/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'components/select';
-import { OptionsScopeGroup } from 'constants/group/group-options-scope.const';
-import { useFormik } from 'formik';
-import { useMemo, useState } from 'react';
-import { object, string } from "yup";
+import { InputV2 } from 'components/input-v2';
+import { Textarea } from 'components/textarea';
+import { EPrivacyGroup } from 'constants/group/enum-privacy';
+import SelectPrivacyGroup from 'features/select/select-privacy-group';
+import { FastField, FieldArray, Form, Formik } from 'formik';
+import { schemaFormCreateGroup } from './schema';
 
-const FormCreateGroup = () => {
-    const [items, setItem] = useState(null)
-    const initFormCreateGroup = {
-        name_group: null,
-        scope_group: items,
-    }
+const FormCreateGroup = ({ onChangeForm, onSubmitForm }) => {
+  const initFormCreateGroup = {
+    nameGroup: null,
+    privacyGroup: EPrivacyGroup.PUBLIC,
+    regulationGroup: []
+  }
 
-    const [formCreateGroup, setFormCreateGroup] = useState(initFormCreateGroup)
+  const schema = schemaFormCreateGroup()
 
-    const handleInputChange = (e) => {
-        setFormCreateGroup({
-            ...formCreateGroup,
-            name_group: [e.target.value],
-            scope_group: items
-        })
+  const handleChangeForm = (values) => {
+    onChangeForm && onChangeForm((prev) => ({ ...prev, ...values }))
+  }
 
-        values['scope_group'] = items
-    }
-
-    const handleChangeSelection = (e) => {
-        setItem(e)
-    }
-
-    const handleCreateGroup = (e) => {
-        values['scope_group'] = items
-        console.log('values of formik: ' + Object.entries(values))
-    }
-
-    const FormCreateGroupSchema = useMemo(() => {
-        return object().shape({
-            name_group: string(),
-            scope_group: string(),
-        })
-    }, [])
-
-    const formik = useFormik({
-        initialValues: initFormCreateGroup,
-        validationSchema: FormCreateGroupSchema,
-        handleChange: { handleInputChange, handleChangeSelection },
-        handleSubmit: { handleCreateGroup },
-        onSubmit: { handleCreateGroup }
-    })
-    const { values, errors } = formik
-
-    return (
-        <form
-            className='h-[60vh] w-full flex flex-col gap-6 items-center justify-center'
-            onSubmit={formik.handleSubmit}
+  return (
+    <Formik
+      initialValues={initFormCreateGroup}
+      // validationSchema={schema}
+      handleChange={handleChangeForm}
+      onSubmit={async (values) => {
+        console.log('values', values)
+        onSubmitForm && onSubmitForm(values)
+      }}
+    >
+      {({ values }) => (
+        <Form
+          className='min-w-max flex flex-col h-[70vh] gap-6 font-quick_sans overflow-auto p-4 no-scrollbar'
         >
-            <Input
-                className='max-w-[30vw]'
+          <FastField name='nameGroup'>
+            {({ field }) => (
+              <InputV2
+                className='max-w-[30vw] min-h-[70px] bg-transparent border border-black'
                 radius='lg'
                 size='lg'
                 placeholder='Tên nhóm'
                 name='name_group'
                 type='text'
+                {...field}
+              />
+            )}
+          </FastField>
 
-                onChange={formik.handleChange}
-            />
+          <FastField name='privacyGroup' component={SelectPrivacyGroup} />
 
-            <Select
-                name='scope_group'
-                className='h-[90px]'
-                id='scope_group'
+          <p className='text-start'>Điều khoản của nhóm :</p>
 
-                onValueChange={handleChangeSelection}
+          <FieldArray name='regulationGroup'>
+            {({ push, remove }) => (
+              <div className='flex flex-col items-start justify-start w-[30vw] gap-2'>
+                {values.regulationGroup.length > 0 &&
+                  values.regulationGroup.map((regulation, index) => (
+                    <FastField name={`regulationGroup[${index}]`}>
+                      {({ field }) => (
+                        <div className='grid gap-2 w-full'>
+                          <label>Điều khoản : {index + 1}</label>
+                          <Textarea {...field} className='border border-black dark:border-white' />
+                          <Button onClick={(e) => { e.preventDefault(); remove(index) }}>
+                            Xóa
+                          </Button>
+                        </div>
+                      )}
+                    </FastField>
+                  ))}
+                <Button className='p-2' onClick={(e) => { e.preventDefault(); push('') }}>Thêm nội quy</Button>
+              </div>
+            )}
+          </FieldArray>
+
+          <div className='w-[30vw] flex justify-end'>
+            <Button
+              className='p-4 border'
+              variant='secondary'
+              type="submit"
             >
-                <SelectTrigger className="text-md w-[30vw] h-[10vh] rounded-[15px]">
-                    <SelectValue
-                        placeholder="Quyền riêng tư"
-                    />
-                </SelectTrigger>
-
-                <SelectContent className='h-[15vh] text-white  rounded-[15px] bg-black/50'>
-                    <SelectGroup
-                        className='h-full grid grid-cols-1 justify-start items-center'
-                    >
-                        {
-                            OptionsScopeGroup.map((option) => {
-                                return (
-                                    <SelectItem
-                                        className='rounded-[10px] text-md'
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </SelectItem>
-                                )
-                            }
-                            )
-                        }
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-
-            <div className='w-[30vw] flex justify-end'>
-                <Button
-                    className='p-4 border'
-                    variant='secondary'
-                    type="submit"
-
-                    onClick={handleCreateGroup}
-                >
-                    Tạo nhóm
-                </Button>
-            </div>
-        </form >
-    )
+              Tạo nhóm
+            </Button>
+          </div>
+        </Form >
+      )}
+    </Formik >
+  )
 }
 
 export default FormCreateGroup

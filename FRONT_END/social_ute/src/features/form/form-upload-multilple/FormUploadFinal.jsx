@@ -4,8 +4,8 @@ import CaroselVersion2 from "components/carousel/Carosel-V2"
 import { Textarea } from "components/textarea"
 import { ERROR_SYSTEM, ERR_CREATE_POST } from "constants/error.const"
 import { PostType } from "constants/post.const"
-import SelectPrivacy from "features/select/select-privacy"
-import { PrivacyPost } from "features/select/select-privacy/SelectPrivacy"
+import SelectPrivacyPost from "features/select/select-privacy-post"
+import { PrivacyPost } from "features/select/select-privacy-post/SelectPrivacyPost"
 import { useFormik } from "formik"
 import { Loader2 } from "lucide-react"
 import { useMemo, useState } from "react"
@@ -146,7 +146,7 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
             />
 
             <div className='flex gap-3 w-full justify-between items-center min-w-[50px]:flex-col'>
-              <SelectPrivacy
+              <SelectPrivacyPost
                 title='Phạm vi:'
                 loading={loading}
                 values={values['privacy']}

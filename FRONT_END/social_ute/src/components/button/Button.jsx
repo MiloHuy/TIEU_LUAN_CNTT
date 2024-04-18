@@ -29,6 +29,7 @@ const buttonVariants = cva(
       },
       color: {
         danger: 'bg-red/95',
+        gray: 'bg-bg_gray'
       }
     },
     defaultVariants: {

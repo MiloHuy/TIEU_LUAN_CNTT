@@ -40,7 +40,7 @@ export const genOptionsPrivacyPost = () => {
   ]
 }
 
-const SelectPrivacy = ({ loading, className, title, onSubmit, handleChange, values }) => {
+const SelectPrivacyPost = ({ loading, className, title, handleChange, values }) => {
   const options = genOptionsPrivacyPost()
 
   const handleChangeSelect = (e) => {
@@ -49,7 +49,6 @@ const SelectPrivacy = ({ loading, className, title, onSubmit, handleChange, valu
       privacy: e
     }))
   }
-
   return (
     <div className={clsx('grid grid-cols-3 items-center justify-between w-full', className)}>
       <p className='text-md'>{title ? title : 'Hãy chọn phạm vi'}</p>
@@ -80,4 +79,4 @@ const SelectPrivacy = ({ loading, className, title, onSubmit, handleChange, valu
   )
 }
 
-export default SelectPrivacy
+export default SelectPrivacyPost

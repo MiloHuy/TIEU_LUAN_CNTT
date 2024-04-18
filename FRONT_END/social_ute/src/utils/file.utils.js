@@ -24,3 +24,15 @@ export const handleRevokeBlobUrl = (arrBlob) => {
     URL.revokeObjectURL(arrBlob);
   }
 };
+
+export const parseBitesToMegoBites = (bites) => {
+  return bites / 1024 / 1024;
+};
+
+export const checkFileMaxSize = (file, Maxsize) => {
+  if (!file.size) return false;
+
+  const size = parseBitesToMegoBites(file.size);
+
+  return size <= Maxsize;
+};

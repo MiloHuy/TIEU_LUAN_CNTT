@@ -35,7 +35,7 @@ const DropDownShowMoreOptions = ({ user_id, post_id, privacy }) => {
           }
           defaultValue={privacy}
           post_id={post_id}
-          title='Chọn phạm vi muốn thay dổi'
+          title='Chọn phạm vi muốn thay đổi'
         />
 
         <LoadingComponent type={TYPELOADING.NULL} condition={user_id === id}>
