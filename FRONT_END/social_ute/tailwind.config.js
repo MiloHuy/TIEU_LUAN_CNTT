@@ -72,6 +72,7 @@ module.exports = {
         red: "#E11F1F",
 
         bg_date_picker_primary: "#3F89E3",
+        bg_gray: "#999999",
 
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

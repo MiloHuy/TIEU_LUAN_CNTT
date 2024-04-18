@@ -20,6 +20,9 @@ const FormSelectPostOrStory = ({ className, stepForm, handleNextForm }) => {
     }
   }, [stepForm])
 
+  const classBaseParagraph = 'font-quick_sans text-center text-black dark:text-white font-bold'
+  const classBaseButton = 'min-w-[180px] min-h-[90px]'
+
   return (
     <div className={
       clsx(
@@ -28,18 +31,18 @@ const FormSelectPostOrStory = ({ className, stepForm, handleNextForm }) => {
         className
       )
     }>
-      <div className="flex flex-col h-full justify-center gap-4 min-h-[45vh] min-w-[40vw] ">
-        <p className='font-quick_sans text-[30px] text-center text-black dark:text-white font-bold h-max'>
+      <div className="flex flex-col h-full justify-center gap-4 min-h-[45vh] min-w-[40vw]">
+        <p className={`${classBaseParagraph} text-[30px]`}>
           Bạn muốn đăng tải điều gì?
         </p>
 
         <div className='w-full flex gap-3 items-center justify-around'>
           <Button
-            className='min-w-[180px] min-h-[90px]'
+            className={`${classBaseButton}`}
             variant='press'
             onClick={() => handleNextForm()}
           >
-            <p className='font-quick_sans text-[20px] text-center text-black dark:text-white font-bold'>
+            <p className={`${classBaseParagraph} text-[20px]`}>
               Bài viết
             </p>
             <div className='flex items-center justify-center w-full'>
@@ -56,11 +59,11 @@ const FormSelectPostOrStory = ({ className, stepForm, handleNextForm }) => {
           </Button>
 
           <Button
-            className='min-w-[180px] min-h-[90px]'
+            className={`${classBaseButton}`}
             variant='press'
             onClick={() => handleNextForm()}
           >
-            <p className='font-quick_sans text-[20px] text-center text-black dark:text-white font-bold'>
+            <p className={`${classBaseParagraph} text-[20px]`}>
               Tin
             </p>
             <Camera strokeWidth={0.75} />

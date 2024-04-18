@@ -1,4 +1,3 @@
-import { Button } from "@nextui-org/react";
 import { AlarmClock } from 'lucide-react';
 import { useState } from "react";
 
@@ -19,9 +18,7 @@ const Clock = () => {
                 {currentTime}
             </h1>
 
-            <Button isIconOnly variant="light" size='sm'>
-                <AlarmClock size={23} strokeWidth={1} />
-            </Button>
+            <AlarmClock size={23} strokeWidth={1} />
         </div>
     )
 }

@@ -17,3 +17,8 @@ export const WidthBrowser =
 
 export const HeightBrowser =
   window.innerHeight || document.documentElement.clientHeight;
+
+export const FileSize = {
+  max: 10,
+  min: 0.1,
+};

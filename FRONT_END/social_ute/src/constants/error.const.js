@@ -1,5 +1,11 @@
 export const ERROR_SYSTEM = "Lỗi hệ thống vui lòng chờ giây phút";
 
+export const FILE_ERROR = {
+  NOT_VALID_TYPE: "File không hợp lệ",
+  NOT_EMPTY: "File không được để trống",
+  OVER_SIZE: "Dung lượng file quá lớn",
+};
+
 export const ERROR_LOGIN = [
   {
     type: "ERR_PHONE",

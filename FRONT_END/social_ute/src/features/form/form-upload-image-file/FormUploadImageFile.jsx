@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { createPost } from "services/post/api-post.svc";
 import { checkCodeInArray } from "utils/code-error.utils";
 
-
 const FormUploadImageFile = () => {
   const [selectFiled, setSelectFiles] = useState('')
 

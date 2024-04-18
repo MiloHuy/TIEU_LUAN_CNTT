@@ -33,8 +33,8 @@ const User = () => {
   }, [posts])
 
   return (
-    <div className='flex gap-1 w-full h-screen overflow-y-scroll'>
-      <div className='flex flex-col col-span-3 gap-2 '>
+    <div className='flex gap-1 w-full h-screen'>
+      <div className='flex flex-col gap-2 '>
         <div className="w-full h-[80px] flex flex-row items-end gap-1 pt-3">
           {
             posts ?
@@ -62,21 +62,15 @@ const User = () => {
       <LoadingComponent type={TYPELOADING.SPINNER} condition={posts}>
         <div className='col-span-2 h-full'>
           <div className='flex flex-col gap-4 p-6 '>
-            <div className='relative w-full flex'>
-              <ProfileUser userName={userName} />
-            </div>
+            <ProfileUser userName={userName} />
 
             <div className='h-max w-full border border-black dark:border-white rounded-lg'>
               <Calendar />
             </div>
 
-            <div className='w-full '>
-              <ListSuggestFriends />
-            </div>
+            <ListSuggestFriends />
 
-            <div className="w-full flex justify-end px-1">
-              <Clock />
-            </div>
+            <Clock />
           </div>
         </div>
       </LoadingComponent>

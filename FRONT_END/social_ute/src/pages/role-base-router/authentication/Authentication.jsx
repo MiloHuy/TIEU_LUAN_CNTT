@@ -1,6 +1,6 @@
 import { authFail, authSuccess } from 'app/slice/auth/auth.slice.js';
 import PropagateLoader from 'components/loading/propagate-loading/PropagateLoader';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { getMeInfo } from 'services/me.svc.js';
@@ -8,7 +8,6 @@ import Unauthorized from '../authorization/UnAuthorization';
 
 export default function Authentication() {
     const { isAuthenticated, loading } = useSelector((state) => state.auth);
-    const [hasRun, setHasRun] = useState(false);
     const dispatch = useDispatch()
 
     const fetchInfoMySelf = useCallback(async () => {
@@ -23,7 +22,6 @@ export default function Authentication() {
 
     useEffect(() => {
         fetchInfoMySelf()
-        setHasRun(true);
     }, [fetchInfoMySelf]);
 
     if (!loading) {

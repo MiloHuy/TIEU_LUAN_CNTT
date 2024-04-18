@@ -2,31 +2,32 @@ import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
 import { Button } from 'components/button'
 import Input from 'components/input'
+import LoadingDotV2 from 'components/loading/loading-dot-v2'
 import { SSOCOOKIES } from 'constants/app.const'
-import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
 import { Eye, Loader2, Smartphone } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
-import { checkCodeInArray } from 'utils/code-error.utils'
-import { object, string } from 'yup'
+import { genSchemaFormLogin } from './schema'
+import { errorHandler, genLabelFormLogin } from './utils'
 
 const FormLogin = (props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [isDisabled, setIsDisabled] = useState(false)
-  const [loading, setIsLoding] = useState(false)
+  const [loading, setIsLoading] = useState(false)
 
-  const initFormLogin = {
+  const formLabel = useMemo(() => genLabelFormLogin(), [])
+  const formLoginSchema = useMemo(() => genSchemaFormLogin(formLabel), [formLabel])
+
+  const [formLogin, setFormLogin] = useState({
     phone_number: '',
     pass_word: ''
-  }
-  const [formLogin, setFormLogin] = useState(initFormLogin)
+  })
 
   const handleCheckRole = (role) => {
     if (role === 1) {
@@ -41,14 +42,9 @@ const FormLogin = (props) => {
     e.preventDefault()
 
     try {
-      setIsLoding(true)
-      setIsDisabled(true)
-
+      setIsLoading(true)
+      await formLoginSchema.validate(values)
       const userData = await login(values)
-
-      setIsDisabled(false)
-      setIsLoding(false)
-
       dispatch(setInfoUser({ ...userData }))
 
       const { role_id } = userData.user
@@ -56,6 +52,8 @@ const FormLogin = (props) => {
 
       Cookies.set(SSOCOOKIES.access, userData.token, { expires: 1 })
       Cookies.set(USERCOOKIES.userID, userData.user._id, { expires: 1 })
+
+      setIsLoading(false)
 
       toast.success('Đăng nhập thành công!!!', {
         position: "bottom-right",
@@ -68,39 +66,14 @@ const FormLogin = (props) => {
         theme: "light",
       });
     } catch (err) {
-      setIsLoding(false)
-
-      const { code } = err.response.data
-      const messageError = checkCodeInArray(ERROR_LOGIN, code)
-
-      toast.error(messageError, {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      setIsLoading(false)
+      errorHandler(err)
     }
   }
 
   const handleInput = (e) => {
     setFormLogin({ ...formLogin, [e.target.name]: e.target.value })
   }
-
-  const formLabel = useMemo(() => ({
-    phone_number: 'Số điện thoại',
-    pass_word: 'Mật khẩu',
-  }), [])
-
-  const formLoginSchema = useMemo(() => {
-    return object().shape({
-      phone_number: string().typeError(`${formLabel.phone_number}`).required(`${formLabel.phone_number} is required`).min(10, "Hãy điền đủ 10 số.").max(10, "Không điền quá 10 số."),
-      pass_word: string().typeError(`${formLabel.pass_word}`).required(`${formLabel.pass_word} is required`),
-    })
-  }, [formLabel])
 
   const formik = useFormik({
     initialValues: formLogin,
@@ -111,29 +84,28 @@ const FormLogin = (props) => {
 
   const { values, errors } = formik
 
-  useEffect(() => {
-    if (Object.keys(errors).length === 0) {
-      setIsDisabled(false)
-    }
-    else {
-      setIsDisabled(true)
-    }
-  }, [errors])
-
   return (
     <form
-      className={clsx('h-full w-full flex flex-col items-center justify-center gap-y-8 overflow-hidden', props.className)}
+      className={clsx('h-[80vh] min-w-[35vw] flex flex-col items-center justify-between p-4 gap-4', props.className)}
       onSubmit={formik.handleSubmit}
     >
+      {
+        loading ?
+          <div className='absolute top-1/2 right-1/2 w-full'>
+            <LoadingDotV2 />
+          </div > : null
+      }
+
       <h1 className='text-[40px] text-black font-extrabold font-quick_sans text-center'>
         ĐĂNG NHẬP
       </h1>
 
-      <div className='w-full px-3 flex flex-col  gap-8 justify-center items-center'>
+      <div className='w-full px-3 flex flex-col gap-8 justify-center items-center'>
         <Input
           name='phone_number'
+          disabled={loading}
           type='text'
-          className='text-sm font-quick_sans mx-0 rounded-sm w-3/4'
+          className='text-sm font-quick_sans mx-0 rounded-sm '
           errorMessage={errors?.phone_number}
           placeholder='Vui lòng nhập số điện thoại'
           onChange={formik.handleChange}
@@ -145,7 +117,8 @@ const FormLogin = (props) => {
         <Input
           name='pass_word'
           type='password'
-          className='text-sm  mx-0 rounded-sm w-3/4'
+          disabled={loading}
+          className='text-sm  mx-0 rounded-sm'
           placeholder="Mật khẩu"
           onChange={formik.handleChange}
           endContent={
@@ -168,14 +141,12 @@ const FormLogin = (props) => {
 
         <Button
           radius='sm'
-          isDisabled={isDisabled}
           onClick={handleSubmitLogin}
           className='w-3/5 rounded-[40px] text-lg bg-[#1C30E3]'>
           {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : ''}
           Đăng nhập
         </Button>
       </div>
-
 
       <div className='font-quick_sans text-center text-lg grid gap-2 font-bold'>
         <Link to='/forgot_password'>

@@ -14,7 +14,7 @@ const FieldAvatarNameTimeDes = ({ imgAvatar, fullName, className, postDescriptio
           <p className="font-bold hover:underline cursor-pointer gap-2">
             {fullName}
           </p>
-          <p >3 ngày</p>
+          <p>3 ngày</p>
         </div>
 
         <p className="line-clamp-2">{postDescription}</p>

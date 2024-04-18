@@ -1,6 +1,5 @@
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import ArrayEmpty from "combine/array-empty/ArrayEmpty";
-import { MultipleImages } from "components/icon/bonus.icon";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
 import { motion } from "framer-motion";
 import { usePostDetail } from "hook/posts/usePostDetail";
@@ -19,7 +18,7 @@ const ListPostUserDetail = (props) => {
   return (
     <ArrayEmpty arr={posts} title='Chưa có bài viết ở hiện tại'>
       <motion.div
-        className='grid lg:grid-cols-3 gap-2 w-full h-full md:grid-cols-1'
+        className='grid lg:grid-cols-3 gap-2 w-full h-full md:grid-cols-1 '
         variants={container}
         initial="hidden"
         animate="visible"
@@ -27,23 +26,24 @@ const ListPostUserDetail = (props) => {
         {
           posts.map((post) => {
             return (
-              <div className='relative w-full h-full'>
-                <motion.div
-                  className="absolute top-3 right-3"
-                  variants={item}
-                >
-                  <MultipleImages
-                    height='30'
-                    width='30'
-                  />
-                </motion.div>
+              <div className='relative w-full h-full group flex justify-center'>
+                {/* {post.post_img.length > 1
+                  ? <motion.div
+                    className="absolute top-3 right-3 "
+                    variants={item}
+                  >
+                    <MultipleImages
+                      height='30'
+                      width='30'
+                    />
+                  </motion.div> : null} */}
 
                 <ModalPostUserV2
                   trigger={
                     <motion.img
                       loading="lazy"
                       className="object-fill h-80 w-96 cursor-pointer rounded-[15px]"
-                      src={post.post_img.url}
+                      src={post.post_img[0].url}
                       alt='image1'
                       onClick={() => fetchPostDetails(post._id)}
                       variants={item}

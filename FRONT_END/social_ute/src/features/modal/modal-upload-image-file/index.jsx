@@ -1,1 +1,2 @@
-export { default } from './ModalUploadImageFile';
+export { default } from './ModalUploadFile';
+

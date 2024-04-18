@@ -13,7 +13,7 @@ import HeaderHome from "layout/header-home";
 import { Book, Bookmark, Grid3X3, Users } from 'lucide-react';
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getPostSaved } from "services/post/api-get.svc";
 import { getFullName } from "utils/user.utils";
 
@@ -27,7 +27,6 @@ const HomeUser = () => {
   const { userStatisics, fetchUserStatisics } = useFollowAndFollwing(userId)
   const { stories: meStories, fetchMeStories } = useMeAllStory(userId)
   const { friends: meFriends, fetchMeFriends } = useMeAllFriend()
-  const navigate = useNavigate()
 
   const initHomeUser = {
     userStatisics: '',
@@ -38,8 +37,6 @@ const HomeUser = () => {
   }
 
   const [homeUser, setHomeUser] = useState(initHomeUser)
-
-
 
   const fetchMePostSaved = useCallback(async () => {
     try {
@@ -79,17 +76,15 @@ const HomeUser = () => {
 
   return (
     <LoadingComponent type={TYPELOADING.PROPAGATE} condition={userStatisics}>
-      <div className='grid  p-2 h-full w-full overflow-auto '>
-        <div className='p-4 row-span-1'>
-          <HeaderHome
-            userStatisics={userStatisics}
-            userName={getFullName(user.first_name, user.last_name)}
-            userAvatar={user.avatar.url}
-          />
-        </div>
+      <div className='flex flex-col w-full h-screen p-4 overflow-auto'>
+        <HeaderHome
+          userStatisics={userStatisics}
+          userName={getFullName(user.first_name, user.last_name)}
+          userAvatar={user.avatar.url}
+        />
 
-        <div className='grid grid-rows-1 justify-center w-full h-screen '>
-          <div className="flex w-full flex-col">
+        <div className='flex justify-center mt-2'>
+          <div className="flex w-full flex-col gap-4">
             <Tabs
               color="default"
               variant="light"

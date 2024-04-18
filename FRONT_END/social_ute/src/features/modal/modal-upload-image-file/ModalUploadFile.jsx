@@ -1,3 +1,4 @@
+import { Button } from "components/button";
 import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
 import FormPreview from "features/form/form-upload-multilple/FormPreview";
 import FormSelectImagesOrVideos from "features/form/form-upload-multilple/FormSelectImagesOrVideos";
@@ -64,7 +65,7 @@ const ModalUploadFile = ({ trigger }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {trigger}
+        {trigger ? trigger : <Button>Open Modal</Button>}
       </DialogTrigger>
 
       <DialogContent className={`${transformNextForm} sm:rounded-lg transform duration-500 ease-in overflow-hidden`}>

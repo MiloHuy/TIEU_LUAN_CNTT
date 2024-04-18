@@ -7,6 +7,7 @@ import Admin from "pages/admin";
 import AuthRequirement from "pages/auth-require/AuthRequirement";
 import ForgotPassword from "pages/authen/ForgotPassword";
 import Register from "pages/authen/Register";
+import GroupDetail from "pages/group/[...code-group]";
 import AllGroup from "pages/group/all";
 import CreateGroup from "pages/group/create";
 import HomeUser from "pages/home-user";
@@ -63,6 +64,7 @@ function App() {
 
                   <Route path="create-group" element={<CreateGroup />} />
                   <Route path="all-group" element={<AllGroup />} />
+                  <Route path="groupDetails" element={<GroupDetail />} />
                 </Route>
               </Route>
 

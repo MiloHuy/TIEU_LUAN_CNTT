@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import TooltipContentCombine from 'combine/tooltip-content/TooltipContent';
-import { PrivacyPost, PrivacyPostLabel } from 'features/select/select-privacy/SelectPrivacy';
+import { PrivacyPost, PrivacyPostLabel } from 'features/select/select-privacy-post/SelectPrivacyPost';
 import { Earth, LockKeyhole, MoreHorizontal, User } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';

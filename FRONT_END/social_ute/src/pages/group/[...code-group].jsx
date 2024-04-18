@@ -1,8 +1,9 @@
+import GroupBaseLayout from "layout/group-base/GroupBaseLayout"
 
 const GroupDetail = () => {
-    return (
-        <div>GroupDetail</div>
-    )
+  return (
+    <GroupBaseLayout />
+  )
 }
 
 export default GroupDetail

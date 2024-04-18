@@ -8,8 +8,7 @@ import { SSOCOOKIES } from 'constants/app.const';
 import { USERCOOKIES } from 'constants/user.const';
 import ModalGroup from 'features/modal/modal-group';
 import ModalSearchUser from 'features/modal/modal-search-user';
-import ModalUploadImageFile from 'features/modal/modal-upload-image-file';
-import ModalUploadFile from 'features/modal/modal-upload-image-file/ModalUploadFile';
+import ModalUploadFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
 import Cookies from 'js-cookie';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
@@ -34,13 +33,6 @@ const SidebarBody = (props) => {
 
   const handleNavigateRequest = () => {
     navigate('request-friend')
-  }
-
-  const handleOpenModelCreate02 = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      modal_file: true
-    }))
   }
 
   const handleOpenModelSearch = () => {
@@ -193,8 +185,8 @@ const SidebarBody = (props) => {
                 className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105 '
                 variant="ghost"
               >
-                <Users />
-                <p className='font-quick_sans  text-lg '>
+                <Users height={20} width={20} />
+                <p className='font-quick_sans text-lg '>
                   Nhóm
                 </p>
               </Button>
@@ -233,12 +225,6 @@ const SidebarBody = (props) => {
                 </p>
               </Button>
             }
-          />
-
-          <ModalUploadImageFile
-            isOpen={openModal.modal_file}
-            onOpenChange={handleOpenModal}
-            onClose={handleCloseModal}
           />
 
           <Button

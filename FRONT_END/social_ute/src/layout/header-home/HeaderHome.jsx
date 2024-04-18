@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from "components/dropdown";
 import { TYPELOADING } from "constants/type.const";
-import ModalChangeAvatar from "features/modal/modal-change-avatar/ModalChangeAvatar";
+import ModalChangeAvatarV2 from "features/modal/modal-change-avatar/ModalChangeAvatarV2";
 import { useState } from "react";
 import { useSelector } from 'react-redux';
 import ActionHeaderMe from "./ActionHeaderMe";
@@ -64,7 +64,7 @@ const HeaderHome = (props) => {
       'border-b border-t border-black/30 rounded-lg',
       'dark:border-white'
     )}>
-      <div className='lg:col-span-2 justify-center flex'>
+      <div className='lg:col-span-2 justify-center flex '>
         {
           userAvatar
             ?
@@ -79,10 +79,15 @@ const HeaderHome = (props) => {
                   />
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className='text-sm font-quick_san '>
-                <DropdownMenuItem className='flex gap-2' onSelect={(e) => e.preventDefault()}>
-                  <p>Đổi ảnh đại diện</p>
-                </DropdownMenuItem>
+              <DropdownMenuContent className='text-sm font-quick_san'>
+                <ModalChangeAvatarV2
+                  title='Thay đổi ảnh đại diện'
+                  trigger={
+                    <DropdownMenuItem className='flex gap-2' onSelect={(e) => e.preventDefault()}>
+                      <p>Đổi ảnh đại diện</p>
+                    </DropdownMenuItem>
+                  }
+                />
               </DropdownMenuContent>
             </DropdownMenu>
             :
@@ -93,17 +98,11 @@ const HeaderHome = (props) => {
               className='rounded-full w-1/2'
             />
         }
-        <ModalChangeAvatar
-          isOpen={openModal.change_avatar}
-
-          onOpenChange={handleChangeAvatar}
-          onClose={handleCloseModal}
-        />
       </div>
 
-      <div className="lg:col-span-5">
-        <div className='grid gap-6'>
-          <div className="flex gap-2 w-full items-center lg:justify-start md:justify-center sm:justify-center">
+      <div className="lg:col-span-5 text-lg">
+        <div className='flex flex-col gap-6'>
+          <div className="flex gap-2 w-full items-center lg:justify-start md:justify-center">
             <p className='dark:text-white text-black font-quick_sans text-center'>
               {userName}
             </p>
@@ -117,24 +116,20 @@ const HeaderHome = (props) => {
             </LoadingComponent>
           </div>
 
-          <div className={clsx(
-            "lg:flex lg:justify-start gap-7 dark:text-white font-quick_sans text-black",
-            "md:flex md:justify-center md:items-center",
-            "sm:grid sm:justify-center sm:items-center"
-          )}>
+          <div className="flex justify-between dark:text-white font-quick_sans text-black h-full ">
             <div className="flex gap-1">
-              <p>{count_posts}</p>
-              <p>Bài viết</p>
+              <h1>{count_posts}</h1>
+              <h1>Bài viết</h1>
             </div>
 
             <div className="flex gap-1">
-              <p>{count_followers}</p>
-              <p>người theo dõi</p>
+              <h1>{count_followers}</h1>
+              <h1>người dùng theo dõi</h1>
             </div>
 
             <div className="flex gap-1">
-              <p>Đang theo dõi:</p>
-              <p>{`${count_followings || 0} người dùng`}</p>
+              <h1>Đang theo dõi:</h1>
+              <h1>{`${count_followings || 0} người dùng`}</h1>
             </div>
           </div>
         </div>
