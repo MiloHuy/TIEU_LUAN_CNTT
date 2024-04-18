@@ -6,21 +6,41 @@ const SuperAdminGroup = require("../models/SuperAdminGroup");
 const GuestGroup = require("../models/GuestGroup");
 const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
-const { group } = require("console");
+const { group, log } = require("console");
 const User = require("../models/User");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
 exports.create = async (req, res) => {
     try {
-        if(req.privacy!=1 || req.privacy!=2){
-            return res.status(400).json({
-                success: false,
-                code: 10025,
-                message:
-                    "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
-            });
-        }
+        // if (req.privacy !== 0 && req.privacy !== 1 && req.privacy !== 2) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 10025,
+        //         message: "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
+        //     });
+        // }
+        // console.log(req.body);
+        // const privacy=req.body
+        // return res.status(400).json({
+        //     success: false,
+        //     code: 10025,
+        //     message: privacy,
+        // });
+        // switch (true) {
+        //     case req.privacy == 0:
+        //         break;
+        //     case req.privacy == 1:
+        //         break;
+        //     case req.privacy == 2:
+        //         break;
+        //     default:
+        //         return res.status(400).json({
+        //             success: false,
+        //             code: 10025,
+        //             message: "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
+        //         });
+        // }
         if (!req.files || !req.files.group_avatar) {
             console.log(req.body);
             const Avatar = null;
@@ -84,12 +104,12 @@ exports.create = async (req, res) => {
             publicId: result.public_id,
             url: result.secure_url,
         };
-
-        const group = Group.create({
-            avatar: Avatar,
-            super_admin: req.user._id,
-            ...req.body,
-        });
+        console.log(req.body);
+        // const group = Group.create({
+        //     avatar: Avatar,
+        //     super_admin: req.user._id,
+        //     ...req.body,
+        // });
         return res.status(200).json({
             success: true,
             message: "Tạo nhóm thành công.",
@@ -467,7 +487,7 @@ exports.inviteUser = async (req, res) => {
 
         const check_user = await User.findById(userId);
 
-        if(!check_user){
+        if (!check_user) {
             return res.status(401).json({
                 success: false,
                 code: 10024,
@@ -555,7 +575,7 @@ exports.adminAcceptRequest = async (req, res) => {
 
         const check_user = await User.findById(userId);
 
-        if(!check_user){
+        if (!check_user) {
             return res.status(401).json({
                 success: false,
                 code: 10024,
@@ -619,7 +639,7 @@ exports.adminRefuseRequest = async (req, res) => {
 
         const check_user = await User.findById(userId);
 
-        if(!check_user){
+        if (!check_user) {
             return res.status(401).json({
                 success: false,
                 code: 10024,
@@ -685,14 +705,14 @@ exports.addAdmin = async (req, res) => {
 
         const check_user = await User.findById(userId);
 
-        if(!check_user){
+        if (!check_user) {
             return res.status(401).json({
                 success: false,
                 code: 10024,
                 message: "Không tìm thấy người dùng",
             });
         }
-        
+
         if (check_admin) {
             return res.status(401).json({
                 success: false,
@@ -791,7 +811,7 @@ exports.getGroup = async (req, res) => {
                 }
             }
 
-            delete group.member
+            delete group.member;
 
             group.is_admin = is_admin;
         });
@@ -830,7 +850,9 @@ exports.getGroupAdmin = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10023,
-            message: "Lấy danh sách nhóm vai trò quản trị viên thất bại :" + error.message,
+            message:
+                "Lấy danh sách nhóm vai trò quản trị viên thất bại :" +
+                error.message,
         });
     }
 };
