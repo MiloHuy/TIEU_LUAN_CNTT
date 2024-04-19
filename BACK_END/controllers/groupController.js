@@ -104,12 +104,12 @@ exports.create = async (req, res) => {
             publicId: result.public_id,
             url: result.secure_url,
         };
-        console.log(req.body);
-        // const group = Group.create({
-        //     avatar: Avatar,
-        //     super_admin: req.user._id,
-        //     ...req.body,
-        // });
+        // console.log(req.body);
+        const group = await Group.create({
+            avatar: Avatar,
+            super_admin: req.user._id,
+            ...req.body,
+        });
         return res.status(200).json({
             success: true,
             message: "Tạo nhóm thành công.",
