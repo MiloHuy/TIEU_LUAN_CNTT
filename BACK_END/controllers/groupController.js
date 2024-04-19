@@ -13,6 +13,13 @@ const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
 exports.create = async (req, res) => {
     try {
+        if (!req.body.name || req.body.name == null) {
+            return res.status(400).json({
+                success: false,
+                code: 10026,
+                message: "Tạo nhóm thất bại. Phải có tên nhóm.",
+            });
+        }
         // if (req.privacy !== 0 && req.privacy !== 1 && req.privacy !== 2) {
         //     return res.status(400).json({
         //         success: false,
