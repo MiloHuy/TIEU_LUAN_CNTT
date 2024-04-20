@@ -13,38 +13,38 @@ import {
 export const IconSideBarUser = [
   {
     title: "Trang chủ",
-    icon: <Home />,
+    icon: <Home size={24} strokeWidth={1.5} />,
   },
   {
     title: "Tìm kiếm",
-    icon: <Search />,
+    icon: <Search size={24} strokeWidth={1.5} />,
   },
   {
     title: "Tin nhắn",
-    icon: <Mail />,
+    icon: <Mail size={24} strokeWidth={1.5} />,
   },
   {
     title: "Thông báo",
-    icon: <Bell />,
+    icon: <Bell size={24} strokeWidth={1.5} />,
   },
   {
     title: "Trang cá nhân",
-    icon: <UserCircle2 />,
+    icon: <UserCircle2 size={24} strokeWidth={1.5} />,
   },
   {
     title: "Nhóm",
-    icon: <Users />,
+    icon: <Users size={24} strokeWidth={1.5} />,
   },
   {
     title: "Yêu cầu",
-    icon: <UserPlus />,
+    icon: <UserPlus size={24} strokeWidth={1.5} />,
   },
   {
     title: "Tạo",
-    icon: <PlusSquare />,
+    icon: <PlusSquare size={24} strokeWidth={1.5} />,
   },
   {
     title: "Đăng xuất",
-    icon: <LogOut />,
+    icon: <LogOut size={24} strokeWidth={1.5} />,
   },
 ];

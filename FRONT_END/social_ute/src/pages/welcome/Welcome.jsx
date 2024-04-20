@@ -37,7 +37,7 @@ const Welcome = () => {
                 handleController={handleDarkMode}
             />
 
-            <div className={`${isShortCutSidebar === true ? 'min-w-[95vw]' : 'min-w-[80vw]'} ${darkmode} overflow-auto`}>
+            <div className={`${isShortCutSidebar === true ? 'min-w-[95vw] w-[95vw]' : 'min-w-[80vw]'} ${darkmode} overflow-auto`}>
                 <Outlet />
             </div>
         </div>

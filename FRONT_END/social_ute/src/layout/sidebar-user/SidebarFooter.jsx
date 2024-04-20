@@ -14,8 +14,8 @@ const SidebarFooter = (props) => {
     }, [isSelected, props])
 
     return (
-        <div className={clsx('w-2/3 h-full', className)}>
-            <Switch />
+        <div className={clsx('', className)}>
+            <Switch checked={isSelected} onCheckedChange={() => setIsSelected(!isSelected)} />
         </div>
     )
 }

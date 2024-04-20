@@ -1,22 +1,17 @@
 import { useDisclosure } from '@nextui-org/react';
-import { logOut } from 'app/slice/auth/auth.slice';
 import clsx from 'clsx';
 import { Button } from 'components/button';
 import { MessIcon, Users } from 'components/icon/bonus.icon';
 import { Toggle } from 'components/toggle';
-import { SSOCOOKIES } from 'constants/app.const';
-import { USERCOOKIES } from 'constants/user.const';
 import ModalGroup from 'features/modal/modal-group';
 import ModalSearchUser from 'features/modal/modal-search-user';
 import ModalUploadFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
-import Cookies from 'js-cookie';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from 'services/auth.svc';
-import { errorHandler } from 'utils/error-response.utils';
+import { handleCloseModal, handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser, handleOpenModal, handleOpenModelSearch } from './utils';
 
 const SidebarBody = (props) => {
   const { className, userID } = props
@@ -28,78 +23,16 @@ const SidebarBody = (props) => {
   })
   const dispatch = useDispatch()
 
-  const handleNavigateUser = () => {
-    navigate(`home-user/${userID}`)
-  }
-
-  const handleNavigateRequest = () => {
-    navigate('request-friend')
-  }
-
-  const handleOpenModelSearch = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      modal_search: true
-    }))
-  }
-
-  const handleNavigateHome = () => {
-    navigate('/welcome')
-  }
-
-  const handleLogOut = async () => {
-    try {
-      await logout()
-
-      dispatch(logOut)
-
-      Cookies.remove(USERCOOKIES.userID)
-      Cookies.remove(SSOCOOKIES.access)
-      navigate('/login')
-    }
-    catch (err) {
-      console.log('err: ', err)
-      errorHandler(err)
-    }
-  }
-
-  const handleOpenModal = () => {
-    if (openModal.modal_search === true && openModal.modal_file !== true) {
-      onOpen()
-    }
-    else if (openModal.modal_file === true && openModal.modal_search !== true) {
-      onOpen()
-    }
-  }
-
-  const handleCloseModal = () => {
-    if (openModal.modal_search === true && openModal.modal_file !== true) {
-      setOpenModal((prev) => ({
-        ...prev,
-        modal_search: false
-      }))
-
-      onClose()
-    }
-    else if (openModal.modal_file === true && openModal.modal_search !== true) {
-      setOpenModal((prev) => ({
-        ...prev,
-        modal_file: false
-      }))
-      onClose()
-    }
-  }
-
   const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105'
 
   return (
-    <div className={clsx('w-full h-full', className)}>
+    <div className={clsx('w-full h-max', className)}>
       <div className='flex flex-col gap-3 justify-between'>
         <Toggle
           className={classBaseButton}
           variant="ghost"
 
-          onClick={handleNavigateHome}
+          onClick={() => handleNavigateHome(navigate)}
         >
           <Home
             size={24}
@@ -115,7 +48,7 @@ const SidebarBody = (props) => {
           className={classBaseButton}
           variant="ghost"
 
-          onClick={handleOpenModelSearch}
+          onClick={() => handleOpenModelSearch(setOpenModal)}
         >
           <Search
             size={24}
@@ -130,8 +63,8 @@ const SidebarBody = (props) => {
         <ModalSearchUser
           isOpen={openModal.modal_search}
 
-          onOpenChange={handleOpenModal}
-          onCloseModal={handleCloseModal}
+          onOpenChange={() => handleOpenModal(openModal, onOpen)}
+          onCloseModal={() => handleCloseModal(openModal, setOpenModal, onClose)}
         />
 
         <Button
@@ -170,7 +103,7 @@ const SidebarBody = (props) => {
           className={classBaseButton}
           variant="ghost"
 
-          onClick={handleNavigateUser}
+          onClick={() => handleNavigateUser(navigate, userID)}
         >
           <UserCircle2
             size={24}
@@ -199,7 +132,7 @@ const SidebarBody = (props) => {
         <Button
           className={classBaseButton}
           variant="ghost"
-          onClick={handleNavigateRequest}
+          onClick={() => handleNavigateRequest(navigate)}
         >
           <UserPlus
             size={24}
@@ -233,7 +166,7 @@ const SidebarBody = (props) => {
           className={classBaseButton}
           variant="ghost"
 
-          onClick={handleLogOut}
+          onClick={() => handleLogOut(dispatch, navigate)}
         >
           <LogOut
             size={24}

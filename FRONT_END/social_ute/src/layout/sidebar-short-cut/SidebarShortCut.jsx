@@ -1,28 +1,26 @@
-import clsx from "clsx"
-import TooltipContentCombine from "combine/tooltip-content/TooltipContent"
-import { Button } from "components/button"
+import { useDisclosure } from '@nextui-org/react';
+import clsx from "clsx";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { genTriggerSidebar } from './utils';
 
-const SidebarShortCut = ({ icons, className }) => {
+const SidebarShortCut = ({ icons, className, userID }) => {
+  const { onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate()
+  const [openModal, setOpenModal] = useState({
+    modal_search: false,
+    modal_file: false,
+  })
+  const dispatch = useDispatch()
+
   return (
     Array.isArray(icons)
     &&
-    <div className={clsx('flex flex-col gap-3 items-start justify-start w-[5vw] h-full border', className)}>
-      {
-        icons.map((icon, index) => {
-          return (
-            <TooltipContentCombine
-              key={index}
-              title={icon.title}
-              trigger={
-                <Button className='w-[60px] bg-transparent' variant='ghost'>
-                  {icon.icon}
-                </Button>
-              }
-              side='top'
-            />
-          )
-        })
-      }
+    <div className={clsx('flex flex-col gap-3 items-center justify-start w-[5vw] h-full border', className)}>
+      {icons.map((icon, index) => {
+        return genTriggerSidebar(icon, index, userID, onOpen, onClose, navigate, openModal, setOpenModal, dispatch)
+      })}
     </div>
   )
 }
