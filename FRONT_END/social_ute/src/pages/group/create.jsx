@@ -1,3 +1,4 @@
+import { GroupError } from 'constants/error/group-error.const';
 import { EPrivacyGroup } from 'constants/group/enum-privacy';
 import FormCreateGroup from 'features/form/form-create-group';
 import ModalUploadAvatarGroup from 'features/modal/modal-upload-avatar-group';
@@ -5,37 +6,46 @@ import { Camera } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { createGroup } from 'services/group/api-post.svc';
+import { errorHandler } from 'utils/error-response.utils';
 
 const CreateGroup = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [formCreate, setFormCreate] = useState({
     nameGroup: '',
     regulationGroup: '',
-    groupAvatar: '',
+    groupAvatar: {
+      file: undefined,
+      image: undefined
+    },
     privacyGroup: EPrivacyGroup.PUBLIC,
   })
 
   const triggerModalUploadAvatar = useMemo(() => {
     return (
-      <div className='flex gap-2 h-full items-center justify-center cursor-pointer'>
-        <Camera size={30} strokeWidth={1.25} />
-        <p className='text-black dark:text-white font-quick_sans text-2xl font-bold'>
-          Chọn ảnh đại diện của nhóm
-        </p>
-      </div>
+      formCreate.groupAvatar.image ?
+        <img src={formCreate.groupAvatar.image} alt='avatar' className='w-full h-full object-fill' />
+        :
+        <div className='flex gap-2 h-full items-center justify-center cursor-pointer'>
+          <Camera size={30} strokeWidth={1.25} />
+          <p className='text-black dark:text-white font-quick_sans text-2xl font-bold'>
+            Chọn ảnh đại diện của nhóm
+          </p>
+        </div>
     )
-  }, [])
+  }, [formCreate.groupAvatar.image])
 
   const handleCreateGroup = async (values) => {
     try {
+      setIsLoading(true)
       const formData = new FormData()
 
       formData.append('name', values.nameGroup)
       formData.append('privacy', values.privacyGroup)
-      formData.append('group_avatar', formCreate.groupAvatar)
-
       values.regulationGroup.forEach((item, index) => {
-        formData.append(`regulation[${index}]`, item)
+        formData.append('regulation', item)
       })
+
+      formData.append('group_avatar', formCreate.groupAvatar.file)
 
       await createGroup(formData)
 
@@ -49,19 +59,13 @@ const CreateGroup = () => {
         progress: undefined,
         theme: "light",
       });
-      setTimeout(() => { window.location.reload() }, 2000)
+      setIsLoading(false)
+      URL.revokeObjectURL()
+      // setTimeout(() => { window.location.reload() }, 2000)
     }
-    catch {
-      toast.error('Tạo nhóm thất bại', {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+    catch (error) {
+      setIsLoading(false)
+      errorHandler(error, GroupError.create)
     }
   }
 

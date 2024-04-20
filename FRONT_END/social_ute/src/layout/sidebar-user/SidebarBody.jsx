@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'services/auth.svc';
+import { errorHandler } from 'utils/error-response.utils';
 
 const SidebarBody = (props) => {
   const { className, userID } = props
@@ -58,6 +59,7 @@ const SidebarBody = (props) => {
     }
     catch (err) {
       console.log('err: ', err)
+      errorHandler(err)
     }
   }
 
@@ -88,162 +90,161 @@ const SidebarBody = (props) => {
     }
   }
 
+  const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105'
+
   return (
     <div className={clsx('w-full h-full', className)}>
-      <div className='w-full h-full grid grid-cols-1 gap-2 p-2'>
-        <div className='flex flex-col gap-2 justify-between'>
-          <Toggle
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
+      <div className='flex flex-col gap-3 justify-between'>
+        <Toggle
+          className={classBaseButton}
+          variant="ghost"
 
-            onClick={handleNavigateHome}
-          >
-            <Home
-              size={24}
-              strokeWidth={1.5}
-            />
-
-            <p className='font-quick_sans  text-lg '>
-              Trang chủ
-            </p>
-          </Toggle>
-
-          <Button
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
-
-            onClick={handleOpenModelSearch}
-          >
-            <Search
-              size={24}
-              strokeWidth={1.5}
-            />
-
-            <p className='font-quick_sans   text-lg '>
-              Tìm kiếm
-            </p>
-          </Button>
-
-          <ModalSearchUser
-            isOpen={openModal.modal_search}
-
-            onOpenChange={handleOpenModal}
-            onCloseModal={handleCloseModal}
+          onClick={handleNavigateHome}
+        >
+          <Home
+            size={24}
+            strokeWidth={1.5}
           />
 
-          <Button
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
-          >
-            <MessIcon
-              height={24}
-              width={24}
-            />
+          <p className='font-quick_sans text-lg '>
+            Trang chủ
+          </p>
+        </Toggle>
 
-            <p className='font-quick_sans  text-lg '>
-              Tin nhắn
-            </p>
-          </Button>
+        <Button
+          className={classBaseButton}
+          variant="ghost"
 
-          <PopupNofication
-            trigger={
-              <Button
-                className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-                variant="ghost"
-              >
-                <Bell
-                  size={24}
-                  strokeWidth={1.5}
-                />
-
-                <p className='font-quick_sans   text-lg '>
-                  Thông báo
-                </p>
-              </Button>
-            }
+          onClick={handleOpenModelSearch}
+        >
+          <Search
+            size={24}
+            strokeWidth={1.5}
           />
 
-          <Button
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
+          <p className='font-quick_sans text-lg '>
+            Tìm kiếm
+          </p>
+        </Button>
 
-            onClick={handleNavigateUser}
-          >
-            <UserCircle2
-              size={24}
-              strokeWidth={1.5}
-            />
+        <ModalSearchUser
+          isOpen={openModal.modal_search}
 
-            <p className='font-quick_sans  text-lg '>
-              Trang cá nhân
-            </p>
-          </Button>
+          onOpenChange={handleOpenModal}
+          onCloseModal={handleCloseModal}
+        />
 
-          <ModalGroup
-            trigger={
-              <Button
-                className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105 '
-                variant="ghost"
-              >
-                <Users height={20} width={20} />
-                <p className='font-quick_sans text-lg '>
-                  Nhóm
-                </p>
-              </Button>
-            }
+        <Button
+          className={classBaseButton}
+          variant="ghost"
+        >
+          <MessIcon
+            height={24}
+            width={24}
           />
 
-          <Button
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
+          <p className='font-quick_sans text-lg'>
+            Tin nhắn
+          </p>
+        </Button>
 
-            onClick={handleNavigateRequest}
-          >
-            <UserPlus
-              size={24}
-              strokeWidth={1.5}
-            />
+        <PopupNofication
+          trigger={
+            <Button
+              className={classBaseButton}
+              variant="ghost"
+            >
+              <Bell
+                size={24}
+                strokeWidth={1.5}
+              />
 
-            <p className='font-quick_sans  text-lg '>
-              Yêu cầu
-            </p>
-          </Button>
+              <p className='font-quick_sans text-lg '>
+                Thông báo
+              </p>
+            </Button>
+          }
+        />
 
-          <ModalUploadFile
-            trigger={
-              <Button
-                className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-                variant="ghost"
-              >
-                <PlusSquare
-                  size={24}
-                  strokeWidth={1.5}
-                />
+        <Button
+          className={classBaseButton}
+          variant="ghost"
 
-                <p className='font-quick_sans  text-lg '>
-                  Tạo
-                </p>
-              </Button>
-            }
+          onClick={handleNavigateUser}
+        >
+          <UserCircle2
+            size={24}
+            strokeWidth={1.5}
           />
 
-          <Button
-            className='w-full flex justify-start gap-3 items-center px-4 hover:scale-105'
-            variant="ghost"
+          <p className='font-quick_sans text-lg '>
+            Trang cá nhân
+          </p>
+        </Button>
 
-            onClick={handleLogOut}
-          >
-            <LogOut
-              size={24}
-              strokeWidth={1.5}
-            />
+        <ModalGroup
+          trigger={
+            <Button
+              className={classBaseButton}
+              variant="ghost"
+            >
+              <Users height={20} width={20} />
+              <p className='font-quick_sans text-lg '>
+                Nhóm
+              </p>
+            </Button>
+          }
+        />
 
-            <p className='font-quick_sans  text-lg '>
-              Đăng xuất
-            </p>
-          </Button>
+        <Button
+          className={classBaseButton}
+          variant="ghost"
+          onClick={handleNavigateRequest}
+        >
+          <UserPlus
+            size={24}
+            strokeWidth={1.5}
+          />
 
-        </div>
+          <p className='font-quick_sans text-lg '>
+            Yêu cầu
+          </p>
+        </Button>
+
+        <ModalUploadFile
+          trigger={
+            <Button
+              className={classBaseButton}
+              variant="ghost"
+            >
+              <PlusSquare
+                size={24}
+                strokeWidth={1.5}
+              />
+
+              <p className='font-quick_sans text-lg '>
+                Tạo
+              </p>
+            </Button>
+          }
+        />
+
+        <Button
+          className={classBaseButton}
+          variant="ghost"
+
+          onClick={handleLogOut}
+        >
+          <LogOut
+            size={24}
+            strokeWidth={1.5}
+          />
+
+          <p className='font-quick_sans text-lg '>
+            Đăng xuất
+          </p>
+        </Button>
+
       </div>
     </div >
   )

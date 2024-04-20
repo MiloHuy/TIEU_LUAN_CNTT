@@ -1,7 +1,9 @@
-import SidebarUser from 'layout/sidebar-user'
-import { useState } from 'react'
-import { Outlet } from 'react-router'
-import { getUserIdFromCookie } from 'utils/user.utils'
+import clsx from "clsx";
+import SidebarUser from 'layout/sidebar-user';
+import { CircleChevronLeft } from "lucide-react";
+import { useState } from 'react';
+import { Outlet } from 'react-router';
+import { getUserIdFromCookie } from 'utils/user.utils';
 
 const Welcome = () => {
     const [darkmode, setDarkMode] = useState('light')
@@ -10,16 +12,32 @@ const Welcome = () => {
         setDarkMode(value)
     }
 
+    const [isShortCutSidebar, setShortCutSidebar] = useState(false)
+
+    const handleShortCutSidebar = () => {
+        setShortCutSidebar(!isShortCutSidebar)
+    }
+
     const Id = getUserIdFromCookie()
 
     return (
         <div className={`flex bg-background text-primary ${darkmode}`}>
+            <CircleChevronLeft
+                size={26} strokeWidth={1}
+                className={clsx('absolute cursor-pointer top-8 transform duration-500 ease-in-out',
+                    { 'rotate-180 ': isShortCutSidebar },
+                    `${isShortCutSidebar ? 'left-[4vw]' : 'left-[19vw]'}`
+                )}
+                onClick={handleShortCutSidebar}
+            />
+
             <SidebarUser
                 userID={Id}
+                isShortCutSidebar={isShortCutSidebar}
                 handleController={handleDarkMode}
             />
 
-            <div className={`min-w-[80vw] ${darkmode} overflow-auto`}>
+            <div className={`${isShortCutSidebar === true ? 'min-w-[95vw]' : 'min-w-[80vw]'} ${darkmode} overflow-auto`}>
                 <Outlet />
             </div>
         </div>
