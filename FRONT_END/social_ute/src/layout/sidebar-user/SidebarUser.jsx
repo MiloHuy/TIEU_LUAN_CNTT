@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { IconSideBarUser } from "constants/icons.const";
 import SidebarShortCut from "layout/sidebar-short-cut/SidebarShortCut";
+import { useMemo } from "react";
 import SidebarBody from "./SidebarBody";
 import SidebarFooter from "./SidebarFooter";
 import SidebarHeader from "./SidebarHeader";
@@ -12,7 +13,9 @@ const SidebarUser = (props) => {
         props.handleController(value)
     }
 
-    const widthSidebar = isShortCutSidebar ? 'min-w-[5vw] w-[5vw]' : 'min-w-[20vw] w-[20vw]'
+    const widthSidebar = useMemo(() => {
+        return isShortCutSidebar ? 'min-w-[5vw] w-[5vw]' : 'min-w-[20vw] w-[20vw]'
+    }, [isShortCutSidebar])
 
     return (
         <div className={clsx(

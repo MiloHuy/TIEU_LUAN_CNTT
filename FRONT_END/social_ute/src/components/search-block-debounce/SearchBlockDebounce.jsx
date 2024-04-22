@@ -28,7 +28,7 @@ const SearchBlockDebounce = (props) => {
     }
 
     return (
-        <form className={clsx('relative rounded-sm', className)}>
+        <form className={clsx('relative rounded-sm font-quick_sans', className)}>
             <Input
                 type='text'
                 value={search}

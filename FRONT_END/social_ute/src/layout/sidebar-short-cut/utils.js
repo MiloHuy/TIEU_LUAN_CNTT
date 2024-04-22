@@ -1,5 +1,6 @@
 import { Button } from "components/button";
 import ModalGroup from "features/modal/modal-group";
+import ModalSearchUser from "features/modal/modal-search-user";
 import ModalUploadFile from "features/modal/modal-upload-image-file/ModalUploadFile";
 import PopupNofication from "features/popup/popup-nofication";
 import {
@@ -7,25 +8,15 @@ import {
   handleNavigateHome,
   handleNavigateRequest,
   handleNavigateUser,
-  handleOpenModelSearch,
 } from "layout/sidebar-user/utils";
 import { Bell } from "lucide-react";
 
-export const genTriggerSidebar = (
-  icon,
-  index,
-  userID,
-  onOpen,
-  onClose,
-  navigate,
-  openModal,
-  setOpenModal,
-  dispatch,
-) => {
+export const genTriggerSidebar = (icon, index, userID, navigate, dispatch) => {
   switch (index) {
     case 0:
       return (
         <Button
+          className="w-[5vw]"
           variant="ghost"
           key={index}
           onClick={() => handleNavigateHome(navigate)}
@@ -35,17 +26,18 @@ export const genTriggerSidebar = (
       );
     case 1:
       return (
-        <Button
-          variant="ghost"
-          key={index}
-          onClick={() => handleOpenModelSearch(setOpenModal)}
-        >
-          {icon.icon}
-        </Button>
+        <ModalSearchUser
+          className="w-[55vw] h-[70vh]"
+          trigger={
+            <Button className="w-[5vw]" variant="ghost" key={index}>
+              {icon.icon}
+            </Button>
+          }
+        />
       );
     case 2:
       return (
-        <Button variant="ghost" key={index}>
+        <Button className="w-[5vw]" variant="ghost" key={index}>
           {icon.icon}
         </Button>
       );
@@ -53,7 +45,7 @@ export const genTriggerSidebar = (
       return (
         <PopupNofication
           trigger={
-            <Button variant="ghost">
+            <Button variant="ghost" className="w-[5vw]">
               <Bell size={24} strokeWidth={1.5} />
             </Button>
           }
@@ -62,6 +54,7 @@ export const genTriggerSidebar = (
     case 4:
       return (
         <Button
+          className="w-[5vw]"
           variant="ghost"
           onClick={() => handleNavigateUser(navigate, userID)}
         >
@@ -70,23 +63,38 @@ export const genTriggerSidebar = (
       );
     case 5:
       return (
-        <ModalGroup trigger={<Button variant="ghost">{icon.icon}</Button>} />
+        <ModalGroup
+          trigger={
+            <Button variant="ghost" className="w-[5vw]">
+              {icon.icon}
+            </Button>
+          }
+        />
       );
     case 6:
       return (
-        <Button variant="ghost" onClick={() => handleNavigateRequest(navigate)}>
+        <Button
+          className="w-[5vw]"
+          variant="ghost"
+          onClick={() => handleNavigateRequest(navigate)}
+        >
           {icon.icon}
         </Button>
       );
     case 7:
       return (
         <ModalUploadFile
-          trigger={<Button variant="ghost">{icon.icon}</Button>}
+          trigger={
+            <Button variant="ghost" className="w-[5vw]">
+              {icon.icon}
+            </Button>
+          }
         />
       );
     case 8:
       return (
         <Button
+          className="w-[5vw]"
           variant="ghost"
           onClick={() => handleLogOut(dispatch, navigate)}
         >

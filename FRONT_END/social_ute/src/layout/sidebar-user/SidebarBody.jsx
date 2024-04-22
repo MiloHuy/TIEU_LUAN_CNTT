@@ -1,4 +1,3 @@
-import { useDisclosure } from '@nextui-org/react';
 import clsx from 'clsx';
 import { Button } from 'components/button';
 import { MessIcon, Users } from 'components/icon/bonus.icon';
@@ -8,19 +7,13 @@ import ModalSearchUser from 'features/modal/modal-search-user';
 import ModalUploadFile from 'features/modal/modal-upload-image-file';
 import PopupNofication from 'features/popup/popup-nofication';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { handleCloseModal, handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser, handleOpenModal, handleOpenModelSearch } from './utils';
+import { handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser } from './utils';
 
 const SidebarBody = (props) => {
   const { className, userID } = props
-  const { onOpen, onClose } = useDisclosure();
   const navigate = useNavigate()
-  const [openModal, setOpenModal] = useState({
-    modal_search: false,
-    modal_file: false,
-  })
   const dispatch = useDispatch()
 
   const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105'
@@ -44,27 +37,23 @@ const SidebarBody = (props) => {
           </p>
         </Toggle>
 
-        <Button
-          className={classBaseButton}
-          variant="ghost"
-
-          onClick={() => handleOpenModelSearch(setOpenModal)}
-        >
-          <Search
-            size={24}
-            strokeWidth={1.5}
-          />
-
-          <p className='font-quick_sans text-lg '>
-            Tìm kiếm
-          </p>
-        </Button>
-
         <ModalSearchUser
-          isOpen={openModal.modal_search}
+          className='w-[55vw] h-[70vh]'
+          trigger={
+            <Button
+              className={classBaseButton}
+              variant="ghost"
+            >
+              <Search
+                size={24}
+                strokeWidth={1.5}
+              />
 
-          onOpenChange={() => handleOpenModal(openModal, onOpen)}
-          onCloseModal={() => handleCloseModal(openModal, setOpenModal, onClose)}
+              <p className='font-quick_sans text-lg '>
+                Tìm kiếm
+              </p>
+            </Button>
+          }
         />
 
         <Button
