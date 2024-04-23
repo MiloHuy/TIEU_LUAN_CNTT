@@ -1,7 +1,6 @@
-import { Switch } from '@nextui-org/react'
-import clsx from 'clsx'
-import { Moon, Sun } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import clsx from 'clsx';
+import Switch from 'components/switch';
+import { useMemo, useState } from 'react';
 
 const SidebarFooter = (props) => {
     const { className } = props
@@ -15,17 +14,8 @@ const SidebarFooter = (props) => {
     }, [isSelected, props])
 
     return (
-        <div className={clsx('w-2/3 h-full', className)}>
-            <Switch
-                defaultSelected
-                size="lg"
-                color="default"
-                isSelected={isSelected}
-                onValueChange={setIsSelected}
-                startContent={<Sun />}
-                endContent={<Moon />}
-            >
-            </Switch>
+        <div className={clsx('', className)}>
+            <Switch checked={isSelected} onCheckedChange={() => setIsSelected(!isSelected)} />
         </div>
     )
 }

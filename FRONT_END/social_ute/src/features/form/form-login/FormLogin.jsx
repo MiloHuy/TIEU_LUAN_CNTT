@@ -4,6 +4,7 @@ import { Button } from 'components/button'
 import Input from 'components/input'
 import LoadingDotV2 from 'components/loading/loading-dot-v2'
 import { SSOCOOKIES } from 'constants/app.const'
+import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
 import { useFormik } from 'formik'
 import Cookies from 'js-cookie'
@@ -13,8 +14,9 @@ import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login } from 'services/auth.svc'
+import { errorHandler } from 'utils/error-response.utils'
 import { genSchemaFormLogin } from './schema'
-import { errorHandler, genLabelFormLogin } from './utils'
+import { genLabelFormLogin } from './utils'
 
 const FormLogin = (props) => {
   const navigate = useNavigate()
@@ -67,7 +69,7 @@ const FormLogin = (props) => {
       });
     } catch (err) {
       setIsLoading(false)
-      errorHandler(err)
+      errorHandler(err, ERROR_LOGIN)
     }
   }
 

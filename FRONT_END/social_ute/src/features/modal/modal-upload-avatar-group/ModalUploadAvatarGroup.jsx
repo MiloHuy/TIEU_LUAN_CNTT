@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import FormUploadImageAvatar from "features/form/form-upload-image-avatar";
 
 const ModalUploadAvatarGroup = ({ trigger, className, title, titleButton, onChangeAvatar }) => {
+
   return (
     <Dialog>
       <DialogTrigger asChild>

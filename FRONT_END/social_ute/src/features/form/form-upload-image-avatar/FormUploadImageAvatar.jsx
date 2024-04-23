@@ -1,4 +1,5 @@
 import { Button } from "components/button";
+import { DialogClose } from "components/dialog";
 import { ERR_CHANGE_AVATAR } from "constants/error.const";
 import { useFormik } from "formik";
 import { Loader2 } from "lucide-react";
@@ -6,7 +7,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { uploadImageAvatar } from "services/me.svc";
-import { checkCodeInArray } from "utils/code-error.utils";
+import { errorHandler } from "utils/error-response.utils";
 import UploadNote from "./UploadNote";
 
 const FormUploadImageAvatar = ({ keyName, isReload = true, schema, titleButton, onChangeAvatar }) => {
@@ -30,7 +31,7 @@ const FormUploadImageAvatar = ({ keyName, isReload = true, schema, titleButton, 
       setSelectFiles(e.target.files)
 
       setImage(URL.createObjectURL(ListFile[0]))
-      onChangeAvatar && onChangeAvatar((prev) => ({ ...prev, [keyName]: ListFile[0] }))
+      onChangeAvatar && onChangeAvatar((prev) => ({ ...prev, [keyName]: { file: ListFile[0], image: URL.createObjectURL(ListFile[0]) } }))
     }
   }
 
@@ -59,25 +60,12 @@ const FormUploadImageAvatar = ({ keyName, isReload = true, schema, titleButton, 
         theme: "light",
       });
 
-      isReload && setTimeout(() => { window.location.reload() }, 1500)
+      isReload && setTimeout(() => { window.location.reload(); URL.revokeObjectURL() }, 1500)
     }
     catch (err) {
       setIsLoading(false)
 
-      const { code } = err.response.data
-
-      const messageError = checkCodeInArray(ERR_CHANGE_AVATAR, code)
-
-      toast.error(messageError, {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      errorHandler(err, ERR_CHANGE_AVATAR)
     }
   }
 
@@ -126,7 +114,15 @@ const FormUploadImageAvatar = ({ keyName, isReload = true, schema, titleButton, 
 
       {
         onChangeAvatar
-          ? null
+          ?
+          <DialogClose asChild>
+            <Button
+              variant='outline'
+              radius="sm"
+              className='text-lg font-quick_sans w-1/2'>
+              {titleButton ? titleButton : 'Thay đổi'}
+            </Button>
+          </DialogClose>
           :
           <Button
             variant='outline'

@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'components/tooltip';
 
-const TooltipContentCombine = ({ trigger, title, side = 'right', className }) => {
+const TooltipContentCombine = ({ trigger, title, side = 'right', className, }, props) => {
   return (
-    <TooltipProvider>
+    <TooltipProvider {...props}>
       <Tooltip>
         <TooltipTrigger>
           {trigger}

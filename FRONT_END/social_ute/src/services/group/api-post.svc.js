@@ -7,7 +7,7 @@ export const createGroup = async (payload) => {
     payload,
     {
       headers: {
-        "Content-Type": "multipart/form-data,application/json",
+        "Content-Type": "multipart/form-data",
       },
     },
     {

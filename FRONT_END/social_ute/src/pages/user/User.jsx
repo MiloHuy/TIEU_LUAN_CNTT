@@ -33,8 +33,8 @@ const User = () => {
   }, [posts])
 
   return (
-    <div className='flex gap-1 w-full h-screen'>
-      <div className='flex flex-col gap-2 '>
+    <div className='flex gap-1 w-full h-screen px-4 justify-between'>
+      <div className='flex flex-col gap-2'>
         <div className="w-full h-[80px] flex flex-row items-end gap-1 pt-3">
           {
             posts ?
@@ -44,7 +44,7 @@ const User = () => {
           }
         </div>
 
-        <div className="flex flex-col items-center pt-3 gap-3 ">
+        <div className="flex flex-col items-center pt-3 gap-3">
           <LoadingComponent type={TYPELOADING.TITLE} condition={posts} title='Đang lấy dữ liệu'>
             <ListPostUser
               posts={posts} />

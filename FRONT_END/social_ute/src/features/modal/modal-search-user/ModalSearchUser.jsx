@@ -1,102 +1,71 @@
-import { Modal, ModalContent } from "@nextui-org/react";
+import clsx from "clsx";
+import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
 import SearchBlockDebounce from "components/search-block-debounce";
 import ListSearchUser from "features/list/list-search-user";
-import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { getUserSearch } from "services/user.svc";
+import { useSearchUser } from "hook/me/useSearchUser";
+import { useEffect, useState } from "react";
 
-const ModalSearchUser = ({ isOpen, onOpenChange, onCloseModal }) => {
-    const [searchParams, setSearchParams] = useSearchParams('')
-    const [userSearch, setUserSearch] = useState()
-    const [isLoading, setIsLoading] = useState(false)
+const ModalSearchUser = ({ trigger, className }) => {
 
-    const [filter, setFilter] = useState({
-        page: 1,
-        size: 0,
-        search: ''
-    })
+  const { userSearch, isLoading, fetchSearchUser } = useSearchUser()
 
-    const handleSearchDebounce = (query) => {
+  const [filter, setFilter] = useState({
+    page: 1,
+    size: 0,
+    search: ''
+  })
 
-        setSearchParams(query)
+  const handleSearchDebounce = (query) => {
+    setFilter((prev) => ({
+      ...prev,
+      size: 3,
+      search: query.search
+    }))
+  }
 
-        setFilter((prev) => ({
-            ...prev,
-            size: 3,
-            search: query.search
-        }))
+  useEffect(() => {
+    if (filter.size !== 0) {
+      fetchSearchUser(
+        filter.page,
+        filter.size,
+        filter.search
+      )
     }
+  }, [fetchSearchUser, filter.size, filter.page, filter.search])
 
-    const fetchUserSearch = useCallback(async (page, pageSize, search) => {
-        try {
-            setIsLoading(true)
-            const initialData = await getUserSearch(
-                {
-                    page: page,
-                    size: pageSize + 3,
-                    search: search
-                })
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        {trigger}
+      </DialogTrigger>
 
-            setUserSearch(initialData)
-            setIsLoading(false)
-        } catch (error) {
-            setIsLoading(false)
-            console.log(error)
-        }
-    }, [])
+      <DialogContent
+        hideCloseButton={true}
+        className={clsx('sm:rounded-lg overflow-hidden min-h-[45vh] max-w-[55vw]', className)}>
 
-    useEffect(() => {
-        if (filter.size !== 0) {
-            fetchUserSearch(
-                filter.page,
-                filter.size,
-                filter.search
-            )
-        }
-    }, [fetchUserSearch, filter.size, filter.page, filter.search])
-
-    return (
-        <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            onClose={onCloseModal}
-            hideCloseButton
-            radius="sm"
-            size='2xl'
-            backdrop='blur'
-            scrollBehavior='outside'
-            classNames={{
-                base: "border-[#ffffff] bg-[#CCD9E7] dark:bg-black text-[#a8b0d3] h-[350px] py-3 px-6",
-            }}
-        >
-            <ModalContent>
-                {
-                    (onClose) => (
-                        <div className='flex flex-col w-full h-full gap-5 '>
-                            <SearchBlockDebounce
-                                className='w-full'
-                                onSubmit={handleSearchDebounce}
-                            />
-                            {
-                                userSearch ?
-                                    <div className='w-full h-4/5 overflow-auto '>
-                                        <ListSearchUser
-                                            isLoading={isLoading}
-                                            userSearch={userSearch.data}
-                                        />
-                                    </div>
-
-                                    :
-                                    <p className="text-lg font-quick_sans text-black">
-                                        Chưa có ai hiện tại
-                                    </p>
-                            }
-                        </div>
-                    )
-                }
-            </ModalContent>
-        </Modal>
-    )
+        <div className='flex flex-col w-full h-full gap-5'>
+          <SearchBlockDebounce
+            placeholder='Tìm kiếm bạn bè'
+            className='w-full'
+            onSubmit={handleSearchDebounce}
+          />
+          {
+            userSearch ?
+              <div className='w-full h-4/5 overflow-auto '>
+                <ListSearchUser
+                  isLoading={isLoading}
+                  userSearch={userSearch.data}
+                />
+              </div>
+              :
+              <p className="text-lg font-quick_sans text-black">
+                Chưa có ai hiện tại
+              </p>
+          }
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 export default ModalSearchUser
