@@ -11,7 +11,8 @@ const {
     searchFriends,
     updateInfo,
     updatePassword,
-    uploadAvatar
+    uploadAvatar,
+    getFollows
 } = require('../controllers/meController.js');
 
 const {
@@ -32,6 +33,7 @@ router.get('/stored/stories', verifyToken, isUser, getStories);
 router.get('/friend-request', verifyToken, isUser, getFriendRequest);
 router.get('/friends', verifyToken, isUser, getFriends);
 router.get('/friends/search', verifyToken, isUser, searchFriends);
+router.get('/list-follows', verifyToken, isUser, getFollows);
 router.get('/notis', verifyToken, isUser, getNotis);
 router.post('/notis/read/:id', verifyToken, isUser, readNoti);
 

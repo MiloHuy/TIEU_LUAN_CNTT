@@ -12,6 +12,7 @@ const Addfriend = require('../models/Addfriend')
 const Post_liked = require('../models/Post_liked')
 const Friend = require('../models/Friend')
 const { UserAPIFeatures } = require('../utils/APIFeatures');
+const Follow = require('../models/Follow');
 
 //GET /posts
 exports.getMyPosts = (async (req, res) => {
@@ -172,19 +173,11 @@ exports.getFriends = (async (req, res) => {
             .findOne({user_id: req.user._id})
             .populate('friend_id', 'first_name last_name avatar.url department id')
             .select('-_id friend_id');
-        const friend_list = friends.friend_id
-        if(!friends.length){
-            return res.status(200).json({
-                success: true,
-                friends:friend_list,
-                // friends,
-            });
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: 'Chưa có bạn',
-            });
-        }
+        const friend_list = friends.friend_id || []
+        return res.status(200).json({
+            success: true,
+            friends:friend_list,
+        });
         
     } catch (err) {
         res.status(500).json({
@@ -230,6 +223,39 @@ exports.searchFriends = (async (req, res) => {
         });
     }
 });
+
+//GET /list-follows
+exports.getFollows = (async (req, res) => {
+    try {
+        const followers = await Follow
+            .findOne({user_id: req.user._id})
+            .populate('follower_user_id following_user_id', 'first_name last_name avatar.url department id')
+            .select('-_id follower_user_id')
+            .lean()
+        const follower_list = followers.follower_user_id || []
+        const following_list = followers.following_user_id || []
+        console.log('follower_list ' + follower_list);
+        console.log('following_list ' + following_list);
+        const follower_list_after_check = follower_list.map(follower => {
+            const isFollowing = following_list.some(following => following._id.equals(follower._id));
+            return {
+                ...follower,
+                isFollowing: isFollowing 
+            };
+        });
+        return res.status(200).json({
+            success: true,
+            followers:follower_list_after_check,
+            followings:following_list
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            code: 3016,
+            message: err.message, 
+        });
+    }
+})
 
 //PUT /account/info
 exports.updateInfo = (async (req, res) => {
