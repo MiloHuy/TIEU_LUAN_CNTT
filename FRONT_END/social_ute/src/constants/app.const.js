@@ -20,5 +20,5 @@ export const HeightBrowser =
 
 export const FileSize = {
   max: 10,
-  min: 0.1,
+  min: 1,
 };

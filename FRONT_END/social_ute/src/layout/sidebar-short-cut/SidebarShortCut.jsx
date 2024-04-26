@@ -1,24 +1,18 @@
-import { useDisclosure } from '@nextui-org/react';
 import clsx from "clsx";
-import { useMemo, useState } from 'react';
+import { useMemo } from "react";
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { genTriggerSidebar } from './utils';
 
 const SidebarShortCut = ({ icons, className, userID }) => {
-  const { onClose } = useDisclosure();
   const navigate = useNavigate()
-  const [openModal, setOpenModal] = useState({
-    modal_search: false,
-    modal_file: false,
-  })
   const dispatch = useDispatch()
 
   const itemsSideBar = useMemo(() => {
     return icons.map((icon, index) => {
-      return genTriggerSidebar(icon, index, userID, onClose, navigate, openModal, setOpenModal, dispatch)
+      return genTriggerSidebar(icon, index, userID, navigate, dispatch)
     })
-  }, [icons])
+  }, [icons, userID, navigate, dispatch])
 
   return (
     Array.isArray(icons)

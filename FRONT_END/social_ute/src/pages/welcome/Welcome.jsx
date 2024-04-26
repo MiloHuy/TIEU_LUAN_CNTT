@@ -26,7 +26,7 @@ const Welcome = () => {
                 size={26} strokeWidth={1}
                 className={clsx('absolute cursor-pointer top-8 transform duration-500 ease-in-out',
                     { 'rotate-180 ': isShortCutSidebar },
-                    `${isShortCutSidebar ? 'left-[4vw]' : 'left-[19vw]'}`
+                    `${isShortCutSidebar ? 'left-[5vw]' : 'left-[20vw]'}`
                 )}
                 onClick={handleShortCutSidebar}
             />
