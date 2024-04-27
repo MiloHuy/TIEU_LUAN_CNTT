@@ -20,14 +20,14 @@ exports.create = async (req, res) => {
                 message: "Tạo nhóm thất bại. Phải có tên nhóm.",
             });
         }
-        // if (req.privacy !== 0 && req.privacy !== 1 && req.privacy !== 2) {
+        // console.log(req.body);
+        // if (req.privacy != '1' && req.privacy != '2') {
         //     return res.status(400).json({
         //         success: false,
         //         code: 10025,
         //         message: "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
         //     });
         // }
-        // console.log(req.body);
         // const privacy=req.body
         // return res.status(400).json({
         //     success: false,
@@ -51,14 +51,16 @@ exports.create = async (req, res) => {
         if (!req.files || !req.files.group_avatar) {
             console.log(req.body);
             const Avatar = null;
-            const group = Group.create({
+            const group = await Group.create({
                 avatar: Avatar,
                 super_admin: req.user._id,
                 ...req.body,
             });
+            const gr_id = group._id
             return res.status(200).json({
                 success: true,
                 message: "Tạo nhóm thành công.",
+                group_id: gr_id
             });
         }
         let Avatar;
@@ -117,9 +119,11 @@ exports.create = async (req, res) => {
             super_admin: req.user._id,
             ...req.body,
         });
+        const gr_id = group._id
         return res.status(200).json({
             success: true,
             message: "Tạo nhóm thành công.",
+            group_id: gr_id
         });
     } catch (error) {
         console.error("Lỗi:", error);
