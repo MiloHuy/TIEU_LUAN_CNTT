@@ -36,3 +36,9 @@ export const checkFileMaxSize = (file, Maxsize) => {
 
   return size <= Maxsize;
 };
+
+export const checkFileExtension = (file, extensions) => {
+  const fileExtension = file.name.split(".").pop();
+  if (!fileExtension) return false;
+  return extensions.includes(fileExtension);
+};

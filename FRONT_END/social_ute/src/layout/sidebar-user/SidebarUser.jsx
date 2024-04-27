@@ -13,8 +13,18 @@ const SidebarUser = (props) => {
         props.handleController(value)
     }
 
+    const clsBaseSidebar = "fixed transform duration-700 ease-in-out"
+
     const widthSidebar = useMemo(() => {
         return isShortCutSidebar ? 'min-w-[5vw] w-[5vw]' : 'min-w-[20vw] w-[20vw]'
+    }, [isShortCutSidebar])
+
+    const clsSideBarBody = useMemo(() => {
+        return isShortCutSidebar ? " opacity-0 left-[18vw] " : " opacity-100 left-0 "
+    }, [isShortCutSidebar])
+
+    const clsSideBarShortCut = useMemo(() => {
+        return isShortCutSidebar ? " opacity-100 left-[0vw] " : " opacity-0 "
     }, [isShortCutSidebar])
 
     return (
@@ -29,18 +39,17 @@ const SidebarUser = (props) => {
             <div className='mt-4'>
                 <SidebarBody
                     userID={userID}
-                    className={`${isShortCutSidebar ? 'opacity-0 left-[18vw]' : 'opacity-100 left-0'} absolute px-2 transform duration-700 ease-in-out`} />
+                    className={clsBaseSidebar + clsSideBarBody + 'px-2'} />
 
                 <SidebarShortCut
                     userID={userID}
                     icons={IconSideBarUser}
-                    className={`${isShortCutSidebar ? 'opacity-100 left-[0vw]' : 'opacity-0 '} absolute transform duration-700 ease-in-out `} />
-
+                    className={clsBaseSidebar + clsSideBarShortCut} />
             </div>
 
             <SidebarFooter
                 handleSwitch={handleController}
-                className='h-full flex items-end justify-center p-2'
+                className="absolute bottom-0 w-full h-[5vh] left-2"
             />
         </div>
     )

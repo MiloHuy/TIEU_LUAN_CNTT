@@ -13,10 +13,10 @@ const ModalUploadAvatarGroup = ({ trigger, className, title, titleButton, onChan
 
       <DialogContent
         className={clsx(
-          'min-w-[20vw] w-[40vw] min-h-[35vh] h-[80vh] p-2 grid gap-2 items-center uppercase',
+          'min-w-[20vw] w-[40vw] min-h-[35vh] h-max p-2 flex flex-col gap-2 items-center uppercase',
           'font-bold text-lg font-quick_sans',
           className)}>
-        <DialogHeader >
+        <DialogHeader className='h-[60px] mt-2'>
           <DialogTitle className='text-center text-xl'>{title}</DialogTitle>
         </DialogHeader>
 
