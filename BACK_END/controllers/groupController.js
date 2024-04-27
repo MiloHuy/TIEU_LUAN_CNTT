@@ -843,12 +843,7 @@ exports.getGroup = async (req, res) => {
 
 exports.getGroupAdmin = async (req, res) => {
     try {
-        const groups = await Group.find({
-            $or: [
-                { super_admin: req.user._id },
-                { "admin.user_id": req.user._id },
-            ],
-        })
+        const groups = await Group.find({ "admin.user_id": req.user._id })
             .select("_id name avatar")
             .lean();
 
@@ -868,4 +863,26 @@ exports.getGroupAdmin = async (req, res) => {
     }
 };
 
-//10023
+exports.getGroupSuperAdmin = async (req, res) => {
+    try {
+        const groups = await Group.find({ super_admin: req.user._id })
+            .select("_id name avatar")
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            groups,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10024,
+            message:
+                "Lấy danh sách nhóm vai trò super admin thất bại :" +
+                error.message,
+        });
+    }
+};
+
+//10024
