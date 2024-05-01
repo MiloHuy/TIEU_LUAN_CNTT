@@ -28,11 +28,11 @@ const Post = new Schema({
         // 1 : follower
         // 2 : public
     },
-    // group_id:
-    // {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Group",
-    // },
+    group_id:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group",
+    },
     create_post_time: {
         type: Date,
         required: true,
