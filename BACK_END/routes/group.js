@@ -45,6 +45,6 @@ router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSup
 
 router.get('/admin', verifyToken, isUser, getGroupAdmin);
 router.get('/super-admin', verifyToken, isUser, getGroupSuperAdmin);
-router.get('/', verifyToken, isUser, getGroup);
+router.get('/all', verifyToken, isUser, getGroup);
 
 module.exports = router;

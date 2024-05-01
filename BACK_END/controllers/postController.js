@@ -593,7 +593,7 @@ exports.like = async (req, res) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
             const likes = post_like ? post_like.user_id.length : 0;
 
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Bỏ yêu thích.",
                 likes,
@@ -627,7 +627,7 @@ exports.like = async (req, res) => {
             const post_like = await Post_liked.findOne({ post_id: post._id });
             const likes = post_like ? post_like.user_id.length : 0;
 
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Yêu thích bài viết thành công.",
                 likes,
