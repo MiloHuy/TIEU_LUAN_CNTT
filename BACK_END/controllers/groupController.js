@@ -8,6 +8,7 @@ const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
 const { group, log } = require("console");
 const User = require("../models/User");
+const Post = require("../models/Post");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -56,11 +57,11 @@ exports.create = async (req, res) => {
                 super_admin: req.user._id,
                 ...req.body,
             });
-            const gr_id = group._id
+            const gr_id = group._id;
             return res.status(200).json({
                 success: true,
                 message: "Tạo nhóm thành công.",
-                group_id: gr_id
+                group_id: gr_id,
             });
         }
         let Avatar;
@@ -119,11 +120,11 @@ exports.create = async (req, res) => {
             super_admin: req.user._id,
             ...req.body,
         });
-        const gr_id = group._id
+        const gr_id = group._id;
         return res.status(200).json({
             success: true,
             message: "Tạo nhóm thành công.",
-            group_id: gr_id
+            group_id: gr_id,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -890,10 +891,7 @@ exports.adminGetMembers = async (req, res) => {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId)
             .select("member.user_id")
-            .populate(
-                "member.user_id",
-                "first_name last_name avatar.url"
-            )
+            .populate("member.user_id", "first_name last_name avatar.url")
             .lean();
 
         if (!group) {
@@ -904,9 +902,8 @@ exports.adminGetMembers = async (req, res) => {
             });
         }
 
-        const members = group.member
-            .map((member) => member.user_id)
-        
+        const members = group.member.map((member) => member.user_id);
+
         return res.status(200).json({
             success: true,
             members: members,
@@ -916,7 +913,8 @@ exports.adminGetMembers = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10025,
-            message: "Admin lấy danh sách thành viên thất bại :" + error.message,
+            message:
+                "Admin lấy danh sách thành viên thất bại :" + error.message,
         });
     }
 };
@@ -924,7 +922,7 @@ exports.adminGetMembers = async (req, res) => {
 exports.adminEditActive = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const userId = req.params.user_id
+        const userId = req.params.user_id;
         const group = await Group.findById(groupId)
             // .select("member.user_id")
             // .populate(
@@ -952,21 +950,20 @@ exports.adminEditActive = async (req, res) => {
                 message: "Người này không phải thành viên của nhóm",
             });
         }
-        
-        new_status = is_member.is_active
+
+        new_status = is_member.is_active;
 
         const updatedGroup = await Group.findOneAndUpdate(
-            { _id: groupId, 'member.user_id': userId },
-            { $set: { 'member.$.is_active': !new_status } },
+            { _id: groupId, "member.user_id": userId },
+            { $set: { "member.$.is_active": !new_status } },
             { new: true }
         );
 
-        const new_list = updatedGroup.member
+        const new_list = updatedGroup.member;
 
-        
         return res.status(200).json({
             success: true,
-            members: new_list
+            members: new_list,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -981,7 +978,7 @@ exports.adminEditActive = async (req, res) => {
 exports.adminDeleteUser = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const userId = req.params.user_id
+        const userId = req.params.user_id;
         const group = await Group.findById(groupId)
             // .select("member.user_id")
             // .populate(
@@ -1017,10 +1014,10 @@ exports.adminDeleteUser = async (req, res) => {
         );
 
         // const new_list = updatedGroup.member
-        
+
         return res.status(200).json({
             success: true,
-            message: "Admin delete thành công."
+            message: "Admin delete thành công.",
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1032,6 +1029,178 @@ exports.adminDeleteUser = async (req, res) => {
     }
 };
 
+exports.createPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        if (!Array.isArray(req.files.post_img)) {
+            req.files.post_img = [req.files.post_img];
+        }
 
+        if (!req.files.post_img || req.files.post_img.length === 0) {
+            return res.status(400).json({
+                success: false,
+                code: 2003,
+                message:
+                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+            });
+        }
 
-//10027
+        const postImages = [];
+
+        for (const file of req.files.post_img) {
+            const fileExtension = path.extname(file.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(
+                (format) => `.${format}`
+            );
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2004,
+                    message:
+                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                });
+            }
+
+            const fileSize = file.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2005,
+                    message:
+                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                });
+            }
+
+            const result = await new Promise((resolve) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        { resource_type: "auto", folder: "post_imgs" },
+                        (error, uploadResult) => {
+                            if (error) {
+                                console.log(error);
+                                return res.status(400).json({
+                                    success: false,
+                                    code: 2024,
+                                    message: "Lỗi lưu ảnh lên cloundinary.",
+                                });
+                            }
+                            return resolve(uploadResult);
+                        }
+                    )
+                    .end(file.data);
+            });
+
+            postImages.push({
+                publicId: result.public_id,
+                url: result.secure_url,
+            });
+        }
+
+        const currentDate = new Date();
+        const post = await Post.create({
+            user_id: req.user._id,
+            ...req.body,
+            create_post_time: currentDate,
+            post_img: postImages,
+            group_id: groupId,
+            privacy: 3,
+            is_approved: false,
+        });
+
+        // const content =
+        //     req.user.first_name +
+        //     " " +
+        //     req.user.last_name +
+        //     " vừa mới đăng bài.";
+
+        // const noti = await Notification.create({
+        //     user_id: req.user._id,
+        //     noti_content: content,
+        //     post_id: post._id,
+        //     noti_create_time: currentDate,
+        // });
+
+        // const followerUsers = await Follow.find({
+        //     user_id: req.user._id,
+        // }).select("follower_user_id");
+
+        // const followerUserIds = followerUsers
+        //     .map((follow) => follow.follower_user_id)
+        //     .flat();
+
+        // for (const userId of followerUserIds) {
+        //     await Noti_user.findOneAndUpdate(
+        //         { user_id: userId },
+        //         { $push: { detail: { noti_id: noti._id } } },
+        //         { new: true, upsert: true }
+        //     );
+        // }
+
+        // for (const userId of followerUserIds) {
+        //     console.log("id" + userId.toString());
+        //     req.app.get("io").emit(userId.toString(), {
+        //         content: content,
+        //         post_id: post._id,
+        //     });
+        // }
+
+        // req.app.get('io').emit('notis', { content: content, post_id: post._id});
+
+        res.status(201).json({
+            success: true,
+            message: "Đăng bài thành công.",
+            post,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10029,
+            message: "Đăng bài thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminGetQueuePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            // .select("member.user_id")
+            // .populate(
+            //     "member.user_id",
+            //     "first_name last_name avatar.url"
+            // )
+            .lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const queue = await Post.find({
+            group_id: groupId,
+            is_approved: false,
+        })
+        .select("_id user_id post_description post_img.url create_post_time")
+        .populate("user_id", "first_name last_name avatar.url");
+
+        return res.status(200).json({
+            success: true,
+            posts: queue,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10029,
+            message:
+                "Admin lấy danh sách thành viên thất bại :" + error.message,
+        });
+    }
+};
+
+//10029

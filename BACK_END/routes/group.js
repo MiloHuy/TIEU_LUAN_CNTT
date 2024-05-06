@@ -20,6 +20,8 @@ const {
     adminGetMembers,
     adminEditActive,
     adminDeleteUser,
+    createPost,
+    adminGetQueuePost,
 } = require('../controllers/groupController.js');
 
 const {
@@ -39,6 +41,8 @@ router.post('/:gr_id/guest/request-join', verifyToken, isUser, requestJoin);
 router.get('/:gr_id/regulation', verifyToken, isUser, getRegulation);
 
 router.post('/:gr_id/member/leave', verifyToken, isUser, leaveGroup);
+router.post('/:gr_id/member/post/create', verifyToken, isUser, createPost);
+
 
 router.post('/:gr_id/admin/invite-user/:user_id', verifyToken, isUser, isAdminGroup, inviteUser);
 router.get('/:gr_id/admin/request-join', verifyToken, isUser, isAdminGroup, adminGetRequestJoin);
@@ -47,6 +51,8 @@ router.post('/:gr_id/admin/refuse-request/:user_id', verifyToken, isUser, isAdmi
 router.get('/:gr_id/admin/members', verifyToken, isUser, isAdminGroup, adminGetMembers);
 router.put('/:gr_id/admin/edit-active/:user_id', verifyToken, isUser, isAdminGroup, adminEditActive);
 router.delete('/:gr_id/admin/delete-member/:user_id', verifyToken, isUser, isAdminGroup, adminDeleteUser);
+
+router.get('/:gr_id/admin/posts/queue', verifyToken, isUser, isAdminGroup, adminGetQueuePost);
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 

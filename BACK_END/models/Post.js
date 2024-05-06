@@ -22,14 +22,17 @@ const Post = new Schema({
     ],
     privacy: {
         type: Number,
-        default : 1,
-        enum: [0, 1, 2],
+        default: 1,
+        enum: [0, 1, 2, 3],
         // 0 : private
         // 1 : follower
         // 2 : public
+        // 3 : group
     },
-    group_id:
-    {
+    is_approved: {
+        type: Boolean,
+    },
+    group_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Group",
     },

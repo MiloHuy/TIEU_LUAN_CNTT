@@ -20,7 +20,6 @@ exports.getAll = async (req, res) => {
         const following_User_Ids = following_Users
             .map((follow) => follow.following_user_id)
             .flat();
-        // following_User_Ids.push(req.user._id);
 
         const { size } = req.query;
 
@@ -89,8 +88,6 @@ exports.getAll = async (req, res) => {
                     post_id: post._id,
                 });
                 const likes = post_like ? post_like.user_id.length : 0;
-
-                //Làm thêm phần count_cmt
 
                 return {
                     ...post,

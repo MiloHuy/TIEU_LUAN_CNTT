@@ -19,6 +19,7 @@ exports.getNotis = (async (req, res) => {
                     select: 'avatar.url first_name last_name',
                 },
             })
+            // .sort({ noti_create_time: -1 })
             .select('-_id detail').lean().exec()
         if(!notis){
             return res.status(200).json({
@@ -37,6 +38,9 @@ exports.getNotis = (async (req, res) => {
             read: item.read,
             noti_create_time: item.noti_id.noti_create_time
         }));
+
+        notis_filter.sort((a, b) => new Date(b.noti_create_time) - new Date(a.noti_create_time));
+
         res.status(200).json({
             success: true,
             notis: notis_filter

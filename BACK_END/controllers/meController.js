@@ -389,15 +389,24 @@ exports.uploadAvatar = (async (req, res) => {
             url: result.secure_url,
         };
 
-        const new_user = await User.findOneAndUpdate(
+        const update_user = await User.findOneAndUpdate(
             { _id: req.user._id },
             { avatar: avatar },
             { new: true }
-        );
+        ).select("_id avatar.url first_name last_name role_id")
+
+        const new_user ={
+            _id: update_user._id,
+            avatar: update_user.avatar.url,
+            first_name: update_user.first_name,
+            last_name: update_user.last_name,
+            role_id: update_user.role_id,
+        }
 
         res.status(201).json({
             success: true,
             message: 'Đổi avatar thành công.',
+            user: new_user
         });
     } catch (error) {
         res.status(500).json({
