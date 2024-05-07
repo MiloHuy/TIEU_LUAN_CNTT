@@ -77,11 +77,6 @@ const SuperAdminGroup = new Schema({
                 statistic_like: { type: String, default: 'group/:gr_id/admin/statistic/likes' }
             }
         },
-        Manage_regulation: {
-            PUT: {
-                regulation: { type: String, default: 'group/:gr_id/admin/regulation' }
-            }
-        },
         Manage_admin: {
             POST: {
                 add_admin: { type: String, default: 'group/:gr_id/super-admin/add-admin/:user_id' },

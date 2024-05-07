@@ -463,11 +463,13 @@ exports.getPosts = async (req, res) => {
         }
 
         const posts = await Post.find({
-            group_id:groupId
-        }).select(
-            "_id user_id post_description post_img.url create_post_time"
-        )
-        .populate("user_id", "first_name last_name avatar.url");
+            group_id: groupId,
+            is_approved: true,
+        })
+            .select(
+                "_id user_id post_description post_img.url create_post_time"
+            )
+            .populate("user_id", "first_name last_name avatar.url");
 
         return res.status(200).json({
             success: true,
@@ -483,7 +485,44 @@ exports.getPosts = async (req, res) => {
     }
 };
 
+exports.getMyPosts = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId)
+            // .select("regulation")
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
 
+        const posts = await Post.find({
+            group_id: groupId,
+            user_id: userId,
+            is_approved: true,
+        })
+            .select(
+                "_id user_id post_description post_img.url create_post_time"
+            )
+            .populate("user_id", "first_name last_name avatar.url");
+
+        return res.status(200).json({
+            success: true,
+            posts,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 1035,
+            message: "Xem bài viết của tôi thất bại " + error.message,
+        });
+    }
+};
 
 exports.leaveGroup = async (req, res) => {
     try {
@@ -1081,11 +1120,12 @@ exports.adminGetAllPosts = async (req, res) => {
         }
 
         const posts = await Post.find({
-            group_id:groupId
-        }).select(
-            "_id user_id post_description post_img.url create_post_time"
-        )
-        .populate("user_id", "first_name last_name avatar.url");
+            group_id: groupId,
+        })
+            .select(
+                "_id user_id post_description post_img.url create_post_time"
+            )
+            .populate("user_id", "first_name last_name avatar.url");
 
         return res.status(200).json({
             success: true,

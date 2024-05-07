@@ -13,8 +13,12 @@ const GuestGroup = new Schema({
                 group_info: { type: String, default: 'group/:gr_id/info' },
                 members: { type: String, default: 'group/:gr_id/members' },
                 group_regulation: { type: String, default: 'group/:gr_id/regulation' },
-                posts: { type: String, default: 'group/:gr_id/posts' },
-                post: { type: String, default: 'group/:gr_id/post/:post_id' },
+            }
+        },
+        Post: {
+            GET: {
+                posts: { type: String, default: "group/:gr_id/posts" },
+                post: { type: String, default: "group/:gr_id/post/:post_id" },
             }
         },
         Request: {

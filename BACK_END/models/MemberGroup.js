@@ -61,6 +61,23 @@ const MemberGroup = new Schema({
                 }, 
             },
         },
+        Post_wait_approve: {
+            GET: {
+                posts: { type: String, default: "group/:gr_id/member/post_wait_approve" },
+            },
+            PUT: {
+                post: {
+                    type: String,
+                    default: "group/:gr_id/member/post_wait_approve/:post_id",
+                }, 
+            },
+            DELETE: {
+                post: {
+                    type: String,
+                    default: "group/:gr_id/member/post_wait_approve/:post_id",
+                }, 
+            },
+        },
         Leave_Group: {
             POST: {
                 leave_group: {

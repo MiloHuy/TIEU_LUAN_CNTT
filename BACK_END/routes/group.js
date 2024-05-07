@@ -25,6 +25,7 @@ const {
     adminApprovePost,
     getPosts,
     adminGetAllPosts,
+    getMyPosts,
 } = require('../controllers/groupController.js');
 
 const {
@@ -38,15 +39,18 @@ router.post('/create', verifyToken, isUser, create);
 
 router.get('/:gr_id/get-role-permission', verifyToken, isUser, getRolePermission);
 
+// All
 router.get('/:gr_id/info', verifyToken, isUser, getInfo);
 router.get('/:gr_id/members', verifyToken, isUser, getMembers);
 router.post('/:gr_id/guest/request-join', verifyToken, isUser, requestJoin);
 router.get('/:gr_id/regulation', verifyToken, isUser, getRegulation);
 router.get('/:gr_id/posts', verifyToken, isUser, getPosts);
 
+// Member, Ad, Super
+router.get('/:gr_id/my-posts', verifyToken, isUser, getMyPosts);
+
 router.post('/:gr_id/member/leave', verifyToken, isUser, leaveGroup);
 router.post('/:gr_id/member/post/create', verifyToken, isUser, createPost);
-
 
 router.post('/:gr_id/admin/invite-user/:user_id', verifyToken, isUser, isAdminGroup, inviteUser);
 router.get('/:gr_id/admin/request-join', verifyToken, isUser, isAdminGroup, adminGetRequestJoin);
