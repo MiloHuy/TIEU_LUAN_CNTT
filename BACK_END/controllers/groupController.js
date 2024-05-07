@@ -9,6 +9,9 @@ const MemberGroup = require("../models/MemberGroup");
 const { group, log } = require("console");
 const User = require("../models/User");
 const Post = require("../models/Post");
+const { PostAPIFeatures } = require("../utils/APIFeatures");
+const Post_liked = require("../models/Post_liked");
+const Post_stored = require("../models/Post_stored");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -451,6 +454,7 @@ exports.getRegulation = async (req, res) => {
 exports.getPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const { size } = req.query;
         const group = await Group.findById(groupId)
             // .select("regulation")
             .lean();
@@ -462,18 +466,67 @@ exports.getPosts = async (req, res) => {
             });
         }
 
-        const posts = await Post.find({
+        const posts = Post.find({
             group_id: groupId,
             is_approved: true,
         })
-            .select(
-                "_id user_id post_description post_img.url create_post_time"
-            )
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        const check_liked = await Post_liked.find({
+            user_id: req.user._id,
+        }).select("post_id");
+        const check_stored = await Post_stored.find({
+            user_id: req.user._id,
+        }).select("post_id");
+
+        const postsAfferCheck = allPosts.map((post) => {
+            const isLiked = check_liked.some((like) =>
+                like.post_id.equals(post._id)
+            );
+            const isStored = check_stored.some((store) => {
+                return store.post_id.some((storeId) =>
+                    storeId.equals(post._id)
+                );
+            });
+            return {
+                ...post.toObject(),
+                liked: isLiked,
+                stored: isStored,
+            };
+        });
+
+        const postsAfferCountLike = await Promise.all(
+            postsAfferCheck.map(async (post) => {
+                const post_like = await Post_liked.findOne({
+                    post_id: post._id,
+                });
+                const likes = post_like ? post_like.user_id.length : 0;
+
+                return {
+                    ...post,
+                    likes,
+                };
+            })
+        );
 
         return res.status(200).json({
             success: true,
-            posts,
+            totals,
+            posts: postsAfferCountLike,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -489,6 +542,7 @@ exports.getMyPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.user._id;
+        const { size } = req.query;
         const group = await Group.findById(groupId)
             // .select("regulation")
             .lean();
@@ -500,19 +554,68 @@ exports.getMyPosts = async (req, res) => {
             });
         }
 
-        const posts = await Post.find({
+        const posts = Post.find({
             group_id: groupId,
             user_id: userId,
             is_approved: true,
         })
-            .select(
-                "_id user_id post_description post_img.url create_post_time"
-            )
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        const check_liked = await Post_liked.find({
+            user_id: req.user._id,
+        }).select("post_id");
+        const check_stored = await Post_stored.find({
+            user_id: req.user._id,
+        }).select("post_id");
+
+        const postsAfferCheck = allPosts.map((post) => {
+            const isLiked = check_liked.some((like) =>
+                like.post_id.equals(post._id)
+            );
+            const isStored = check_stored.some((store) => {
+                return store.post_id.some((storeId) =>
+                    storeId.equals(post._id)
+                );
+            });
+            return {
+                ...post.toObject(),
+                liked: isLiked,
+                stored: isStored,
+            };
+        });
+
+        const postsAfferCountLike = await Promise.all(
+            postsAfferCheck.map(async (post) => {
+                const post_like = await Post_liked.findOne({
+                    post_id: post._id,
+                });
+                const likes = post_like ? post_like.user_id.length : 0;
+
+                return {
+                    ...post,
+                    likes,
+                };
+            })
+        );
 
         return res.status(200).json({
             success: true,
-            posts,
+            totals,
+            posts: postsAfferCountLike,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1108,6 +1211,7 @@ exports.adminDeleteUser = async (req, res) => {
 exports.adminGetAllPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const { size } = req.query;
         const group = await Group.findById(groupId)
             // .select("regulation")
             .lean();
@@ -1119,17 +1223,29 @@ exports.adminGetAllPosts = async (req, res) => {
             });
         }
 
-        const posts = await Post.find({
+        const posts = Post.find({
             group_id: groupId,
         })
-            .select(
-                "_id user_id post_description post_img.url create_post_time"
-            )
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
 
-        return res.status(200).json({
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        res.status(200).json({
             success: true,
-            posts,
+            totals,
+            posts: allPosts,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1277,13 +1393,8 @@ exports.createPost = async (req, res) => {
 exports.adminGetQueuePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
-            // .select("member.user_id")
-            // .populate(
-            //     "member.user_id",
-            //     "first_name last_name avatar.url"
-            // )
-            .lean();
+        const { size } = req.query;
+        const group = await Group.findById(groupId).lean();
 
         if (!group) {
             return res.status(404).json({
@@ -1293,18 +1404,30 @@ exports.adminGetQueuePost = async (req, res) => {
             });
         }
 
-        const queue = await Post.find({
+        const queue = Post.find({
             group_id: groupId,
             is_approved: false,
         })
-            .select(
-                "_id user_id post_description post_img.url create_post_time"
-            )
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
 
         return res.status(200).json({
             success: true,
-            posts: queue,
+            totals,
+            posts: allPosts,
         });
     } catch (error) {
         console.error("Lỗi:", error);
