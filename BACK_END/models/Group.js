@@ -244,6 +244,7 @@ const Group = new Schema({
             },
         },
     ],
+    approve_post : {type:Boolean, default: true},
 });
 
 module.exports = mongoose.model("Group", Group);

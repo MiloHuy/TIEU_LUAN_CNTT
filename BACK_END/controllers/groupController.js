@@ -532,7 +532,7 @@ exports.getPosts = async (req, res) => {
         console.error("Lỗi:", error);
         res.status(500).json({
             success: false,
-            code: 10033,
+            code: 10034,
             message: "Xem bài viết thất bại " + error.message,
         });
     }
@@ -1251,7 +1251,7 @@ exports.adminGetAllPosts = async (req, res) => {
         console.error("Lỗi:", error);
         res.status(500).json({
             success: false,
-            code: 10034,
+            code: 10035,
             message: "Admin lấy danh sách bài viết thất bại " + error.message,
         });
     }
@@ -1260,6 +1260,16 @@ exports.adminGetAllPosts = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
         if (!Array.isArray(req.files.post_img)) {
             req.files.post_img = [req.files.post_img];
         }
@@ -1325,6 +1335,25 @@ exports.createPost = async (req, res) => {
             });
         }
 
+        if(!group.approve_post){
+            const currentDate = new Date();
+            const post = await Post.create({
+                user_id: req.user._id,
+                ...req.body,
+                create_post_time: currentDate,
+                post_img: postImages,
+                group_id: groupId,
+                privacy: 3,
+                is_approved: true,
+            }); 
+
+            return res.status(201).json({
+                success: true,
+                message: "Đăng bài thành công.",
+                post,
+            });
+        }
+
         const currentDate = new Date();
         const post = await Post.create({
             user_id: req.user._id,
@@ -1375,7 +1404,7 @@ exports.createPost = async (req, res) => {
 
         // req.app.get('io').emit('notis', { content: content, post_id: post._id});
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Đăng bài thành công.",
             post,
@@ -1433,9 +1462,9 @@ exports.adminGetQueuePost = async (req, res) => {
         console.error("Lỗi:", error);
         res.status(500).json({
             success: false,
-            code: 10029,
+            code: 10030,
             message:
-                "Admin lấy danh sách thành viên thất bại :" + error.message,
+                "Admin lấy danh sách bài viết cần duyệt :" + error.message,
         });
     }
 };
@@ -1465,7 +1494,7 @@ exports.adminApprovePost = async (req, res) => {
         if (post.privacy != 3 && post.group_id != groupId) {
             return res.status(400).json({
                 success: false,
-                code: 10031,
+                code: 10032,
                 message: "Bài viết này không phải bài viết trong nhóm của bạn",
             });
         }
@@ -1473,7 +1502,7 @@ exports.adminApprovePost = async (req, res) => {
         if (post.is_approved) {
             return res.status(400).json({
                 success: false,
-                code: 10032,
+                code: 10033,
                 message: "Bài viết này đã được duyệt",
             });
         }
@@ -1492,10 +1521,10 @@ exports.adminApprovePost = async (req, res) => {
         console.error("Lỗi:", error);
         res.status(500).json({
             success: false,
-            code: 10030,
-            message: "Admin lấy duyệt bài thất bại :" + error.message,
+            code: 10031,
+            message: "Admin duyệt bài thất bại :" + error.message,
         });
     }
 };
 
-//10029
+//10035
