@@ -26,6 +26,7 @@ const {
     getPosts,
     adminGetAllPosts,
     getMyPosts,
+    getPost,
 } = require('../controllers/groupController.js');
 
 const {
@@ -44,7 +45,8 @@ router.get('/:gr_id/info', verifyToken, isUser, getInfo);
 router.get('/:gr_id/members', verifyToken, isUser, getMembers);
 router.post('/:gr_id/guest/request-join', verifyToken, isUser, requestJoin);
 router.get('/:gr_id/regulation', verifyToken, isUser, getRegulation);
-router.get('/:gr_id/posts', verifyToken, isUser, getPosts);
+router.get('/:gr_id/post', verifyToken, isUser, getPosts);
+router.get('/:gr_id/post/:post_id', verifyToken, isUser, getPost);
 
 // Member, Ad, Super
 router.get('/:gr_id/my-posts', verifyToken, isUser, getMyPosts);

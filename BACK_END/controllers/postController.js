@@ -184,7 +184,7 @@ exports.getPost = async (req, res) => {
         const post_like = await Post_liked.findOne({ post_id: post._id });
         post.likes = post_like ? post_like.user_id.length : 0;
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             post,
         });

@@ -538,6 +538,72 @@ exports.getPosts = async (req, res) => {
     }
 };
 
+exports.getPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const { size } = req.query;
+        const group = await Group.findById(groupId)
+            // .select("regulation")
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = Post.findById(postId)
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if(post.is_approved == false && post.user_id != req.user._id){
+            return res.status(500).json({
+                success: false,
+                code: 10037,
+                message: "Không thể xem bài viết chưa được duyệt",
+            });
+        }
+
+        const check_liked = await Post_liked.findOne({
+            post_id: postId,
+            user_id: req.user._id,
+        });
+        const check_stored = await Post_stored.findOne({
+            user_id: req.user._id,
+            post_id: postId,
+        });
+
+        post.liked = !!check_liked;
+        post.stored = !!check_stored;
+
+        const post_like = await Post_liked.findOne({ post_id: post._id });
+        post.likes = post_like ? post_like.user_id.length : 0;
+
+        return res.status(200).json({
+            success: true,
+            post,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10036,
+            message: "Xem bài viết thất bại " + error.message,
+        });
+    }
+};
+
 exports.getMyPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
@@ -1260,8 +1326,7 @@ exports.adminGetAllPosts = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
-            .lean();
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -1335,7 +1400,7 @@ exports.createPost = async (req, res) => {
             });
         }
 
-        if(!group.approve_post){
+        if (!group.approve_post) {
             const currentDate = new Date();
             const post = await Post.create({
                 user_id: req.user._id,
@@ -1345,7 +1410,7 @@ exports.createPost = async (req, res) => {
                 group_id: groupId,
                 privacy: 3,
                 is_approved: true,
-            }); 
+            });
 
             return res.status(201).json({
                 success: true,
@@ -1463,8 +1528,7 @@ exports.adminGetQueuePost = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10030,
-            message:
-                "Admin lấy danh sách bài viết cần duyệt :" + error.message,
+            message: "Admin lấy danh sách bài viết cần duyệt :" + error.message,
         });
     }
 };
