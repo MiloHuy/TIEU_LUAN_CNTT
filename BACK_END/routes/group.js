@@ -72,8 +72,8 @@ router.delete('/:gr_id/admin/posts/:post_id', verifyToken, isUser, isAdminGroup,
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isAdminGroup, SuperAdminDeletePost);
 
+router.get('/all', verifyToken, isUser, getGroup);
 router.get('/admin', verifyToken, isUser, getGroupAdmin);
 router.get('/super-admin', verifyToken, isUser, getGroupSuperAdmin);
-router.get('/all', verifyToken, isUser, getGroup);
 
 module.exports = router;

@@ -163,10 +163,10 @@ exports.getRolePermission = async (req, res) => {
         // await MemberGroup.create(member);
         // await AdminGroup.create(admin);
 
-        return res.status(200).json({
-            success: true,
-            group,
-        });
+        // return res.status(200).json({
+        //     success: true,
+        //     group,
+        // });
 
         console.log(group.privacy);
         let role_permisson = null;
@@ -737,6 +737,167 @@ exports.leaveGroup = async (req, res) => {
     }
 };
 
+exports.createPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        if (!Array.isArray(req.files.post_img)) {
+            req.files.post_img = [req.files.post_img];
+        }
+
+        if (!req.files.post_img || req.files.post_img.length === 0) {
+            return res.status(400).json({
+                success: false,
+                code: 2003,
+                message:
+                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+            });
+        }
+
+        const postImages = [];
+
+        for (const file of req.files.post_img) {
+            const fileExtension = path.extname(file.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(
+                (format) => `.${format}`
+            );
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2004,
+                    message:
+                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                });
+            }
+
+            const fileSize = file.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2005,
+                    message:
+                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                });
+            }
+
+            const result = await new Promise((resolve) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        { resource_type: "auto", folder: "post_imgs" },
+                        (error, uploadResult) => {
+                            if (error) {
+                                console.log(error);
+                                return res.status(400).json({
+                                    success: false,
+                                    code: 2024,
+                                    message: "Lỗi lưu ảnh lên cloundinary.",
+                                });
+                            }
+                            return resolve(uploadResult);
+                        }
+                    )
+                    .end(file.data);
+            });
+
+            postImages.push({
+                publicId: result.public_id,
+                url: result.secure_url,
+            });
+        }
+
+        if (!group.approve_post) {
+            const currentDate = new Date();
+            const post = await Post.create({
+                user_id: req.user._id,
+                ...req.body,
+                create_post_time: currentDate,
+                post_img: postImages,
+                group_id: groupId,
+                privacy: 3,
+                is_approved: true,
+            });
+
+            return res.status(201).json({
+                success: true,
+                message: "Đăng bài thành công.",
+                post,
+            });
+        }
+
+        const currentDate = new Date();
+        const post = await Post.create({
+            user_id: req.user._id,
+            ...req.body,
+            create_post_time: currentDate,
+            post_img: postImages,
+            group_id: groupId,
+            privacy: 3,
+            is_approved: false,
+        });
+
+        // const content =
+        //     req.user.first_name +
+        //     " " +
+        //     req.user.last_name +
+        //     " vừa mới đăng bài.";
+
+        // const noti = await Notification.create({
+        //     user_id: req.user._id,
+        //     noti_content: content,
+        //     post_id: post._id,
+        //     noti_create_time: currentDate,
+        // });
+
+        // const followerUsers = await Follow.find({
+        //     user_id: req.user._id,
+        // }).select("follower_user_id");
+
+        // const followerUserIds = followerUsers
+        //     .map((follow) => follow.follower_user_id)
+        //     .flat();
+
+        // for (const userId of followerUserIds) {
+        //     await Noti_user.findOneAndUpdate(
+        //         { user_id: userId },
+        //         { $push: { detail: { noti_id: noti._id } } },
+        //         { new: true, upsert: true }
+        //     );
+        // }
+
+        // for (const userId of followerUserIds) {
+        //     console.log("id" + userId.toString());
+        //     req.app.get("io").emit(userId.toString(), {
+        //         content: content,
+        //         post_id: post._id,
+        //     });
+        // }
+
+        // req.app.get('io').emit('notis', { content: content, post_id: post._id});
+
+        return res.status(201).json({
+            success: true,
+            message: "Đăng bài thành công.",
+            post,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10029,
+            message: "Đăng bài thất bại :" + error.message,
+        });
+    }
+};
+
 exports.inviteUser = async (req, res) => {
     try {
         const userId = req.params.user_id;
@@ -951,6 +1112,396 @@ exports.adminRefuseRequest = async (req, res) => {
         });
     }
 };
+
+exports.adminGetMembers = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            .select("member.user_id")
+            .populate("member.user_id", "first_name last_name avatar.url")
+            .lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const members = group.member.map((member) => member.user_id);
+
+        return res.status(200).json({
+            success: true,
+            members: members,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10025,
+            message:
+                "Admin lấy danh sách thành viên thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminEditActive = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.params.user_id;
+        const group = await Group.findById(groupId)
+            // .select("member.user_id")
+            // .populate(
+            //     "member.user_id",
+            //     "first_name last_name avatar.url"
+            // )
+            .lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const is_member = group.member.find(
+            (member) => member.user_id.toString() === userId
+        );
+
+        if (!is_member) {
+            return res.status(404).json({
+                success: false,
+                code: 10027,
+                message: "Người này không phải thành viên của nhóm",
+            });
+        }
+
+        new_status = is_member.is_active;
+
+        const updatedGroup = await Group.findOneAndUpdate(
+            { _id: groupId, "member.user_id": userId },
+            { $set: { "member.$.is_active": !new_status } },
+            { new: true }
+        );
+
+        const new_list = updatedGroup.member;
+
+        return res.status(200).json({
+            success: true,
+            members: new_list,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10026,
+            message: "Admin edit active thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminDeleteUser = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.params.user_id;
+        const group = await Group.findById(groupId)
+            // .select("member.user_id")
+            // .populate(
+            //     "member.user_id",
+            //     "first_name last_name avatar.url"
+            // )
+            .lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const is_member = group.member.find(
+            (member) => member.user_id.toString() === userId
+        );
+
+        if (!is_member) {
+            return res.status(404).json({
+                success: false,
+                code: 10027,
+                message: "Người này không phải thành viên của nhóm",
+            });
+        }
+
+        const updatedGroup = await Group.findOneAndUpdate(
+            { _id: groupId },
+            { $pull: { member: { user_id: userId } } },
+            { new: true }
+        );
+
+        // const new_list = updatedGroup.member
+
+        return res.status(200).json({
+            success: true,
+            message: "Admin delete thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10028,
+            message: "Admin delete thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminGetAllPosts = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const { size } = req.query;
+        const group = await Group.findById(groupId)
+            // .select("regulation")
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const posts = Post.find({
+            group_id: groupId,
+        })
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        res.status(200).json({
+            success: true,
+            totals,
+            posts: allPosts,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10035,
+            message: "Admin lấy danh sách bài viết thất bại " + error.message,
+        });
+    }
+};
+
+exports.adminGetQueuePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const { size } = req.query;
+        const group = await Group.findById(groupId).lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const queue = Post.find({
+            group_id: groupId,
+            is_approved: false,
+        })
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        return res.status(200).json({
+            success: true,
+            totals,
+            posts: allPosts,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10030,
+            message: "Admin lấy danh sách bài viết cần duyệt :" + error.message,
+        });
+    }
+};
+
+exports.adminApprovePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = await Post.findById(postId).lean();
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2010,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết này không phải bài viết trong nhóm của bạn",
+            });
+        }
+
+        if (post.is_approved) {
+            return res.status(400).json({
+                success: false,
+                code: 10033,
+                message: "Bài viết này đã được duyệt",
+            });
+        }
+
+        const currentDate = new Date();
+        await Post.findByIdAndUpdate(postId, {
+            create_post_time: currentDate,
+            is_approved: true,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Duyệt thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10031,
+            message: "Admin duyệt bài thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminDeletePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id
+        const post = await Post.findById(postId);
+        const group = await Group.findById(groupId)
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2022,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if(post.group_id != groupId){
+            return res.status(404).json({
+                success: false,
+                code: 10039,
+                message: "Bài viết không thuộc nhóm này.",
+            });
+        }
+        if(post.user_id.equals(group.super_admin)){
+            return res.status(500).json({
+                success: false,
+                code: 10040,
+                message: "Bạn không thể xóa bài viết của super admin.",
+            });
+        }
+        if (post.post_img.publicId) {
+            await cloudinary.uploader.destroy(post.post_img.publicId);
+        }
+
+        const currentDate = new Date();
+        const content = "Bài viết của bạn đã bị admin xóa."
+        const noti = await Notification.create({
+            user_id: req.user._id,
+            noti_content: content,
+            post_id: postId,
+            noti_create_time: currentDate,
+        });
+
+        await Noti_user.findOneAndUpdate(
+            { user_id: post.user_id },
+            { $push: { detail: { noti_id: noti._id } } },
+            { new: true, upsert: true }
+        );
+
+        // const noti = await Notification.findOneAndDelete({
+        //     user_id: post.user_id,
+        //     post_id: req.params.id,
+        // });
+        // if (noti) {
+        //     const follower_Users = await Follow.find({
+        //         user_id: req.user._id,
+        //     }).select("follower_user_id");
+
+        //     const follower_user_ids = follower_Users
+        //         .map((follow) => follow.follower_user_id)
+        //         .flat();
+
+        //     for (const user_id of follower_user_ids) {
+        //         await Noti_user.findOneAndUpdate(
+        //             { user_id: user_id },
+        //             { $pull: { detail: { noti_id: noti._id } } },
+        //             { new: true, upsert: true }
+        //         );
+        //     }
+        // }
+
+        await Post.deleteOne({ _id: postId });
+        return res.status(201).json({
+            success: true,
+            message: "Xóa bài viết thành công.",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10038,
+            message: "Xóa bài viết thất bại : " + error.message,
+        });
+    }
+};
+
 
 exports.addAdmin = async (req, res) => {
     try {
@@ -1211,556 +1762,6 @@ exports.getGroupSuperAdmin = async (req, res) => {
             message:
                 "Lấy danh sách nhóm vai trò super admin thất bại :" +
                 error.message,
-        });
-    }
-};
-
-exports.adminGetMembers = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
-            .select("member.user_id")
-            .populate("member.user_id", "first_name last_name avatar.url")
-            .lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const members = group.member.map((member) => member.user_id);
-
-        return res.status(200).json({
-            success: true,
-            members: members,
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10025,
-            message:
-                "Admin lấy danh sách thành viên thất bại :" + error.message,
-        });
-    }
-};
-
-exports.adminEditActive = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const userId = req.params.user_id;
-        const group = await Group.findById(groupId)
-            // .select("member.user_id")
-            // .populate(
-            //     "member.user_id",
-            //     "first_name last_name avatar.url"
-            // )
-            .lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
-        );
-
-        if (!is_member) {
-            return res.status(404).json({
-                success: false,
-                code: 10027,
-                message: "Người này không phải thành viên của nhóm",
-            });
-        }
-
-        new_status = is_member.is_active;
-
-        const updatedGroup = await Group.findOneAndUpdate(
-            { _id: groupId, "member.user_id": userId },
-            { $set: { "member.$.is_active": !new_status } },
-            { new: true }
-        );
-
-        const new_list = updatedGroup.member;
-
-        return res.status(200).json({
-            success: true,
-            members: new_list,
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10026,
-            message: "Admin edit active thất bại :" + error.message,
-        });
-    }
-};
-
-exports.adminDeleteUser = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const userId = req.params.user_id;
-        const group = await Group.findById(groupId)
-            // .select("member.user_id")
-            // .populate(
-            //     "member.user_id",
-            //     "first_name last_name avatar.url"
-            // )
-            .lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
-        );
-
-        if (!is_member) {
-            return res.status(404).json({
-                success: false,
-                code: 10027,
-                message: "Người này không phải thành viên của nhóm",
-            });
-        }
-
-        const updatedGroup = await Group.findOneAndUpdate(
-            { _id: groupId },
-            { $pull: { member: { user_id: userId } } },
-            { new: true }
-        );
-
-        // const new_list = updatedGroup.member
-
-        return res.status(200).json({
-            success: true,
-            message: "Admin delete thành công.",
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10028,
-            message: "Admin delete thất bại :" + error.message,
-        });
-    }
-};
-
-exports.adminGetAllPosts = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId)
-            // .select("regulation")
-            .lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const posts = Post.find({
-            group_id: groupId,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
-
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
-
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
-
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
-
-        res.status(200).json({
-            success: true,
-            totals,
-            posts: allPosts,
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10035,
-            message: "Admin lấy danh sách bài viết thất bại " + error.message,
-        });
-    }
-};
-
-exports.createPost = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        if (!Array.isArray(req.files.post_img)) {
-            req.files.post_img = [req.files.post_img];
-        }
-
-        if (!req.files.post_img || req.files.post_img.length === 0) {
-            return res.status(400).json({
-                success: false,
-                code: 2003,
-                message:
-                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
-            });
-        }
-
-        const postImages = [];
-
-        for (const file of req.files.post_img) {
-            const fileExtension = path.extname(file.name).toLowerCase();
-            const allowedExtensions = validImageFormats.map(
-                (format) => `.${format}`
-            );
-
-            if (!allowedExtensions.includes(fileExtension)) {
-                return res.status(400).json({
-                    success: false,
-                    code: 2004,
-                    message:
-                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
-                });
-            }
-
-            const fileSize = file.data.length;
-            if (fileSize > maxFileSize) {
-                return res.status(400).json({
-                    success: false,
-                    code: 2005,
-                    message:
-                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
-                });
-            }
-
-            const result = await new Promise((resolve) => {
-                cloudinary.uploader
-                    .upload_stream(
-                        { resource_type: "auto", folder: "post_imgs" },
-                        (error, uploadResult) => {
-                            if (error) {
-                                console.log(error);
-                                return res.status(400).json({
-                                    success: false,
-                                    code: 2024,
-                                    message: "Lỗi lưu ảnh lên cloundinary.",
-                                });
-                            }
-                            return resolve(uploadResult);
-                        }
-                    )
-                    .end(file.data);
-            });
-
-            postImages.push({
-                publicId: result.public_id,
-                url: result.secure_url,
-            });
-        }
-
-        if (!group.approve_post) {
-            const currentDate = new Date();
-            const post = await Post.create({
-                user_id: req.user._id,
-                ...req.body,
-                create_post_time: currentDate,
-                post_img: postImages,
-                group_id: groupId,
-                privacy: 3,
-                is_approved: true,
-            });
-
-            return res.status(201).json({
-                success: true,
-                message: "Đăng bài thành công.",
-                post,
-            });
-        }
-
-        const currentDate = new Date();
-        const post = await Post.create({
-            user_id: req.user._id,
-            ...req.body,
-            create_post_time: currentDate,
-            post_img: postImages,
-            group_id: groupId,
-            privacy: 3,
-            is_approved: false,
-        });
-
-        // const content =
-        //     req.user.first_name +
-        //     " " +
-        //     req.user.last_name +
-        //     " vừa mới đăng bài.";
-
-        // const noti = await Notification.create({
-        //     user_id: req.user._id,
-        //     noti_content: content,
-        //     post_id: post._id,
-        //     noti_create_time: currentDate,
-        // });
-
-        // const followerUsers = await Follow.find({
-        //     user_id: req.user._id,
-        // }).select("follower_user_id");
-
-        // const followerUserIds = followerUsers
-        //     .map((follow) => follow.follower_user_id)
-        //     .flat();
-
-        // for (const userId of followerUserIds) {
-        //     await Noti_user.findOneAndUpdate(
-        //         { user_id: userId },
-        //         { $push: { detail: { noti_id: noti._id } } },
-        //         { new: true, upsert: true }
-        //     );
-        // }
-
-        // for (const userId of followerUserIds) {
-        //     console.log("id" + userId.toString());
-        //     req.app.get("io").emit(userId.toString(), {
-        //         content: content,
-        //         post_id: post._id,
-        //     });
-        // }
-
-        // req.app.get('io').emit('notis', { content: content, post_id: post._id});
-
-        return res.status(201).json({
-            success: true,
-            message: "Đăng bài thành công.",
-            post,
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10029,
-            message: "Đăng bài thất bại :" + error.message,
-        });
-    }
-};
-
-exports.adminGetQueuePost = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId).lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const queue = Post.find({
-            group_id: groupId,
-            is_approved: false,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
-
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
-
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
-
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
-
-        return res.status(200).json({
-            success: true,
-            totals,
-            posts: allPosts,
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10030,
-            message: "Admin lấy danh sách bài viết cần duyệt :" + error.message,
-        });
-    }
-};
-
-exports.adminApprovePost = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const postId = req.params.post_id;
-        const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
-        const post = await Post.findById(postId).lean();
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                code: 2010,
-                message: "Không tìm thấy bài viết.",
-            });
-        }
-
-        if (post.privacy != 3 && post.group_id != groupId) {
-            return res.status(400).json({
-                success: false,
-                code: 10032,
-                message: "Bài viết này không phải bài viết trong nhóm của bạn",
-            });
-        }
-
-        if (post.is_approved) {
-            return res.status(400).json({
-                success: false,
-                code: 10033,
-                message: "Bài viết này đã được duyệt",
-            });
-        }
-
-        const currentDate = new Date();
-        await Post.findByIdAndUpdate(postId, {
-            create_post_time: currentDate,
-            is_approved: true,
-        });
-
-        return res.status(200).json({
-            success: true,
-            message: "Duyệt thành công.",
-        });
-    } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({
-            success: false,
-            code: 10031,
-            message: "Admin duyệt bài thất bại :" + error.message,
-        });
-    }
-};
-
-exports.adminDeletePost = async (req, res) => {
-    try {
-        const groupId = req.params.gr_id;
-        const postId = req.params.post_id
-        const post = await Post.findById(postId);
-        const group = await Group.findById(groupId)
-            .lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                code: 2022,
-                message: "Không tìm thấy bài viết.",
-            });
-        }
-        if(post.group_id != groupId){
-            return res.status(404).json({
-                success: false,
-                code: 10039,
-                message: "Bài viết không thuộc nhóm này.",
-            });
-        }
-        if(post.user_id.equals(group.super_admin)){
-            return res.status(500).json({
-                success: false,
-                code: 10040,
-                message: "Bạn không thể xóa bài viết của super admin.",
-            });
-        }
-        if (post.post_img.publicId) {
-            await cloudinary.uploader.destroy(post.post_img.publicId);
-        }
-
-        const currentDate = new Date();
-        const content = "Bài viết của bạn đã bị admin xóa."
-        const noti = await Notification.create({
-            user_id: req.user._id,
-            noti_content: content,
-            post_id: postId,
-            noti_create_time: currentDate,
-        });
-
-        await Noti_user.findOneAndUpdate(
-            { user_id: post.user_id },
-            { $push: { detail: { noti_id: noti._id } } },
-            { new: true, upsert: true }
-        );
-
-        // const noti = await Notification.findOneAndDelete({
-        //     user_id: post.user_id,
-        //     post_id: req.params.id,
-        // });
-        // if (noti) {
-        //     const follower_Users = await Follow.find({
-        //         user_id: req.user._id,
-        //     }).select("follower_user_id");
-
-        //     const follower_user_ids = follower_Users
-        //         .map((follow) => follow.follower_user_id)
-        //         .flat();
-
-        //     for (const user_id of follower_user_ids) {
-        //         await Noti_user.findOneAndUpdate(
-        //             { user_id: user_id },
-        //             { $pull: { detail: { noti_id: noti._id } } },
-        //             { new: true, upsert: true }
-        //         );
-        //     }
-        // }
-
-        await Post.deleteOne({ _id: postId });
-        return res.status(201).json({
-            success: true,
-            message: "Xóa bài viết thành công.",
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            code: 10038,
-            message: "Xóa bài viết thất bại : " + error.message,
         });
     }
 };
