@@ -12,6 +12,8 @@ const Post = require("../models/Post");
 const { PostAPIFeatures } = require("../utils/APIFeatures");
 const Post_liked = require("../models/Post_liked");
 const Post_stored = require("../models/Post_stored");
+const Notification = require("../models/Notification");
+const Noti_user = require("../models/Noti_user");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -542,7 +544,6 @@ exports.getPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
-        const { size } = req.query;
         const group = await Group.findById(groupId)
             // .select("regulation")
             .lean();
@@ -554,7 +555,7 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        const post = Post.findById(postId)
+        const post = await Post.findById(postId)
             .sort({ create_post_time: -1 })
             .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
@@ -1038,6 +1039,89 @@ exports.addAdmin = async (req, res) => {
             success: false,
             code: 10009,
             message: "Thêm admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.SuperAdminDeletePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id
+        const post = await Post.findById(postId);
+        const group = await Group.findById(groupId)
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2022,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if(post.group_id != groupId){
+            return res.status(404).json({
+                success: false,
+                code: 10039,
+                message: "Bài viết không thuộc nhóm này.",
+            });
+        }
+        if (post.post_img.publicId) {
+            await cloudinary.uploader.destroy(post.post_img.publicId);
+        }
+
+        const currentDate = new Date();
+        const content = "Bài viết của bạn đã bị admin xóa."
+        const noti = await Notification.create({
+            user_id: req.user._id,
+            noti_content: content,
+            post_id: postId,
+            noti_create_time: currentDate,
+        });
+
+        await Noti_user.findOneAndUpdate(
+            { user_id: post.user_id },
+            { $push: { detail: { noti_id: noti._id } } },
+            { new: true, upsert: true }
+        );
+
+        // const noti = await Notification.findOneAndDelete({
+        //     user_id: post.user_id,
+        //     post_id: req.params.id,
+        // });
+        // if (noti) {
+        //     const follower_Users = await Follow.find({
+        //         user_id: req.user._id,
+        //     }).select("follower_user_id");
+
+        //     const follower_user_ids = follower_Users
+        //         .map((follow) => follow.follower_user_id)
+        //         .flat();
+
+        //     for (const user_id of follower_user_ids) {
+        //         await Noti_user.findOneAndUpdate(
+        //             { user_id: user_id },
+        //             { $pull: { detail: { noti_id: noti._id } } },
+        //             { new: true, upsert: true }
+        //         );
+        //     }
+        // }
+
+        await Post.deleteOne({ _id: postId });
+        return res.status(201).json({
+            success: true,
+            message: "Xóa bài viết thành công.",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 1041,
+            message: "Xóa bài viết thất bại : " + error.message,
         });
     }
 };
@@ -1587,6 +1671,96 @@ exports.adminApprovePost = async (req, res) => {
             success: false,
             code: 10031,
             message: "Admin duyệt bài thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminDeletePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id
+        const post = await Post.findById(postId);
+        const group = await Group.findById(groupId)
+            .lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2022,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if(post.group_id != groupId){
+            return res.status(404).json({
+                success: false,
+                code: 10039,
+                message: "Bài viết không thuộc nhóm này.",
+            });
+        }
+        if(post.user_id.equals(group.super_admin)){
+            return res.status(500).json({
+                success: false,
+                code: 10040,
+                message: "Bạn không thể xóa bài viết của super admin.",
+            });
+        }
+        if (post.post_img.publicId) {
+            await cloudinary.uploader.destroy(post.post_img.publicId);
+        }
+
+        const currentDate = new Date();
+        const content = "Bài viết của bạn đã bị admin xóa."
+        const noti = await Notification.create({
+            user_id: req.user._id,
+            noti_content: content,
+            post_id: postId,
+            noti_create_time: currentDate,
+        });
+
+        await Noti_user.findOneAndUpdate(
+            { user_id: post.user_id },
+            { $push: { detail: { noti_id: noti._id } } },
+            { new: true, upsert: true }
+        );
+
+        // const noti = await Notification.findOneAndDelete({
+        //     user_id: post.user_id,
+        //     post_id: req.params.id,
+        // });
+        // if (noti) {
+        //     const follower_Users = await Follow.find({
+        //         user_id: req.user._id,
+        //     }).select("follower_user_id");
+
+        //     const follower_user_ids = follower_Users
+        //         .map((follow) => follow.follower_user_id)
+        //         .flat();
+
+        //     for (const user_id of follower_user_ids) {
+        //         await Noti_user.findOneAndUpdate(
+        //             { user_id: user_id },
+        //             { $pull: { detail: { noti_id: noti._id } } },
+        //             { new: true, upsert: true }
+        //         );
+        //     }
+        // }
+
+        await Post.deleteOne({ _id: postId });
+        return res.status(201).json({
+            success: true,
+            message: "Xóa bài viết thành công.",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10038,
+            message: "Xóa bài viết thất bại : " + error.message,
         });
     }
 };

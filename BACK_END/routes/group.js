@@ -27,6 +27,8 @@ const {
     adminGetAllPosts,
     getMyPosts,
     getPost,
+    adminDeletePost,
+    SuperAdminDeletePost,
 } = require('../controllers/groupController.js');
 
 const {
@@ -65,8 +67,10 @@ router.delete('/:gr_id/admin/delete-member/:user_id', verifyToken, isUser, isAdm
 router.get('/:gr_id/admin/posts', verifyToken, isUser, isAdminGroup, adminGetAllPosts);
 router.get('/:gr_id/admin/posts/queue', verifyToken, isUser, isAdminGroup, adminGetQueuePost);
 router.post('/:gr_id/admin/posts/approve/:post_id', verifyToken, isUser, isAdminGroup, adminApprovePost);
+router.delete('/:gr_id/admin/posts/:post_id', verifyToken, isUser, isAdminGroup, adminDeletePost);
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
+router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isAdminGroup, SuperAdminDeletePost);
 
 router.get('/admin', verifyToken, isUser, getGroupAdmin);
 router.get('/super-admin', verifyToken, isUser, getGroupSuperAdmin);
