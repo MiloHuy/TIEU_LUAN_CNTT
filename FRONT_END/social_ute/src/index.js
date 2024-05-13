@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
 
 import { ToastContainer } from "react-toastify";
@@ -10,13 +9,11 @@ import { store } from "./app/store/store";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/*" element={<App />} />
-      </Routes>
-    </BrowserRouter>
+    <App />
+
     <ToastContainer
       position="top-right"
       autoClose={5000}

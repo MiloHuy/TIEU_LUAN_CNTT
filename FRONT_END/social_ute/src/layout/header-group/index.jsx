@@ -1,12 +1,12 @@
 import AvatarGroup from "./AvatarGroup"
 import InfoBaseGroup from "./InfoBaseGroup"
 
-const HeaderGroup = () => {
+const HeaderGroup = ({ avatar, info }) => {
   return (
-    <div className='flex flex-col gap-2 overflow-auto font-quick_sans text-black dark:text-white'>
-      <AvatarGroup />
+    <div className='flex flex-col gap-2 font-quick_sans text-black dark:text-white'>
+      <AvatarGroup avatar={avatar} />
 
-      <InfoBaseGroup />
+      <InfoBaseGroup info={info} />
     </div>
   )
 }

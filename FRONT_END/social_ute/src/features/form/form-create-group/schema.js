@@ -1,4 +1,4 @@
-import { EPrivacyGroup } from "constants/group/enum-privacy";
+import { EPrivacyGroup } from "constants/group/enum";
 import { array, number, object, string } from "yup";
 import { genRequire } from "./utils";
 

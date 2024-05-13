@@ -1,13 +1,13 @@
 import { Button } from 'components/button';
 import { InputV2 } from 'components/input-v2';
-import { EPrivacyGroup } from 'constants/group/enum-privacy';
+import { EPrivacyGroup } from 'constants/group/enum';
 import SelectPrivacyGroup from 'features/select/select-privacy-group';
 import { ErrorMessage, FastField, Form, Formik } from 'formik';
 import { useCallback } from 'react';
 import FieldRegulations from './FieldRegulations';
 import { schemaFormCreateGroup } from './schema';
 
-const FormCreateGroup = ({ onChangeForm, onSubmitForm }) => {
+const FormCreateGroup = ({ onChangeForm, onSubmitForm, isLoading }) => {
   const initFormCreateGroup = {
     nameGroup: null,
     privacyGroup: EPrivacyGroup.PUBLIC,
@@ -26,7 +26,6 @@ const FormCreateGroup = ({ onChangeForm, onSubmitForm }) => {
       validationSchema={schema}
       handleChange={handleChangeForm}
       onSubmit={async (values) => {
-        console.log('values', values)
         onSubmitForm && onSubmitForm(values)
       }}
     >
@@ -41,8 +40,8 @@ const FormCreateGroup = ({ onChangeForm, onSubmitForm }) => {
                 radius='lg'
                 size='lg'
                 placeholder='Tên nhóm'
-                name='name_group'
                 type='text'
+                disabled={isLoading}
                 {...field}
               />
             )}
@@ -50,17 +49,20 @@ const FormCreateGroup = ({ onChangeForm, onSubmitForm }) => {
 
           <ErrorMessage name="nameGroup" render={(msg) => <p className='text-red'>{msg}</p>} />
 
-          <FastField name='privacyGroup' component={SelectPrivacyGroup} />
+          <FastField name='privacyGroup' >
+            {({ field, form }) => (<SelectPrivacyGroup field={field} form={form} isLoading={isLoading} />)}
+          </FastField>
 
           <p className='text-start'>Điều khoản của nhóm :</p>
 
-          <FieldRegulations values={values} />
+          <FieldRegulations values={values} isLoading={isLoading} />
 
           <div className='w-[30vw] flex justify-end'>
             <Button
               className='p-4 border'
               variant='secondary'
               type="submit"
+              disabled={isLoading}
             >
               Tạo nhóm
             </Button>

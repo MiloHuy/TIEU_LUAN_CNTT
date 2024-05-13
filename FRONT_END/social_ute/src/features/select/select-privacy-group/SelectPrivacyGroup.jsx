@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'components/select';
 import { OptionsPrivacyGroup } from 'constants/group/group-options-scope.const';
 
-const SelectPrivacyGroup = ({ field, form }) => {
+const SelectPrivacyGroup = ({ field, form, isLoading }) => {
 
   return (
     <Select
@@ -9,6 +9,7 @@ const SelectPrivacyGroup = ({ field, form }) => {
       name='privacyGroup'
       className='h-[90px]'
       onValueChange={(value) => form.setFieldValue(field.name, value)}
+      disabled={isLoading}
     >
       <SelectTrigger className="text-md w-[30vw] min-h-[70px]">
         <SelectValue

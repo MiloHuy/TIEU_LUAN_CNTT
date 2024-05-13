@@ -18,15 +18,15 @@ const genLabelTab = (value) => {
 }
 
 const TabsGroup = () => {
-  const classNameTabTrigger = 'py-0 h-full font-quick_sans'
+  const classNameTabTrigger = 'py-0 h-full bg-black/60 text-md'
 
   return (
-    <div className='w-full flex justify-center'>
+    <div className='w-full flex justify-center font-quick_sans'>
       <Tabs
         defaultValue={TabValue.POST}
         className="w-3/4">
 
-        <TabsList className='w-full grid grid-cols-2 gap-2 h-[60px]'>
+        <TabsList className='w-full grid grid-cols-2 gap-2 h-[50px] bg-slate-600 '>
           <TabsTrigger value={TabValue.POST} className={`${classNameTabTrigger}`}>
             {genLabelTab(TabValue.POST)}
           </TabsTrigger>
@@ -36,7 +36,7 @@ const TabsGroup = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value={TabValue.POST}>
+        <TabsContent value={TabValue.POST} className='w-full h-full'>
           <TabContentPosts />
         </TabsContent>
 

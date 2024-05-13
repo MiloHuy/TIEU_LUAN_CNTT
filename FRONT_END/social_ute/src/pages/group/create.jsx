@@ -1,9 +1,10 @@
 import { GroupError } from 'constants/error/group-error.const';
-import { EPrivacyGroup } from 'constants/group/enum-privacy';
+import { EPrivacyGroup } from 'constants/group/enum';
 import FormCreateGroup from 'features/form/form-create-group';
 import ModalUploadAvatarGroup from 'features/modal/modal-upload-avatar-group';
 import { Camera } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createGroup } from 'services/group/api-post.svc';
 import { errorHandler } from 'utils/error-response.utils';
@@ -19,6 +20,8 @@ const CreateGroup = () => {
     },
     privacyGroup: EPrivacyGroup.PUBLIC,
   })
+
+  const navigate = useNavigate()
 
   const triggerModalUploadAvatar = useMemo(() => {
     return (
@@ -47,21 +50,26 @@ const CreateGroup = () => {
 
       formData.append('group_avatar', formCreate.groupAvatar.file)
 
-      await createGroup(formData)
+      const res = await createGroup(formData)
 
-      toast.success('Tạo nhóm thành công', {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setIsLoading(false)
-      URL.revokeObjectURL()
-      // setTimeout(() => { window.location.reload() }, 2000)
+      if (res.data.success === true) {
+        toast.success('Tạo nhóm thành công', {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setIsLoading(false)
+        URL.revokeObjectURL(formCreate.groupAvatar.image)
+
+        setTimeout(() => {
+          navigate(`/welcome/groupDetails/${res.data.group_id}`)
+        }, 1000)
+      }
     }
     catch (error) {
       setIsLoading(false)
@@ -80,7 +88,11 @@ const CreateGroup = () => {
         />
       </div>
 
-      <FormCreateGroup onChangeForm={setFormCreate} onSubmitForm={handleCreateGroup} />
+      <FormCreateGroup
+        onChangeForm={setFormCreate}
+        onSubmitForm={handleCreateGroup}
+        isLoading={isLoading}
+      />
     </div>
   )
 }

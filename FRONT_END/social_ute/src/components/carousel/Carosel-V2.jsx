@@ -34,7 +34,7 @@ const CaroselVersion2 = ({ slides, className, type }) => {
   }, [type, slides, currentIndex])
 
   return (
-    <div className={clsx('h-full max-h-[75vh] w-full max-w-[55vw] m-auto relative group', className)}>
+    <div className={clsx('max-h-[75vh] w-full max-w-[55vw] m-auto relative group', className)}>
       <div
         style={{ backgroundImage: background, backgroundSize: '100% 100%' }}
         className='w-full h-full rounded-lg bg-center duration-500 bg-no-repeat '

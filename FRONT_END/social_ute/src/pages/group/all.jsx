@@ -1,41 +1,44 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "components/select"
-import { MockListGroup } from "constants/group/group-list.const"
-import ListGroupAttended from "features/list/list-group-attended"
+import clsx from "clsx";
+import LoadingComponent from "combine/loading-component";
+import { TYPELOADING } from "constants/type.const";
+import ListGroupAttended from "features/list/list-group-attended";
+import SelectListGroup from "features/select/select-list-group";
+import { ArraySelectGroup } from "features/select/select-list-group/SelectListGroup";
+import { useAllGroup } from "hook/group/useAllGroup";
+import { useEffect, useState } from "react";
 
 const AllGroup = () => {
-    return (
-        <div className='w-full h-full p-3 flex flex-col gap-4 overflow-auto'>
-            <h1 className="text-black dark:text-white font-quick_sans text-[40px]">
-                Nhóm bạn đã tham gia
-            </h1>
+  const [selectGroup, setSelectGroup] = useState(ArraySelectGroup[0].value);
 
-            <div className='flex w-full justify-between gap-2'>
-                <h1 className="text-black dark:text-white font-quick_sans font-bold text-[20px]">
-                    Tất cả các nhóm đã tham gia (20)
-                </h1>
+  const {
+    isLoading,
+    resDataGroup,
 
-                <Select >
-                    <SelectTrigger className='w-[100px] bg-white border border-black'>
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent className='text-black'>
-                        <SelectGroup>
-                            <SelectItem value='all-group' className='text-black'>
-                                Tất cả
-                            </SelectItem>
-                            <SelectItem value='admin-group' className='text-black'>
-                                Admin
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
+    fetchAllGroup,
+  } = useAllGroup();
 
-            <ListGroupAttended
-                groups={MockListGroup}
-            />
-        </div>
-    )
+  useEffect(() => {
+    fetchAllGroup(selectGroup);
+  }, [selectGroup, fetchAllGroup]);
+
+  return (
+    <div className={clsx(
+      "w-full h-screen p-4 flex flex-col gap-4 overflow-auto",
+      "text-black dark:text-white font-quick_sans font-bold text-[20px]"
+    )}>
+      <h1 className="font-black text-[40px]"> Nhóm bạn đã tham gia</h1>
+
+      <SelectListGroup defaultValue={selectGroup} onChange={setSelectGroup} className='font-normal' />
+
+      <LoadingComponent type={TYPELOADING.TITLE} condition={isLoading} >
+        <h1>Tất cả các nhóm đã tham gia<span> ({resDataGroup?.length})</span></h1>
+
+        <ListGroupAttended
+          groups={resDataGroup}
+        />
+      </LoadingComponent>
+    </div>
+  )
 }
 
 export default AllGroup

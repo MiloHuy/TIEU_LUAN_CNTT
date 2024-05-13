@@ -1,8 +1,9 @@
 
-const AvatarGroup = () => {
+const AvatarGroup = ({ avatar }) => {
   return (
     <img
-      src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvde3ZFWQ7OaIsMh1pRWHrKwqHKsIOheWjkrMk4GWcYg&s'
+      loading="lazy"
+      src={avatar}
       alt='img_group'
       className='w-full h-[30vh]'
     />

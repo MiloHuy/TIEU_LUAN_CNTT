@@ -38,6 +38,7 @@ const ContentModalGroup = ({ className }) => {
           <Button
             className={`${classBaseButton}`}
             variant='press'
+            onClick={() => navigate('/welcome/all-group')}
           >
             <p className={`${classBaseParagraph} text-[20px]`}>
               {labels.seeGroup}
