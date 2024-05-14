@@ -2,9 +2,9 @@ import { Button } from 'components/button';
 import { Textarea } from 'components/textarea';
 import { FastField, FieldArray } from 'formik';
 
-const FieldRegulations = ({ values }) => {
+const FieldRegulations = ({ values, isLoading }) => {
   return (
-    <FieldArray name='regulationGroup'>
+    <FieldArray name='regulationGroup' disabled={isLoading}>
       {({ push, remove }) => (
         <div className='flex flex-col items-start justify-start w-[30vw] gap-2'>
           {values.regulationGroup.length > 0 &&

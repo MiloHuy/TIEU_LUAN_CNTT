@@ -24,7 +24,7 @@ const Welcome = () => {
         <div className={`flex bg-background text-primary ${darkmode}`}>
             <CircleChevronLeft
                 size={26} strokeWidth={1}
-                className={clsx('absolute cursor-pointer top-8 transform duration-500 ease-in-out',
+                className={clsx('absolute cursor-pointer top-2 transform duration-500 ease-in-out',
                     { 'rotate-180 ': isShortCutSidebar },
                     `${isShortCutSidebar ? 'left-[5vw]' : 'left-[20vw]'}`
                 )}

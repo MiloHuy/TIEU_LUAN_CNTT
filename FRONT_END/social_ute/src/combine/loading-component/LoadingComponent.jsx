@@ -35,7 +35,7 @@ const Title = ({ condition, children, className, title }) => {
   return condition ? children
     :
     <p className={clsx('text-lg font-quick_sans text-center font-bold', className)}>
-      {title}
+      {title ? title : 'Đang lấy dữ liệu'}
     </p>
 }
 

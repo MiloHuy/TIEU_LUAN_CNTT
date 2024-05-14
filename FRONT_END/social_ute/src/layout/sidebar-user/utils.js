@@ -14,15 +14,7 @@ export const handleNavigateRequest = (navigate) => {
 };
 
 export const handleNavigateHome = (navigate) => {
-  console.log("adad");
   navigate("/welcome");
-};
-
-export const handleOpenModelSearch = (setOpenModal) => {
-  setOpenModal((prev) => ({
-    ...prev,
-    modal_search: true,
-  }));
 };
 
 export const handleOpenModal = (openModal, onOpen) => {

@@ -39,7 +39,7 @@ const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
             >
               <ResizablePanel defaultSize={50}>
                 <CaroselVersion2
-                  className='max-w-[70vw] max-h-[80vh]'
+                  className='max-w-[70vw] h-[80vh] max-h-[80vh]'
                   type={PostType.POST_IMG}
                   slides={postDetail.post_img} />
               </ResizablePanel>

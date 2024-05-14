@@ -1,4 +1,3 @@
-import { useDisclosure } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import clsx from "clsx";
 import LoadingComponent from "combine/loading-component";
@@ -10,7 +9,6 @@ import {
 } from "components/dropdown";
 import { TYPELOADING } from "constants/type.const";
 import ModalChangeAvatarV2 from "features/modal/modal-change-avatar/ModalChangeAvatarV2";
-import { useState } from "react";
 import { useSelector } from 'react-redux';
 import ActionHeaderMe from "./ActionHeaderMe";
 import ActionsHeaderGuest from "./ActionsHeaderGuest";
@@ -24,39 +22,8 @@ const HeaderHome = (props) => {
     count_friends,
     count_stories
   } = userStatisics
-  const { onOpen, onClose } = useDisclosure();
 
   const user = useSelector(selectCurrenUser)
-
-  const [openModal, setOpenModal] = useState({
-    change_password: false,
-    change_avatar: false,
-  })
-
-  const handleChangeAvatar = async () => {
-    setOpenModal(() => ({
-      change_avatar: true,
-      change_password: false,
-
-    }))
-  }
-
-  const handleCloseModal = () => {
-    if (openModal.change_password === true && openModal.change_avatar !== true) {
-      setOpenModal((prev) => ({
-        ...prev,
-        change_password: false
-      }))
-      onClose()
-    }
-    else if (openModal.change_avatar === true && openModal.change_password !== true) {
-      setOpenModal((prev) => ({
-        ...prev,
-        change_avatar: false
-      }))
-      onClose()
-    }
-  }
 
   return (
     <div className={clsx(
@@ -107,11 +74,17 @@ const HeaderHome = (props) => {
               {userName}
             </p>
 
-            <LoadingComponent type={TYPELOADING.NULL} condition={userAvatar}>
+            <LoadingComponent
+              type={TYPELOADING.NULL}
+              condition={userAvatar}
+            >
               <ActionHeaderMe />
             </LoadingComponent>
 
-            <LoadingComponent type={TYPELOADING.NULL} condition={userGuestInfo && userGuestInfo.user.avatar.url}>
+            <LoadingComponent
+              type={TYPELOADING.NULL}
+              condition={userGuestInfo && userGuestInfo.user.avatar.url}
+            >
               <ActionsHeaderGuest userGuestInfo={userGuestInfo} />
             </LoadingComponent>
           </div>

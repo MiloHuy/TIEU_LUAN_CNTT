@@ -29,7 +29,7 @@ export const errorHandler = (err, arrayError) => {
 
   if (err.message === "Network Error") {
     return showToastError(
-      "Network error, please check your internet connection.",
+      "Không thể kết nối đến máy chủ, vui lòng kiểm tra lại kết nối internet của bạn!",
     );
   }
 

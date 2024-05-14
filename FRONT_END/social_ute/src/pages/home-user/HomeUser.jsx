@@ -72,11 +72,11 @@ const HomeUser = () => {
       default:
         return
     }
-  }, [selected])
+  }, [selected, fetchMePosts, fetchMeStories, fetchMeFriends, fetchMePostSaved])
 
   return (
     <LoadingComponent type={TYPELOADING.PROPAGATE} condition={userStatisics}>
-      <div className='flex flex-col w-full h-screen p-4 overflow-auto'>
+      <div className='flex flex-col w-full h-screen p-4'>
         <HeaderHome
           userStatisics={userStatisics}
           userName={getFullName(user.first_name, user.last_name)}
@@ -97,8 +97,7 @@ const HomeUser = () => {
                 tab: "max-w-[200px] w-[150px] px-0 h-12",
               }}
             >
-              <Tab
-                key="posts"
+              <Tab key="posts"
                 title={
                   <div className="flex items-center space-x-2">
                     <Grid3X3 size={20} />
@@ -116,8 +115,7 @@ const HomeUser = () => {
                 </LoadingComponent>
               </Tab>
 
-              <Tab
-                key="story"
+              <Tab key="story"
                 title={
                   <div className="flex items-center space-x-2">
                     <Book size={20} />

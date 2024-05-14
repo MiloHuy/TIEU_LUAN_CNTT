@@ -22,3 +22,10 @@ export const createGroup = async (payload) => {
   );
   return res;
 };
+
+export const inviteMember = async (url, groupId, userId) => {
+  const res = AxiosInstance.post(
+    url.replace(":gr_id", groupId).replace(":user_id", userId),
+  );
+  return res;
+};

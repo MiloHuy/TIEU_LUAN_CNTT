@@ -7,17 +7,18 @@ const ListPostUser = ({ posts }) => {
       posts.map((post) => {
         return (
           <CardPostUser
-            post_id={post._id}
-            post_img={post.post_img}
-            post_avatar={post.user_id.avatar.url}
-            post_description={post.post_description}
-            user_id={post.user_id}
-            liked={post.liked}
-            number_likes={post.likes}
-            save_posts={post.stored}
-            privacy={post.privacy}
+            postData={{
+              img: post.post_img,
+              description: post.post_description,
+              userId: post.user_id,
+              id: post._id,
+              avatar: post.user_id.avatar.url,
+              liked: post.liked,
+              numberLikes: post.likes,
+              savedPosts: post.stored,
+              privacy: post.privacy,
+            }}
           />
-
         )
       })
       :

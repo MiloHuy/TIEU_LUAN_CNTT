@@ -1,16 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
-import { useNavigate } from 'react-router-dom';
 import ContentModalGroup from "./ContentModalGroup";
 
 const ModalGroup = ({ trigger }) => {
-  const navigate = useNavigate()
-
-  const handleNavigateGroup = (link) => {
-    if (!link) return;
-
-    navigate(link)
-  }
-
   return (
     <Dialog>
       <DialogTrigger asChild>

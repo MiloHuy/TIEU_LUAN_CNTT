@@ -33,28 +33,30 @@ const HeaderPostUser = ({ img, name, href, action, className, privacy }) => {
   }, [privacy])
 
   return (
-    <div className={clsx('px-3 border border-black dark:border-white flex justify-between overflow-hidden', className)}>
-      <div className='w-max h-full flex items-center gap-2 -translate-x-3'>
-        <div className='w-30 h-full '>
-          <img
-            loading="lazy"
-            alt="img"
-            className="object-fill w-full h-full rounded-full"
-            src={img ? img : 'https://github.com/shadcn.png'}
-          />
-        </div>
+    <div className={clsx(
+      "border-b border-black text-black flex justify-between overflow-hidden",
+      "dark:text-white dark:border-white font-quick_sans",
+      className)}>
+      <div className='w-max h-full flex items-center gap-2'>
+        <img
+          loading="lazy"
+          alt="img"
+          className="object-fill w-30 h-full rounded-full"
+          src={img ? img : 'https://github.com/shadcn.png'}
+        />
 
-        <div className='grid items-start font-quick_sans'>
+        <div className='grid items-start'>
           <div className='flex gap-2 items-center'>
             <Link to={href}>
-              <p className='text-lg font-lixend text-black dark:text-white'> {name ? name : 'User'}</p>
+              <p className='text-lg'> {name ? name : 'User'}</p>
             </Link>
 
-            {renderIconPrivacy}
+
           </div>
 
-          <p className='text-sm font-quick_sans text-black dark:text-white'>
+          <p className='text-sm '>
             3 ngày
+            <span className='ml-2'> {renderIconPrivacy}</span>
           </p>
         </div>
       </div>

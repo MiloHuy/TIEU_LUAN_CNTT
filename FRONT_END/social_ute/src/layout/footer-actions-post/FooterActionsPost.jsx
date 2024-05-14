@@ -83,8 +83,8 @@ const FooterActionsPost = (
         <div className="flex w-full max-h-[30px]">
           <p className="line-clamp-3 truncate ...">
             {userName}:
+            <span> {postDescription} </span>
           </p>
-          <prev>{postDescription} </prev>
         </div>
       </div>
     </>

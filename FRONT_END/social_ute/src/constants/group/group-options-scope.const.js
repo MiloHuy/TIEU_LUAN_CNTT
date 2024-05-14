@@ -1,4 +1,4 @@
-import { EPrivacyGroup } from "./enum-privacy";
+import { EPrivacyGroup } from "./enum";
 
 export const OptionsPrivacyGroup = [
   {
