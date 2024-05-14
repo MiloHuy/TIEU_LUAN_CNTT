@@ -568,7 +568,15 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        if(post.is_approved == false && post.user_id != req.user._id){
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (post.is_approved == false && post.user_id != req.user._id) {
             return res.status(500).json({
                 success: false,
                 code: 10037,
@@ -601,6 +609,145 @@ exports.getPost = async (req, res) => {
             success: false,
             code: 10036,
             message: "Xem bài viết thất bại " + error.message,
+        });
+    }
+};
+
+exports.likePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = await Post.findById(postId)
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (group.privacy == 1) {
+            const is_member = group.member.some((member) =>
+                member.user_id.equals(userId)
+            );
+            console.log(is_member);
+
+            const is_admin = group.admin.some((admin) =>
+                admin.user_id.equals(userId)
+            );
+
+            const is_super_admin = group.super_admin.equals(userId);
+
+            if (!(is_member || is_admin || is_super_admin)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10042,
+                    message:
+                        "Không thể thao tác. Bài viết trong nhóm riêng tư. Bạn chưa vào nhóm",
+                });
+            }
+        }
+
+        if (post.is_approved == false && post.user_id != req.user._id) {
+            return res.status(400).json({
+                success: false,
+                code: 10037,
+                message: "Không thể yêu thích bài viết chưa được duyệt",
+            });
+        }
+
+        const liked = await Post_liked.findOneAndUpdate(
+            { post_id: postId },
+            {},
+            { new: true, upsert: true }
+        );
+        if (liked.user_id.includes(userId)) {
+            liked.user_id.pull(userId);
+            await liked.save();
+
+            const noti = await Notification.findOneAndDelete({
+                user_id: userId,
+                post_id: postId,
+            });
+            if (noti) {
+                await Noti_user.findOneAndUpdate(
+                    { user_id: post.user_id },
+                    { $pull: { detail: { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            return res.status(201).json({
+                success: true,
+                message: "Bỏ yêu thích.",
+                likes,
+            });
+        } else {
+            liked.user_id.push(userId);
+            await liked.save();
+
+            if (!post.user_id.equals(userId)) {
+                const currentDate = new Date();
+                const content =
+                    req.user.first_name +
+                    " " +
+                    req.user.last_name +
+                    " yêu thích bài viết của bạn.";
+
+                const noti = await Notification.create({
+                    user_id: userId,
+                    noti_content: content,
+                    post_id: post._id,
+                    noti_create_time: currentDate,
+                });
+
+                await Noti_user.findOneAndUpdate(
+                    { user_id: post.user_id },
+                    { $push: { detail: { noti_id: noti._id } } },
+                    { new: true, upsert: true }
+                );
+            }
+
+            const post_like = await Post_liked.findOne({ post_id: post._id });
+            const likes = post_like ? post_like.user_id.length : 0;
+
+            return res.status(201).json({
+                success: true,
+                message: "Yêu thích bài viết thành công.",
+                likes,
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10041,
+            message: "Yêu thích bài viết thất bại " + error.message,
         });
     }
 };
@@ -1380,7 +1527,7 @@ exports.adminApprovePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết này không phải bài viết trong nhóm của bạn",
+                message: "Bài viết không phải của nhóm này",
             });
         }
 
@@ -1415,10 +1562,9 @@ exports.adminApprovePost = async (req, res) => {
 exports.adminDeletePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const postId = req.params.post_id
+        const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId)
-            .lean();
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -1433,14 +1579,14 @@ exports.adminDeletePost = async (req, res) => {
                 message: "Không tìm thấy bài viết.",
             });
         }
-        if(post.group_id != groupId){
-            return res.status(404).json({
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
                 success: false,
-                code: 10039,
-                message: "Bài viết không thuộc nhóm này.",
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
             });
         }
-        if(post.user_id.equals(group.super_admin)){
+        if (post.user_id.equals(group.super_admin)) {
             return res.status(500).json({
                 success: false,
                 code: 10040,
@@ -1452,7 +1598,7 @@ exports.adminDeletePost = async (req, res) => {
         }
 
         const currentDate = new Date();
-        const content = "Bài viết của bạn đã bị admin xóa."
+        const content = "Bài viết của bạn đã bị admin xóa.";
         const noti = await Notification.create({
             user_id: req.user._id,
             noti_content: content,
@@ -1502,7 +1648,6 @@ exports.adminDeletePost = async (req, res) => {
     }
 };
 
-
 exports.addAdmin = async (req, res) => {
     try {
         const adminId = req.params.user_id;
@@ -1512,7 +1657,7 @@ exports.addAdmin = async (req, res) => {
             (admin) => admin.user_id.toString() === adminId
         );
 
-        const check_user = await User.findById(userId);
+        const check_user = await User.findById(adminId);
 
         if (!check_user) {
             return res.status(401).json({
@@ -1597,10 +1742,9 @@ exports.addAdmin = async (req, res) => {
 exports.SuperAdminDeletePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const postId = req.params.post_id
+        const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId)
-            .lean();
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -1615,11 +1759,11 @@ exports.SuperAdminDeletePost = async (req, res) => {
                 message: "Không tìm thấy bài viết.",
             });
         }
-        if(post.group_id != groupId){
-            return res.status(404).json({
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
                 success: false,
-                code: 10039,
-                message: "Bài viết không thuộc nhóm này.",
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
             });
         }
         if (post.post_img.publicId) {
@@ -1627,7 +1771,7 @@ exports.SuperAdminDeletePost = async (req, res) => {
         }
 
         const currentDate = new Date();
-        const content = "Bài viết của bạn đã bị admin xóa."
+        const content = "Bài viết của bạn đã bị admin xóa.";
         const noti = await Notification.create({
             user_id: req.user._id,
             noti_content: content,
