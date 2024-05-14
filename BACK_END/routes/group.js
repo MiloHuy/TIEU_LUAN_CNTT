@@ -30,6 +30,9 @@ const {
     adminDeletePost,
     SuperAdminDeletePost,
     likePost,
+    storePost,
+    commentPost,
+    getCommentPost
 } = require('../controllers/groupController.js');
 
 const {
@@ -48,6 +51,9 @@ router.get('/:gr_id/regulation', verifyToken, isUser, getRegulation);
 router.get('/:gr_id/post', verifyToken, isUser, getPosts);
 router.get('/:gr_id/post/:post_id', verifyToken, isUser, getPost);
 router.post('/:gr_id/post/like/:post_id', verifyToken, isUser, likePost);
+router.post('/:gr_id/post/store/:post_id', verifyToken, isUser, storePost);
+router.post('/:gr_id/post/comment/:post_id', verifyToken, isUser, commentPost);
+router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost);
 
 // Member, Ad, Super
 router.get('/:gr_id/my-posts', verifyToken, isUser, getMyPosts);

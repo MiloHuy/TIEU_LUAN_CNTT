@@ -14,6 +14,8 @@ const Post_liked = require("../models/Post_liked");
 const Post_stored = require("../models/Post_stored");
 const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
+const Comment = require("../models/Comment");
+const Comment_liked = require("../models/Comment_like");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -673,8 +675,8 @@ exports.likePost = async (req, res) => {
         if (post.is_approved == false && post.user_id != req.user._id) {
             return res.status(400).json({
                 success: false,
-                code: 10037,
-                message: "Không thể yêu thích bài viết chưa được duyệt",
+                code: 10039,
+                message: "Không thể thao tác với bài viết chưa được duyệt",
             });
         }
 
@@ -748,6 +750,340 @@ exports.likePost = async (req, res) => {
             success: false,
             code: 10041,
             message: "Yêu thích bài viết thất bại " + error.message,
+        });
+    }
+};
+
+exports.storePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = await Post.findById(postId)
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (group.privacy == 1) {
+            const is_member = group.member.some((member) =>
+                member.user_id.equals(userId)
+            );
+            console.log(is_member);
+
+            const is_admin = group.admin.some((admin) =>
+                admin.user_id.equals(userId)
+            );
+
+            const is_super_admin = group.super_admin.equals(userId);
+
+            if (!(is_member || is_admin || is_super_admin)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10042,
+                    message:
+                        "Không thể thao tác. Bài viết trong nhóm riêng tư. Bạn chưa vào nhóm",
+                });
+            }
+        }
+
+        if (post.is_approved == false && post.user_id != req.user._id) {
+            return res.status(400).json({
+                success: false,
+                code: 10039,
+                message: "Không thể thao tác với bài viết chưa được duyệt",
+            });
+        }
+
+        const stored = await Post_stored.findOneAndUpdate(
+            { user_id: req.user._id },
+            {},
+            { new: true, upsert: true }
+        );
+        if (stored.post_id.includes(req.params.id)) {
+            stored.post_id.pull(req.params.id);
+            await stored.save();
+            res.status(201).json({
+                success: true,
+                message: "Bỏ lưu bài viết.",
+            });
+        } else {
+            stored.post_id.push(req.params.id);
+            await stored.save();
+            res.status(201).json({
+                success: true,
+                message: "Lưu bài viết thành công.",
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10043,
+            message: "Lưu bài viết thất bại " + error.message,
+        });
+    }
+};
+
+exports.commentPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = await Post.findById(postId)
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (group.privacy == 1) {
+            const is_member = group.member.some((member) =>
+                member.user_id.equals(userId)
+            );
+            console.log(is_member);
+
+            const is_admin = group.admin.some((admin) =>
+                admin.user_id.equals(userId)
+            );
+
+            const is_super_admin = group.super_admin.equals(userId);
+
+            if (!(is_member || is_admin || is_super_admin)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10042,
+                    message:
+                        "Không thể thao tác. Bài viết trong nhóm riêng tư. Bạn chưa vào nhóm",
+                });
+            }
+        }
+
+        if (post.is_approved == false && post.user_id != req.user._id) {
+            return res.status(400).json({
+                success: false,
+                code: 10039,
+                message: "Không thể thao tác với bài viết chưa được duyệt",
+            });
+        }
+
+        if (Object.keys(req.body).length === 0) {
+            return res.status(400).json({
+                success: false,
+                code: 8003,
+                message: "Thao tác thất bại. Thiếu nội dung",
+            });
+        }
+
+        const currentDate = new Date();
+        const comment = await Comment.create({
+            user_id: userId,
+            post_id: postId,
+            ...req.body,
+            create_comment_time: currentDate,
+        });
+
+        if (!post.user_id.equals(req.user._id)) {
+            const content =
+                req.user.first_name +
+                " " +
+                req.user.last_name +
+                " bình luận bài viết của bạn.";
+
+            const noti = await Notification.create({
+                user_id: req.user._id,
+                noti_content: content,
+                post_id: post._id,
+                noti_create_time: currentDate,
+            });
+            await Noti_user.findOneAndUpdate(
+                { user_id: post.user_id },
+                { $push: { detail: { noti_id: noti._id } } },
+                { new: true, upsert: true }
+            );
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: "Comment thành công.",
+            comment,
+        });
+
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10044,
+            message: "Bình luận thất bại " + error.message,
+        });
+    }
+};
+
+exports.getCommentPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const post = await Post.findById(postId)
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (group.privacy == 1) {
+            const is_member = group.member.some((member) =>
+                member.user_id.equals(userId)
+            );
+            console.log(is_member);
+
+            const is_admin = group.admin.some((admin) =>
+                admin.user_id.equals(userId)
+            );
+
+            const is_super_admin = group.super_admin.equals(userId);
+
+            if (!(is_member || is_admin || is_super_admin)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10042,
+                    message:
+                        "Không thể thao tác. Bài viết trong nhóm riêng tư. Bạn chưa vào nhóm",
+                });
+            }
+        }
+
+        if (post.is_approved == false && post.user_id != req.user._id) {
+            return res.status(400).json({
+                success: false,
+                code: 10039,
+                message: "Không thể thao tác với bài viết chưa được duyệt",
+            });
+        }
+
+        const comments = await Comment.find({
+            post_id: postId,
+        })
+            .populate("user_id", "first_name last_name avatar.url")
+            .sort({ create_comment_time: -1 });
+
+        if (comments.length === 0) {
+            return res.status(200).json({
+                success: true,
+                comments: [],
+            });
+        }
+
+        const check_liked = await Comment_liked.find({
+            user_id: req.user._id,
+        }).select("comment_id -_id");
+
+        const commentsAfferCheck = comments.map((comment) => {
+            const isLiked = check_liked.some((like) =>
+                like.comment_id.equals(comment._id)
+            );
+
+            return {
+                ...comment.toObject(),
+                liked: isLiked,
+            };
+        });
+
+        const commentsAfferCountLike = await Promise.all(
+            commentsAfferCheck.map(async (comment) => {
+                const comment_like = await Comment_liked.findOne({
+                    comment_id: comment._id,
+                });
+                const likes = comment_like ? comment_like.user_id.length : 0;
+
+                return {
+                    ...comment,
+                    likes,
+                };
+            })
+        );
+
+        return res.status(200).json({
+            success: true,
+            comments: commentsAfferCountLike,
+        });
+
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10045,
+            message: "Xem bình luận thất bại " + error.message,
         });
     }
 };
