@@ -19,6 +19,9 @@ const MemberGroup = new Schema({
             },
         },
         Interact: {
+            GET: {
+                comment: { type: String, default: "group/:gr_id/post/comment/:post_id" }
+            },
             POST: {
                 like_post: {
                     type: String,
