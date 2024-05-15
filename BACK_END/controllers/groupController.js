@@ -578,7 +578,7 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        if (post.is_approved == false && post.user_id != req.user._id) {
+        if (post.is_approved == false) {
             return res.status(500).json({
                 success: false,
                 code: 10037,
@@ -672,7 +672,7 @@ exports.likePost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false && post.user_id != req.user._id) {
+        if (post.is_approved == false) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -748,7 +748,7 @@ exports.likePost = async (req, res) => {
         console.error("Lỗi:", error);
         return res.status(500).json({
             success: false,
-            code: 10041,
+            code: 10047,
             message: "Yêu thích bài viết thất bại " + error.message,
         });
     }
@@ -811,7 +811,7 @@ exports.storePost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false && post.user_id != req.user._id) {
+        if (post.is_approved == false) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -906,7 +906,7 @@ exports.commentPost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false && post.user_id != req.user._id) {
+        if (post.is_approved == false) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -1023,7 +1023,7 @@ exports.getCommentPost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false && post.user_id != req.user._id) {
+        if (post.is_approved == false) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -1093,16 +1093,6 @@ exports.getMyPosts = async (req, res) => {
         const groupId = req.params.gr_id;
         const userId = req.user._id;
         const { size } = req.query;
-        const group = await Group.findById(groupId)
-            // .select("regulation")
-            .lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         const posts = Post.find({
             group_id: groupId,
@@ -1171,7 +1161,7 @@ exports.getMyPosts = async (req, res) => {
         console.error("Lỗi:", error);
         res.status(500).json({
             success: false,
-            code: 1035,
+            code: 1046,
             message: "Xem bài viết của tôi thất bại " + error.message,
         });
     }
@@ -1181,24 +1171,6 @@ exports.leaveGroup = async (req, res) => {
     try {
         const userId = req.user._id;
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-        const is_member = group.member.some((member) =>
-            member.user_id.equals(userId)
-        );
-        if (!is_member) {
-            res.status(401).json({
-                success: false,
-                code: 10021,
-                message: "Bạn không thể thực hiện thao tác này.",
-            });
-        }
 
         await Group.findOneAndUpdate(
             { _id: groupId, "member.user_id": userId },
@@ -1224,13 +1196,6 @@ exports.createPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         if (!Array.isArray(req.files.post_img)) {
             req.files.post_img = [req.files.post_img];
@@ -1377,6 +1342,71 @@ exports.createPost = async (req, res) => {
             success: false,
             code: 10029,
             message: "Đăng bài thất bại :" + error.message,
+        });
+    }
+};
+
+exports.reportPost = async (req, res) => {
+    try {
+        if(!req.body.reason){
+            return res.status(500).json({
+                success: false,
+                code: 1004,
+                message: "Báo cáo thất bại, thiếu nội dung.",
+            });
+        }
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const group = await Group.findById(groupId);
+        const post = await Post.findById(postId)
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này",
+            });
+        }
+
+        if (post.is_approved == false) {
+            return res.status(400).json({
+                success: false,
+                code: 10039,
+                message: "Không thể thao tác với bài viết chưa được duyệt",
+            });
+        }
+
+        const currentDate = new Date();
+        const report = {
+            post_id: postId,
+            user_id: userId,
+            reason: req.body.reason,
+            create_report_time: currentDate
+        }
+
+        group.list_report.push(report)
+        await group.save()
+
+
+        return res.status(201).json({
+            success: true,
+            message: "Báo cáo thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10048,
+            message: "Báo cáo bài viết thất bại :" + error.message,
         });
     }
 };
@@ -1604,14 +1634,6 @@ exports.adminGetMembers = async (req, res) => {
             .populate("member.user_id", "first_name last_name avatar.url")
             .lean();
 
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
         const members = group.member.map((member) => member.user_id);
 
         return res.status(200).json({
@@ -1640,14 +1662,6 @@ exports.adminEditActive = async (req, res) => {
             //     "first_name last_name avatar.url"
             // )
             .lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
@@ -1697,14 +1711,6 @@ exports.adminDeleteUser = async (req, res) => {
             // )
             .lean();
 
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
         );
@@ -1746,13 +1752,6 @@ exports.adminGetAllPosts = async (req, res) => {
         const group = await Group.findById(groupId)
             // .select("regulation")
             .lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         const posts = Post.find({
             group_id: groupId,
@@ -1792,15 +1791,6 @@ exports.adminGetQueuePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const { size } = req.query;
-        const group = await Group.findById(groupId).lean();
-
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         const queue = Post.find({
             group_id: groupId,
@@ -1810,13 +1800,13 @@ exports.adminGetQueuePost = async (req, res) => {
             .select("-post_img.publicId -post_img._id")
             .populate("user_id", "first_name last_name avatar.url");
 
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
+        const apiFeatures = new PostAPIFeatures(queue, req.query);
 
         let allPosts = await apiFeatures.query;
         const totals = allPosts.length;
 
         const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
+            Post.find(queue),
             req.query
         ).pagination(size);
 
@@ -1832,7 +1822,51 @@ exports.adminGetQueuePost = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10030,
-            message: "Admin lấy danh sách bài viết cần duyệt :" + error.message,
+            message: "Admin lấy danh sách bài viết cần duyệt thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminGetListReport = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const { size } = req.query;
+        const group = await Group.findById(groupId)
+                                .populate({
+                                    path: 'list_report.user_id',
+                                    select: 'first_name last_name avatar.url'
+                                })
+                                .populate({
+                                    path: 'list_report.post_id',
+                                    populate: {
+                                        path: 'user_id',
+                                        select: 'first_name last_name avatar.url'
+                                    },
+                                    select: 'post_description post_img.url user_id'
+                                })
+                                .lean();
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
+        const list_report = group.list_report
+
+        return res.status(200).json({
+            success: true,
+            // totals,
+            list_report,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10049,
+            message: "Admin lấy danh sách báo cáo bài viết thất bại :" + error.message,
         });
     }
 };
@@ -1842,13 +1876,6 @@ exports.adminApprovePost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
 
         const post = await Post.findById(postId).lean();
         if (!post) {
@@ -1900,14 +1927,8 @@ exports.adminDeletePost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
+        const group = await Group.findById(groupId);
+
         if (!post) {
             return res.status(404).json({
                 success: false,
@@ -1929,6 +1950,18 @@ exports.adminDeletePost = async (req, res) => {
                 message: "Bạn không thể xóa bài viết của super admin.",
             });
         }
+
+        check_report = group.list_report.some((report) =>
+            report.post_id.equals(postId)
+        );
+
+        report = group.list_report
+
+        if(check_report){
+            group.list_report.pull({ post_id: postId });
+            await group.save()
+        }
+
         if (post.post_img.publicId) {
             await cloudinary.uploader.destroy(post.post_img.publicId);
         }
@@ -2080,14 +2113,8 @@ exports.SuperAdminDeletePost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId).lean();
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
+        const group = await Group.findById(groupId);
+
         if (!post) {
             return res.status(404).json({
                 success: false,
@@ -2102,6 +2129,18 @@ exports.SuperAdminDeletePost = async (req, res) => {
                 message: "Bài viết không phải của nhóm này",
             });
         }
+
+        check_report = group.list_report.some((report) =>
+            report.post_id.equals(postId)
+        );
+
+        report = group.list_report
+
+        if(check_report){
+            group.list_report.pull({ post_id: postId });
+            await group.save()
+        }
+
         if (post.post_img.publicId) {
             await cloudinary.uploader.destroy(post.post_img.publicId);
         }
@@ -2246,4 +2285,4 @@ exports.getGroupSuperAdmin = async (req, res) => {
     }
 };
 
-//10035
+//100

@@ -226,6 +226,10 @@ const Group = new Schema({
             reason: {
                 type: String,
             },
+            create_report_time: {
+                type: Date,
+                required: true,
+            },
         },
     ],
     queue_posts: [

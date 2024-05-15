@@ -32,14 +32,16 @@ const {
     likePost,
     storePost,
     commentPost,
-    getCommentPost
+    getCommentPost,
+    reportPost,
+    adminGetListReport,
 } = require('../controllers/groupController.js');
 
 const {
     verifyToken,
     isUser,
 } = require('../middlewares/authMiddleware.js');
-const { isAdminGroup, isSuperAdminGroup } = require('../middlewares/groupMiddleware.js');
+const { isAdminGroup, isSuperAdminGroup, isJoinGroup, isMemberGroup } = require('../middlewares/groupMiddleware.js');
 
 // All
 router.post('/create', verifyToken, isUser, create);
@@ -56,10 +58,11 @@ router.post('/:gr_id/post/comment/:post_id', verifyToken, isUser, commentPost);
 router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost);
 
 // Member, Ad, Super
-router.get('/:gr_id/my-posts', verifyToken, isUser, getMyPosts);
+router.get('/:gr_id/my-posts', verifyToken, isUser, isJoinGroup, getMyPosts);
 
-router.post('/:gr_id/member/leave', verifyToken, isUser, leaveGroup);
-router.post('/:gr_id/member/post/create', verifyToken, isUser, createPost);
+router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberGroup, leaveGroup);
+router.post('/:gr_id/member/post/create', verifyToken, isUser, isMemberGroup, createPost);
+router.post('/:gr_id/member/report/post/:post_id', verifyToken, isUser, isMemberGroup, reportPost);
 
 router.post('/:gr_id/admin/invite-user/:user_id', verifyToken, isUser, isAdminGroup, inviteUser);
 router.get('/:gr_id/admin/request-join', verifyToken, isUser, isAdminGroup, adminGetRequestJoin);
@@ -71,11 +74,12 @@ router.delete('/:gr_id/admin/delete-member/:user_id', verifyToken, isUser, isAdm
 
 router.get('/:gr_id/admin/posts', verifyToken, isUser, isAdminGroup, adminGetAllPosts);
 router.get('/:gr_id/admin/posts/queue', verifyToken, isUser, isAdminGroup, adminGetQueuePost);
+router.get('/:gr_id/admin/posts/report', verifyToken, isUser, isAdminGroup, adminGetListReport);
 router.post('/:gr_id/admin/posts/approve/:post_id', verifyToken, isUser, isAdminGroup, adminApprovePost);
 router.delete('/:gr_id/admin/posts/:post_id', verifyToken, isUser, isAdminGroup, adminDeletePost);
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
-router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isAdminGroup, SuperAdminDeletePost);
+router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isSuperAdminGroup, SuperAdminDeletePost);
 
 router.get('/all', verifyToken, isUser, getGroup);
 router.get('/admin', verifyToken, isUser, getGroupAdmin);
