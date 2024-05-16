@@ -1473,6 +1473,48 @@ exports.reportPost = async (req, res) => {
     }
 };
 
+exports.getWaitApprovePosts = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.user._id;
+        const { size } = req.query;
+
+        const posts = Post.find({
+            group_id: groupId,
+            user_id: userId,
+            is_approved: false,
+        })
+            .sort({ create_post_time: -1 })
+            .select("-post_img.publicId -post_img._id")
+            .populate("user_id", "first_name last_name avatar.url");
+
+        const apiFeatures = new PostAPIFeatures(posts, req.query);
+
+        let allPosts = await apiFeatures.query;
+        const totals = allPosts.length;
+
+        const apiFeaturesPagination = new PostAPIFeatures(
+            Post.find(posts),
+            req.query
+        ).pagination(size);
+
+        allPosts = await apiFeaturesPagination.query;
+
+        return res.status(200).json({
+            success: true,
+            totals,
+            posts: allPosts,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10062,
+            message: "Lấy bài viết chờ duyệt thất bại :" + error.message,
+        });
+    }
+};
+
 exports.inviteUser = async (req, res) => {
     try {
         const userId = req.params.user_id;

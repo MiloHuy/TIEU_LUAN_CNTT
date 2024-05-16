@@ -36,6 +36,7 @@ const {
     reportPost,
     adminGetListReport,
     memberDeletePost,
+    getWaitApprovePosts,
 } = require('../controllers/groupController.js');
 
 const {
@@ -65,6 +66,7 @@ router.delete('/:gr_id/member/post/:post_id', verifyToken, isUser, isJoinGroup, 
 router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberGroup, leaveGroup);
 router.post('/:gr_id/member/post/create', verifyToken, isUser, isMemberGroup, createPost);
 router.post('/:gr_id/member/report/post/:post_id', verifyToken, isUser, isMemberGroup, reportPost);
+router.get('/:gr_id/member/post-wait-approve', verifyToken, isUser, isMemberGroup, getWaitApprovePosts);
 
 router.post('/:gr_id/admin/invite-user/:user_id', verifyToken, isUser, isAdminGroup, inviteUser);
 router.get('/:gr_id/admin/request-join', verifyToken, isUser, isAdminGroup, adminGetRequestJoin);

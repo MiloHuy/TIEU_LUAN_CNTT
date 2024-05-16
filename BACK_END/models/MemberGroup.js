@@ -77,7 +77,7 @@ const MemberGroup = new Schema({
             DELETE: {
                 post: {
                     type: String,
-                    default: "group/:gr_id/member/post_wait_approve/:post_id",
+                    default: "group/:gr_id/member/post/:post_id",
                 }, 
             },
         },
