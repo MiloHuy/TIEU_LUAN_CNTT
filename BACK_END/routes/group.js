@@ -38,6 +38,10 @@ const {
     memberDeletePost,
     getWaitApprovePosts,
     puttWaitApprovePosts,
+    adminGetStatisticMember,
+    adminGetStatisticPost,
+    adminGetStatisticComment,
+    adminGetStatisticLike,
 } = require('../controllers/groupController.js');
 
 const {
@@ -83,6 +87,11 @@ router.get('/:gr_id/admin/posts/queue', verifyToken, isUser, isAdminGroup, admin
 router.get('/:gr_id/admin/posts/report', verifyToken, isUser, isAdminGroup, adminGetListReport);
 router.post('/:gr_id/admin/posts/approve/:post_id', verifyToken, isUser, isAdminGroup, adminApprovePost);
 router.delete('/:gr_id/admin/posts/:post_id', verifyToken, isUser, isAdminGroup, adminDeletePost);
+
+router.get('/:gr_id/admin/statistic/members', verifyToken, isUser, isAdminGroup, adminGetStatisticMember);
+router.get('/:gr_id/admin/statistic/posts', verifyToken, isUser, isAdminGroup, adminGetStatisticPost);
+router.get('/:gr_id/admin/statistic/comments', verifyToken, isUser, isAdminGroup, adminGetStatisticComment);
+router.get('/:gr_id/admin/statistic/likes', verifyToken, isUser, isAdminGroup, adminGetStatisticLike);
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isSuperAdminGroup, SuperAdminDeletePost);

@@ -2253,6 +2253,99 @@ exports.adminDeletePost = async (req, res) => {
     }
 };
 
+exports.adminGetStatisticMember = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+        const count_members = group.member.length
+        return res.status(201).json({
+            success: true,
+            count_members
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10065,
+            message: "Thống kê thành viên thất bại : " + error.message,
+        });
+    }
+};
+
+exports.adminGetStatisticPost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const posts = await Post.find({
+            group_id: groupId,
+            is_approved: true,
+        })
+        const count_posts = posts.length
+        return res.status(201).json({
+            success: true,
+            count_posts
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10066,
+            message: "Thống kê bài viết thất bại : " + error.message,
+        });
+    }
+};
+
+exports.adminGetStatisticComment = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const posts = await Post.find({
+            group_id: groupId,
+            is_approved: true,
+        })
+        const posts_id = posts
+        .map((post) => post._id)
+        .flat();
+        const comments = await Comment.find({post_id:{ $in: posts_id }})
+        const count_comments = comments.length
+        return res.status(201).json({
+            success: true,
+            count_comments
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10067,
+            message: "Thống kê bài viết thất bại : " + error.message,
+        });
+    }
+};
+
+exports.adminGetStatisticLike = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const posts = await Post.find({
+            group_id: groupId,
+            is_approved: true,
+        })
+        const posts_id = posts
+        .map((post) => post._id)
+        .flat();
+        const like = await Post_liked.find({post_id:{ $in: posts_id }})
+        const count_likes = like.reduce((total, likeItem) => {
+            return total + likeItem.user_id.length;
+        }, 0);
+        return res.status(201).json({
+            success: true,
+            count_likes
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10068,
+            message: "Thống kê bài viết thất bại : " + error.message,
+        });
+    }
+};
+
+
+
 exports.addAdmin = async (req, res) => {
     try {
         const adminId = req.params.user_id;
@@ -2289,9 +2382,6 @@ exports.addAdmin = async (req, res) => {
         group.admin.push(new_admin);
 
         await group.save();
-
-        // const groupId = "6616a444d100cbd360747a45";
-        // const userIdToUpdate = "65571ebee20722647b9fc8cf";
 
         // const group = await Group.findById(groupId);
 
@@ -2521,4 +2611,4 @@ exports.getGroupSuperAdmin = async (req, res) => {
     }
 };
 
-//100
+//10065
