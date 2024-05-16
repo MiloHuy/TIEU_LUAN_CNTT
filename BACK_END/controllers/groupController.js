@@ -1515,6 +1515,134 @@ exports.getWaitApprovePosts = async (req, res) => {
     }
 };
 
+exports.puttWaitApprovePosts = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+        const group = await Group.findById(groupId);
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2022,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này.",
+            });
+        }
+        const is_author = post.user_id.equals(userId);
+        if (!is_author) {
+            return res.status(400).json({
+                success: false,
+                code: 10064,
+                message: "Không thể thao tác với bài viết của người khác.",
+            });
+        }
+
+
+        if (!req.files) {
+            return res.status(400).json({
+                success: false,
+                code: 2003,
+                message:
+                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+            });
+        }
+
+        if (!Array.isArray(req.files.post_img)) {
+            req.files.post_img = [req.files.post_img];
+        }
+        
+        if (post.post_img && post.post_img.length > 0) {
+            await Promise.all(
+                post.post_img.map(async (image) => {
+                    if (image.publicId) {
+                        await cloudinary.uploader.destroy(image.publicId);
+                    }
+                })
+            );
+        }
+
+        const postImages = [];
+
+        for (const file of req.files.post_img) {
+            const fileExtension = path.extname(file.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(
+                (format) => `.${format}`
+            );
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2004,
+                    message:
+                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                });
+            }
+
+            const fileSize = file.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2005,
+                    message:
+                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                });
+            }
+
+            const result = await new Promise((resolve) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        { resource_type: "auto", folder: "post_imgs" },
+                        (error, uploadResult) => {
+                            if (error) {
+                                console.log(error);
+                                return res.status(400).json({
+                                    success: false,
+                                    code: 2024,
+                                    message: "Lỗi lưu ảnh lên cloundinary.",
+                                });
+                            }
+                            return resolve(uploadResult);
+                        }
+                    )
+                    .end(file.data);
+            });
+
+            postImages.push({
+                publicId: result.public_id,
+                url: result.secure_url,
+            });
+        }
+
+        const description = req.body.post_description;
+
+        await Post.updateOne(
+            { _id: postId },
+            { $set: { post_description: description, post_img: postImages } }
+        );
+        return res.status(201).json({
+            success: true,
+            message: "Cập nhật bài viết thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10063,
+            message: "Chỉnh sửa bài viết chờ duyệt thất bại :" + error.message,
+        });
+    }
+}
+
+
 exports.inviteUser = async (req, res) => {
     try {
         const userId = req.params.user_id;
