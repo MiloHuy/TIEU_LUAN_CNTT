@@ -35,6 +35,7 @@ const {
     getCommentPost,
     reportPost,
     adminGetListReport,
+    memberDeletePost,
 } = require('../controllers/groupController.js');
 
 const {
@@ -59,6 +60,7 @@ router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost)
 
 // Member, Ad, Super
 router.get('/:gr_id/my-posts', verifyToken, isUser, isJoinGroup, getMyPosts);
+router.delete('/:gr_id/member/post/:post_id', verifyToken, isUser, isJoinGroup, memberDeletePost);
 
 router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberGroup, leaveGroup);
 router.post('/:gr_id/member/post/create', verifyToken, isUser, isMemberGroup, createPost);

@@ -94,7 +94,6 @@ const isMemberGroup = async (req, res, next) => {
     const is_member = group.member.some((member) =>
         member.user_id.equals(userId)
     );
-
     if (!is_member) {
         return res.status(400).json({
             success: false,

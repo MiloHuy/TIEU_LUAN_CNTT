@@ -574,7 +574,7 @@ exports.getPost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -646,7 +646,7 @@ exports.likePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -785,7 +785,7 @@ exports.storePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -880,7 +880,7 @@ exports.commentPost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -955,7 +955,6 @@ exports.commentPost = async (req, res) => {
             message: "Comment thành công.",
             comment,
         });
-
     } catch (error) {
         console.error("Lỗi:", error);
         return res.status(500).json({
@@ -997,7 +996,7 @@ exports.getCommentPost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -1077,7 +1076,6 @@ exports.getCommentPost = async (req, res) => {
             success: true,
             comments: commentsAfferCountLike,
         });
-
     } catch (error) {
         console.error("Lỗi:", error);
         return res.status(500).json({
@@ -1163,6 +1161,71 @@ exports.getMyPosts = async (req, res) => {
             success: false,
             code: 1046,
             message: "Xem bài viết của tôi thất bại " + error.message,
+        });
+    }
+};
+
+exports.memberDeletePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const postId = req.params.post_id;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+        const group = await Group.findById(groupId);
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2022,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+        if (post.privacy != 3 && post.group_id != groupId) {
+            return res.status(400).json({
+                success: false,
+                code: 10032,
+                message: "Bài viết không phải của nhóm này.",
+            });
+        }
+        const is_author = post.user_id.equals(userId);
+        if (!is_author) {
+            return res.status(400).json({
+                success: false,
+                code: 10061,
+                message: "Không thể xóa bài viết của người khác.",
+            });
+        }
+
+        const is_member = group.member.some((member) =>
+            member.user_id.equals(userId)
+        );
+        if (is_member) {
+            check_report = group.list_report.some((report) =>
+                report.post_id.equals(postId)
+            );
+
+            report = group.list_report;
+
+            if (check_report) {
+                group.list_report.pull({ post_id: postId });
+                await group.save();
+            }
+        }
+
+        if (post.post_img.publicId) {
+            await cloudinary.uploader.destroy(post.post_img.publicId);
+        }
+        await Post.deleteOne({ _id: postId });
+        return res.status(201).json({
+            success: true,
+            message: "Xóa bài viết thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10060,
+            message: "Xoá bài viết thất bại :" + error.message,
         });
     }
 };
@@ -1348,7 +1411,7 @@ exports.createPost = async (req, res) => {
 
 exports.reportPost = async (req, res) => {
     try {
-        if(!req.body.reason){
+        if (!req.body.reason) {
             return res.status(500).json({
                 success: false,
                 code: 1004,
@@ -1359,7 +1422,7 @@ exports.reportPost = async (req, res) => {
         const postId = req.params.post_id;
         const userId = req.user._id;
         const group = await Group.findById(groupId);
-        const post = await Post.findById(postId)
+        const post = await Post.findById(postId);
 
         if (!post) {
             return res.status(404).json({
@@ -1373,7 +1436,7 @@ exports.reportPost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -1390,12 +1453,11 @@ exports.reportPost = async (req, res) => {
             post_id: postId,
             user_id: userId,
             reason: req.body.reason,
-            create_report_time: currentDate
-        }
+            create_report_time: currentDate,
+        };
 
-        group.list_report.push(report)
-        await group.save()
-
+        group.list_report.push(report);
+        await group.save();
 
         return res.status(201).json({
             success: true,
@@ -1822,7 +1884,9 @@ exports.adminGetQueuePost = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10030,
-            message: "Admin lấy danh sách bài viết cần duyệt thất bại :" + error.message,
+            message:
+                "Admin lấy danh sách bài viết cần duyệt thất bại :" +
+                error.message,
         });
     }
 };
@@ -1832,19 +1896,19 @@ exports.adminGetListReport = async (req, res) => {
         const groupId = req.params.gr_id;
         const { size } = req.query;
         const group = await Group.findById(groupId)
-                                .populate({
-                                    path: 'list_report.user_id',
-                                    select: 'first_name last_name avatar.url'
-                                })
-                                .populate({
-                                    path: 'list_report.post_id',
-                                    populate: {
-                                        path: 'user_id',
-                                        select: 'first_name last_name avatar.url'
-                                    },
-                                    select: 'post_description post_img.url user_id'
-                                })
-                                .lean();
+            .populate({
+                path: "list_report.user_id",
+                select: "first_name last_name avatar.url",
+            })
+            .populate({
+                path: "list_report.post_id",
+                populate: {
+                    path: "user_id",
+                    select: "first_name last_name avatar.url",
+                },
+                select: "post_description post_img.url user_id",
+            })
+            .lean();
 
         if (!group) {
             return res.status(404).json({
@@ -1854,7 +1918,7 @@ exports.adminGetListReport = async (req, res) => {
             });
         }
 
-        const list_report = group.list_report
+        const list_report = group.list_report;
 
         return res.status(200).json({
             success: true,
@@ -1866,7 +1930,9 @@ exports.adminGetListReport = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10049,
-            message: "Admin lấy danh sách báo cáo bài viết thất bại :" + error.message,
+            message:
+                "Admin lấy danh sách báo cáo bài viết thất bại :" +
+                error.message,
         });
     }
 };
@@ -1890,7 +1956,7 @@ exports.adminApprovePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -1940,7 +2006,7 @@ exports.adminDeletePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
         if (post.user_id.equals(group.super_admin)) {
@@ -1955,11 +2021,11 @@ exports.adminDeletePost = async (req, res) => {
             report.post_id.equals(postId)
         );
 
-        report = group.list_report
+        report = group.list_report;
 
-        if(check_report){
+        if (check_report) {
             group.list_report.pull({ post_id: postId });
-            await group.save()
+            await group.save();
         }
 
         if (post.post_img.publicId) {
@@ -2126,7 +2192,7 @@ exports.SuperAdminDeletePost = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 10032,
-                message: "Bài viết không phải của nhóm này",
+                message: "Bài viết không phải của nhóm này.",
             });
         }
 
@@ -2134,11 +2200,11 @@ exports.SuperAdminDeletePost = async (req, res) => {
             report.post_id.equals(postId)
         );
 
-        report = group.list_report
+        report = group.list_report;
 
-        if(check_report){
+        if (check_report) {
             group.list_report.pull({ post_id: postId });
-            await group.save()
+            await group.save();
         }
 
         if (post.post_img.publicId) {
