@@ -1886,15 +1886,24 @@ exports.adminEditActive = async (req, res) => {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
         const group = await Group.findById(groupId)
-            // .select("member.user_id")
-            // .populate(
-            //     "member.user_id",
-            //     "first_name last_name avatar.url"
-            // )
+            .select("member.user_id member.is_active admin")
+            .populate("member.user_id", "first_name last_name avatar.url")
             .lean();
 
+        const admin = group.admin.find(
+            (admin) => admin.user_id.toString() === userId
+        );
+
+        if (admin) {
+            return res.status(404).json({
+                success: false,
+                code: 10021,
+                message: "Không thể thao tác. Người này cũng là admin",
+            });
+        }
+
         const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
+            (member) => member.user_id._id.toString() === userId
         );
 
         if (!is_member) {
@@ -1913,11 +1922,13 @@ exports.adminEditActive = async (req, res) => {
             { new: true }
         );
 
-        const new_list = updatedGroup.member;
+        const new_member = group.member.find(
+            (member) => member.user_id._id.toString() === userId
+        );
 
         return res.status(200).json({
             success: true,
-            members: new_list,
+            member: new_member,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2459,7 +2470,6 @@ exports.superEditActiveAdmin = async (req, res) => {
             .populate("admin.user_id", "first_name last_name avatar.url")
             .lean();
 
-            
         const admin = group.admin.find(
             (admin) => admin.user_id._id.toString() === userId
         );
@@ -2486,7 +2496,7 @@ exports.superEditActiveAdmin = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            admin : new_admin,
+            admin: new_admin,
         });
     } catch (error) {
         console.error("Lỗi:", error);
