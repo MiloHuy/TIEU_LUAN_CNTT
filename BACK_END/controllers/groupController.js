@@ -1974,7 +1974,7 @@ exports.adminDeleteUser = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Admin delete thành công.",
+            message: "Admin xóa thành công.",
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2504,6 +2504,46 @@ exports.superEditActiveAdmin = async (req, res) => {
             success: false,
             code: 10070,
             message: "Super admin vô hiệu/kích hoạt thất bại :" + error.message,
+        });
+    }
+};
+
+exports.superAdminDeleteAdmin = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.params.user_id;
+        const group = await Group.findById(groupId).lean();
+
+        const admin = group.admin.find(
+            (admin) => admin.user_id._id.toString() === userId
+        );
+
+        if (!admin) {
+            return res.status(404).json({
+                success: false,
+                code: 10071,
+                message: "Người này không phải admin của nhóm",
+            });
+        }
+
+        const updatedGroup = await Group.findOneAndUpdate(
+            { _id: groupId },
+            { $pull: { admin: { user_id: userId } } },
+            { new: true }
+        );
+
+        // const new_list = updatedGroup.member
+
+        return res.status(200).json({
+            success: true,
+            message: "Super admin xóa admin thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10072,
+            message: "Super admin xóa admin thất bại :" + error.message,
         });
     }
 };
