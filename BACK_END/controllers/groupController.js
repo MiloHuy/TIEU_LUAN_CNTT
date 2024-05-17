@@ -1546,7 +1546,6 @@ exports.puttWaitApprovePosts = async (req, res) => {
             });
         }
 
-
         if (!req.files) {
             return res.status(400).json({
                 success: false,
@@ -1559,7 +1558,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
         if (!Array.isArray(req.files.post_img)) {
             req.files.post_img = [req.files.post_img];
         }
-        
+
         if (post.post_img && post.post_img.length > 0) {
             await Promise.all(
                 post.post_img.map(async (image) => {
@@ -1640,8 +1639,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
             message: "Chỉnh sửa bài viết chờ duyệt thất bại :" + error.message,
         });
     }
-}
-
+};
 
 exports.inviteUser = async (req, res) => {
     try {
@@ -1907,11 +1905,11 @@ exports.adminEditActive = async (req, res) => {
             });
         }
 
-        new_status = is_member.is_active;
+        new_status = !is_member.is_active;
 
         const updatedGroup = await Group.findOneAndUpdate(
             { _id: groupId, "member.user_id": userId },
-            { $set: { "member.$.is_active": !new_status } },
+            { $set: { "member.$.is_active": new_status } },
             { new: true }
         );
 
@@ -2257,10 +2255,10 @@ exports.adminGetStatisticMember = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId);
-        const count_members = group.member.length
+        const count_members = group.member.length;
         return res.status(201).json({
             success: true,
-            count_members
+            count_members,
         });
     } catch (error) {
         res.status(500).json({
@@ -2277,11 +2275,11 @@ exports.adminGetStatisticPost = async (req, res) => {
         const posts = await Post.find({
             group_id: groupId,
             is_approved: true,
-        })
-        const count_posts = posts.length
+        });
+        const count_posts = posts.length;
         return res.status(201).json({
             success: true,
-            count_posts
+            count_posts,
         });
     } catch (error) {
         res.status(500).json({
@@ -2298,15 +2296,13 @@ exports.adminGetStatisticComment = async (req, res) => {
         const posts = await Post.find({
             group_id: groupId,
             is_approved: true,
-        })
-        const posts_id = posts
-        .map((post) => post._id)
-        .flat();
-        const comments = await Comment.find({post_id:{ $in: posts_id }})
-        const count_comments = comments.length
+        });
+        const posts_id = posts.map((post) => post._id).flat();
+        const comments = await Comment.find({ post_id: { $in: posts_id } });
+        const count_comments = comments.length;
         return res.status(201).json({
             success: true,
-            count_comments
+            count_comments,
         });
     } catch (error) {
         res.status(500).json({
@@ -2323,17 +2319,15 @@ exports.adminGetStatisticLike = async (req, res) => {
         const posts = await Post.find({
             group_id: groupId,
             is_approved: true,
-        })
-        const posts_id = posts
-        .map((post) => post._id)
-        .flat();
-        const like = await Post_liked.find({post_id:{ $in: posts_id }})
+        });
+        const posts_id = posts.map((post) => post._id).flat();
+        const like = await Post_liked.find({ post_id: { $in: posts_id } });
         const count_likes = like.reduce((total, likeItem) => {
             return total + likeItem.user_id.length;
         }, 0);
         return res.status(201).json({
             success: true,
-            count_likes
+            count_likes,
         });
     } catch (error) {
         res.status(500).json({
@@ -2343,8 +2337,6 @@ exports.adminGetStatisticLike = async (req, res) => {
         });
     }
 };
-
-
 
 exports.addAdmin = async (req, res) => {
     try {
@@ -2430,6 +2422,78 @@ exports.addAdmin = async (req, res) => {
             success: false,
             code: 10009,
             message: "Thêm admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.getAdmin = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+            .select("admin")
+            .populate("admin.user_id", "first_name last_name avatar.url")
+            .lean();
+
+        // const members = group.member.map((member) => member.user_id);
+
+        return res.status(200).json({
+            success: true,
+            group,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10069,
+            message: "Lấy danh sách admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.superEditActiveAdmin = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const userId = req.params.user_id;
+        const group = await Group.findById(groupId)
+            .select("admin.user_id admin.is_active")
+            .populate("admin.user_id", "first_name last_name avatar.url")
+            .lean();
+
+            
+        const admin = group.admin.find(
+            (admin) => admin.user_id._id.toString() === userId
+        );
+
+        if (!admin) {
+            return res.status(404).json({
+                success: false,
+                code: 10071,
+                message: "Người này không phải admin của nhóm",
+            });
+        }
+
+        new_status = !admin.is_active;
+
+        const updatedGroup = await Group.findOneAndUpdate(
+            { _id: groupId, "admin.user_id": userId },
+            { $set: { "admin.$.is_active": new_status } },
+            { new: true }
+        );
+
+        const new_admin = group.admin.find(
+            (admin) => admin.user_id._id.toString() === userId
+        );
+
+        return res.status(200).json({
+            success: true,
+            admin : new_admin,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10070,
+            message: "Super admin vô hiệu/kích hoạt thất bại :" + error.message,
         });
     }
 };
@@ -2611,4 +2675,4 @@ exports.getGroupSuperAdmin = async (req, res) => {
     }
 };
 
-//10065
+//100
