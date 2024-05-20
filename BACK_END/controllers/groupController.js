@@ -234,8 +234,8 @@ exports.getRolePermission = async (req, res) => {
                 })
                     .select("-_id -__v")
                     .lean();
-                role_permisson.permission.See.GET.posts = undefined;
-                role_permisson.permission.See.GET.post = undefined;
+                role_permisson.permission.Post = undefined;
+                role_permisson.permission.Interact = undefined;
                 check_request = group.request_join.some((request) =>
                     request.user_id.equals(req.user._id)
                 );
