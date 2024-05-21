@@ -86,9 +86,11 @@ const SuperAdminGroup = new Schema({
             },
             GET: {
                 admin: { type: String, default: 'group/:gr_id/super-admin/admins' },
+                search: { type: String, default: 'group/:gr_id/super-admin/admins/search' },
             },
             PUT: {
                 edit_active: { type: String, default: 'group/:gr_id/super-admin/edit-active/:user_id' },
+                edit_permission: { type: String, default: 'group/:gr_id/super-admin/edit-permission/:user_id' },
             },
             DELETE: {
                 delete_admin: { type: String, default: 'group/:gr_id/super-admin/delete-admin/:user_id' }

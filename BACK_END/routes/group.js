@@ -45,6 +45,8 @@ const {
     getAdmin,
     superEditActiveAdmin,
     superAdminDeleteAdmin,
+    superEditPermissionAdmin,
+    searchAdmin,
 } = require('../controllers/groupController.js');
 
 const {
@@ -98,7 +100,9 @@ router.get('/:gr_id/admin/statistic/likes', verifyToken, isUser, isAdminGroup, a
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 router.get('/:gr_id/super-admin/admins', verifyToken, isUser, isSuperAdminGroup, getAdmin);
+router.get('/:gr_id/super-admin/admins/search', verifyToken, isUser, isSuperAdminGroup, searchAdmin);
 router.put('/:gr_id/super-admin/edit-active/:user_id', verifyToken, isUser, isSuperAdminGroup, superEditActiveAdmin);
+router.put('/:gr_id/super-admin/edit-permission/:user_id', verifyToken, isUser, isSuperAdminGroup, superEditPermissionAdmin);
 router.delete('/:gr_id/super-admin/delete-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, superAdminDeleteAdmin);
 
 router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isSuperAdminGroup, SuperAdminDeletePost);
