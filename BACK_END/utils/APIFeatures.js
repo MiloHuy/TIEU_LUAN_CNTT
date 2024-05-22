@@ -51,6 +51,23 @@ class PostAPIFeatures {
     }
 }
 
+class AdminGroupAPIFeatures {
+    constructor(query, queryStr) {
+        this.query = query;
+        this.queryStr = queryStr;
+    }
+
+    pagination(size) {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const limit = Number(size) || 10;
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = currentPage * limit;
+
+        this.query = this.query.slice(startIndex, endIndex);
+        return this;
+    }
+}
+
 function extractSortQuery(sortField) {
     const [field, order] = sortField.split(',');
     if (field && order) {
@@ -61,5 +78,6 @@ function extractSortQuery(sortField) {
 
 module.exports = {
     UserAPIFeatures,
-    PostAPIFeatures
+    PostAPIFeatures,
+    AdminGroupAPIFeatures,
 }

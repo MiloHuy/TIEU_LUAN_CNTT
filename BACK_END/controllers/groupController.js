@@ -9,7 +9,11 @@ const MemberGroup = require("../models/MemberGroup");
 const { group, log } = require("console");
 const User = require("../models/User");
 const Post = require("../models/Post");
-const { PostAPIFeatures } = require("../utils/APIFeatures");
+const {
+    PostAPIFeatures,
+    AdminGroupAPIFeatures,
+    UserAPIFeatures,
+} = require("../utils/APIFeatures");
 const Post_liked = require("../models/Post_liked");
 const Post_stored = require("../models/Post_stored");
 const Notification = require("../models/Notification");
@@ -234,8 +238,8 @@ exports.getRolePermission = async (req, res) => {
                 })
                     .select("-_id -__v")
                     .lean();
-                role_permisson.permission.See.GET.posts = undefined;
-                role_permisson.permission.See.GET.post = undefined;
+                role_permisson.permission.Post = undefined;
+                role_permisson.permission.Interact = undefined;
                 check_request = group.request_join.some((request) =>
                     request.user_id.equals(req.user._id)
                 );
@@ -1859,16 +1863,68 @@ exports.adminRefuseRequest = async (req, res) => {
 exports.adminGetMembers = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const { size } = req.query;
         const group = await Group.findById(groupId)
-            .select("member.user_id")
-            .populate("member.user_id", "first_name last_name avatar.url")
+            .select("member")
+            .populate(
+                "member.user_id",
+                "first_name last_name avatar.url department"
+            )
             .lean();
 
-        const members = group.member.map((member) => member.user_id);
+        const members = group.member;
+
+        const membersWithPostCounts = await Promise.all(
+            members.map(async (member) => {
+                const postCount = await Post.countDocuments({
+                    user_id: member.user_id._id,
+                    group_id: groupId,
+                    is_approved: true,
+                });
+                const likeCount = await Post_liked.countDocuments({
+                    user_id: member.user_id._id,
+                });
+                const cmtCount = await Comment.countDocuments({
+                    user_id: member.user_id._id,
+                });
+                return {
+                    ...member,
+                    post_count: postCount,
+                    like_count: likeCount,
+                    cmt_count: cmtCount,
+                };
+            })
+        );
+
+        const filteredMembers = await membersWithPostCounts.map((member) => {
+            return {
+                user_id: member.user_id,
+                is_active: member.is_active,
+                post_count: member.post_count,
+                like_count: member.like_count,
+                cmt_count: member.cmt_count,
+            };
+        });
+
+        const apiFeatures = new AdminGroupAPIFeatures(
+            filteredMembers,
+            req.query
+        );
+
+        let allMember = await apiFeatures.query;
+        const totals = allMember.length;
+
+        const apiFeaturesPagination = new AdminGroupAPIFeatures(
+            filteredMembers,
+            req.query
+        ).pagination(size);
+
+        allMember = await apiFeaturesPagination.query;
 
         return res.status(200).json({
             success: true,
-            members: members,
+            totals,
+            admins: allMember,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2349,6 +2405,29 @@ exports.adminGetStatisticLike = async (req, res) => {
     }
 };
 
+exports.adminEditRegulation = async (req, res) => {
+    try {
+        SuperAdminGroup.create({
+            role: "super-admin"
+        })
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId).select('regulation');
+        const regulation = req.body.regulation;
+        group.regulation = regulation
+        await group.save();
+        return res.status(200).json({
+            success: true,
+            regulation : group.regulation
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10076,
+            message: "Thống kê bài viết thất bại : " + error.message,
+        });
+    }
+};
+
 exports.addAdmin = async (req, res) => {
     try {
         const adminId = req.params.user_id;
@@ -2440,16 +2519,68 @@ exports.addAdmin = async (req, res) => {
 exports.getAdmin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const { size } = req.query;
         const group = await Group.findById(groupId)
             .select("admin")
-            .populate("admin.user_id", "first_name last_name avatar.url")
+            .populate(
+                "admin.user_id",
+                "first_name last_name avatar.url department"
+            )
             .lean();
 
-        // const members = group.member.map((member) => member.user_id);
+        const admins = group.admin;
+
+        const adminsWithPostCounts = await Promise.all(
+            admins.map(async (admin) => {
+                const postCount = await Post.countDocuments({
+                    user_id: admin.user_id._id,
+                    group_id: groupId,
+                    is_approved: true,
+                });
+                const likeCount = await Post_liked.countDocuments({
+                    user_id: admin.user_id._id,
+                });
+                const cmtCount = await Comment.countDocuments({
+                    user_id: admin.user_id._id,
+                });
+                return {
+                    ...admin,
+                    post_count: postCount,
+                    like_count: likeCount,
+                    cmt_count: cmtCount,
+                };
+            })
+        );
+
+        const filteredAdmins = await adminsWithPostCounts.map((admin) => {
+            return {
+                user_id: admin.user_id,
+                is_active: admin.is_active,
+                post_count: admin.post_count,
+                like_count: admin.like_count,
+                cmt_count: admin.cmt_count,
+            };
+        });
+
+        const apiFeatures = new AdminGroupAPIFeatures(
+            filteredAdmins,
+            req.query
+        );
+
+        let allAdmins = await apiFeatures.query;
+        const totals = allAdmins.length;
+
+        const apiFeaturesPagination = new AdminGroupAPIFeatures(
+            filteredAdmins,
+            req.query
+        ).pagination(size);
+
+        allAdmins = await apiFeaturesPagination.query;
 
         return res.status(200).json({
             success: true,
-            group,
+            totals,
+            admins: allAdmins,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2457,6 +2588,58 @@ exports.getAdmin = async (req, res) => {
             success: false,
             code: 10069,
             message: "Lấy danh sách admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.searchAdmin = async (req, res) => {
+    try {
+        await SuperAdminGroup.create({
+            role: "super-admin",
+        });
+        const groupId = req.params.gr_id;
+        const { size } = req.query;
+        const group = await Group.findById(groupId)
+            .select("admin.user_id ")
+            // .populate("admin.user_id", "first_name last_name avatar.url")
+            .lean();
+
+        const adminIds = group.admin.map((admin) => admin.user_id).flat();
+        // return res.status(200).json({
+        //     adminIds
+        // });
+
+        const userQuery = User.find({
+            // role_id: { $ne: 0 },
+            _id: { $in: adminIds },
+        }).select("avatar.url first_name last_name department");
+
+        const apiFeatures = new UserAPIFeatures(userQuery, req.query).search();
+
+        let allUser = await apiFeatures.query;
+        const totals = allUser.length;
+
+        const apiFeaturesPagination = new UserAPIFeatures(
+            User.find(userQuery),
+            req.query
+        )
+            .search()
+            .pagination(size);
+
+        allUser = await apiFeaturesPagination.query;
+
+        return res.status(200).json({
+            success: true,
+            totals,
+            allUser,
+            // userQuery,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10075,
+            message: "Tìm kiếm thất bại:" + error.message,
         });
     }
 };
@@ -2504,6 +2687,74 @@ exports.superEditActiveAdmin = async (req, res) => {
             success: false,
             code: 10070,
             message: "Super admin vô hiệu/kích hoạt thất bại :" + error.message,
+        });
+    }
+};
+
+exports.superEditPermissionAdmin = async (req, res) => {
+    try {
+        const adminId = req.params.user_id;
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId);
+        const check_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === adminId
+        );
+
+        if (!check_admin) {
+            return res.status(401).json({
+                success: false,
+                code: 10074,
+                message: "Người này không phải admin.",
+            });
+        }
+
+        const admin = await AdminGroup.findOne({ role: "admin" });
+
+        const permissions = req.body.permission;
+
+        const permissionValues = {
+            Manage_member: undefined,
+            Manage_post: undefined,
+            Manage_interact: undefined,
+            Manage_regulation: undefined,
+        };
+
+        permissions.forEach((permission) => {
+            if (permission in permissionValues) {
+                permissionValues[permission] = admin.permission[permission];
+            }
+        });
+
+        check_admin.role_permisson.permission.Manage_member =
+            permissionValues.Manage_member;
+        check_admin.role_permisson.permission.Manage_post =
+            permissionValues.Manage_post;
+        check_admin.role_permisson.permission.Manage_interact =
+            permissionValues.Manage_interact;
+        check_admin.role_permisson.permission.Manage_regulation =
+            permissionValues.Manage_regulation;
+
+        await group.save();
+
+        const managePermissions = {};
+        for (const [key, value] of Object.entries(
+            check_admin.role_permisson.permission
+        )) {
+            if (key.startsWith("Manage")) {
+                managePermissions[key] = value;
+            }
+        }
+
+        return res.status(200).json({
+            success: true,
+            admin: managePermissions,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10073,
+            message: "Super admin edit quyền thất bại :" + error.message,
         });
     }
 };

@@ -86,30 +86,34 @@ const SuperAdminGroup = new Schema({
             },
             GET: {
                 admin: { type: String, default: 'group/:gr_id/super-admin/admins' },
+                search: { type: String, default: 'group/:gr_id/super-admin/admins/search' },
             },
             PUT: {
                 edit_active: { type: String, default: 'group/:gr_id/super-admin/edit-active/:user_id' },
+                edit_permission: { type: String, default: 'group/:gr_id/super-admin/edit-permission/:user_id' },
             },
             DELETE: {
                 delete_admin: { type: String, default: 'group/:gr_id/super-admin/delete-admin/:user_id' }
             }
         },
         Manage_regulation: {
-            POST: {
-                create_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/create' },
-            },
             PUT: {
-                edit_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/:regulation_id' },
-            },
-            DELETE: {
-                delete_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/:regulation_id' },
+                edit_regulation: { type: String, default: 'group/:gr_id/admin/regulation' },
             }
         },
-        Avatar:{
+        Edit:{
+            POST:{
+                avatar: { type: String, default: 'group/:gr_id/super-admin/avatar' },
+            },
             PUT:{
-                change: { type: String, default: 'group/:gr_id/super-admin/avatar' },
+                setting: { type: String, default: 'group/:gr_id/super-admin/setting' },
             }
-        }
+        },
+        Leave_Group: {
+            POST: {
+                leave_group: { type: String, default: "group/:gr_id/super-admin/leave" }, 
+            }
+        },
     }
 });
 
