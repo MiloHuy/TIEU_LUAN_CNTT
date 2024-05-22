@@ -15,7 +15,6 @@ export const useAllGroup = () => {
       setIsLoading(true);
     } catch (error) {
       setIsLoading(true);
-      console.error("Failed to fetch all group v2: ", error);
       errorHandler(error);
     }
   }, []);

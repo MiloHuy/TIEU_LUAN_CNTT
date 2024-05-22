@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Button } from "components/button";
 import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
 import { RadioGroup, RadioGroupItem } from "components/radio-group";
-import { genOptionsPrivacyPost } from "features/form/form-register/utils";
+import { genOptionsPrivacyPost } from "features/select/select-privacy-post/SelectPrivacyPost";
 import { usePrivacyPost } from "hook/posts/usePrivacyPost";
 import { Loader2 } from 'lucide-react';
 import { useState } from "react";

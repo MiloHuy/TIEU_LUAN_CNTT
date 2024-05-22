@@ -2,7 +2,6 @@ import clsx from "clsx";
 import CaroselVersion2 from "components/carousel/Carosel-V2";
 import { PostType } from "constants/post.const";
 import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
-import { usePostDetail } from "hook/posts/usePostDetail";
 import FooterActionsPost from "layout/footer-actions-post";
 import HeaderPostUser from "layout/header-post-user";
 import { getFullName, getUserIdFromCookie } from "utils/user.utils";
@@ -13,9 +12,10 @@ const CardPostUser = (props) => {
   const userName = getFullName(postData.userId?.first_name, postData.userId?.last_name);
   const ID = getUserIdFromCookie();
 
-  const { postDetail, fetchPostDetails, } = usePostDetail()
 
-  const navigateHome = postData.userId?._id !== ID ? `/welcome/home-guest/${postData.userId?._id}` : `/welcome/home-user/${ID}`
+  const navigateHome = postData.userId?._id !== ID
+    ? `/welcome/home-guest/${postData.userId?._id}`
+    : `/welcome/home-user/${ID}`
 
   return (
     <div className='max-w-[40vw] w-[40vw] p-2'>
@@ -46,9 +46,6 @@ const CardPostUser = (props) => {
             slides={postData.img} />
 
           <FooterActionsPost
-            fetchPostDetails={fetchPostDetails}
-
-            postDetail={postDetail}
             post_id={postData.id}
             postDescription={postData.description}
             userName={userName}

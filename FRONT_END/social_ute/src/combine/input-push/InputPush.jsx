@@ -18,7 +18,7 @@ const InputPush = ({ className, icon, placeholder, onSubmit, isLoading }) => {
       variant='ghost' className='hover:bg-white'>
       <CircleArrowUp size={20} color="#000000" strokeWidth={1.5} />
     </Button>
-  }, [inputValue])
+  }, [inputValue, onSubmit])
 
   return (
     <label

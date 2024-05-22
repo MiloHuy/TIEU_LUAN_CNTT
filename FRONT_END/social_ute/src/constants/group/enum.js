@@ -9,3 +9,9 @@ export const ERoleNameGroup = {
   MEMBER: "member",
   GUEST: "guest",
 };
+
+export const ESelectGroup = {
+  ALL: "all",
+  ADMIN: "admin",
+  SUPERADMIN: "super-admin",
+};

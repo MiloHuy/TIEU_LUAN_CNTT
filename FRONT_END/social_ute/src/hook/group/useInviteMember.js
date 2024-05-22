@@ -12,8 +12,6 @@ export const useInviteMember = () => {
 
         const { Invite } = permission;
 
-        if (!Invite && !Invite.POST) return;
-
         await inviteMember(Invite.POST.invite, groupId, userId);
         setIsLoading(false);
       } catch (error) {

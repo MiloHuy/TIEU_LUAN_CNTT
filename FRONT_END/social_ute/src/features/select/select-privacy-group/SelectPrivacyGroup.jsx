@@ -1,5 +1,16 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'components/select';
-import { OptionsPrivacyGroup } from 'constants/group/group-options-scope.const';
+import { EPrivacyGroup } from 'constants/group/enum';
+
+export const OptionsPrivacyGroup = [
+  {
+    label: "Công khai (mặc định)",
+    value: EPrivacyGroup.PUBLIC.toString(),
+  },
+  {
+    label: "Riêng tư",
+    value: EPrivacyGroup.PRIVATE.toString(),
+  },
+];
 
 const SelectPrivacyGroup = ({ field, form, isLoading }) => {
 
@@ -29,8 +40,7 @@ const SelectPrivacyGroup = ({ field, form, isLoading }) => {
                   {option.label}
                 </SelectItem>
               )
-            }
-            )
+            })
           }
         </SelectGroup>
       </SelectContent>
