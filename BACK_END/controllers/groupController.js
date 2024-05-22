@@ -1866,7 +1866,10 @@ exports.adminGetMembers = async (req, res) => {
         const { size } = req.query;
         const group = await Group.findById(groupId)
             .select("member")
-            .populate("member.user_id", "first_name last_name avatar.url department")
+            .populate(
+                "member.user_id",
+                "first_name last_name avatar.url department"
+            )
             .lean();
 
         const members = group.member;
@@ -2402,6 +2405,29 @@ exports.adminGetStatisticLike = async (req, res) => {
     }
 };
 
+exports.adminEditRegulation = async (req, res) => {
+    try {
+        SuperAdminGroup.create({
+            role: "super-admin"
+        })
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId).select('regulation');
+        const regulation = req.body.regulation;
+        group.regulation = regulation
+        await group.save();
+        return res.status(200).json({
+            success: true,
+            regulation : group.regulation
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10076,
+            message: "Thống kê bài viết thất bại : " + error.message,
+        });
+    }
+};
+
 exports.addAdmin = async (req, res) => {
     try {
         const adminId = req.params.user_id;
@@ -2569,8 +2595,8 @@ exports.getAdmin = async (req, res) => {
 exports.searchAdmin = async (req, res) => {
     try {
         await SuperAdminGroup.create({
-            role:"super-admin"
-        })
+            role: "super-admin",
+        });
         const groupId = req.params.gr_id;
         const { size } = req.query;
         const group = await Group.findById(groupId)

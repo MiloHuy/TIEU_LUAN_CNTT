@@ -97,21 +97,23 @@ const SuperAdminGroup = new Schema({
             }
         },
         Manage_regulation: {
-            POST: {
-                create_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/create' },
-            },
             PUT: {
-                edit_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/:regulation_id' },
-            },
-            DELETE: {
-                delete_regulation: { type: String, default: 'group/:gr_id/super-admin/regulation/:regulation_id' },
+                edit_regulation: { type: String, default: 'group/:gr_id/admin/regulation' },
             }
         },
-        Avatar:{
+        Edit:{
+            POST:{
+                avatar: { type: String, default: 'group/:gr_id/super-admin/avatar' },
+            },
             PUT:{
-                change: { type: String, default: 'group/:gr_id/super-admin/avatar' },
+                setting: { type: String, default: 'group/:gr_id/super-admin/setting' },
             }
-        }
+        },
+        Leave_Group: {
+            POST: {
+                leave_group: { type: String, default: "group/:gr_id/super-admin/leave" }, 
+            }
+        },
     }
 });
 
