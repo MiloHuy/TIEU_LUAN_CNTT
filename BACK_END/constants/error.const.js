@@ -1,10 +1,10 @@
-export const ErrorMess = {
+const ErrorMess = {
   NOT_FOUND_POST: "Không tìm thấy bài viết",
   NOT_FOLLOW_USER: "Bạn chưa theo dõi người dùng này",
   NOT_VALID_PRIVACY: "Chế độ riêng tư không hợp lệ",
 };
 
-export const ErrorCode = {
+const ErrorCode = {
   BAD_REQUEST: 404,
   SERVER_ERROR: 500,
 
@@ -13,13 +13,15 @@ export const ErrorCode = {
   NOT_VALID_PRIVACY: 2032,
 };
 
-export const SuccesMess = {
+const SuccesMess = {
   LIKE_POST: "Thích bài viết thành công",
   DISLIKE_POST: "Bỏ thích bài viết thành công",
 };
 
-export const SuccessCode = {
+const SuccessCode = {
   SUCCESS: 200,
   LIKE_POST: 2000,
   DISLIKE_POST: 2001,
 };
+
+module.export = { ErrorCode, ErrorMess, SuccesMess, SuccessCode };
