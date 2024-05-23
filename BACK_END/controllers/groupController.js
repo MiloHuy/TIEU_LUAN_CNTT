@@ -218,17 +218,9 @@ exports.getInfo = async (req, res) => {
             });
         }
 
-        let number_of_members = 1; // Tính cả admin hiện tại
-        if (group.member && group.member.length) {
-            number_of_members += group.member.length;
-            console.log(group.member.length);
-        }
-        if (group.admin && group.admin.length) {
-            number_of_members += group.admin.length;
-            console.log(group.admin.length);
-        }
+        const numberOfMembers = 1 + (group.member?.length || 0) + (group.admin?.length || 0);
 
-        group.number_of_members = number_of_members;
+        group.number_of_members = numberOfMembers;
 
         delete group.member;
         delete group.admin;
@@ -288,7 +280,9 @@ exports.getMembers = async (req, res) => {
 exports.requestJoin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const userId = req.user._id;
+        
+        const group = await Group.findById(groupId).select('member admin super_admin request_join').lean();
 
         if (!group) {
             return res.status(404).json({
@@ -298,15 +292,11 @@ exports.requestJoin = async (req, res) => {
             });
         }
 
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === req.user._id
-        );
+        const isMemberOrAdmin = group.member.some(member => member.user_id.equals(userId)) ||
+                                group.admin.some(admin => admin.user_id.equals(userId)) ||
+                                group.super_admin.equals(userId);
 
-        const is_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === req.user._id
-        );
-
-        if (is_member || is_admin || group.super_admin.equals(req.user._id)) {
+        if (isMemberOrAdmin) {
             return res.status(401).json({
                 success: false,
                 code: 10014,
@@ -314,31 +304,17 @@ exports.requestJoin = async (req, res) => {
             });
         }
 
-        const is_request = group.request_join.some((request) =>
-            request.user_id.equals(req.user._id)
-        );
-        if (is_request) {
-            const request = {
-                user_id: req.user._id,
-            };
-            group.request_join.pull(request);
-            await group.save();
-            return res.status(200).json({
-                success: true,
-                message: "Hủy yêu cầu vào nhóm thành công.",
-            });
-        }
+        const isRequesting = group.request_join.some(request => request.user_id.equals(userId));
 
-        const new_request = {
-            user_id: req.user._id,
-        };
+        const update = isRequesting 
+            ? { $pull: { request_join: { user_id: userId } } }
+            : { $push: { request_join: { user_id: userId } } };
 
-        group.request_join.push(new_request);
-        await group.save();
+        await Group.findByIdAndUpdate(groupId, update);
 
         return res.status(200).json({
             success: true,
-            message: "Yêu cầu vào nhóm thành công.",
+            message: isRequesting ? "Hủy yêu cầu vào nhóm thành công." : "Yêu cầu vào nhóm thành công.",
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -354,7 +330,6 @@ exports.getRegulation = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId)
-            // .select("regulation")
             .lean();
         if (!group) {
             return res.status(404).json({
@@ -385,7 +360,6 @@ exports.getPosts = async (req, res) => {
         const groupId = req.params.gr_id;
         const { size } = req.query;
         const group = await Group.findById(groupId)
-            // .select("regulation")
             .lean();
         if (!group) {
             return res.status(404).json({
