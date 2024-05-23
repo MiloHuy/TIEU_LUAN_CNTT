@@ -757,10 +757,22 @@ exports.likePost = async (req, res) => {
 
 exports.storePost = async (req, res) => {
     try {
-        const groupId = req.params.gr_id;
-        const postId = req.params.post_id;
+        const { gr_id: groupId, post_id: postId } = req.params;
         const userId = req.user._id;
-        const group = await Group.findById(groupId).lean();
+
+        const [group, post, stored] = await Promise.all([
+            Group.findById(groupId).lean(),
+            Post.findById(postId)
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url"),
+            Post_stored.findOneAndUpdate(
+                { user_id: userId },
+                {},
+                { new: true, upsert: true }
+            ),
+        ]);
+
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -768,11 +780,6 @@ exports.storePost = async (req, res) => {
                 message: "Không tìm thấy nhóm.",
             });
         }
-
-        const post = await Post.findById(postId)
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
 
         if (!post) {
             return res.status(404).json({
@@ -782,7 +789,7 @@ exports.storePost = async (req, res) => {
             });
         }
 
-        if (post.privacy != 3 && post.group_id != groupId) {
+        if (post.privacy !== 3 && post.group_id.toString() !== groupId) {
             return res.status(400).json({
                 success: false,
                 code: 10032,
@@ -790,19 +797,16 @@ exports.storePost = async (req, res) => {
             });
         }
 
-        if (group.privacy == 1) {
-            const is_member = group.member.some((member) =>
+        if (group.privacy === 1) {
+            const isMember = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            console.log(is_member);
-
-            const is_admin = group.admin.some((admin) =>
+            const isAdmin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
             );
+            const isSuperAdmin = group.super_admin.equals(userId);
 
-            const is_super_admin = group.super_admin.equals(userId);
-
-            if (!(is_member || is_admin || is_super_admin)) {
+            if (!(isMember || isAdmin || isSuperAdmin)) {
                 return res.status(400).json({
                     success: false,
                     code: 10042,
@@ -812,7 +816,7 @@ exports.storePost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false) {
+        if (!post.is_approved) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -820,22 +824,17 @@ exports.storePost = async (req, res) => {
             });
         }
 
-        const stored = await Post_stored.findOneAndUpdate(
-            { user_id: req.user._id },
-            {},
-            { new: true, upsert: true }
-        );
-        if (stored.post_id.includes(req.params.id)) {
-            stored.post_id.pull(req.params.id);
+        if (stored.post_id.includes(postId)) {
+            stored.post_id.pull(postId);
             await stored.save();
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Bỏ lưu bài viết.",
             });
         } else {
-            stored.post_id.push(req.params.id);
+            stored.post_id.push(postId);
             await stored.save();
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Lưu bài viết thành công.",
             });
