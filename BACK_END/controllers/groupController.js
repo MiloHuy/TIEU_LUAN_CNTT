@@ -32,34 +32,7 @@ exports.create = async (req, res) => {
                 message: "Tạo nhóm thất bại. Phải có tên nhóm.",
             });
         }
-        // console.log(req.body);
-        // if (req.privacy != '1' && req.privacy != '2') {
-        //     return res.status(400).json({
-        //         success: false,
-        //         code: 10025,
-        //         message: "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
-        //     });
-        // }
-        // const privacy=req.body
-        // return res.status(400).json({
-        //     success: false,
-        //     code: 10025,
-        //     message: privacy,
-        // });
-        // switch (true) {
-        //     case req.privacy == 0:
-        //         break;
-        //     case req.privacy == 1:
-        //         break;
-        //     case req.privacy == 2:
-        //         break;
-        //     default:
-        //         return res.status(400).json({
-        //             success: false,
-        //             code: 10025,
-        //             message: "Tạo nhóm thất bại. Phạm vi nhóm không hợp lệ.",
-        //         });
-        // }
+
         if (!req.files || !req.files.group_avatar) {
             console.log(req.body);
             const Avatar = null;
@@ -125,7 +98,6 @@ exports.create = async (req, res) => {
             publicId: result.public_id,
             url: result.secure_url,
         };
-        // console.log(req.body);
         const group = await Group.create({
             avatar: Avatar,
             super_admin: req.user._id,
@@ -150,7 +122,9 @@ exports.create = async (req, res) => {
 exports.getRolePermission = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const userId = req.user._id;
+
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -159,120 +133,67 @@ exports.getRolePermission = async (req, res) => {
             });
         }
 
-        // const member = {
-        //     role: "member",
-        // };
-        // const admin = {
-        //     role: "member",
-        // };
+        let rolePermission = null;
+        let isActive = null;
+        let isRequest = false;
 
-        // await MemberGroup.create(member);
-        // await AdminGroup.create(admin);
-
-        // return res.status(200).json({
-        //     success: true,
-        //     group,
-        // });
-
-        console.log(group.privacy);
-        let role_permisson = null;
-        let is_active = null;
-        let check_request = null;
-        let is_request = false;
-        switch (true) {
-            case group.super_admin.equals(req.user._id):
-                role_permisson = await SuperAdminGroup.findOne({
-                    role: "super-admin",
-                })
-                    .select("-_id -__v")
-                    .lean();
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                });
-            case group.admin.some((admin) =>
-                admin.user_id.equals(req.user._id)
-            ):
-                const admin = group.admin.find((admin) =>
-                    admin.user_id.equals(req.user._id)
-                );
-
-                // if(admin.is_active==false){
-                //     return res.status(401).json({
-                //         success: false,
-                //         code: 10005,
-                //         message: "Bạn bị cấm hoạt động trong nhóm.",
-                //     });
-                // }
-
-                is_active = admin.is_active;
-
-                role_permisson = admin.role_permisson;
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                    is_active,
-                });
-            case group.member.some((member) =>
-                member.user_id.equals(req.user._id)
-            ):
-                const member = group.member.find((member) =>
-                    member.user_id.equals(req.user._id)
-                );
-
-                is_active = member.is_active;
-
-                role_permisson = await MemberGroup.findOne({
-                    role: "member",
-                })
-                    .select("-_id -__v")
-                    .lean();
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                    is_active,
-                });
-            case group.privacy == 1:
-                role_permisson = await GuestGroup.findOne({
-                    role: "guest",
-                })
-                    .select("-_id -__v")
-                    .lean();
-                role_permisson.permission.Post = undefined;
-                role_permisson.permission.Interact = undefined;
-                check_request = group.request_join.some((request) =>
-                    request.user_id.equals(req.user._id)
-                );
-                if (check_request) {
-                    is_request = true;
-                }
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                    is_request,
-                });
-            default:
-                role_permisson = await GuestGroup.findOne({
-                    role: "guest",
-                })
-                    .select("-_id -__v")
-                    .lean();
-                check_request = group.request_join.some((request) =>
-                    request.user_id.equals(req.user._id)
-                );
-                if (check_request) {
-                    is_request = true;
-                }
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                    is_request,
-                });
-                return res.status(200).json({
-                    success: true,
-                    role_permisson,
-                });
+        if (group.super_admin.equals(userId)) {
+            rolePermission = await SuperAdminGroup.findOne({ role: "super-admin" })
+                .select("-_id -__v")
+                .lean();
+            return res.status(200).json({
+                success: true,
+                role_permisson: rolePermission,
+            });
         }
+
+        const admin = group.admin.find(admin => admin.user_id.equals(userId));
+        if (admin) {
+            isActive = admin.is_active;
+            rolePermission = admin.role_permisson;
+            return res.status(200).json({
+                success: true,
+                role_permisson: rolePermission,
+                is_active: isActive,
+            });
+        }
+
+        const member = group.member.find(member => member.user_id.equals(userId));
+        if (member) {
+            isActive = member.is_active;
+            rolePermission = await MemberGroup.findOne({ role: "member" })
+                .select("-_id -__v")
+                .lean();
+            return res.status(200).json({
+                success: true,
+                role_permisson: rolePermission,
+                is_active: isActive,
+            });
+        }
+
+        if (group.privacy === 1) {
+            rolePermission = await GuestGroup.findOne({ role: "guest" })
+                .select("-_id -__v")
+                .lean();
+            rolePermission.permission.Post = undefined;
+            rolePermission.permission.Interact = undefined;
+            isRequest = group.request_join.some(request => request.user_id.equals(userId));
+            return res.status(200).json({
+                success: true,
+                role_permisson: rolePermission,
+                is_request: isRequest,
+            });
+        }
+
+        rolePermission = await GuestGroup.findOne({ role: "guest" })
+            .select("-_id -__v")
+            .lean();
+        isRequest = group.request_join.some(request => request.user_id.equals(userId));
+        return res.status(200).json({
+            success: true,
+            role_permisson: rolePermission,
+            is_request: isRequest,
+        });
     } catch (error) {
         console.error("Lỗi:", error);
         res.status(500).json({
