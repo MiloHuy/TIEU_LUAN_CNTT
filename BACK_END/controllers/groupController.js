@@ -621,10 +621,22 @@ exports.getPost = async (req, res) => {
 
 exports.likePost = async (req, res) => {
     try {
-        const groupId = req.params.gr_id;
-        const postId = req.params.post_id;
+        const { gr_id: groupId, post_id: postId } = req.params;
         const userId = req.user._id;
-        const group = await Group.findById(groupId).lean();
+
+        const [group, post, liked] = await Promise.all([
+            Group.findById(groupId).lean(),
+            Post.findById(postId)
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url"),
+            Post_liked.findOneAndUpdate(
+                { post_id: postId },
+                {},
+                { new: true, upsert: true }
+            ),
+        ]);
+
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -632,11 +644,6 @@ exports.likePost = async (req, res) => {
                 message: "Không tìm thấy nhóm.",
             });
         }
-
-        const post = await Post.findById(postId)
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
 
         if (!post) {
             return res.status(404).json({
@@ -646,7 +653,7 @@ exports.likePost = async (req, res) => {
             });
         }
 
-        if (post.privacy != 3 && post.group_id != groupId) {
+        if (post.privacy !== 3 && post.group_id.toString() !== groupId) {
             return res.status(400).json({
                 success: false,
                 code: 10032,
@@ -654,19 +661,16 @@ exports.likePost = async (req, res) => {
             });
         }
 
-        if (group.privacy == 1) {
-            const is_member = group.member.some((member) =>
+        if (group.privacy === 1) {
+            const isMember = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            console.log(is_member);
-
-            const is_admin = group.admin.some((admin) =>
+            const isAdmin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
             );
+            const isSuperAdmin = group.super_admin.equals(userId);
 
-            const is_super_admin = group.super_admin.equals(userId);
-
-            if (!(is_member || is_admin || is_super_admin)) {
+            if (!(isMember || isAdmin || isSuperAdmin)) {
                 return res.status(400).json({
                     success: false,
                     code: 10042,
@@ -676,7 +680,7 @@ exports.likePost = async (req, res) => {
             }
         }
 
-        if (post.is_approved == false) {
+        if (!post.is_approved) {
             return res.status(400).json({
                 success: false,
                 code: 10039,
@@ -684,19 +688,19 @@ exports.likePost = async (req, res) => {
             });
         }
 
-        const liked = await Post_liked.findOneAndUpdate(
-            { post_id: postId },
-            {},
-            { new: true, upsert: true }
-        );
-        if (liked.user_id.includes(userId)) {
-            liked.user_id.pull(userId);
+        const userIdSet = new Set(liked.user_id.map((id) => id.toString()));
+        const isLiked = userIdSet.has(userId.toString());
+
+        if (isLiked) {
+            userIdSet.delete(userId.toString());
+            liked.user_id = Array.from(userIdSet);
             await liked.save();
 
             const noti = await Notification.findOneAndDelete({
                 user_id: userId,
                 post_id: postId,
             });
+
             if (noti) {
                 await Noti_user.findOneAndUpdate(
                     { user_id: post.user_id },
@@ -705,25 +709,20 @@ exports.likePost = async (req, res) => {
                 );
             }
 
-            const post_like = await Post_liked.findOne({ post_id: post._id });
-            const likes = post_like ? post_like.user_id.length : 0;
-
+            const likes = liked.user_id.length;
             return res.status(201).json({
                 success: true,
                 message: "Bỏ yêu thích.",
                 likes,
             });
         } else {
-            liked.user_id.push(userId);
+            userIdSet.add(userId.toString());
+            liked.user_id = Array.from(userIdSet);
             await liked.save();
 
             if (!post.user_id.equals(userId)) {
                 const currentDate = new Date();
-                const content =
-                    req.user.first_name +
-                    " " +
-                    req.user.last_name +
-                    " yêu thích bài viết của bạn.";
+                const content = `${req.user.first_name} ${req.user.last_name} yêu thích bài viết của bạn.`;
 
                 const noti = await Notification.create({
                     user_id: userId,
@@ -739,9 +738,7 @@ exports.likePost = async (req, res) => {
                 );
             }
 
-            const post_like = await Post_liked.findOne({ post_id: post._id });
-            const likes = post_like ? post_like.user_id.length : 0;
-
+            const likes = liked.user_id.length;
             return res.status(201).json({
                 success: true,
                 message: "Yêu thích bài viết thành công.",
@@ -2802,7 +2799,7 @@ exports.superAdminDeleteAdmin = async (req, res) => {
 exports.changeAvatar = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
+        const group = await Group.findById(groupId);
         if (!req.files) {
             return res.status(400).json({
                 success: false,
@@ -2864,13 +2861,13 @@ exports.changeAvatar = async (req, res) => {
         if (group.avatar.publicId) {
             await cloudinary.uploader.destroy(group.avatar.publicId);
         }
-        group.avatar = newAvatar
-        await group.save()
+        group.avatar = newAvatar;
+        await group.save();
 
         return res.status(201).json({
             success: true,
             message: "Cập nhật avatar thành công.",
-            avatar: group.avatar.url
+            avatar: group.avatar.url,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2892,7 +2889,7 @@ exports.putSetting = async (req, res) => {
             });
         }
         const groupId = req.params.gr_id;
-        const group = await Group.findByIdAndUpdate(groupId,{
+        const group = await Group.findByIdAndUpdate(groupId, {
             ...req.body,
         });
         return res.status(201).json({
@@ -2908,7 +2905,6 @@ exports.putSetting = async (req, res) => {
         });
     }
 };
-
 
 exports.SuperAdminDeletePost = async (req, res) => {
     try {
