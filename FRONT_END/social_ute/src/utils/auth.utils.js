@@ -10,3 +10,7 @@ export function getRefreshTokenFromCookie() {
   const refresh_token = Cookies.get(SSOCOOKIES.refresh);
   return refresh_token;
 }
+
+export const checkPermission = (permission, category, method, endPoint) => {
+  return permission[category][method].hasOwnProperty(endPoint);
+};

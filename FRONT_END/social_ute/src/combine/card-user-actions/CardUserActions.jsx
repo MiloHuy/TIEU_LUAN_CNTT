@@ -11,7 +11,7 @@ const CardUserActions = ({ className, action, userInfo }) => {
 
   return (
     <div className={clsx(
-      "min-w-[20vw] min-h-[15vh] p-2 overflow-hidden",
+      "min-w-[200px] min-h-[100px] p-2 overflow-hidden",
       "border border-black/50 rounded-lg font-bold font-quick_sans",
       "dark:border dark:border-white ",
       className)}>
@@ -19,7 +19,8 @@ const CardUserActions = ({ className, action, userInfo }) => {
         <div className='flex gap-2 items-center'>
           <img
             loading="lazy"
-            src={userInfo.avatar.url ? userInfo.avatar.url : 'https://github.com/shadcn.png'} alt='img'
+            src={userInfo.avatar.url ? userInfo.avatar.url : 'https://github.com/shadcn.png'}
+            alt='img'
             className='rounded-md object-cover'
             width='80' height='50'
           />

@@ -2,13 +2,12 @@ import { Button } from "components/button";
 import { ShareIcon } from "components/icon/bonus.icon";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
 import { useActionsPosts } from "hook/posts/useActionsPosts";
+import { usePostDetail } from "hook/posts/usePostDetail";
 import { Bookmark, Heart, MessageCircle } from 'lucide-react';
 import cn from "utils/cn.utils";
 
 const FooterActionsPost = (
   {
-    fetchPostDetails,
-    postDetail,
     post_id,
     hideComment = false,
     userName,
@@ -20,7 +19,13 @@ const FooterActionsPost = (
   }) => {
 
   const {
-    numberLikes, statusPost, handleLikePost, handleSavePost, } = useActionsPosts({ liked_post, number_likes, saved_posts })
+    numberLikes,
+    statusPost,
+    handleLikePost,
+    handleSavePost,
+  } = useActionsPosts({ liked_post, number_likes, saved_posts })
+
+  const { postDetail, fetchPostDetails, } = usePostDetail()
 
   return (
     <>

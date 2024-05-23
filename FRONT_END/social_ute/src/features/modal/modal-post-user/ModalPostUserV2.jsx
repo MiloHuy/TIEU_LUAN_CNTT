@@ -93,8 +93,7 @@ const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
                   </ResizablePanel>
                 </ResizablePanelGroup>
               </ResizablePanel>
-            </ResizablePanelGroup>
-          }
+            </ResizablePanelGroup>}
         </LoadingComponent>
       </DialogContent>
     </Dialog >

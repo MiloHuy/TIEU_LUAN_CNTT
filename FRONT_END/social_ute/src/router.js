@@ -6,6 +6,7 @@ import Admin from "pages/admin";
 import GroupDetail from "pages/group/[...code-group]";
 import AllGroup from "pages/group/all";
 import CreateGroup from "pages/group/create";
+import HomeGuests from "pages/home-guests";
 import HomeUser from "pages/home-user";
 import About from "pages/main/About";
 import Home from "pages/main/Home";
@@ -17,10 +18,7 @@ import StatiscalMonthDetails from "pages/manage/statistical/statistical-month-de
 import StatisticalSystems from "pages/manage/statistical/statistical-systems";
 import RequestFriend from "pages/request-friend";
 import User from "pages/user";
-import { lazy } from "react";
 import "./App.css";
-
-const HomeG = lazy(() => import("pages/home-guests"));
 
 export const mainRoutes = [
   { path: "/home", element: <Home /> },
@@ -35,7 +33,7 @@ export const groupChildRoutes = [
 export const userRoutes = [
   { path: "", element: <User /> },
   { path: "home-user/:userId", element: <HomeUser /> },
-  { path: "home-guest/:guestId", element: <HomeG /> },
+  { path: "home-guest/:guestId", element: <HomeGuests /> },
   { path: "post/:postId/", element: <PostDetail /> },
   { path: "*", element: <NotFound /> },
   { path: "request-friend", element: <RequestFriend /> },

@@ -2,7 +2,6 @@ import { setInfoUser } from 'app/slice/user/user.slice'
 import clsx from 'clsx'
 import { Button } from 'components/button'
 import Input from 'components/input'
-import LoadingDotV2 from 'components/loading/loading-dot-v2'
 import { SSOCOOKIES } from 'constants/app.const'
 import { ERROR_LOGIN } from 'constants/error.const'
 import { USERCOOKIES } from 'constants/user.const'
@@ -88,16 +87,9 @@ const FormLogin = (props) => {
 
   return (
     <form
-      className={clsx('h-[80vh] min-w-[35vw] flex flex-col items-center justify-between p-4 gap-4', props.className)}
+      className={clsx('h-[450px] min-w-[400px] flex flex-col items-center justify-center p-4 gap-4', props.className)}
       onSubmit={formik.handleSubmit}
     >
-      {
-        loading ?
-          <div className='absolute top-1/2 right-1/2 w-full'>
-            <LoadingDotV2 />
-          </div > : null
-      }
-
       <h1 className='text-[40px] text-black font-extrabold font-quick_sans text-center'>
         ĐĂNG NHẬP
       </h1>
@@ -144,6 +136,7 @@ const FormLogin = (props) => {
         <Button
           radius='sm'
           onClick={handleSubmitLogin}
+          disabled={loading}
           className='w-3/5 rounded-[40px] text-lg bg-[#1C30E3]'>
           {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : ''}
           Đăng nhập

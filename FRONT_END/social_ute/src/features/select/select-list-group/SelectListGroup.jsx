@@ -1,17 +1,18 @@
 import clsx from "clsx"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "components/select"
+import { ESelectGroup } from "constants/group/enum"
 
 export const ArraySelectGroup = [
   {
-    value: ' ',
+    value: ESelectGroup.ALL,
     label: 'Tất cả'
   },
   {
-    value: 'admin',
+    value: ESelectGroup.ADMIN,
     label: 'Admin'
   },
   {
-    value: 'super-admin',
+    value: ESelectGroup.SUPERADMIN,
     label: 'Super Admin'
   }
 ]

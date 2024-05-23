@@ -1,14 +1,15 @@
 import { object, string } from "yup";
+import { genMessRequired } from "../utils";
 
 export const genSchemaFormLogin = (formLabel) => {
   return object().shape({
     phone_number: string()
       .typeError(`${formLabel.phone_number}`)
-      .required(`${formLabel.phone_number} không được để trống`)
+      .required(genMessRequired(formLabel.phone_number))
       .min(10, "Hãy điền đủ 10 số.")
       .max(10, "Không điền quá 10 số."),
     pass_word: string()
       .typeError(`${formLabel.pass_word}`)
-      .required(`${formLabel.pass_word} không được để trống`),
+      .required(genMessRequired(formLabel.pass_word)),
   });
 };

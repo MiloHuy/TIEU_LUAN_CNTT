@@ -112,7 +112,7 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
     handleSubmit: { handleCreatePost }
   })
 
-  const { values, errors, } = formik
+  const { values } = formik
 
   return (
     <div className={clsx(
@@ -145,14 +145,12 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
               onChange={formik.handleChange}
             />
 
-            <div className='flex gap-3 w-full justify-between items-center min-w-[50px]:flex-col'>
-              <SelectPrivacyPost
-                title='Phạm vi:'
-                loading={loading}
-                values={values['privacy']}
-                handleChange={setFormUpload}
-              />
-            </div>
+            <SelectPrivacyPost
+              title='Phạm vi:'
+              loading={loading}
+              values={values['privacy']}
+              handleChange={setFormUpload}
+            />
 
             <Button
               onClick={handleCreatePost}

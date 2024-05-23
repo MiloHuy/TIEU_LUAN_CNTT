@@ -16,6 +16,14 @@ const ERROR_CREATE_GROUP = [
   },
 ];
 
+export const ERROR_PERMISSION = [
+  {
+    type: "ERR_PERMISSION",
+    code: 10027,
+    label: "Bạn không có quyền thực hiện tác vụ này.",
+  },
+];
+
 export const GroupError = {
   create: ERROR_CREATE_GROUP,
 };
