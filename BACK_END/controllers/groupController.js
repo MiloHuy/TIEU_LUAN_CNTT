@@ -138,7 +138,9 @@ exports.getRolePermission = async (req, res) => {
         let isRequest = false;
 
         if (group.super_admin.equals(userId)) {
-            rolePermission = await SuperAdminGroup.findOne({ role: "super-admin" })
+            rolePermission = await SuperAdminGroup.findOne({
+                role: "super-admin",
+            })
                 .select("-_id -__v")
                 .lean();
             return res.status(200).json({
@@ -147,7 +149,7 @@ exports.getRolePermission = async (req, res) => {
             });
         }
 
-        const admin = group.admin.find(admin => admin.user_id.equals(userId));
+        const admin = group.admin.find((admin) => admin.user_id.equals(userId));
         if (admin) {
             isActive = admin.is_active;
             rolePermission = admin.role_permisson;
@@ -158,7 +160,9 @@ exports.getRolePermission = async (req, res) => {
             });
         }
 
-        const member = group.member.find(member => member.user_id.equals(userId));
+        const member = group.member.find((member) =>
+            member.user_id.equals(userId)
+        );
         if (member) {
             isActive = member.is_active;
             rolePermission = await MemberGroup.findOne({ role: "member" })
@@ -177,7 +181,9 @@ exports.getRolePermission = async (req, res) => {
                 .lean();
             rolePermission.permission.Post = undefined;
             rolePermission.permission.Interact = undefined;
-            isRequest = group.request_join.some(request => request.user_id.equals(userId));
+            isRequest = group.request_join.some((request) =>
+                request.user_id.equals(userId)
+            );
             return res.status(200).json({
                 success: true,
                 role_permisson: rolePermission,
@@ -188,7 +194,9 @@ exports.getRolePermission = async (req, res) => {
         rolePermission = await GuestGroup.findOne({ role: "guest" })
             .select("-_id -__v")
             .lean();
-        isRequest = group.request_join.some(request => request.user_id.equals(userId));
+        isRequest = group.request_join.some((request) =>
+            request.user_id.equals(userId)
+        );
         return res.status(200).json({
             success: true,
             role_permisson: rolePermission,
@@ -218,7 +226,8 @@ exports.getInfo = async (req, res) => {
             });
         }
 
-        const numberOfMembers = 1 + (group.member?.length || 0) + (group.admin?.length || 0);
+        const numberOfMembers =
+            1 + (group.member?.length || 0) + (group.admin?.length || 0);
 
         group.number_of_members = numberOfMembers;
 
@@ -281,8 +290,10 @@ exports.requestJoin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.user._id;
-        
-        const group = await Group.findById(groupId).select('member admin super_admin request_join').lean();
+
+        const group = await Group.findById(groupId)
+            .select("member admin super_admin request_join")
+            .lean();
 
         if (!group) {
             return res.status(404).json({
@@ -292,9 +303,10 @@ exports.requestJoin = async (req, res) => {
             });
         }
 
-        const isMemberOrAdmin = group.member.some(member => member.user_id.equals(userId)) ||
-                                group.admin.some(admin => admin.user_id.equals(userId)) ||
-                                group.super_admin.equals(userId);
+        const isMemberOrAdmin =
+            group.member.some((member) => member.user_id.equals(userId)) ||
+            group.admin.some((admin) => admin.user_id.equals(userId)) ||
+            group.super_admin.equals(userId);
 
         if (isMemberOrAdmin) {
             return res.status(401).json({
@@ -304,9 +316,11 @@ exports.requestJoin = async (req, res) => {
             });
         }
 
-        const isRequesting = group.request_join.some(request => request.user_id.equals(userId));
+        const isRequesting = group.request_join.some((request) =>
+            request.user_id.equals(userId)
+        );
 
-        const update = isRequesting 
+        const update = isRequesting
             ? { $pull: { request_join: { user_id: userId } } }
             : { $push: { request_join: { user_id: userId } } };
 
@@ -314,7 +328,9 @@ exports.requestJoin = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: isRequesting ? "Hủy yêu cầu vào nhóm thành công." : "Yêu cầu vào nhóm thành công.",
+            message: isRequesting
+                ? "Hủy yêu cầu vào nhóm thành công."
+                : "Yêu cầu vào nhóm thành công.",
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -329,8 +345,7 @@ exports.requestJoin = async (req, res) => {
 exports.getRegulation = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId)
-            .lean();
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -358,9 +373,11 @@ exports.getRegulation = async (req, res) => {
 exports.getPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId)
-            .lean();
+        const userId = req.user._id;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
+
+        const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -369,58 +386,42 @@ exports.getPosts = async (req, res) => {
             });
         }
 
-        const posts = Post.find({
-            group_id: groupId,
-            is_approved: true,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
+        const [allPosts, totals, likedPosts, storedPosts] = await Promise.all([
+            Post.find({
+                group_id: groupId,
+                is_approved: true,
+            })
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .limit(Number(size))
+                .skip(skip),
+            Post.countDocuments({
+                group_id: groupId,
+                is_approved: true,
+            }),
+            Post_liked.find({ user_id: userId }).select("post_id"),
+            Post_stored.find({ user_id: userId }).select("post_id"),
+        ]);
 
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
+        const likedPostIds = new Set(likedPosts.map((like) => like.post_id.toString()));
+        const storedPostIds = new Set(
+            storedPosts.flatMap((store) => store.post_id.map((id) => id.toString()))
+        );
 
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
+        const postsWithLikesAndStores = await Promise.all(
+            allPosts.map(async (post) => {
+                const postId = post._id.toString();
+                const isLiked = likedPostIds.has(postId);
+                const isStored = storedPostIds.has(postId);
 
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
-
-        const check_liked = await Post_liked.find({
-            user_id: req.user._id,
-        }).select("post_id");
-        const check_stored = await Post_stored.find({
-            user_id: req.user._id,
-        }).select("post_id");
-
-        const postsAfferCheck = allPosts.map((post) => {
-            const isLiked = check_liked.some((like) =>
-                like.post_id.equals(post._id)
-            );
-            const isStored = check_stored.some((store) => {
-                return store.post_id.some((storeId) =>
-                    storeId.equals(post._id)
-                );
-            });
-            return {
-                ...post.toObject(),
-                liked: isLiked,
-                stored: isStored,
-            };
-        });
-
-        const postsAfferCountLike = await Promise.all(
-            postsAfferCheck.map(async (post) => {
-                const post_like = await Post_liked.findOne({
-                    post_id: post._id,
-                });
+                const post_like = await Post_liked.findOne({ post_id: post._id });
                 const likes = post_like ? post_like.user_id.length : 0;
 
                 return {
-                    ...post,
+                    ...post.toObject(),
+                    liked: isLiked,
+                    stored: isStored,
                     likes,
                 };
             })
@@ -429,7 +430,7 @@ exports.getPosts = async (req, res) => {
         return res.status(200).json({
             success: true,
             totals,
-            posts: postsAfferCountLike,
+            posts: postsWithLikesAndStores,
         });
     } catch (error) {
         console.error("Lỗi:", error);
