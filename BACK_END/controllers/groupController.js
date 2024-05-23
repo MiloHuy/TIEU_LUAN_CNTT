@@ -1320,7 +1320,7 @@ exports.createPost = async (req, res) => {
                             return resolve(uploadResult);
                         }
                     )
-                    .end(file.data);
+                    .end(req.files.group_avatar.data);
             });
 
             postImages.push({
@@ -1555,7 +1555,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
                 success: false,
                 code: 2003,
                 message:
-                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+                    "Cập nhật thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
             });
         }
 
@@ -1586,7 +1586,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
                     success: false,
                     code: 2004,
                     message:
-                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                        "Cập nhật thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
                 });
             }
 
@@ -1596,7 +1596,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
                     success: false,
                     code: 2005,
                     message:
-                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                        "Cập nhật thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
                 });
             }
 
@@ -2408,16 +2408,16 @@ exports.adminGetStatisticLike = async (req, res) => {
 exports.adminEditRegulation = async (req, res) => {
     try {
         SuperAdminGroup.create({
-            role: "super-admin"
-        })
+            role: "super-admin",
+        });
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).select('regulation');
+        const group = await Group.findById(groupId).select("regulation");
         const regulation = req.body.regulation;
-        group.regulation = regulation
+        group.regulation = regulation;
         await group.save();
         return res.status(200).json({
             success: true,
-            regulation : group.regulation
+            regulation: group.regulation,
         });
     } catch (error) {
         res.status(500).json({
@@ -2795,6 +2795,89 @@ exports.superAdminDeleteAdmin = async (req, res) => {
             success: false,
             code: 10072,
             message: "Super admin xóa admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.changeAvatar = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId)
+        if (!req.files) {
+            return res.status(400).json({
+                success: false,
+                code: 2003,
+                message:
+                    "Cập nhật thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+            });
+        }
+        const allowedExtensions = validImageFormats.map(
+            (format) => `.${format}`
+        );
+        const fileExtension = path
+            .extname(req.files.group_avatar.name)
+            .toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            return res.status(400).json({
+                success: false,
+                code: 2004,
+                message:
+                    "Cập nhật thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.",
+            });
+        }
+
+        const fileSize = req.files.group_avatar.data.length;
+        if (fileSize > maxFileSize) {
+            return res.status(400).json({
+                success: false,
+                code: 2005,
+                message:
+                    "Cập nhật thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).",
+            });
+        }
+
+        const result = await new Promise((resolve) => {
+            cloudinary.uploader
+                .upload_stream(
+                    { resource_type: "auto", folder: "post_imgs" },
+                    (error, uploadResult) => {
+                        if (error) {
+                            console.log(error);
+                            return res.status(400).json({
+                                success: false,
+                                code: 2024,
+                                message: "Lỗi lưu ảnh lên cloundinary.",
+                            });
+                        }
+                        return resolve(uploadResult);
+                    }
+                )
+                .end(req.files.group_avatar.data);
+        });
+
+        const newAvatar = {
+            publicId: result.public_id,
+            url: result.secure_url,
+        };
+
+        if (group.avatar.publicId) {
+            await cloudinary.uploader.destroy(group.avatar.publicId);
+        }
+        group.avatar = newAvatar
+        await group.save()
+
+        return res.status(201).json({
+            success: true,
+            message: "Cập nhật avatar thành công.",
+            avatar: group.avatar.url
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10077,
+            message: "Cập nhật avatar thất bại :" + error.message,
         });
     }
 };
