@@ -2882,6 +2882,34 @@ exports.changeAvatar = async (req, res) => {
     }
 };
 
+exports.putSetting = async (req, res) => {
+    try {
+        if (!req.body.name || req.body.name == null) {
+            return res.status(400).json({
+                success: false,
+                code: 10026,
+                message: "Tạo nhóm thất bại. Phải có tên nhóm.",
+            });
+        }
+        const groupId = req.params.gr_id;
+        const group = await Group.findByIdAndUpdate(groupId,{
+            ...req.body,
+        });
+        return res.status(201).json({
+            success: true,
+            message: "Cập nhật thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10078,
+            message: "Cập nhật avatar thất bại :" + error.message,
+        });
+    }
+};
+
+
 exports.SuperAdminDeletePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
