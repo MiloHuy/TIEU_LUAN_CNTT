@@ -2084,6 +2084,7 @@ exports.adminGetAllPosts = async (req, res) => {
 
         const posts = Post.find({
             group_id: groupId,
+            is_approved: true
         })
             .sort({ create_post_time: -1 })
             .select("-post_img.publicId -post_img._id")
