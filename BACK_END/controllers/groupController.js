@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
         }
 
         if (!req.files || !req.files.group_avatar) {
-            console.log(req.body);
+            // console.log(req.body);
             const Avatar = null;
             const group = await Group.create({
                 avatar: Avatar,
@@ -81,7 +81,7 @@ exports.create = async (req, res) => {
                     { resource_type: "auto", folder: "group_avatar" },
                     (error, uploadResult) => {
                         if (error) {
-                            console.log(error);
+                            // console.log(error);
                             return res.status(400).json({
                                 success: false,
                                 code: 10005,
@@ -784,7 +784,7 @@ exports.commentPost = async (req, res) => {
             const is_member = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            console.log(is_member);
+            // console.log(is_member);
 
             const is_admin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
@@ -900,7 +900,7 @@ exports.getCommentPost = async (req, res) => {
             const is_member = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            console.log(is_member);
+            // console.log(is_member);
 
             const is_admin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
@@ -1130,12 +1130,23 @@ exports.leaveGroup = async (req, res) => {
     try {
         const userId = req.user._id;
         const groupId = req.params.gr_id;
-
-        await Group.findOneAndUpdate(
-            { _id: groupId, "member.user_id": userId },
-            { $pull: { member: { user_id: userId } } },
-            { new: true }
-        );
+        
+        await Promise.all([
+            Group.findOneAndUpdate(
+                { _id: groupId, $or: [{ "member.user_id": userId }, { "admin.user_id": userId }] },
+                { 
+                    $pull: { 
+                        member: { user_id: userId },
+                        admin: { user_id: userId }
+                    }
+                },
+                { new: true }
+            ).lean(), 
+            Post.deleteMany({
+                user_id: userId,
+                group_id: groupId,
+            })
+        ]);
 
         return res.status(200).json({
             success: true,
@@ -1202,7 +1213,7 @@ exports.createPost = async (req, res) => {
                         { resource_type: "auto", folder: "post_imgs" },
                         (error, uploadResult) => {
                             if (error) {
-                                console.log(error);
+                                // console.log(error);
                                 return res.status(400).json({
                                     success: false,
                                     code: 2024,
@@ -1498,7 +1509,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
                         { resource_type: "auto", folder: "post_imgs" },
                         (error, uploadResult) => {
                             if (error) {
-                                console.log(error);
+                                // console.log(error);
                                 return res.status(400).json({
                                     success: false,
                                     code: 2024,
@@ -2735,7 +2746,7 @@ exports.changeAvatar = async (req, res) => {
                     { resource_type: "auto", folder: "post_imgs" },
                     (error, uploadResult) => {
                         if (error) {
-                            console.log(error);
+                            // console.log(error);
                             return res.status(400).json({
                                 success: false,
                                 code: 2024,
@@ -2883,11 +2894,38 @@ exports.SuperAdminDeletePost = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            code: 1041,
+            code: 10041,
             message: "Xóa bài viết thất bại : " + error.message,
         });
     }
 };
+
+exports.SuperAdminLeaveGroup = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+
+        const [group, groupDeleteResult, postsDeleteResult] = await Promise.all([
+            Group.findById(groupId).lean(),
+            Group.findByIdAndDelete(groupId),
+            Post.deleteMany({ group_id: groupId })
+        ]);
+        
+        if (group.avatar && group.avatar.publicId) {
+            await cloudinary.uploader.destroy(group.avatar.publicId);
+        }
+        return res.status(201).json({
+            success: true,
+            message: "Super admin rời nhóm thành công.",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10079,
+            message: "Xóa bài viết thất bại : " + error.message,
+        });
+    }
+};
+
 
 exports.getGroup = async (req, res) => {
     try {
@@ -2978,4 +3016,4 @@ exports.getGroupSuperAdmin = async (req, res) => {
     }
 };
 
-//100
+//10079

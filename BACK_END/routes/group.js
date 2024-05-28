@@ -50,13 +50,14 @@ const {
     adminEditRegulation,
     changeAvatar,
     putSetting,
+    SuperAdminLeaveGroup,
 } = require('../controllers/groupController.js');
 
 const {
     verifyToken,
     isUser,
 } = require('../middlewares/authMiddleware.js');
-const { isAdminGroup, isSuperAdminGroup, isJoinGroup, isMemberGroup } = require('../middlewares/groupMiddleware.js');
+const { isAdminGroup, isSuperAdminGroup, isJoinGroup, isMemberGroup, isMemberAndAdminGroup } = require('../middlewares/groupMiddleware.js');
 
 // All
 router.post('/create', verifyToken, isUser, create);
@@ -76,7 +77,9 @@ router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost)
 router.get('/:gr_id/my-posts', verifyToken, isUser, isJoinGroup, getMyPosts);
 router.delete('/:gr_id/member/post/:post_id', verifyToken, isUser, isJoinGroup, memberDeletePost);
 
-router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberGroup, leaveGroup);
+// Member, Ad
+router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberAndAdminGroup, leaveGroup);
+
 router.post('/:gr_id/member/post/create', verifyToken, isUser, isMemberGroup, createPost);
 router.post('/:gr_id/member/report/post/:post_id', verifyToken, isUser, isMemberGroup, reportPost);
 router.get('/:gr_id/member/post-wait-approve', verifyToken, isUser, isMemberGroup, getWaitApprovePosts);
@@ -114,6 +117,8 @@ router.post('/:gr_id/super-admin/avatar', verifyToken, isUser, isSuperAdminGroup
 router.put('/:gr_id/super-admin/setting', verifyToken, isUser, isSuperAdminGroup, putSetting);
 
 router.delete('/:gr_id/super-admin/posts/:post_id', verifyToken, isUser, isSuperAdminGroup, SuperAdminDeletePost);
+
+router.post('/:gr_id/super-admin/leave', verifyToken, isUser, isSuperAdminGroup, SuperAdminLeaveGroup);
 
 router.get('/all', verifyToken, isUser, getGroup);
 router.get('/admin', verifyToken, isUser, getGroupAdmin);
