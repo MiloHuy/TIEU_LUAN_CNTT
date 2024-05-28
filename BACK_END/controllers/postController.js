@@ -433,7 +433,7 @@ exports.create = async (req, res) => {
     }
 
     for (const userId of followerUserIds) {
-      console.log("id" + userId.toString());
+    //   console.log("id" + userId.toString());
       req.app.get("io").emit(userId.toString(), {
         content: content,
         post_id: post._id,

@@ -25,89 +25,74 @@ const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
 exports.create = async (req, res) => {
     try {
-        if (!req.body.name || req.body.name == null) {
+        const { name, ...body } = req.body;
+
+        if (!name) {
             return res.status(400).json({
                 success: false,
                 code: 10026,
                 message: "Tạo nhóm thất bại. Phải có tên nhóm.",
             });
         }
+        let Avatar = null;
+        const groupAvatar = req.files?.group_avatar;
+        if (groupAvatar) {
+            const fileExtension = path.extname(groupAvatar.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(
+                (format) => `.${format}`
+            );
 
-        if (!req.files || !req.files.group_avatar) {
-            // console.log(req.body);
-            const Avatar = null;
-            const group = await Group.create({
-                avatar: Avatar,
-                super_admin: req.user._id,
-                ...req.body,
-            });
-            const gr_id = group._id;
-            return res.status(200).json({
-                success: true,
-                message: "Tạo nhóm thành công.",
-                group_id: gr_id,
-            });
-        }
-        let Avatar;
-        const fileExtension = path
-            .extname(req.files.group_avatar.name)
-            .toLowerCase();
-        const allowedExtensions = validImageFormats.map(
-            (format) => `.${format}`
-        );
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10003,
+                    message:
+                        "Tạo nhóm thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                });
+            }
 
-        if (!allowedExtensions.includes(fileExtension)) {
-            return res.status(400).json({
-                success: false,
-                code: 10003,
-                message:
-                    "Tạo nhóm thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
-            });
-        }
+            const fileSize = groupAvatar.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 10004,
+                    message:
+                        "Tạo nhóm thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                });
+            }
 
-        const fileSize = req.files.group_avatar.data.length;
-        if (fileSize > maxFileSize) {
-            return res.status(400).json({
-                success: false,
-                code: 10004,
-                message:
-                    "Tạo nhóm thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
-            });
-        }
-
-        const result = await new Promise((resolve) => {
-            cloudinary.uploader
-                .upload_stream(
-                    { resource_type: "auto", folder: "group_avatar" },
-                    (error, uploadResult) => {
-                        if (error) {
-                            // console.log(error);
-                            return res.status(400).json({
-                                success: false,
-                                code: 10005,
-                                message: "Lỗi lưu ảnh lên cloundinary.",
-                            });
+            const result = await new Promise((resolve, reject) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        { resource_type: "auto", folder: "group_avatar" },
+                        (error, uploadResult) => {
+                            if (error) {
+                                return reject(error);
+                            }
+                            resolve(uploadResult);
                         }
-                        return resolve(uploadResult);
-                    }
-                )
-                .end(req.files.group_avatar.data);
-        });
+                    )
+                    .end(groupAvatar.data);
+            });
 
-        Avatar = {
-            publicId: result.public_id,
-            url: result.secure_url,
-        };
+            Avatar = {
+                publicId: result.public_id,
+                url: result.secure_url,
+            };
+        }
+
+        // Tạo nhóm mới
         const group = await Group.create({
             avatar: Avatar,
             super_admin: req.user._id,
-            ...req.body,
+            name,
+            ...body,
         });
-        const gr_id = group._id;
+
         return res.status(200).json({
             success: true,
             message: "Tạo nhóm thành công.",
-            group_id: gr_id,
+            group_id: group._id,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -404,9 +389,13 @@ exports.getPosts = async (req, res) => {
             Post_stored.find({ user_id: userId }).select("post_id"),
         ]);
 
-        const likedPostIds = new Set(likedPosts.map((like) => like.post_id.toString()));
+        const likedPostIds = new Set(
+            likedPosts.map((like) => like.post_id.toString())
+        );
         const storedPostIds = new Set(
-            storedPosts.flatMap((store) => store.post_id.map((id) => id.toString()))
+            storedPosts.flatMap((store) =>
+                store.post_id.map((id) => id.toString())
+            )
         );
 
         const postsWithLikesAndStores = await Promise.all(
@@ -415,7 +404,9 @@ exports.getPosts = async (req, res) => {
                 const isLiked = likedPostIds.has(postId);
                 const isStored = storedPostIds.has(postId);
 
-                const post_like = await Post_liked.findOne({ post_id: post._id });
+                const post_like = await Post_liked.findOne({
+                    post_id: post._id,
+                });
                 const likes = post_like ? post_like.user_id.length : 0;
 
                 return {
@@ -446,9 +437,17 @@ exports.getPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
-        const group = await Group.findById(groupId)
-            // .select("regulation")
-            .lean();
+        const userId = req.user._id;
+
+        const [group, post] = await Promise.all([
+            Group.findById(groupId).lean(),
+            Post.findById(postId)
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .lean(),
+        ]);
+
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -456,11 +455,6 @@ exports.getPost = async (req, res) => {
                 message: "Không tìm thấy nhóm.",
             });
         }
-
-        const post = await Post.findById(postId)
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
 
         if (!post) {
             return res.status(404).json({
@@ -478,7 +472,7 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        if (post.is_approved == false) {
+        if (!post.is_approved) {
             return res.status(500).json({
                 success: false,
                 code: 10037,
@@ -486,20 +480,15 @@ exports.getPost = async (req, res) => {
             });
         }
 
-        const check_liked = await Post_liked.findOne({
-            post_id: postId,
-            user_id: req.user._id,
-        });
-        const check_stored = await Post_stored.findOne({
-            user_id: req.user._id,
-            post_id: postId,
-        });
+        const [checkLiked, checkStored, postLikes] = await Promise.all([
+            Post_liked.findOne({ post_id: postId, user_id: userId }).lean(),
+            Post_stored.findOne({ post_id: postId, user_id: userId }).lean(),
+            Post_liked.findOne({ post_id: postId }).lean(),
+        ]);
 
-        post.liked = !!check_liked;
-        post.stored = !!check_stored;
-
-        const post_like = await Post_liked.findOne({ post_id: post._id });
-        post.likes = post_like ? post_like.user_id.length : 0;
+        post.liked = !!checkLiked;
+        post.stored = !!checkStored;
+        post.likes = postLikes ? postLikes.user_id.length : 0;
 
         return res.status(200).json({
             success: true,
@@ -1130,22 +1119,28 @@ exports.leaveGroup = async (req, res) => {
     try {
         const userId = req.user._id;
         const groupId = req.params.gr_id;
-        
+
         await Promise.all([
             Group.findOneAndUpdate(
-                { _id: groupId, $or: [{ "member.user_id": userId }, { "admin.user_id": userId }] },
-                { 
-                    $pull: { 
+                {
+                    _id: groupId,
+                    $or: [
+                        { "member.user_id": userId },
+                        { "admin.user_id": userId },
+                    ],
+                },
+                {
+                    $pull: {
                         member: { user_id: userId },
-                        admin: { user_id: userId }
-                    }
+                        admin: { user_id: userId },
+                    },
                 },
                 { new: true }
-            ).lean(), 
+            ).lean(),
             Post.deleteMany({
                 user_id: userId,
                 group_id: groupId,
-            })
+            }),
         ]);
 
         return res.status(200).json({
@@ -1167,17 +1162,17 @@ exports.createPost = async (req, res) => {
         const groupId = req.params.gr_id;
         const group = await Group.findById(groupId).lean();
 
-        if (!Array.isArray(req.files.post_img)) {
-            req.files.post_img = [req.files.post_img];
-        }
-
-        if (!req.files.post_img || req.files.post_img.length === 0) {
+        if (!req.files) {
             return res.status(400).json({
                 success: false,
                 code: 2003,
                 message:
                     "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
             });
+        }
+
+        if (!Array.isArray(req.files.post_img)) {
+            req.files.post_img = [req.files.post_img];
         }
 
         const postImages = [];
@@ -1213,7 +1208,7 @@ exports.createPost = async (req, res) => {
                         { resource_type: "auto", folder: "post_imgs" },
                         (error, uploadResult) => {
                             if (error) {
-                                // console.log(error);
+                                console.log(error);
                                 return res.status(400).json({
                                     success: false,
                                     code: 2024,
@@ -1223,7 +1218,7 @@ exports.createPost = async (req, res) => {
                             return resolve(uploadResult);
                         }
                     )
-                    .end(req.files.group_avatar.data);
+                    .end(file.data);
             });
 
             postImages.push({
@@ -1232,8 +1227,8 @@ exports.createPost = async (req, res) => {
             });
         }
 
+        const currentDate = new Date();
         if (!group.approve_post) {
-            const currentDate = new Date();
             const post = await Post.create({
                 user_id: req.user._id,
                 ...req.body,
@@ -1251,7 +1246,6 @@ exports.createPost = async (req, res) => {
             });
         }
 
-        const currentDate = new Date();
         const post = await Post.create({
             user_id: req.user._id,
             ...req.body,
@@ -1544,6 +1538,141 @@ exports.puttWaitApprovePosts = async (req, res) => {
             success: false,
             code: 10063,
             message: "Chỉnh sửa bài viết chờ duyệt thất bại :" + error.message,
+        });
+    }
+};
+
+exports.adminCreatePost = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id;
+        const group = await Group.findById(groupId).lean();
+
+        if (!req.files) {
+            return res.status(400).json({
+                success: false,
+                code: 2003,
+                message:
+                    "Đăng bài thất bại. Bài đăng phải có ít nhất một ảnh hoặc video.",
+            });
+        }
+
+        if (!Array.isArray(req.files.post_img)) {
+            req.files.post_img = [req.files.post_img];
+        }
+
+        const postImages = [];
+
+        for (const file of req.files.post_img) {
+            const fileExtension = path.extname(file.name).toLowerCase();
+            const allowedExtensions = validImageFormats.map(
+                (format) => `.${format}`
+            );
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2004,
+                    message:
+                        "Đăng bài thất bại. Định dạng file không hợp lệ. Chỉ chấp nhận .jpg, .jpeg, .png, .mp4.",
+                });
+            }
+
+            const fileSize = file.data.length;
+            if (fileSize > maxFileSize) {
+                return res.status(400).json({
+                    success: false,
+                    code: 2005,
+                    message:
+                        "Đăng bài thất bại. Kích thước file vượt quá giới hạn cho phép (10MB).",
+                });
+            }
+
+            const result = await new Promise((resolve) => {
+                cloudinary.uploader
+                    .upload_stream(
+                        { resource_type: "auto", folder: "post_imgs" },
+                        (error, uploadResult) => {
+                            if (error) {
+                                // console.log(error);
+                                return res.status(400).json({
+                                    success: false,
+                                    code: 2024,
+                                    message: "Lỗi lưu ảnh lên cloundinary.",
+                                });
+                            }
+                            return resolve(uploadResult);
+                        }
+                    )
+                    .end(file.data);
+            });
+
+            postImages.push({
+                publicId: result.public_id,
+                url: result.secure_url,
+            });
+        }
+
+        const currentDate = new Date();
+        const post = await Post.create({
+            user_id: req.user._id,
+            ...req.body,
+            create_post_time: currentDate,
+            post_img: postImages,
+            group_id: groupId,
+            privacy: 3,
+            is_approved: true,
+        });
+
+        // const content =
+        //     req.user.first_name +
+        //     " " +
+        //     req.user.last_name +
+        //     " vừa mới đăng bài.";
+
+        // const noti = await Notification.create({
+        //     user_id: req.user._id,
+        //     noti_content: content,
+        //     post_id: post._id,
+        //     noti_create_time: currentDate,
+        // });
+
+        // const followerUsers = await Follow.find({
+        //     user_id: req.user._id,
+        // }).select("follower_user_id");
+
+        // const followerUserIds = followerUsers
+        //     .map((follow) => follow.follower_user_id)
+        //     .flat();
+
+        // for (const userId of followerUserIds) {
+        //     await Noti_user.findOneAndUpdate(
+        //         { user_id: userId },
+        //         { $push: { detail: { noti_id: noti._id } } },
+        //         { new: true, upsert: true }
+        //     );
+        // }
+
+        // for (const userId of followerUserIds) {
+        //     console.log("id" + userId.toString());
+        //     req.app.get("io").emit(userId.toString(), {
+        //         content: content,
+        //         post_id: post._id,
+        //     });
+        // }
+
+        // req.app.get('io').emit('notis', { content: content, post_id: post._id});
+
+        return res.status(201).json({
+            success: true,
+            message: "Đăng bài thành công.",
+            post,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10080,
+            message: "Admin đăng bài thất bại :" + error.message,
         });
     }
 };
@@ -2904,15 +3033,25 @@ exports.SuperAdminLeaveGroup = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
 
-        const [group, groupDeleteResult, postsDeleteResult] = await Promise.all([
-            Group.findById(groupId).lean(),
-            Group.findByIdAndDelete(groupId),
-            Post.deleteMany({ group_id: groupId })
-        ]);
-        
+        // Tìm nhóm để lấy thông tin avatar.publicId
+        const group = await Group.findById(groupId).lean();
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                code: 10000,
+                message: "Không tìm thấy nhóm.",
+            });
+        }
+
         if (group.avatar && group.avatar.publicId) {
             await cloudinary.uploader.destroy(group.avatar.publicId);
         }
+
+        const [groupDeleteResult, postsDeleteResult] = await Promise.all([
+            Group.findByIdAndDelete(groupId),
+            Post.deleteMany({ group_id: groupId }),
+        ]);
+
         return res.status(201).json({
             success: true,
             message: "Super admin rời nhóm thành công.",
@@ -2921,11 +3060,10 @@ exports.SuperAdminLeaveGroup = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10079,
-            message: "Xóa bài viết thất bại : " + error.message,
+            message: "Rời nhóm thất bại : " + error.message,
         });
     }
 };
-
 
 exports.getGroup = async (req, res) => {
     try {
@@ -3016,4 +3154,4 @@ exports.getGroupSuperAdmin = async (req, res) => {
     }
 };
 
-//10079
+//10080
