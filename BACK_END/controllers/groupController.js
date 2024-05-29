@@ -1378,33 +1378,28 @@ exports.getWaitApprovePosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.user._id;
-        const { size } = req.query;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
 
-        const posts = Post.find({
+        const query = {
             group_id: groupId,
             user_id: userId,
             is_approved: false,
-        })
+        };
+
+        const totalPosts = await Post.countDocuments(query);
+        
+        const posts = await Post.find(query)
             .sort({ create_post_time: -1 })
             .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
-
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
-
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
-
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
+            .populate("user_id", "first_name last_name avatar.url")
+            .skip(skip)
+            .limit(Number(size));
 
         return res.status(200).json({
             success: true,
-            totals,
-            posts: allPosts,
+            totals: totalPosts,
+            posts,
         });
     } catch (error) {
         console.error("Lỗi:", error);
