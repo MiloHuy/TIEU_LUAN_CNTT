@@ -49,16 +49,24 @@ exports.sendMessage = async (req, res) => {
 exports.getMessages = async (req, res) => {
     try {
         const conversationId = req.params.conversation_id;
+        const userId = req.user._id
         const { size = 10, page = 1 } = req.query;
         const skip = size * (page - 1);
 
-        const [messages, totals] = await Promise.all([
+        const [messages, totals, view_message] = await Promise.all([
             Message.find({ conversation_id: conversationId })
-                .populate("sender_id", "first_name last_name avatar.url")
                 .sort({ create_message_time: -1 })
                 .limit(Number(size))
                 .skip(skip),
             Message.countDocuments({ conversation_id: conversationId }),
+            Message.updateMany(
+                {
+                    conversation_id: conversationId,
+                    sender_id: { $ne: userId},
+                    viewed: false,
+                },
+                { viewed: true }
+            ),
         ]);
 
         return res.status(200).json({

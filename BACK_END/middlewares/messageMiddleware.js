@@ -2,7 +2,7 @@ const User = require("../models/User.js");
 const Conversation = require("../models/Conversation.js");
 
 const findReceiver = async (req, res, next) => {
-    const userId = req.params.id;
+    const userId = req.params.user_id;
     const receiver = await User.findById(userId).select('_id').lean()
     if (!receiver) {
         return res.status(404).json({

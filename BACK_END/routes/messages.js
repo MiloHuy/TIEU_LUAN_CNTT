@@ -17,7 +17,7 @@ const {
     findConversation
 } = require('../middlewares/messageMiddleware.js');
 
-router.post('/:id', verifyToken, isUser, findReceiver, sendMessage);
+router.post('/:user_id', verifyToken, isUser, findReceiver, sendMessage);
 router.get('/:conversation_id', verifyToken, isUser, findConversation, getMessages);
 router.get('/', verifyToken, isUser, getConversations);
 // router.post('/like/:id', verifyToken, isUser, like);
