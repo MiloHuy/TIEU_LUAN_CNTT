@@ -12,7 +12,11 @@ const Conversation = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
         default: null,
-    }
+    },
+    last_time: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 module.exports = mongoose.model("Conversation", Conversation);
