@@ -23,16 +23,13 @@ const ActionsGroup = ({ permission }) => {
     )
   }, [permission, handleInviteMember, isLoadInvite])
 
-  const renderStatusJoinGroupButton = useMemo(() => {
-  }, [])
-
   return (
     <div className='min-h-[100px] flex gap-4 items-end lg:justify-end sm:justify-start p-4'>
       {renderInviteButton}
 
       <Button className='p-2 text-lg min-w-[150px] text-black' color='gray'>Tham gia</Button>
 
-      <DropDownShowMoreOptionsGroup />
+      <DropDownShowMoreOptionsGroup permission={permission} />
     </div>
   )
 }

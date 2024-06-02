@@ -8,19 +8,22 @@ import { useParams } from "react-router-dom"
 import MemberCard from "./MemberCard"
 
 const TabMembersGroup = () => {
-  const rolePermission = useSelector(selectRolePermission)
-  const { permission, role } = rolePermission
   const { isLoading, resData: allMembers, fetchAllMember } = useGetAllMember()
   const { groupId } = useParams()
+  const rolePermission = useSelector(selectRolePermission)
+  const { permission } = rolePermission
 
   useEffect(() => {
     if (!groupId) return
 
     fetchAllMember(permission, groupId)
-  }, [groupId, fetchAllMember, role, permission])
+  }, [groupId, fetchAllMember, permission])
 
   return (
-    <LoadingComponent type={TYPELOADING.TITLE} condition={isLoading}>
+    <LoadingComponent
+      type={TYPELOADING.TITLE}
+      condition={isLoading}
+    >
       <div className="grid lg:grid-cols-2 gap-2 w-full justify-center">
         {allMembers && allMembers.map((member) => <MemberCard key={member.id} member={member} />)}
       </div>

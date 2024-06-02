@@ -2,7 +2,6 @@ import { ERoleNameGroup } from "constants/group/enum";
 import { groupPermission } from "constants/group/permission.const";
 import { useCallback, useState } from "react";
 import { getAllMember } from "services/group/api-get.svc";
-import { checkPermission } from "utils/auth.utils";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useGetAllMember = () => {
@@ -14,14 +13,12 @@ export const useGetAllMember = () => {
       const { category, method, endPoint } =
         groupPermission[ERoleNameGroup.MEMBER].allMember;
 
-      if (checkPermission(permission, category, method, endPoint)) {
-        const url = permission[category][method][endPoint];
+      const url = permission[category][method][endPoint];
 
-        const res = await getAllMember(url, groupId);
-        setResData(res.data.members);
+      const res = await getAllMember(url, groupId);
+      setResData(res.data.members);
 
-        setIsLoading(true);
-      }
+      setIsLoading(true);
     } catch (error) {
       setIsLoading(true);
       errorHandler(error);

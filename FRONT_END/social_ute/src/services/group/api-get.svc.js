@@ -29,3 +29,8 @@ export const getAllMember = async (url, groupId) => {
   const res = AxiosInstance.get(url.replace(":gr_id", groupId));
   return res;
 };
+
+export const getAllRegulations = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+};
