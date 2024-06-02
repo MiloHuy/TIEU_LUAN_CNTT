@@ -30,7 +30,7 @@ const User = () => {
         observer.disconnect()
       }
     }
-  }, [posts])
+  }, [posts, elementRef, onIntersection])
 
   return (
     <div className='flex gap-1 w-full h-screen px-4 justify-between'>

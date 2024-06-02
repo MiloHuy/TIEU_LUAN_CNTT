@@ -23,7 +23,7 @@ const ManagePosts = () => {
                 filter.size
             )
         }
-    }, [filter.page])
+    }, [filter.page, filter.size, hasMore])
 
     const fetchAllPost = async (page, size) => {
         try {
@@ -71,7 +71,7 @@ const ManagePosts = () => {
                 observer.disconnect()
             }
         }
-    }, [postsData])
+    }, [postsData, elementRef, onIntersection])
 
     return (
         <div className='w-full h-screen overflow-y-scroll grid grid-cols-1 overflow-x-auto'>

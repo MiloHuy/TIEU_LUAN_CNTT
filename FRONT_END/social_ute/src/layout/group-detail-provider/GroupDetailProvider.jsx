@@ -1,4 +1,5 @@
 import LoadingComponent from "combine/loading-component"
+import { EMessGroup } from "constants/group/enum"
 import { TYPELOADING } from "constants/type.const"
 import { useGetRolePermission } from "hook/group/useGetRolePermission"
 import { useEffect } from "react"
@@ -16,7 +17,7 @@ const GroupDetailProvider = () => {
 
   return (
     <LoadingComponent type={TYPELOADING.DOT} condition={isLoading}>
-      {resDataRolePermission !== undefined ? <Outlet /> : null}
+      {resDataRolePermission !== undefined ? <Outlet /> : EMessGroup.DONT_HAVE_PERMISSION}
     </LoadingComponent>
   )
 }
