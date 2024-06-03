@@ -6,7 +6,6 @@ const SuperAdminGroup = require("../models/SuperAdminGroup");
 const GuestGroup = require("../models/GuestGroup");
 const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
-const { group, log } = require("console");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const {
@@ -81,7 +80,6 @@ exports.create = async (req, res) => {
             };
         }
 
-        // Tạo nhóm mới
         const group = await Group.create({
             avatar: Avatar,
             super_admin: req.user._id,
@@ -855,7 +853,16 @@ exports.getCommentPost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const userId = req.user._id;
-        const group = await Group.findById(groupId).lean();
+
+        const [group, post] = await Promise.all([
+            Group.findById(groupId).lean(),
+            Post.findById(postId)
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .lean(),
+        ]);
+
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -863,11 +870,6 @@ exports.getCommentPost = async (req, res) => {
                 message: "Không tìm thấy nhóm.",
             });
         }
-
-        const post = await Post.findById(postId)
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
 
         if (!post) {
             return res.status(404).json({
@@ -915,43 +917,34 @@ exports.getCommentPost = async (req, res) => {
             });
         }
 
-        const comments = await Comment.find({
-            post_id: postId,
-        })
-            .populate("user_id", "first_name last_name avatar.url")
-            .sort({ create_comment_time: -1 });
+        const [comments, check_liked] = await Promise.all([
+            Comment.find({
+                post_id: postId,
+            })
+                .populate("user_id", "first_name last_name avatar.url")
+                .sort({ create_comment_time: -1 }),
+            Comment_liked.find({
+                user_id: req.user._id,
+            })
+                .select("comment_id -_id")
+                .lean(),
+        ]);
 
-        if (comments.length === 0) {
-            return res.status(200).json({
-                success: true,
-                comments: [],
-            });
-        }
+        const likedCommentIds = new Set(
+            check_liked.map((like) => like.comment_id.toString())
+        );
 
-        const check_liked = await Comment_liked.find({
-            user_id: req.user._id,
-        }).select("comment_id -_id");
-
-        const commentsAfferCheck = comments.map((comment) => {
-            const isLiked = check_liked.some((like) =>
-                like.comment_id.equals(comment._id)
-            );
-
-            return {
-                ...comment.toObject(),
-                liked: isLiked,
-            };
-        });
-
-        const commentsAfferCountLike = await Promise.all(
-            commentsAfferCheck.map(async (comment) => {
+        const commentsWithLikes = await Promise.all(
+            comments.map(async (comment) => {
+                const isLiked = likedCommentIds.has(comment._id.toString());
                 const comment_like = await Comment_liked.findOne({
                     comment_id: comment._id,
                 });
                 const likes = comment_like ? comment_like.user_id.length : 0;
 
                 return {
-                    ...comment,
+                    ...comment.toObject(),
+                    liked: isLiked,
                     likes,
                 };
             })
@@ -959,7 +952,7 @@ exports.getCommentPost = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            comments: commentsAfferCountLike,
+            comments: commentsWithLikes,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -970,6 +963,8 @@ exports.getCommentPost = async (req, res) => {
         });
     }
 };
+
+//
 
 exports.getMyPosts = async (req, res) => {
     try {
@@ -1388,7 +1383,7 @@ exports.getWaitApprovePosts = async (req, res) => {
         };
 
         const totalPosts = await Post.countDocuments(query);
-        
+
         const posts = await Post.find(query)
             .sort({ create_post_time: -1 })
             .select("-post_img.publicId -post_img._id")
@@ -2079,7 +2074,7 @@ exports.adminGetAllPosts = async (req, res) => {
 
         const posts = Post.find({
             group_id: groupId,
-            is_approved: true
+            is_approved: true,
         })
             .sort({ create_post_time: -1 })
             .select("-post_img.publicId -post_img._id")
@@ -3149,5 +3144,3 @@ exports.getGroupSuperAdmin = async (req, res) => {
         });
     }
 };
-
-//10080
