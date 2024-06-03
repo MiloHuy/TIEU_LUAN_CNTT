@@ -8,6 +8,7 @@ const authRouter = require('./auth');
 const commentsRouter = require('./comments');
 const groupRouter = require('./group');
 const messagesRouter = require('./messages');
+const searchRouter = require('./search');
 
 function route(app) {
     app.use('/me', meRouter);
@@ -20,6 +21,7 @@ function route(app) {
     app.use('/comments', commentsRouter);
     app.use('/group', groupRouter);
     app.use('/messages', messagesRouter);
+    app.use('/search', searchRouter);
 }
 
 module.exports = route;
