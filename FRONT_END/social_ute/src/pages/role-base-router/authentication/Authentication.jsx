@@ -1,18 +1,14 @@
 import { authFail, authSuccess } from 'app/slice/auth/auth.slice.js';
 import PropagateLoader from 'components/loading/propagate-loading/PropagateLoader';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { getMeInfo } from 'services/me.svc.js';
-import { io } from 'socket.io-client';
-import { getAccessTokenFromCookie } from 'utils/auth.utils';
 import Unauthorized from '../authorization/UnAuthorization';
 
 export default function Authentication() {
     const { isAuthenticated, loading } = useSelector((state) => state.auth);
     const dispatch = useDispatch()
-    const socketRef = useRef()
-    const token = getAccessTokenFromCookie();
 
     const fetchInfoMySelf = useCallback(async () => {
         try {

@@ -15,3 +15,8 @@ export const ESelectGroup = {
   ADMIN: "admin",
   SUPERADMIN: "super-admin",
 };
+
+export const EMessGroup = {
+  DONT_HAVE_PERMISSION: "Bạn không có quyền thực hiện chức năng này",
+  NO_GROUP: "Chưa có nhóm nào",
+};

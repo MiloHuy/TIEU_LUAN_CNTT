@@ -38,7 +38,7 @@ const HomeGuests = () => {
     catch (error) {
       console.log("Error: ", error)
     }
-  }, [guestId])
+  }, [guestId, dispatch])
 
   const fetchPosts = async () => {
     try {
