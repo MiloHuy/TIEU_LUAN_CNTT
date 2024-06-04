@@ -110,18 +110,39 @@ exports.getAll = async (req, res) => {
 //GET /posts/:id
 exports.getPost = async (req, res) => {
     try {
-        const following_Users = await Follow.find({
-            user_id: req.user._id,
-        }).select("following_user_id");
-        const following_User_Ids = following_Users
-            .map((follow) => follow.following_user_id)
-            .flat();
-        following_User_Ids.push(req.user._id);
+        // const following_Users = await Follow.find({
+        //     user_id: req.user._id,
+        // }).select("following_user_id");
+        // const following_User_Ids = following_Users
+        //     .map((follow) => follow.following_user_id)
+        //     .flat();
+        // following_User_Ids.push(req.user._id);
 
-        const post = await Post.findById(req.params.id)
-            .populate("user_id", "first_name last_name avatar.url")
-            .select("-post_img.publicId")
-            .lean();
+        // const post = await Post.findById(req.params.id)
+        //     .populate("user_id", "first_name last_name avatar.url")
+        //     .select("-post_img.publicId")
+        //     .lean();
+
+        const userId = req.user._id;
+        const postId = req.params.id;
+
+        const [following_User_Ids, post, check_liked, check_stored, post_like] =
+            await Promise.all([
+                getFollowingUserIds(userId),
+                Post.findById(postId)
+                    .populate("user_id", "first_name last_name avatar.url")
+                    .select("-post_img.publicId")
+                    .lean(),
+                Post_liked.findOne({
+                    post_id: postId,
+                    user_id: userId,
+                }),
+                Post_stored.findOne({
+                    user_id: userId,
+                    post_id: postId,
+                }),
+                Post_liked.findOne({ post_id: postId }),
+            ]);
 
         if (!post) {
             return res.status(404).json({
@@ -158,7 +179,7 @@ exports.getPost = async (req, res) => {
                     message:
                         "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
                 });
-            case post.privacy == 0 && !post.user_id._id.equals(req.user._id):
+            case post.privacy == 0 && !post.user_id._id.equals(userId):
                 return res.status(400).json({
                     success: false,
                     code: 2030,
@@ -166,19 +187,9 @@ exports.getPost = async (req, res) => {
                 });
         }
 
-        const check_liked = await Post_liked.findOne({
-            post_id: req.params.id,
-            user_id: req.user._id,
-        });
-        const check_stored = await Post_stored.findOne({
-            user_id: req.user._id,
-            post_id: req.params.id,
-        });
-
         post.liked = !!check_liked;
         post.stored = !!check_stored;
 
-        const post_like = await Post_liked.findOne({ post_id: post._id });
         post.likes = post_like ? post_like.user_id.length : 0;
 
         return res.status(200).json({
@@ -193,6 +204,8 @@ exports.getPost = async (req, res) => {
         });
     }
 };
+
+//
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
