@@ -35,7 +35,6 @@ const Group = new Schema({
                 ref: "User",
             },
             role_permisson: {
-                // type: mongoose.Schema.Types.Mixed // hoặc mongoose.Schema.Types.Object
                 role: {
                     type: String,
                     default: "admin",
@@ -229,14 +228,6 @@ const Group = new Schema({
             create_report_time: {
                 type: Date,
                 required: true,
-            },
-        },
-    ],
-    queue_posts: [
-        {
-            post_id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Post",
             },
         },
     ],
