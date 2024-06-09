@@ -2,19 +2,33 @@ import { useCallback, useState } from "react";
 import { getUserSearch } from "services/user.svc";
 
 export const useSearchUser = () => {
-  const [userSearch, setUserSearch] = useState();
+  const [resultSearch, setResultSearch] = useState({
+    totalUser: 0,
+    totalGroup: 0,
+    groups: [],
+    users: [],
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchSearchUser = useCallback(async (page, pageSize, search) => {
+  const fetchSearch = useCallback(async (page, pageSize, search) => {
     try {
       setIsLoading(true);
-      const initialData = await getUserSearch({
+
+      const data = await getUserSearch({
         page: page,
         size: pageSize + 3,
         search: search,
       });
 
-      setUserSearch(initialData);
+      setResultSearch((prev) => ({
+        ...prev,
+        users: data.data.users,
+        groups: data.data.groups,
+        totalUser: data.data.total_user,
+        totalGroup: data.data.total_group,
+      }));
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -23,8 +37,8 @@ export const useSearchUser = () => {
   }, []);
 
   return {
-    userSearch,
+    resultSearch,
     isLoading,
-    fetchSearchUser,
+    fetchSearch,
   };
 };

@@ -1,175 +1,110 @@
 import clsx from 'clsx';
 import { Button } from 'components/button';
 import { MessIcon, Users } from 'components/icon/bonus.icon';
-import { Toggle } from 'components/toggle';
-import ModalGroup from 'features/modal/modal-group';
-import ModalSearchUser from 'features/modal/modal-search-user';
-import ModalUploadFile from 'features/modal/modal-upload-image-file';
-import PopupNofication from 'features/popup/popup-nofication';
+import ModalGroup from 'features/modal/modal-group/ModalGroup';
+import ModalSearchUser from 'features/modal/modal-search-user/ModalSearchUser';
+import ModalUploadFile from 'features/modal/modal-upload-image-file/ModalUploadFile';
+import popupNofication from 'features/popup/popup-nofication';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser } from './utils';
 
-const SidebarBody = (props) => {
-  const { className, userID } = props
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+const SidebarButton = ({ className, Icon, text, onClick }) => (
+  <Button
+    className={className}
+    variant="ghost"
+    onClick={onClick}
+  >
+    <Icon size={24} strokeWidth={1.5} />
+    <p className='font-quick_sans text-lg'>{text}</p>
+  </Button>
+);
 
-  const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105'
+const SidebarBody = (props) => {
+  const { className, userID } = props;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105';
+
+  const buttons = [
+    {
+      Icon: Home,
+      text: 'Trang chủ',
+      onClick: () => handleNavigateHome(navigate),
+      isModal: false
+    },
+    {
+      Icon: Search,
+      text: 'Tìm kiếm',
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalSearchUser,
+      modalProps: { className: 'w-[55vw] h-[70vh]' }
+    },
+    {
+      Icon: MessIcon,
+      text: 'Tin nhắn',
+      onClick: null,
+      isModal: false
+    },
+    {
+      Icon: Bell,
+      text: 'Thông báo',
+      onClick: null,
+      isModal: true,
+      ModalComponent: popupNofication,
+      modalProps: {}
+    },
+    {
+      Icon: UserCircle2,
+      text: 'Trang cá nhân',
+      onClick: () => handleNavigateUser(navigate, userID),
+      isModal: false
+    },
+    {
+      Icon: Users,
+      text: 'Nhóm',
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalGroup,
+      modalProps: {}
+    },
+    {
+      Icon: UserPlus,
+      text: 'Yêu cầu',
+      onClick: () => handleNavigateRequest(navigate),
+      isModal: false
+    },
+    {
+      Icon: PlusSquare,
+      text: 'Tạo',
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalUploadFile,
+      modalProps: {}
+    },
+    {
+      Icon: LogOut,
+      text: 'Đăng xuất',
+      onClick: () => handleLogOut(dispatch, navigate),
+      isModal: false
+    },
+  ];
 
   return (
     <div className={clsx('w-full h-max', className)}>
       <div className='flex flex-col gap-3 justify-between'>
-        <Toggle
-          className={classBaseButton}
-          variant="ghost"
-
-          onClick={() => handleNavigateHome(navigate)}
-        >
-          <Home
-            size={24}
-            strokeWidth={1.5}
-          />
-
-          <p className='font-quick_sans text-lg '>
-            Trang chủ
-          </p>
-        </Toggle>
-
-        <ModalSearchUser
-          className='w-[55vw] h-[70vh]'
-          trigger={
-            <Button
-              className={classBaseButton}
-              variant="ghost"
-            >
-              <Search
-                size={24}
-                strokeWidth={1.5}
-              />
-
-              <p className='font-quick_sans text-lg '>
-                Tìm kiếm
-              </p>
-            </Button>
-          }
-        />
-
-        <Button
-          className={classBaseButton}
-          variant="ghost"
-        >
-          <MessIcon
-            height={24}
-            width={24}
-          />
-
-          <p className='font-quick_sans text-lg'>
-            Tin nhắn
-          </p>
-        </Button>
-
-        <PopupNofication
-          trigger={
-            <Button
-              className={classBaseButton}
-              variant="ghost"
-            >
-              <Bell
-                size={24}
-                strokeWidth={1.5}
-              />
-
-              <p className='font-quick_sans text-lg '>
-                Thông báo
-              </p>
-            </Button>
-          }
-        />
-
-        <Button
-          className={classBaseButton}
-          variant="ghost"
-
-          onClick={() => handleNavigateUser(navigate, userID)}
-        >
-          <UserCircle2
-            size={24}
-            strokeWidth={1.5}
-          />
-
-          <p className='font-quick_sans text-lg '>
-            Trang cá nhân
-          </p>
-        </Button>
-
-        <ModalGroup
-          trigger={
-            <Button
-              className={classBaseButton}
-              variant="ghost"
-            >
-              <Users height={20} width={20} />
-              <p className='font-quick_sans text-lg '>
-                Nhóm
-              </p>
-            </Button>
-          }
-        />
-
-        <Button
-          className={classBaseButton}
-          variant="ghost"
-          onClick={() => handleNavigateRequest(navigate)}
-        >
-          <UserPlus
-            size={24}
-            strokeWidth={1.5}
-          />
-
-          <p className='font-quick_sans text-lg '>
-            Yêu cầu
-          </p>
-        </Button>
-
-        <ModalUploadFile
-          trigger={
-            <Button
-              className={classBaseButton}
-              variant="ghost"
-            >
-              <PlusSquare
-                size={24}
-                strokeWidth={1.5}
-              />
-
-              <p className='font-quick_sans text-lg '>
-                Tạo
-              </p>
-            </Button>
-          }
-        />
-
-        <Button
-          className={classBaseButton}
-          variant="ghost"
-
-          onClick={() => handleLogOut(dispatch, navigate)}
-        >
-          <LogOut
-            size={24}
-            strokeWidth={1.5}
-          />
-
-          <p className='font-quick_sans text-lg '>
-            Đăng xuất
-          </p>
-        </Button>
-
+        {buttons.map((button, index) => (
+          button.isModal ?
+            <button.ModalComponent key={index} {...button.modalProps} trigger={<SidebarButton className={classBaseButton} Icon={button.Icon} text={button.text} />} />
+            :
+            <SidebarButton key={index} className={classBaseButton} Icon={button.Icon} text={button.text} onClick={button.onClick} />
+        ))}
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default SidebarBody
+export default SidebarBody;

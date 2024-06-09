@@ -1,5 +1,6 @@
 import { Badge } from "components/badge"
 import { EPrivacyGroup, ERoleNameGroup } from "constants/group/enum"
+import { useParams } from "react-router-dom"
 import ActionsGroup from "./ActionsGroup"
 
 const genLabelPrivacy = (privacy) => {
@@ -27,6 +28,8 @@ const genLabelRole = (role) => {
 }
 
 const InfoBaseGroup = ({ info }) => {
+  const { groupId } = useParams()
+
   return (
     <div className='flex flex-col w-full h-max border-b border-black gap-2 px-2 rounded-md dark:border-white'>
       <h1 className='text-[30px] font-bold uppercase'>{info.name}</h1>
@@ -47,7 +50,11 @@ const InfoBaseGroup = ({ info }) => {
           <h4>{info.numberMember} thành viên</h4>
         </div>
 
-        <ActionsGroup permission={info.permission} />
+        <ActionsGroup
+          permission={info.permission}
+          role={info.roleName}
+          groupId={groupId}
+        />
       </div>
     </div>
   )

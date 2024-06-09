@@ -14,9 +14,10 @@ const ListPostGroup = () => {
     <div className='flex flex-col gap-4 '>
       <LoadingComponent type={TYPELOADING.TITLE} condition={true}>
         {
-          resPonse.map((post) => {
+          resPonse.map((post, index) => {
             return (
               <CardPostUser
+                key={index}
                 postData={{
                   img: [
                     { url: 'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg' }

@@ -1,5 +1,6 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import { Button } from "components/button";
+import { getFullName } from "utils/user.utils";
 
 const MemberCard = ({ member, ...props }) => (
   <CardBaseLayout
@@ -15,7 +16,7 @@ const MemberCard = ({ member, ...props }) => (
     }
     body={
       <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-semibold">Nguyen Van A</h3>
+        <h3 className="text-xl font-semibold">{getFullName(member.first_name, member.last_name)}</h3>
         <p className="text-sm text-gray-400">20/10/2000</p>
       </div>
     }
