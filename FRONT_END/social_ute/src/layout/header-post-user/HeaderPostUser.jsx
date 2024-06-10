@@ -34,23 +34,22 @@ const HeaderPostUser = ({ img, name, href, action, className, privacy }) => {
 
   return (
     <div className={clsx(
-      "border-b border-black text-black flex justify-between overflow-hidden",
+      "border-b border-black text-black flex justify-between overflow-hidden h-14",
       "dark:text-white dark:border-white font-quick_sans",
       className)}>
-      <div className='w-max h-full flex items-center gap-2'>
+      <div className='w-full h-full flex items-center gap-2'>
         <img
           loading="lazy"
           alt="img"
-          className="object-fill w-30 h-full rounded-full"
+          className="object-cover w-12 h-12 rounded-full"
           src={img ? img : 'https://github.com/shadcn.png'}
         />
 
-        <div className='grid items-start'>
+        <div className='flex flex-col items-start'>
           <div className='flex gap-2 items-center'>
             <Link to={href}>
               <p className='text-lg'> {name ? name : 'User'}</p>
             </Link>
-
 
           </div>
 

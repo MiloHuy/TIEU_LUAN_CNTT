@@ -6,7 +6,6 @@ export const useInviteMember = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInviteMember = useCallback(async ({ url, groupId, userId }) => {
-    console.log("userId", userId);
     try {
       setIsLoading(true);
 

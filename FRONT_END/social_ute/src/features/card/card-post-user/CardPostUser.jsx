@@ -12,7 +12,6 @@ const CardPostUser = (props) => {
   const userName = getFullName(postData.userId?.first_name, postData.userId?.last_name);
   const ID = getUserIdFromCookie();
 
-
   const navigateHome = postData.userId?._id !== ID
     ? `/welcome/home-guest/${postData.userId?._id}`
     : `/welcome/home-user/${ID}`

@@ -1,17 +1,17 @@
-import { Spinner, Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import ListFriendsUser from "features/list/list-friends-user";
+import ListPostStored from "features/list/list-post-stored";
 import ListPostUserDetail from "features/list/list-post-user-detail";
 import ListStoryUserDetail from 'features/list/list-story-user-detail';
 import { useMeAllStory } from "hook/me/useMeAllStory";
 import { useFollowAndFollwing } from "hook/statisic/useFollowAndFollwing";
 import HeaderHome from "layout/header-home";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
-import { getPostSaved } from "services/post/api-get.svc";
 import { getFullName } from "utils/user.utils";
 import { genTitleTab } from "./utils";
 
@@ -24,29 +24,6 @@ const HomeUser = () => {
   const { userStatisics, fetchUserStatisics } = useFollowAndFollwing(userId)
   const { stories: meStories, fetchMeStories } = useMeAllStory(userId)
 
-  const initHomeUser = {
-    userStatisics: '',
-    mePosts: '',
-    stories: '',
-    friends: '',
-    postSaved: ''
-  }
-
-  const [homeUser, setHomeUser] = useState(initHomeUser)
-
-  const fetchMePostSaved = useCallback(async () => {
-    try {
-      const dataPostSaved = await getPostSaved()
-      setHomeUser((prev) => ({
-        ...prev,
-        postSaved: [...dataPostSaved.data.posts]
-      }))
-    }
-    catch (error) {
-      console.log("Error: ", error)
-    }
-  }, [])
-
   useEffect(() => {
     fetchUserStatisics()
   }, [fetchUserStatisics])
@@ -56,16 +33,13 @@ const HomeUser = () => {
       case 'story':
         fetchMeStories()
         break
-      case 'postsSaved':
-        fetchMePostSaved()
-        break
       default:
         return
     }
-  }, [selected, fetchMeStories, fetchMePostSaved])
+  }, [selected, fetchMeStories])
 
   return (
-    <LoadingComponent type={TYPELOADING.PROPAGATE} condition={userStatisics}>
+    <LoadingComponent type={TYPELOADING.PROPAGATE} condition={Boolean(userStatisics)}>
       <div className='flex flex-col w-full h-screen p-4'>
         <HeaderHome
           userStatisics={userStatisics}
@@ -88,9 +62,7 @@ const HomeUser = () => {
               }}
             >
               <Tab key="posts" title={genTitleTab("posts")}>
-                <ListPostUserDetail
-                  userName={getFullName(user.first_name, user.last_name)}
-                />
+                <ListPostUserDetail />
               </Tab>
 
               <Tab key="story" title={genTitleTab("story")}>
@@ -102,18 +74,7 @@ const HomeUser = () => {
               </Tab>
 
               <Tab key="postsSaved" title={genTitleTab("postsSaved")}>
-                {
-                  homeUser.postSaved
-                    ?
-                    <ListPostUserDetail
-                      userName={getFullName(user.first_name, user.last_name)}
-                      posts={homeUser.postSaved}
-                    />
-                    :
-                    <div className='w-full h-full flex items-center justify-center'>
-                      <Spinner color="default" size="lg" />
-                    </div >
-                }
+                <ListPostStored />
               </Tab>
             </Tabs>
           </div>

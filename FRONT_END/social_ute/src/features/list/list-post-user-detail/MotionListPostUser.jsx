@@ -1,4 +1,4 @@
-export const container = {
+export const containerMotion = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
         opacity: 1,
@@ -10,7 +10,7 @@ export const container = {
     }
 };
 
-export const item = {
+export const itemMotion = {
     hidden: { y: 20, opacity: 0 },
     visible: {
         y: 0,

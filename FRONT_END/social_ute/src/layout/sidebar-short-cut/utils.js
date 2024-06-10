@@ -4,6 +4,7 @@ import ModalSearchUser from "features/modal/modal-search-user";
 import ModalUploadFile from "features/modal/modal-upload-image-file/ModalUploadFile";
 import PopupNofication from "features/popup/popup-nofication";
 import {
+  handleCreatePost,
   handleLogOut,
   handleNavigateHome,
   handleNavigateRequest,
@@ -89,6 +90,7 @@ export const genTriggerSidebar = (icon, index, userID, navigate, dispatch) => {
               {icon.icon}
             </Button>
           }
+          onUpload={handleCreatePost}
         />
       );
     case 8:

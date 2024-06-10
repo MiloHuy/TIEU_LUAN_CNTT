@@ -29,7 +29,7 @@ const FooterActionsPost = (
 
   return (
     <>
-      <div className={cn('flex justify-between px-1', className)}>
+      <div className={cn('flex justify-between px-1 w-full', className)}>
         <div className='flex flex-row gap-3'>
           <Button className='w-[20px]' variant="ghost"
             onClick={() => handleLikePost(post_id)}

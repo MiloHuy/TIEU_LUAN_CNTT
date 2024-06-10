@@ -9,6 +9,9 @@ export const catePermiss = {
   MANAGE_MEMBER: "Manage_member",
   MANAGE_POST: "Manage_post",
   MANAGE_INTERACT: "Manage_interact",
+  MANAGE_REGULATION: "Manage_regulation",
+  LEAVE_GROUP: "Leave_Group",
+  EDIT_GROUP: "Edit",
 };
 
 const createPermission = (category, method, endPoint) => ({
@@ -121,8 +124,20 @@ export const groupPermission = {
       "GET",
       "posts_wait_approve",
     ),
+    leaveGroup: createPermission(
+      catePermiss.LEAVE_GROUP,
+      "POST",
+      "leave_group",
+    ),
   },
-  [ERoleNameGroup.ADMIN]: { ...basePermissions },
+  [ERoleNameGroup.ADMIN]: {
+    ...basePermissions,
+    leaveGroup: createPermission(
+      catePermiss.LEAVE_GROUP,
+      "POST",
+      "leave_group",
+    ),
+  },
   [ERoleNameGroup.SUPERADMIN]: {
     ...basePermissions,
     ...superAdminPermissions,
@@ -146,5 +161,10 @@ export const groupPermission = {
         "delete_admin",
       ),
     },
+    leaveGroup: createPermission(
+      catePermiss.LEAVE_GROUP,
+      "POST",
+      "leave_group",
+    ),
   },
 };

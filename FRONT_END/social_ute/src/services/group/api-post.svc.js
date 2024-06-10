@@ -29,3 +29,8 @@ export const inviteMember = async (url, groupId, userId) => {
   );
   return res;
 };
+
+export const leaveGroup = async (url, groupId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId));
+  return res;
+};

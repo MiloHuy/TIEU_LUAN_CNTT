@@ -2,20 +2,15 @@ import clsx from "clsx"
 import { Button } from "components/button"
 import CaroselVersion2 from "components/carousel/Carosel-V2"
 import { Textarea } from "components/textarea"
-import { ERROR_SYSTEM, ERR_CREATE_POST } from "constants/error.const"
 import { PostType } from "constants/post.const"
 import SelectPrivacyPost from "features/select/select-privacy-post"
 import { PrivacyPost } from "features/select/select-privacy-post/SelectPrivacyPost"
 import { useFormik } from "formik"
 import { Loader2 } from "lucide-react"
-import { useMemo, useState } from "react"
-import { toast } from "react-toastify"
-import { createPost } from "services/post/api-post.svc"
-import { checkCodeInArray } from "utils/code-error.utils"
-import { handleRevokeBlobUrl } from "utils/file.utils"
+import { useCallback, useMemo, useState } from "react"
 
-const FormUploadFinal = ({ className, stepForm, files, images }) => {
-  const [loading, setIsLoading] = useState(false)
+const FormUploadFinal = ({ className, stepForm, onUpload, images, files }) => {
+  const [isLoading, setIsLoading] = useState(false)
 
   const initFormUpload = {
     post_description: '',
@@ -23,6 +18,12 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
     privacy: PrivacyPost.FOLLOWER
   }
   const [formUpload, setFormUpload] = useState(initFormUpload)
+
+  const handleUploadFinal = useCallback(async (values, files, images) => {
+    setIsLoading(true)
+    onUpload && await onUpload(values, files, images)
+    setIsLoading(false)
+  }, [onUpload])
 
   const checkStepToNextForm = useMemo(() => {
     switch (stepForm) {
@@ -43,73 +44,9 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
     setFormUpload({ ...formUpload, [e.target.name]: e.target.value, });
   };
 
-  const handleCreatePost = async () => {
-    try {
-      setIsLoading(true)
-
-      const formData = new FormData()
-      formData.append('post_description', values['post_description'])
-      for (const file of files) {
-        formData.append('post_img', file)
-      }
-      formData.append('privacy', formUpload['privacy'])
-
-      await createPost(formData)
-      setIsLoading(false)
-
-      toast.success('Đăng bài viết thành công!!!', {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
-      handleRevokeBlobUrl(images)
-      setTimeout(() => { window.location.reload() }, 1500)
-    }
-    catch (err) {
-      setIsLoading(false)
-
-      if (err && err.response && err.response.data) {
-        const { code } = err.response.data
-
-        const messageError = checkCodeInArray(ERR_CREATE_POST, code)
-
-        toast.error(messageError, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-      else {
-        toast.error(ERROR_SYSTEM, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-
-    }
-  }
-
   const formik = useFormik({
     initialValues: formUpload,
     handleChange: { handleInput },
-    handleSubmit: { handleCreatePost }
   })
 
   const { values } = formik
@@ -137,7 +74,7 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
             <p className='text-lg font-bold'>Viết mô tả:</p>
 
             <Textarea
-              disabled={loading}
+              disabled={isLoading}
               id="post_description"
               name='post_description'
               placeholder="Hãy viết cảm nghĩ của bạn"
@@ -147,17 +84,17 @@ const FormUploadFinal = ({ className, stepForm, files, images }) => {
 
             <SelectPrivacyPost
               title='Phạm vi:'
-              loading={loading}
+              loading={isLoading}
               values={values['privacy']}
               handleChange={setFormUpload}
             />
 
             <Button
-              onClick={handleCreatePost}
-              disabled={loading}
+              onClick={() => handleUploadFinal(values, files, images)}
+              disabled={isLoading}
               className='text-xl'
             >
-              {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : ''}
+              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : ''}
 
               Đăng bài
             </Button>

@@ -11,6 +11,8 @@ const ActionsGroup = ({ permission, role, groupId }) => {
   const { handleInviteMember } = useInviteMember()
 
   const renderInviteButton = useMemo(() => {
+    if (!groupPermission[role].invite) return null;
+
     const { category, method, endPoint } = groupPermission[role].invite;
     const isValid = checkPermission(permission, category, method, endPoint);
 
