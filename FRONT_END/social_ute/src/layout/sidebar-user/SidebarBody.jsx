@@ -6,9 +6,10 @@ import ModalSearchUser from 'features/modal/modal-search-user/ModalSearchUser';
 import ModalUploadFile from 'features/modal/modal-upload-image-file/ModalUploadFile';
 import popupNofication from 'features/popup/popup-nofication';
 import { Bell, Home, LogOut, PlusSquare, Search, UserCircle2, UserPlus } from "lucide-react";
+import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser } from './utils';
+import { handleCreatePost, handleLogOut, handleNavigateHome, handleNavigateRequest, handleNavigateUser } from './utils';
 
 const SidebarButton = ({ className, Icon, text, onClick }) => (
   <Button
@@ -21,14 +22,8 @@ const SidebarButton = ({ className, Icon, text, onClick }) => (
   </Button>
 );
 
-const SidebarBody = (props) => {
-  const { className, userID } = props;
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105';
-
-  const buttons = [
+const renderButtonsSidebar = (navigate, userID, dispatch) => {
+  return [
     {
       Icon: Home,
       text: 'Trang chủ',
@@ -83,7 +78,9 @@ const SidebarBody = (props) => {
       onClick: null,
       isModal: true,
       ModalComponent: ModalUploadFile,
-      modalProps: {}
+      modalProps: {
+        onUpload: handleCreatePost,
+      }
     },
     {
       Icon: LogOut,
@@ -91,7 +88,17 @@ const SidebarBody = (props) => {
       onClick: () => handleLogOut(dispatch, navigate),
       isModal: false
     },
-  ];
+  ]
+}
+
+const SidebarBody = (props) => {
+  const { className, userID } = props;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const classBaseButton = 'w-full flex justify-start gap-3 items-center px-4 border hover:scale-105';
+
+  const buttons = useMemo(() => renderButtonsSidebar(navigate, userID, dispatch), [navigate, userID, dispatch]);
 
   return (
     <div className={clsx('w-full h-max', className)}>
