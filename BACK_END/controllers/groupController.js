@@ -2715,7 +2715,45 @@ exports.getAdmin = async (req, res) => {
 
 exports.getAdminPermission = async (req, res) => {
     try {
-        User
+        const userId = req.params.user_id;
+        const group = req.group;
+
+        const check_user = await User.findById(userId);
+
+        if (!check_user) {
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+
+        const check_admin = group.admin.find(
+            (admin) => admin.user_id.toString() === userId
+        );
+
+        if (!check_admin) {
+            return res.status(401).json({
+                success: false,
+                code: 10071,
+                message: "Người này không phải admin của nhóm.",
+            });
+        }
+
+        const managePermissions = {};
+        for (const [key, value] of Object.entries(
+            check_admin.role_permisson.permission
+        )) {
+            if (key.startsWith("Manage")) {
+                managePermissions[key] = value;
+            }
+        }
+
+        return res.status(200).json({
+            success: true,
+            admin: managePermissions,
+        });
+
     } catch (error) {
         console.error("Lỗi:", error);
         res.status(500).json({
@@ -2777,6 +2815,16 @@ exports.superEditActiveAdmin = async (req, res) => {
         const userId = req.params.user_id;
         const group = req.group;
 
+        const check_user = await User.findById(userId);
+
+        if (!check_user) {
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+
         const admin = group.admin.find(
             (admin) => admin.user_id._id.toString() === userId
         );
@@ -2821,18 +2869,28 @@ exports.superEditActiveAdmin = async (req, res) => {
 
 exports.superEditPermissionAdmin = async (req, res) => {
     try {
-        const adminId = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const userId = req.params.user_id;
+        const group = req.group;
+
+        const check_user = await User.findById(userId);
+
+        if (!check_user) {
+            return res.status(401).json({
+                success: false,
+                code: 10024,
+                message: "Không tìm thấy người dùng",
+            });
+        }
+        
         const check_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === adminId
+            (admin) => admin.user_id.toString() === userId
         );
 
         if (!check_admin) {
             return res.status(401).json({
                 success: false,
-                code: 10074,
-                message: "Người này không phải admin.",
+                code: 10071,
+                message: "Người này không phải admin của nhóm.",
             });
         }
 
