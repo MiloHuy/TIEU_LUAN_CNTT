@@ -52,6 +52,7 @@ const {
     putSetting,
     SuperAdminLeaveGroup,
     adminCreatePost,
+    getAdminPermission,
 } = require('../controllers/groupController.js');
 
 const {
@@ -111,6 +112,7 @@ router.put('/:gr_id/admin/regulation', verifyToken, isUser, isAdminGroup, adminE
 
 router.post('/:gr_id/super-admin/add-admin/:user_id', verifyToken, isUser, isSuperAdminGroup, addAdmin);
 router.get('/:gr_id/super-admin/admins', verifyToken, isUser, isSuperAdminGroup, getAdmin);
+router.get('/:gr_id/super-admin/admins/permission/:user_id', verifyToken, isUser, isSuperAdminGroup, getAdminPermission);
 router.get('/:gr_id/super-admin/admins/search', verifyToken, isUser, isSuperAdminGroup, searchAdmin);
 router.put('/:gr_id/super-admin/edit-active/:user_id', verifyToken, isUser, isSuperAdminGroup, superEditActiveAdmin);
 router.put('/:gr_id/super-admin/edit-permission/:user_id', verifyToken, isUser, isSuperAdminGroup, superEditPermissionAdmin);

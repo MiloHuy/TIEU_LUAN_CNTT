@@ -85,7 +85,8 @@ const SuperAdminGroup = new Schema({
                 add_admin: { type: String, default: 'group/:gr_id/super-admin/add-admin/:user_id' },
             },
             GET: {
-                admin: { type: String, default: 'group/:gr_id/super-admin/admins' },
+                admins: { type: String, default: 'group/:gr_id/super-admin/admins' },
+                admin_permission: { type: String, default: 'group/:gr_id/super-admin/admins/permission/:user_id' },
                 search: { type: String, default: 'group/:gr_id/super-admin/admins/search' },
             },
             PUT: {

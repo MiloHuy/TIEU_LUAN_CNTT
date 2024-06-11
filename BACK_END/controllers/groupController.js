@@ -2496,14 +2496,20 @@ exports.adminEditRegulation = async (req, res) => {
 
 exports.addAdmin = async (req, res) => {
     try {
-        const adminId = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
-        const check_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === adminId
+        const userId = req.params.user_id;
+        const group = req.group;
+        // const check_admin = group.admin.find(
+        //     (admin) => admin.user_id.toString() === userId
+        // );
+
+        const memberIds = new Set(
+            group.member.map((member) => member.user_id.toString())
+        );
+        const adminIds = new Set(
+            group.admin.map((admin) => admin.user_id.toString())
         );
 
-        const check_user = await User.findById(adminId);
+        const check_user = await User.findById(userId);
 
         if (!check_user) {
             return res.status(401).json({
@@ -2513,7 +2519,15 @@ exports.addAdmin = async (req, res) => {
             });
         }
 
-        if (check_admin) {
+        if (!memberIds.has(userId)) {
+            return res.status(401).json({
+                success: false,
+                code: 10005,
+                message: "Không có người này trong nhóm.",
+            });
+        }
+
+        if (adminIds.has(userId)) {
             return res.status(401).json({
                 success: false,
                 code: 10008,
@@ -2524,49 +2538,13 @@ exports.addAdmin = async (req, res) => {
         const admin = await AdminGroup.findOne({ role: "admin" });
 
         const new_admin = {
-            user_id: adminId,
+            user_id: userId,
             role_permisson: admin.role_permisson,
         };
         group.admin.push(new_admin);
+        group.member = group.member.filter(member => member.user_id.toString() !== userId);
 
         await group.save();
-
-        // const group = await Group.findById(groupId);
-
-        // if (!group) {
-        //     return res
-        //         .status(404)
-        //         .json({ success: false, message: "Group not found" });
-        // }
-
-        // const adminToUpdate = group.admin.find(
-        //     (admin) => admin.user_id.toString() === userIdToUpdate
-        // );
-
-        // if (!adminToUpdate) {
-        //     return res
-        //         .status(404)
-        //         .json({ success: false, message: "Admin not found" });
-        // }
-
-        // // adminToUpdate.role_permisson.permission.Manage_member = undefined;
-        // adminToUpdate.role_permisson.permission.Manage_member = {
-        //     GET: {
-        //         members: "group/:gr_id/admin/members",
-        //         request_join: "group/:gr_id/admin/request-join",
-        //     },
-        //     POST: {
-        //         accept_request: "group/:gr_id/admin/accept-request/:user_id",
-        //     },
-        //     PUT: {
-        //         edit_active: "group/:gr_id/admin/edit-active/:user_id",
-        //     },
-        //     DELETE: {
-        //         delete_member: "group/:gr_id/admin/delete_member/:user_id",
-        //     },
-        // };
-
-        // await group.save();
 
         return res.status(200).json({
             success: true,
@@ -2730,6 +2708,19 @@ exports.getAdmin = async (req, res) => {
         res.status(500).json({
             success: false,
             code: 10069,
+            message: "Lấy danh sách admin thất bại :" + error.message,
+        });
+    }
+};
+
+exports.getAdminPermission = async (req, res) => {
+    try {
+        User
+    } catch (error) {
+        console.error("Lỗi:", error);
+        res.status(500).json({
+            success: false,
+            code: 10081,
             message: "Lấy danh sách admin thất bại :" + error.message,
         });
     }
