@@ -1895,7 +1895,7 @@ exports.adminRefuseRequest = async (req, res) => {
 exports.adminGetMembers = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
+        const { size = 10, page = 1 } = req.query;
 
         const [group, list_posts] = await Promise.all([
             Group.findById(groupId)
@@ -1948,25 +1948,14 @@ exports.adminGetMembers = async (req, res) => {
             };
         });
 
-        const apiFeatures = new AdminGroupAPIFeatures(
-            filteredMembers,
-            req.query
-        );
-
-        let allMember = await apiFeatures.query;
-        const totals = allMember.length;
-
-        const apiFeaturesPagination = new AdminGroupAPIFeatures(
-            filteredMembers,
-            req.query
-        ).pagination(size);
-
-        allMember = await apiFeaturesPagination.query;
+        const skip = (page - 1) * size;
+        const paginated_members = filteredMembers.slice(skip, skip + size);
+        const totals = filteredMembers.length;
 
         return res.status(200).json({
             success: true,
             totals,
-            members: allMember,
+            members: paginated_members,
         });
     } catch (error) {
         console.error("Lỗi:", error);
