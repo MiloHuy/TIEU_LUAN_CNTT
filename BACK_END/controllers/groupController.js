@@ -234,11 +234,12 @@ exports.getInfo = async (req, res) => {
 exports.getMembers = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
+        const { size = 10, page = 1 } = req.query;
         const group = await Group.findById(groupId)
             .select("super_admin member.user_id admin.user_id")
             .populate(
                 "member.user_id super_admin admin.user_id",
-                "first_name last_name avatar.url"
+                "first_name last_name avatar.url id department"
             )
             .lean();
 
@@ -255,9 +256,14 @@ exports.getMembers = async (req, res) => {
             .concat(group.admin.map((admin) => admin.user_id))
             .concat(group.super_admin);
 
+        const skip = (page - 1) * size;
+        const paginated_members = members.slice(skip, skip + size);
+        const totals = members.length;
+
         return res.status(200).json({
             success: true,
-            members,
+            totals,
+            members: paginated_members,
         });
     } catch (error) {
         console.error("Lỗi:", error);
