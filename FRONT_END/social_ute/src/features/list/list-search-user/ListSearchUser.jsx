@@ -1,59 +1,35 @@
-import LoadingComponent from 'combine/loading-component';
-import { TYPELOADING } from 'constants/type.const';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFullName } from 'utils/user.utils';
+import GroupCard from './GroupCard';
+import UserCard from './UserCard';
 
-const ListSearchUser = ({ userSearch, isLoading }) => {
-  const totals = userSearch.totals
-  const navigate = useNavigate()
+const ListSearchUser = ({ resultSearch }) => {
+  const navigate = useNavigate();
+  const { users, groups } = resultSearch;
 
-  const handleNavigateUser = (id) => {
-    navigate(`home-guest/${id}`)
+  const handleNavigate = useCallback(
+    (id, path) => {
+      navigate(`${path}/${id}`);
+    }, [navigate]
+  );
 
-    setTimeout(() => { window.location.reload() }, 1000)
-  }
+  const renderList = useCallback((list, Component, path) => {
+    if (!list?.length) return null;
+    return list.map((item) => <Component key={item._id} item={item} onClick={() => handleNavigate(item._id, path)} />);
+  }, [handleNavigate])
+
+  const renderNoResults = useMemo(() => {
+    if (users?.length === 0 && groups?.length === 0) return <p>Không tìm thấy kết quả phù hợp.</p>;
+
+  }, [users, groups])
 
   return (
-    <LoadingComponent type={TYPELOADING.TITLE} title='Đang lấy dữ liệu' condition={!isLoading}>
-      {
-        totals !== 0 ?
-          <div
-            className="grid grid-cols-1 gap-3 w-4/5 h-full items-start justify-start"
-          >
-            {
-              userSearch.allUser.map((user) => {
-                return (
-                  <div
-                    key={user._id}
-                    onClick={() => handleNavigateUser(user._id)}
-                    className='flex gap-3 cursor-pointer'>
-                    <img
-                      width={60}
-                      height={40}
-                      src={user.avatar.url}
-                      alt={user.last_name}
-                      className="rounded-full"
-                    />
+    <div className="grid grid-cols-1 gap-2 w-full px-4 items-start justify-start overflow-auto">
+      {renderList(users, UserCard, 'home-guest')}
+      {renderList(groups, GroupCard, '/welcome/groupDetails')}
+      {renderNoResults}
+    </div>
+  );
+};
 
-                    <div className='flex flex-col'>
-                      <p className='text-lg font-quick_sans text-black'>
-                        {getFullName(user.first_name, user.last_name)}
-                      </p>
-
-                      <p className='text-lg font-quick_sans text-black'>
-                        {user.department}
-                      </p>
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
-          : <p className="text-lg font-quick_sans text-black">
-            Không có kết quả tìm kiếm
-          </p>
-      }
-    </LoadingComponent>
-  )
-}
-
-export default ListSearchUser
+export default ListSearchUser;

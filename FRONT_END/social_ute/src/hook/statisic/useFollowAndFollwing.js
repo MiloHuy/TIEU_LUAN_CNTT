@@ -9,7 +9,6 @@ export const useFollowAndFollwing = (userId) => {
       const statisics = await statistics(userId);
       setUserStatisics(statisics.data);
     } catch (error) {
-      console.log("Error: ", error.response.data);
       const { code } = error.response.data;
     }
   }, [userId]);

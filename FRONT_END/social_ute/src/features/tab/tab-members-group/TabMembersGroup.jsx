@@ -24,8 +24,15 @@ const TabMembersGroup = () => {
       type={TYPELOADING.TITLE}
       condition={isLoading}
     >
-      <div className="grid lg:grid-cols-2 gap-2 w-full justify-center">
-        {allMembers && allMembers.map((member) => <MemberCard key={member.id} member={member} />)}
+      <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 w-full">
+        {allMembers
+          && allMembers.map((member) => {
+            return (
+              <div className="flex justify-center">
+                <MemberCard key={member.id} member={member} />
+              </div>
+            )
+          })}
       </div>
     </LoadingComponent>
   )

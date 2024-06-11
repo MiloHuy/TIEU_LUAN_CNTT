@@ -1,13 +1,15 @@
 import clsx from "clsx";
+import LoadingComponent from "combine/loading-component";
 import { Dialog, DialogContent, DialogTrigger } from "components/dialog";
 import SearchBlockDebounce from "components/search-block-debounce";
+import { TYPELOADING } from "constants/type.const";
 import ListSearchUser from "features/list/list-search-user";
 import { useSearchUser } from "hook/me/useSearchUser";
 import { useEffect, useState } from "react";
 
 const ModalSearchUser = ({ trigger, className }) => {
 
-  const { userSearch, isLoading, fetchSearchUser } = useSearchUser()
+  const { resultSearch, fetchSearch } = useSearchUser()
 
   const [filter, setFilter] = useState({
     page: 1,
@@ -25,13 +27,13 @@ const ModalSearchUser = ({ trigger, className }) => {
 
   useEffect(() => {
     if (filter.size !== 0) {
-      fetchSearchUser(
+      fetchSearch(
         filter.page,
         filter.size,
         filter.search
       )
     }
-  }, [fetchSearchUser, filter.size, filter.page, filter.search])
+  }, [fetchSearch, filter.size, filter.page, filter.search])
 
   return (
     <Dialog>
@@ -50,17 +52,9 @@ const ModalSearchUser = ({ trigger, className }) => {
             onSubmit={handleSearchDebounce}
           />
           {
-            userSearch ?
-              <div className='w-full h-4/5 overflow-auto '>
-                <ListSearchUser
-                  isLoading={isLoading}
-                  userSearch={userSearch.data}
-                />
-              </div>
-              :
-              <p className="text-lg font-quick_sans text-black">
-                Chưa có ai hiện tại
-              </p>
+            <LoadingComponent type={TYPELOADING.TITLE} condition={Boolean(resultSearch)}>
+              <ListSearchUser resultSearch={resultSearch} />
+            </LoadingComponent>
           }
         </div>
       </DialogContent>

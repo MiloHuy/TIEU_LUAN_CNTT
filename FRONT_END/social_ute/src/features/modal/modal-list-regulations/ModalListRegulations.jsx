@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { TYPELOADING } from "constants/type.const";
 import { useGetAllRegulations } from "hook/group/useGetAllRegulations";
 import { useParams } from "react-router-dom";
+
 const ModalListRegulations = ({ trigger, title, className }) => {
   const { groupId } = useParams()
   const { isLoading, resData, fetchAllRegulations } = useGetAllRegulations()
@@ -23,7 +24,7 @@ const ModalListRegulations = ({ trigger, title, className }) => {
         <LoadingComponent type={TYPELOADING.TITLE} condition={isLoading}>
           {
             resData && resData.map((regulation, index) => (
-              <div key={regulation.id} className='grid gap-2'>
+              <div key={regulation.id} className='grid gap-2 w-full'>
                 <p>Nội dung {index + 1}: {regulation}</p>
               </div>
             ))

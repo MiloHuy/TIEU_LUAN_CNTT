@@ -21,3 +21,7 @@ export const CopyURL = (post_id) => {
     theme: "light",
   });
 };
+
+export const navigateById = (id, path, navigate) => {
+  navigate(`${path}/${id}`);
+};

@@ -3,7 +3,7 @@ import { getAllMePosts } from "services/me.svc";
 
 export const useMeAllPosts = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState();
 
   const fetchMePosts = useCallback(async () => {
     try {

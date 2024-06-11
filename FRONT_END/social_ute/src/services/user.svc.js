@@ -5,7 +5,7 @@ export const API_USER_ENDPOINT = {
     user_Info: "/users/info/:id",
     statistics: "/statistics/:id ",
     list_posts_guest: "/users/posts/:id ",
-    get_search_user: "/users/search",
+    get_search: "/search",
   },
 
   POST: {
@@ -76,7 +76,7 @@ export const getAllPostsGuest = (id) => {
 };
 
 export const getUserSearch = (payload) => {
-  const res = AxiosInstance.get(API_USER_ENDPOINT.GET.get_search_user, {
+  const res = AxiosInstance.get(API_USER_ENDPOINT.GET.get_search, {
     params: payload,
   });
   return res;

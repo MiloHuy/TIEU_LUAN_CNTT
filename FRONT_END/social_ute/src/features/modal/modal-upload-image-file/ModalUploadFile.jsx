@@ -7,7 +7,7 @@ import FormUploadFinal from "features/form/form-upload-multilple/FormUploadFinal
 
 import { useMemo, useState } from "react";
 
-const ModalUploadFile = ({ trigger }) => {
+const ModalUploadFile = ({ trigger, onUpload }) => {
   const [stepForm, setStepForm] = useState(0)
   const [dataModalUpload, setDataModalUpload] = useState({
     files: [],
@@ -34,6 +34,8 @@ const ModalUploadFile = ({ trigger }) => {
     }
   }, [stepForm])
 
+  console.log('onUpload: ' + typeof onUpload)
+
   const multipleForm = [
     <FormSelectPostOrStory
       stepForm={stepForm}
@@ -59,6 +61,7 @@ const ModalUploadFile = ({ trigger }) => {
 
       stepForm={stepForm}
       handleNextForm={handleNextForm}
+      onUpload={onUpload}
     />
   ]
 
