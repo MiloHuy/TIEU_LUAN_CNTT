@@ -84,7 +84,7 @@ router.post('/:gr_id/member/leave', verifyToken, isUser, isMemberAndAdminGroup, 
 router.post('/:gr_id/member/post/create', verifyToken, isUser, isMemberGroup, createPost);
 router.post('/:gr_id/member/report/post/:post_id', verifyToken, isUser, isMemberGroup, reportPost);
 router.get('/:gr_id/member/post-wait-approve', verifyToken, isUser, isMemberGroup, getWaitApprovePosts);
-router.post('/:gr_id/member/post-wait-approve/:post_id', verifyToken, isUser, isJoinGroup, puttWaitApprovePosts);
+router.post('/:gr_id/member/post-wait-approve/:post_id', verifyToken, isUser, isMemberGroup, puttWaitApprovePosts);
 
 router.post('/:gr_id/admin/post/create', verifyToken, isUser, isAdminGroup, adminCreatePost);
 

@@ -3,7 +3,7 @@ const Group = require("../models/Group");
 const isSuperAdminGroup = async (req, res, next) => {
     const groupId = req.params.gr_id;
     const userId = req.user._id;
-    const group = await Group.findById(groupId).select('super_admin').lean();
+    const group = await Group.findById(groupId).select('super_admin admin');
     if (!group) {
         return res.status(404).json({
             success: false,
@@ -19,13 +19,14 @@ const isSuperAdminGroup = async (req, res, next) => {
             message: "Không đủ quyền truy cập. Bạn không phải là super admin.",
         });
     }
+    req.group = group
     next();
 };
 
 const isAdminGroup = async (req, res, next) => {
     const userId = req.user._id;
     const groupId = req.params.gr_id;
-    const group = await Group.findById(groupId).select('super_admin admin').lean();
+    const group = await Group.findById(groupId).select('super_admin admin member request_join list_report regulation');
     if (!group) {
         return res.status(404).json({
             success: false,
@@ -45,6 +46,7 @@ const isAdminGroup = async (req, res, next) => {
             message: "Không đủ quyền truy cập. Bạn không phải là admin.",
         });
     }
+    req.group = group
     next();
 };
 
@@ -83,7 +85,7 @@ const isJoinGroup = async (req, res, next) => {
 const isMemberGroup = async (req, res, next) => {
     const groupId = req.params.gr_id;
     const userId = req.user._id;
-    const group = await Group.findById(groupId).select('member').lean();
+    const group = await Group.findById(groupId).select('member approve_post list_report');
     if (!group) {
         return res.status(404).json({
             success: false,
@@ -102,6 +104,7 @@ const isMemberGroup = async (req, res, next) => {
                 "Không đủ quyền truy cập. Bạn không phải là thành viên nhóm.",
         });
     }
+    req.group = group
     next();
 };
 

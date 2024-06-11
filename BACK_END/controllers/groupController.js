@@ -360,7 +360,28 @@ exports.getPosts = async (req, res) => {
         const { size = 10, page = 1 } = req.query;
         const skip = size * (page - 1);
 
-        const group = await Group.findById(groupId).lean();
+        // const group = await Group.findById(groupId).lean();
+
+        const [group, allPosts, totals, likedPosts, storedPosts] =
+            await Promise.all([
+                Group.findById(groupId).lean(),
+                Post.find({
+                    group_id: groupId,
+                    is_approved: true,
+                })
+                    .sort({ create_post_time: -1 })
+                    .select("-post_img.publicId -post_img._id")
+                    .populate("user_id", "first_name last_name avatar.url")
+                    .limit(Number(size))
+                    .skip(skip),
+                Post.countDocuments({
+                    group_id: groupId,
+                    is_approved: true,
+                }),
+                Post_liked.find({ user_id: userId }).select("post_id"),
+                Post_stored.find({ user_id: userId }).select("post_id"),
+            ]);
+
         if (!group) {
             return res.status(404).json({
                 success: false,
@@ -368,24 +389,6 @@ exports.getPosts = async (req, res) => {
                 message: "Không tìm thấy nhóm.",
             });
         }
-
-        const [allPosts, totals, likedPosts, storedPosts] = await Promise.all([
-            Post.find({
-                group_id: groupId,
-                is_approved: true,
-            })
-                .sort({ create_post_time: -1 })
-                .select("-post_img.publicId -post_img._id")
-                .populate("user_id", "first_name last_name avatar.url")
-                .limit(Number(size))
-                .skip(skip),
-            Post.countDocuments({
-                group_id: groupId,
-                is_approved: true,
-            }),
-            Post_liked.find({ user_id: userId }).select("post_id"),
-            Post_stored.find({ user_id: userId }).select("post_id"),
-        ]);
 
         const likedPostIds = new Set(
             likedPosts.map((like) => like.post_id.toString())
@@ -513,6 +516,7 @@ exports.likePost = async (req, res) => {
                 .sort({ create_post_time: -1 })
                 .select("-post_img.publicId -post_img._id")
                 .populate("user_id", "first_name last_name avatar.url"),
+            // .lean(),
             Post_liked.findOneAndUpdate(
                 { post_id: postId },
                 {},
@@ -648,7 +652,8 @@ exports.storePost = async (req, res) => {
             Post.findById(postId)
                 .sort({ create_post_time: -1 })
                 .select("-post_img.publicId -post_img._id")
-                .populate("user_id", "first_name last_name avatar.url"),
+                .populate("user_id", "first_name last_name avatar.url")
+                .lean(),
             Post_stored.findOneAndUpdate(
                 { user_id: userId },
                 {},
@@ -771,7 +776,6 @@ exports.commentPost = async (req, res) => {
             const is_member = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            // console.log(is_member);
 
             const is_admin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
@@ -836,7 +840,6 @@ exports.commentPost = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Comment thành công.",
-            comment,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -964,67 +967,57 @@ exports.getCommentPost = async (req, res) => {
     }
 };
 
-//
-
 exports.getMyPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.user._id;
-        const { size } = req.query;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
 
-        const posts = Post.find({
-            group_id: groupId,
-            user_id: userId,
-            is_approved: true,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
+        const [allPosts, totals, likedPosts, storedPosts] = await Promise.all([
+            Post.find({
+                group_id: groupId,
+                user_id: userId,
+                is_approved: true,
+            })
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .limit(Number(size))
+                .skip(skip),
+            Post.countDocuments({
+                group_id: groupId,
+                user_id: userId,
+                is_approved: true,
+            }),
+            Post_liked.find({ user_id: userId }).select("post_id").lean(),
+            Post_stored.find({ user_id: userId }).select("post_id").lean(),
+        ]);
 
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
+        const likedPostIds = new Set(
+            likedPosts.map((like) => like.post_id.toString())
+        );
+        const storedPostIds = new Set(
+            storedPosts.flatMap((store) =>
+                store.post_id.map((id) => id.toString())
+            )
+        );
 
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
+        const postsWithLikesAndStores = await Promise.all(
+            allPosts.map(async (post) => {
+                const postId = post._id.toString();
+                const isLiked = likedPostIds.has(postId);
+                const isStored = storedPostIds.has(postId);
 
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
-
-        const check_liked = await Post_liked.find({
-            user_id: req.user._id,
-        }).select("post_id");
-        const check_stored = await Post_stored.find({
-            user_id: req.user._id,
-        }).select("post_id");
-
-        const postsAfferCheck = allPosts.map((post) => {
-            const isLiked = check_liked.some((like) =>
-                like.post_id.equals(post._id)
-            );
-            const isStored = check_stored.some((store) => {
-                return store.post_id.some((storeId) =>
-                    storeId.equals(post._id)
-                );
-            });
-            return {
-                ...post.toObject(),
-                liked: isLiked,
-                stored: isStored,
-            };
-        });
-
-        const postsAfferCountLike = await Promise.all(
-            postsAfferCheck.map(async (post) => {
                 const post_like = await Post_liked.findOne({
                     post_id: post._id,
                 });
                 const likes = post_like ? post_like.user_id.length : 0;
 
                 return {
-                    ...post,
+                    ...post.toObject(),
+                    liked: isLiked,
+                    stored: isStored,
                     likes,
                 };
             })
@@ -1033,7 +1026,7 @@ exports.getMyPosts = async (req, res) => {
         return res.status(200).json({
             success: true,
             totals,
-            posts: postsAfferCountLike,
+            posts: postsWithLikesAndStores,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1155,7 +1148,8 @@ exports.leaveGroup = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).lean();
+        // const group = await Group.findById(groupId).lean();
+        const group = req.group;
 
         if (!req.files) {
             return res.status(400).json({
@@ -1237,7 +1231,6 @@ exports.createPost = async (req, res) => {
             return res.status(201).json({
                 success: true,
                 message: "Đăng bài thành công.",
-                post,
             });
         }
 
@@ -1293,7 +1286,6 @@ exports.createPost = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Đăng bài thành công.",
-            post,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1317,7 +1309,7 @@ exports.reportPost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const userId = req.user._id;
-        const group = await Group.findById(groupId);
+        const group = req.group;
         const post = await Post.findById(postId);
 
         if (!post) {
@@ -1382,18 +1374,19 @@ exports.getWaitApprovePosts = async (req, res) => {
             is_approved: false,
         };
 
-        const totalPosts = await Post.countDocuments(query);
-
-        const posts = await Post.find(query)
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url")
-            .skip(skip)
-            .limit(Number(size));
+        const [posts, totals] = await Promise.all([
+            Post.find(query)
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .skip(skip)
+                .limit(Number(size)),
+            Post.countDocuments(query),
+        ]);
 
         return res.status(200).json({
             success: true,
-            totals: totalPosts,
+            totals,
             posts,
         });
     } catch (error) {
@@ -1412,7 +1405,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
         const postId = req.params.post_id;
         const userId = req.user._id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId);
+        // const group = await Group.findById(groupId);
 
         if (!post) {
             return res.status(404).json({
@@ -1535,7 +1528,7 @@ exports.puttWaitApprovePosts = async (req, res) => {
 exports.adminCreatePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).lean();
+        // const group = await Group.findById(groupId).lean();
 
         if (!req.files) {
             return res.status(400).json({
@@ -1655,7 +1648,7 @@ exports.adminCreatePost = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Đăng bài thành công.",
-            post,
+            post_id: post._id,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1670,8 +1663,7 @@ exports.adminCreatePost = async (req, res) => {
 exports.inviteUser = async (req, res) => {
     try {
         const userId = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const group = req.group;
 
         const check_user = await User.findById(userId);
 
@@ -1683,15 +1675,21 @@ exports.inviteUser = async (req, res) => {
             });
         }
 
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
+        const memberIds = new Set(
+            group.member.map((member) => member.user_id.toString())
+        );
+        const adminIds = new Set(
+            group.admin.map((admin) => admin.user_id.toString())
+        );
+        const requestIds = new Set(
+            group.request_join.map((request) => request.user_id.toString())
         );
 
-        const is_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === userId
-        );
-
-        if (is_member || is_admin || group.super_admin.equals(userId)) {
+        if (
+            memberIds.has(userId) ||
+            adminIds.has(userId) ||
+            group.super_admin.equals(userId)
+        ) {
             return res.status(401).json({
                 success: false,
                 code: 10010,
@@ -1699,18 +1697,16 @@ exports.inviteUser = async (req, res) => {
             });
         }
 
-        // const member = await MemberGroup.findOne({ role: "member" });
-
         const new_member = {
             user_id: userId,
         };
 
-        const is_request = group.request_join.some((request) =>
-            request.user_id.equals(userId)
-        );
-        if (is_request) {
-            group.request_join.pull(new_member);
+        if (requestIds.has(userId)) {
+            group.request_join = group.request_join.filter(
+                (request) => !request.user_id.equals(userId)
+            );
         }
+
         group.member.push(new_member);
 
         await group.save();
@@ -1758,8 +1754,7 @@ exports.adminGetRequestJoin = async (req, res) => {
 exports.adminAcceptRequest = async (req, res) => {
     try {
         const userId = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const group = req.group;
 
         const check_user = await User.findById(userId);
 
@@ -1771,15 +1766,21 @@ exports.adminAcceptRequest = async (req, res) => {
             });
         }
 
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
+        const memberIds = new Set(
+            group.member.map((member) => member.user_id.toString())
+        );
+        const adminIds = new Set(
+            group.admin.map((admin) => admin.user_id.toString())
+        );
+        const requestIds = new Set(
+            group.request_join.map((request) => request.user_id.toString())
         );
 
-        const is_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === userId
-        );
-
-        if (is_member || is_admin || group.super_admin.equals(userId)) {
+        if (
+            memberIds.has(userId) ||
+            adminIds.has(userId) ||
+            group.super_admin.equals(userId)
+        ) {
             return res.status(401).json({
                 success: false,
                 code: 10018,
@@ -1787,21 +1788,22 @@ exports.adminAcceptRequest = async (req, res) => {
             });
         }
 
-        const is_request = group.request_join.some((request) =>
-            request.user_id.equals(userId)
-        );
-        if (!is_request) {
+        if (!requestIds.has(userId)) {
             return res.status(404).json({
                 success: false,
                 code: 10017,
                 message: "Người này không yêu cầu vào nhóm.",
             });
         }
+
         const new_member = {
             user_id: userId,
         };
         group.member.push(new_member);
-        group.request_join.pull(new_member);
+
+        group.request_join = group.request_join.filter(
+            (request) => !request.user_id.equals(userId)
+        );
 
         await group.save();
 
@@ -1822,10 +1824,9 @@ exports.adminAcceptRequest = async (req, res) => {
 exports.adminRefuseRequest = async (req, res) => {
     try {
         const userId = req.params.user_id;
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        const group = req.group;
 
-        const check_user = await User.findById(userId);
+        const check_user = await User.findById(userId).lean();
 
         if (!check_user) {
             return res.status(401).json({
@@ -1835,15 +1836,21 @@ exports.adminRefuseRequest = async (req, res) => {
             });
         }
 
-        const is_member = group.member.find(
-            (member) => member.user_id.toString() === userId
+        const memberIds = new Set(
+            group.member.map((member) => member.user_id.toString())
+        );
+        const adminIds = new Set(
+            group.admin.map((admin) => admin.user_id.toString())
+        );
+        const requestIds = new Set(
+            group.request_join.map((request) => request.user_id.toString())
         );
 
-        const is_admin = group.admin.find(
-            (admin) => admin.user_id.toString() === userId
-        );
-
-        if (is_member || is_admin || group.super_admin.equals(userId)) {
+        if (
+            memberIds.has(userId) ||
+            adminIds.has(userId) ||
+            group.super_admin.equals(userId)
+        ) {
             return res.status(401).json({
                 success: false,
                 code: 10018,
@@ -1851,20 +1858,17 @@ exports.adminRefuseRequest = async (req, res) => {
             });
         }
 
-        const is_request = group.request_join.some((request) =>
-            request.user_id.equals(userId)
-        );
-        if (!is_request) {
+        if (!requestIds.has(userId)) {
             return res.status(404).json({
                 success: false,
                 code: 10017,
                 message: "Người này không yêu cầu vào nhóm.",
             });
         }
-        const new_member = {
-            user_id: userId,
-        };
-        group.request_join.pull(new_member);
+
+        group.request_join = group.request_join.filter(
+            (request) => !request.user_id.equals(userId)
+        );
 
         await group.save();
 
@@ -1886,14 +1890,22 @@ exports.adminGetMembers = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const { size } = req.query;
-        const group = await Group.findById(groupId)
-            .select("member")
-            .populate(
-                "member.user_id",
-                "first_name last_name avatar.url department"
-            )
-            .lean();
 
+        const [group, list_posts] = await Promise.all([
+            Group.findById(groupId)
+                .select("member")
+                .populate(
+                    "member.user_id",
+                    "first_name last_name avatar.url department"
+                )
+                .lean(),
+            Post.find({
+                group_id: groupId,
+                is_approved: true,
+            }),
+        ]);
+
+        const postIds = list_posts.map((post) => post._id);
         const members = group.member;
 
         const membersWithPostCounts = await Promise.all(
@@ -1905,9 +1917,11 @@ exports.adminGetMembers = async (req, res) => {
                 });
                 const likeCount = await Post_liked.countDocuments({
                     user_id: member.user_id._id,
+                    post_id: { $in: postIds },
                 });
                 const cmtCount = await Comment.countDocuments({
                     user_id: member.user_id._id,
+                    post_id: { $in: postIds },
                 });
                 return {
                     ...member,
@@ -1946,7 +1960,7 @@ exports.adminGetMembers = async (req, res) => {
         return res.status(200).json({
             success: true,
             totals,
-            admins: allMember,
+            members: allMember,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1963,10 +1977,11 @@ exports.adminEditActive = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        const group = await Group.findById(groupId)
-            .select("member.user_id member.is_active admin")
-            .populate("member.user_id", "first_name last_name avatar.url")
-            .lean();
+        // const group = await Group.findById(groupId)
+        //     .select("member.user_id member.is_active admin")
+        //     .populate("member.user_id", "first_name last_name avatar.url")
+        //     .lean();
+        const group = req.group;
 
         const admin = group.admin.find(
             (admin) => admin.user_id.toString() === userId
@@ -1998,9 +2013,9 @@ exports.adminEditActive = async (req, res) => {
             { _id: groupId, "member.user_id": userId },
             { $set: { "member.$.is_active": new_status } },
             { new: true }
-        );
+        ).lean();
 
-        const new_member = group.member.find(
+        const new_member = updatedGroup.member.find(
             (member) => member.user_id._id.toString() === userId
         );
 
@@ -2022,13 +2037,15 @@ exports.adminDeleteUser = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        const group = await Group.findById(groupId)
-            // .select("member.user_id")
-            // .populate(
-            //     "member.user_id",
-            //     "first_name last_name avatar.url"
-            // )
-            .lean();
+        // const group = await Group.findById(groupId)
+        //     // .select("member.user_id")
+        //     // .populate(
+        //     //     "member.user_id",
+        //     //     "first_name last_name avatar.url"
+        //     // )
+        //     .lean();
+
+        const group = req.group;
 
         const is_member = group.member.find(
             (member) => member.user_id.toString() === userId
@@ -2067,35 +2084,29 @@ exports.adminDeleteUser = async (req, res) => {
 exports.adminGetAllPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId)
-            // .select("regulation")
-            .lean();
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
 
-        const posts = Post.find({
-            group_id: groupId,
-            is_approved: true,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
-
-        const apiFeatures = new PostAPIFeatures(posts, req.query);
-
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
-
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(posts),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
+        const [posts, totals] = await Promise.all([
+            Post.find({
+                group_id: groupId,
+                is_approved: true,
+            })
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .limit(Number(size))
+                .skip(skip),
+            Post.countDocuments({
+                group_id: groupId,
+                is_approved: true,
+            }),
+        ]);
 
         res.status(200).json({
             success: true,
             totals,
-            posts: allPosts,
+            posts,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2110,32 +2121,29 @@ exports.adminGetAllPosts = async (req, res) => {
 exports.adminGetQueuePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
 
-        const queue = Post.find({
-            group_id: groupId,
-            is_approved: false,
-        })
-            .sort({ create_post_time: -1 })
-            .select("-post_img.publicId -post_img._id")
-            .populate("user_id", "first_name last_name avatar.url");
-
-        const apiFeatures = new PostAPIFeatures(queue, req.query);
-
-        let allPosts = await apiFeatures.query;
-        const totals = allPosts.length;
-
-        const apiFeaturesPagination = new PostAPIFeatures(
-            Post.find(queue),
-            req.query
-        ).pagination(size);
-
-        allPosts = await apiFeaturesPagination.query;
+        const [posts, totals] = await Promise.all([
+            Post.find({
+                group_id: groupId,
+                is_approved: false,
+            })
+                .sort({ create_post_time: -1 })
+                .select("-post_img.publicId -post_img._id")
+                .populate("user_id", "first_name last_name avatar.url")
+                .limit(Number(size))
+                .skip(skip),
+            Post.countDocuments({
+                group_id: groupId,
+                is_approved: false,
+            }),
+        ]);
 
         return res.status(200).json({
             success: true,
             totals,
-            posts: allPosts,
+            posts,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2152,7 +2160,9 @@ exports.adminGetQueuePost = async (req, res) => {
 exports.adminGetListReport = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
+
         const group = await Group.findById(groupId)
             .populate({
                 path: "list_report.user_id",
@@ -2168,20 +2178,15 @@ exports.adminGetListReport = async (req, res) => {
             })
             .lean();
 
-        if (!group) {
-            return res.status(404).json({
-                success: false,
-                code: 10000,
-                message: "Không tìm thấy nhóm.",
-            });
-        }
-
         const list_report = group.list_report;
+        const totals = list_report.length;
+
+        const paginated_reports = list_report.slice(skip, skip + size);
 
         return res.status(200).json({
             success: true,
-            // totals,
-            list_report,
+            totals,
+            list_report: paginated_reports,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2199,7 +2204,6 @@ exports.adminApprovePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
-        const group = await Group.findById(groupId).lean();
 
         const post = await Post.findById(postId).lean();
         if (!post) {
@@ -2251,7 +2255,7 @@ exports.adminDeletePost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId);
+        const group = req.group;
 
         if (!post) {
             return res.status(404).json({
@@ -2343,8 +2347,8 @@ exports.adminDeletePost = async (req, res) => {
 
 exports.adminGetStatisticMember = async (req, res) => {
     try {
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId);
+        // const groupId = req.params.gr_id;
+        const group = req.group;
         const count_members = group.member.length;
         return res.status(201).json({
             success: true,
@@ -2430,11 +2434,7 @@ exports.adminGetStatisticLike = async (req, res) => {
 
 exports.adminEditRegulation = async (req, res) => {
     try {
-        SuperAdminGroup.create({
-            role: "super-admin",
-        });
-        const groupId = req.params.gr_id;
-        const group = await Group.findById(groupId).select("regulation");
+        const group = req.group;
         const regulation = req.body.regulation;
         group.regulation = regulation;
         await group.save();
@@ -2542,15 +2542,22 @@ exports.addAdmin = async (req, res) => {
 exports.getAdmin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId)
-            .select("admin")
-            .populate(
-                "admin.user_id",
-                "first_name last_name avatar.url department"
-            )
-            .lean();
+        const { size = 10, page = 1 } = req.query;
+        const [group, list_posts] = await Promise.all([
+            Group.findById(groupId)
+                .select("admin")
+                .populate(
+                    "admin.user_id",
+                    "first_name last_name avatar.url department"
+                )
+                .lean(),
+            Post.find({
+                group_id: groupId,
+                is_approved: true,
+            }),
+        ]);
 
+        const postIds = list_posts.map((post) => post._id);
         const admins = group.admin;
 
         const adminsWithPostCounts = await Promise.all(
@@ -2562,9 +2569,11 @@ exports.getAdmin = async (req, res) => {
                 });
                 const likeCount = await Post_liked.countDocuments({
                     user_id: admin.user_id._id,
+                    post_id: { $in: postIds },
                 });
                 const cmtCount = await Comment.countDocuments({
                     user_id: admin.user_id._id,
+                    post_id: { $in: postIds },
                 });
                 return {
                     ...admin,
@@ -2585,25 +2594,14 @@ exports.getAdmin = async (req, res) => {
             };
         });
 
-        const apiFeatures = new AdminGroupAPIFeatures(
-            filteredAdmins,
-            req.query
-        );
-
-        let allAdmins = await apiFeatures.query;
-        const totals = allAdmins.length;
-
-        const apiFeaturesPagination = new AdminGroupAPIFeatures(
-            filteredAdmins,
-            req.query
-        ).pagination(size);
-
-        allAdmins = await apiFeaturesPagination.query;
+        const skip = (page - 1) * size;
+        const paginated_admins = filteredAdmins.slice(skip, skip + size);
+        const totals = filteredAdmins.length;
 
         return res.status(200).json({
             success: true,
             totals,
-            admins: allAdmins,
+            admins: paginated_admins,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2617,45 +2615,38 @@ exports.getAdmin = async (req, res) => {
 
 exports.searchAdmin = async (req, res) => {
     try {
-        await SuperAdminGroup.create({
-            role: "super-admin",
-        });
-        const groupId = req.params.gr_id;
-        const { size } = req.query;
-        const group = await Group.findById(groupId)
-            .select("admin.user_id ")
-            // .populate("admin.user_id", "first_name last_name avatar.url")
-            .lean();
+        const { size = 10, page = 1, search } = req.query;
+        const skip = size * (page - 1);
+        const group = req.group;
 
-        const adminIds = group.admin.map((admin) => admin.user_id).flat();
-        // return res.status(200).json({
-        //     adminIds
-        // });
+        const adminIds = group.admin.map((admin) => admin.user_id._id);
 
-        const userQuery = User.find({
-            // role_id: { $ne: 0 },
-            _id: { $in: adminIds },
-        }).select("avatar.url first_name last_name department");
+        let searchQuery = { _id: { $in: adminIds } };
 
-        const apiFeatures = new UserAPIFeatures(userQuery, req.query).search();
+        if (search) {
+            const searchRegex = new RegExp(search, "i");
+            searchQuery = {
+                ...searchQuery,
+                $or: [
+                    { first_name: searchRegex },
+                    { last_name: searchRegex },
+                    { department: searchRegex },
+                ],
+            };
+        }
 
-        let allUser = await apiFeatures.query;
-        const totals = allUser.length;
-
-        const apiFeaturesPagination = new UserAPIFeatures(
-            User.find(userQuery),
-            req.query
-        )
-            .search()
-            .pagination(size);
-
-        allUser = await apiFeaturesPagination.query;
+        const [totals, allUser] = await Promise.all([
+            User.countDocuments(searchQuery),
+            User.find(searchQuery)
+                .select("avatar.url first_name last_name department")
+                .limit(Number(size))
+                .skip(skip),
+        ]);
 
         return res.status(200).json({
             success: true,
             totals,
-            allUser,
-            // userQuery,
+            admins: allUser,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2671,10 +2662,7 @@ exports.superEditActiveAdmin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        const group = await Group.findById(groupId)
-            .select("admin.user_id admin.is_active")
-            .populate("admin.user_id", "first_name last_name avatar.url")
-            .lean();
+        const group = req.group;
 
         const admin = group.admin.find(
             (admin) => admin.user_id._id.toString() === userId
@@ -2694,9 +2682,11 @@ exports.superEditActiveAdmin = async (req, res) => {
             { _id: groupId, "admin.user_id": userId },
             { $set: { "admin.$.is_active": new_status } },
             { new: true }
-        );
+        )
+            .select("admin.user_id admin.is_active")
+            .populate("admin.user_id", "first_name last_name avatar.url");
 
-        const new_admin = group.admin.find(
+        const new_admin = updatedGroup.admin.find(
             (admin) => admin.user_id._id.toString() === userId
         );
 
@@ -2713,6 +2703,8 @@ exports.superEditActiveAdmin = async (req, res) => {
         });
     }
 };
+
+//
 
 exports.superEditPermissionAdmin = async (req, res) => {
     try {
