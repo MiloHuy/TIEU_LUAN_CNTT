@@ -646,7 +646,7 @@ exports.like = async (req, res) => {
             });
         }
     } catch (error) {
-        res.status(ErrorCode.SERVER_ERROR).json({
+        res.status(500).json({
             success: false,
             code: 2012,
             message: error.message,

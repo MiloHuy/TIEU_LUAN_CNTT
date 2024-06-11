@@ -1,12 +1,15 @@
+import { selectRolePermission } from "app/slice/group/group.slice";
 import { Button } from "components/button";
 import { ShareIcon } from "components/icon/bonus.icon";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
-import { useActionsPosts } from "hook/posts/useActionsPosts";
-import { usePostDetail } from "hook/posts/usePostDetail";
+import { useActionsPostGroup } from "hook/group/useActionsPostGroup";
+import { usePostDetailGroup } from "hook/group/usePostDetailGroup";
 import { Bookmark, Heart, MessageCircle } from 'lucide-react';
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import cn from "utils/cn.utils";
 
-const FooterActionsPost = (
+const Footer = (
   {
     post_id,
     hideComment = false,
@@ -18,21 +21,28 @@ const FooterActionsPost = (
     className
   }) => {
 
-  const {
-    numberLikes,
-    statusPost,
-    handleLikePost,
-    handleSavePost,
-  } = useActionsPosts({ liked_post, number_likes, saved_posts })
+  const rolePermission = useSelector(selectRolePermission)
+  const { permission, role } = rolePermission
+  const { groupId } = useParams()
 
-  const { postDetail, fetchPostDetails, } = usePostDetail()
+  const {
+    statusPost,
+    numberLikes,
+
+    handleLikePostGroup,
+    handleSavePostGroup,
+  } = useActionsPostGroup({
+    liked_post, number_likes, saved_posts, permission, role,
+  })
+
+  const { postDetail, fetchPostDetailsGroup, } = usePostDetailGroup(permission, role)
 
   return (
     <>
       <div className={cn('flex justify-between px-1 w-full', className)}>
         <div className='flex flex-row gap-3'>
           <Button className='w-[20px]' variant="ghost"
-            onClick={() => handleLikePost(post_id)}
+            onClick={() => handleLikePostGroup(post_id, groupId)}
           >
             <Heart
               strokeWidth={statusPost.isLiked ? 0 : 1.5}
@@ -47,7 +57,7 @@ const FooterActionsPost = (
               <ModalPostUserV2
                 trigger={
                   <Button
-                    onClick={() => fetchPostDetails(post_id)}
+                    onClick={() => fetchPostDetailsGroup(post_id, groupId)}
                     className='w-[20px]' variant="ghost">
                     <MessageCircle
                       size={20}
@@ -69,7 +79,7 @@ const FooterActionsPost = (
         </div>
 
         <Button className='w-[20px]' variant="ghost"
-          onClick={() => handleSavePost(post_id)}
+          onClick={() => handleSavePostGroup(post_id)}
         >
           <Bookmark
             size={20}
@@ -96,4 +106,4 @@ const FooterActionsPost = (
   )
 }
 
-export default FooterActionsPost
+export default Footer

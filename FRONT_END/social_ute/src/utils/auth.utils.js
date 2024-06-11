@@ -1,4 +1,5 @@
 import { SSOCOOKIES } from "constants/app.const";
+import { groupPermission } from "constants/group/permission.const";
 import Cookies from "js-cookie";
 
 export function getAccessTokenFromCookie() {
@@ -16,4 +17,14 @@ export const checkPermission = (permission, category, method, endPoint) => {
     permission[category] &&
     permission[category][method].hasOwnProperty(endPoint)
   );
+};
+
+export const checkPermissionMethod = (permission, { action, role }) => {
+  const { category, method, endPoint } = groupPermission[role]?.[action];
+
+  const isValid = checkPermission(permission, category, method, endPoint);
+
+  if (!isValid) return false;
+
+  return permission[category][method][endPoint];
 };

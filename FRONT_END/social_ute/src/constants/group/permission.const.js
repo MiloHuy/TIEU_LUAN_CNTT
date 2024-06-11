@@ -34,6 +34,7 @@ const basePermissions = {
   savePost: createPermission(catePermiss.INTERACT, "POST", "save_post"),
   allPosts: createPermission(catePermiss.POST, "GET", "posts"),
   createPost: createPermission(catePermiss.POST, "POST", "post"),
+  detailPost: createPermission(catePermiss.POST, "GET", "post"),
 };
 
 const superAdminPermissions = {

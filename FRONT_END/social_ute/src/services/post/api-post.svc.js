@@ -51,3 +51,12 @@ export const likeComment = async (id) => {
   );
   return res;
 };
+
+export const createPostGroup = async (url, groupId, payload) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId), payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res;
+};
