@@ -522,7 +522,6 @@ exports.likePost = async (req, res) => {
                 .sort({ create_post_time: -1 })
                 .select("-post_img.publicId -post_img._id")
                 .populate("user_id", "first_name last_name avatar.url"),
-            // .lean(),
             Post_liked.findOneAndUpdate(
                 { post_id: postId },
                 {},
@@ -900,7 +899,6 @@ exports.getCommentPost = async (req, res) => {
             const is_member = group.member.some((member) =>
                 member.user_id.equals(userId)
             );
-            // console.log(is_member);
 
             const is_admin = group.admin.some((admin) =>
                 admin.user_id.equals(userId)
@@ -1154,7 +1152,6 @@ exports.leaveGroup = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        // const group = await Group.findById(groupId).lean();
         const group = req.group;
 
         if (!req.files) {
@@ -1411,7 +1408,6 @@ exports.puttWaitApprovePosts = async (req, res) => {
         const postId = req.params.post_id;
         const userId = req.user._id;
         const post = await Post.findById(postId);
-        // const group = await Group.findById(groupId);
 
         if (!post) {
             return res.status(404).json({
@@ -1534,7 +1530,6 @@ exports.puttWaitApprovePosts = async (req, res) => {
 exports.adminCreatePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
-        // const group = await Group.findById(groupId).lean();
 
         if (!req.files) {
             return res.status(400).json({
@@ -1582,7 +1577,6 @@ exports.adminCreatePost = async (req, res) => {
                         { resource_type: "auto", folder: "post_imgs" },
                         (error, uploadResult) => {
                             if (error) {
-                                // console.log(error);
                                 return res.status(400).json({
                                     success: false,
                                     code: 2024,
@@ -1894,10 +1888,74 @@ exports.adminRefuseRequest = async (req, res) => {
 
 exports.adminGetMembers = async (req, res) => {
     try {
+        // const groupId = req.params.gr_id;
+        // const { size = 10, page = 1 } = req.query;
+
+        // const [group, list_posts] = await Promise.all([
+        //     Group.findById(groupId)
+        //         .select("member")
+        //         .populate(
+        //             "member.user_id",
+        //             "first_name last_name avatar.url department"
+        //         )
+        //         .lean(),
+        //     Post.find({
+        //         group_id: groupId,
+        //         is_approved: true,
+        //     }),
+        // ]);
+
+        // const postIds = list_posts.map((post) => post._id);
+        // const members = group.member;
+
+        // const membersWithPostCounts = await Promise.all(
+        //     members.map(async (member) => {
+        //         const postCount = await Post.countDocuments({
+        //             user_id: member.user_id._id,
+        //             group_id: groupId,
+        //             is_approved: true,
+        //         });
+        //         const likeCount = await Post_liked.countDocuments({
+        //             user_id: member.user_id._id,
+        //             post_id: { $in: postIds },
+        //         });
+        //         const cmtCount = await Comment.countDocuments({
+        //             user_id: member.user_id._id,
+        //             post_id: { $in: postIds },
+        //         });
+        //         return {
+        //             ...member,
+        //             post_count: postCount,
+        //             like_count: likeCount,
+        //             cmt_count: cmtCount,
+        //         };
+        //     })
+        // );
+
+        // const filteredMembers = await membersWithPostCounts.map((member) => {
+        //     return {
+        //         user_id: member.user_id,
+        //         is_active: member.is_active,
+        //         post_count: member.post_count,
+        //         like_count: member.like_count,
+        //         cmt_count: member.cmt_count,
+        //     };
+        // });
+
+        // const skip = (page - 1) * size;
+        // const paginated_members = filteredMembers.slice(skip, skip + size);
+        // const totals = filteredMembers.length;
+
+        // return res.status(200).json({
+        //     success: true,
+        //     totals,
+        //     members: paginated_members,
+        // });
+
         const groupId = req.params.gr_id;
         const { size = 10, page = 1 } = req.query;
 
-        const [group, list_posts] = await Promise.all([
+        const [group, posts] = await Promise.all([
             Group.findById(groupId)
                 .select("member")
                 .populate(
@@ -1908,54 +1966,58 @@ exports.adminGetMembers = async (req, res) => {
             Post.find({
                 group_id: groupId,
                 is_approved: true,
-            }),
+            }).select("_id user_id").lean(),
         ]);
 
-        const postIds = list_posts.map((post) => post._id);
+        const postIds = posts.map((post) => post._id);
         const members = group.member;
 
-        const membersWithPostCounts = await Promise.all(
-            members.map(async (member) => {
-                const postCount = await Post.countDocuments({
-                    user_id: member.user_id._id,
-                    group_id: groupId,
-                    is_approved: true,
-                });
-                const likeCount = await Post_liked.countDocuments({
-                    user_id: member.user_id._id,
-                    post_id: { $in: postIds },
-                });
-                const cmtCount = await Comment.countDocuments({
-                    user_id: member.user_id._id,
-                    post_id: { $in: postIds },
-                });
-                return {
-                    ...member,
-                    post_count: postCount,
-                    like_count: likeCount,
-                    cmt_count: cmtCount,
-                };
-            })
-        );
+        const postCounts = posts.reduce((acc, post) => {
+            acc[post.user_id] = (acc[post.user_id] || 0) + 1;
+            return acc;
+        }, {});
 
-        const filteredMembers = await membersWithPostCounts.map((member) => {
+        const memberUserIds = members.map(member => member.user_id._id);
+
+        const [likeCounts, cmtCounts] = await Promise.all([
+            Post_liked.aggregate([
+                { $match: { user_id: { $in: memberUserIds }, post_id: { $in: postIds } } },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } }
+            ]),
+            Comment.aggregate([
+                { $match: { user_id: { $in: memberUserIds }, post_id: { $in: postIds } } },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } }
+            ])
+        ]);
+
+        const likeCountMap = likeCounts.reduce((acc, like) => {
+            acc[like._id] = like.count;
+            return acc;
+        }, {});
+
+        const cmtCountMap = cmtCounts.reduce((acc, cmt) => {
+            acc[cmt._id] = cmt.count;
+            return acc;
+        }, {});
+
+        const membersWithCounts = members.map(member => {
+            const userId = member.user_id._id;
             return {
                 user_id: member.user_id,
                 is_active: member.is_active,
-                post_count: member.post_count,
-                like_count: member.like_count,
-                cmt_count: member.cmt_count,
+                post_count: postCounts[userId] || 0,
+                like_count: likeCountMap[userId] || 0,
+                cmt_count: cmtCountMap[userId] || 0
             };
         });
 
         const skip = (page - 1) * size;
-        const paginated_members = filteredMembers.slice(skip, skip + size);
-        const totals = filteredMembers.length;
+        const paginatedMembers = membersWithCounts.slice(skip, skip + size);
 
         return res.status(200).json({
             success: true,
-            totals,
-            members: paginated_members,
+            totals: membersWithCounts.length,
+            members: paginatedMembers,
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -1972,10 +2034,6 @@ exports.adminEditActive = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        // const group = await Group.findById(groupId)
-        //     .select("member.user_id member.is_active admin")
-        //     .populate("member.user_id", "first_name last_name avatar.url")
-        //     .lean();
         const group = req.group;
 
         const admin = group.admin.find(
@@ -2032,13 +2090,6 @@ exports.adminDeleteUser = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        // const group = await Group.findById(groupId)
-        //     // .select("member.user_id")
-        //     // .populate(
-        //     //     "member.user_id",
-        //     //     "first_name last_name avatar.url"
-        //     // )
-        //     .lean();
 
         const group = req.group;
 
@@ -2059,8 +2110,6 @@ exports.adminDeleteUser = async (req, res) => {
             { $pull: { member: { user_id: userId } } },
             { new: true }
         );
-
-        // const new_list = updatedGroup.member
 
         return res.status(200).json({
             success: true,
@@ -2342,7 +2391,6 @@ exports.adminDeletePost = async (req, res) => {
 
 exports.adminGetStatisticMember = async (req, res) => {
     try {
-        // const groupId = req.params.gr_id;
         const group = req.group;
         const count_members = group.member.length;
         return res.status(201).json({
@@ -2536,9 +2584,72 @@ exports.addAdmin = async (req, res) => {
 
 exports.getAdmin = async (req, res) => {
     try {
+        //         const groupId = req.params.gr_id;
+        //         const { size = 10, page = 1 } = req.query;
+        //         const [group, list_posts] = await Promise.all([
+        //             Group.findById(groupId)
+        //                 .select("admin")
+        //                 .populate(
+        //                     "admin.user_id",
+        //                     "first_name last_name avatar.url department"
+        //                 )
+        //                 .lean(),
+        //             Post.find({
+        //                 group_id: groupId,
+        //                 is_approved: true,
+        //             }),
+        //         ]);
+
+        //         const postIds = list_posts.map((post) => post._id);
+        //         const admins = group.admin;
+
+        //         const adminsWithPostCounts = await Promise.all(
+        //             admins.map(async (admin) => {
+        //                 const postCount = await Post.countDocuments({
+        //                     user_id: admin.user_id._id,
+        //                     group_id: groupId,
+        //                     is_approved: true,
+        //                 });
+        //                 const likeCount = await Post_liked.countDocuments({
+        //                     user_id: admin.user_id._id,
+        //                     post_id: { $in: postIds },
+        //                 });
+        //                 const cmtCount = await Comment.countDocuments({
+        //                     user_id: admin.user_id._id,
+        //                     post_id: { $in: postIds },
+        //                 });
+        //                 return {
+        //                     ...admin,
+        //                     post_count: postCount,
+        //                     like_count: likeCount,
+        //                     cmt_count: cmtCount,
+        //                 };
+        //             })
+        //         );
+
+        //         const filteredAdmins = await adminsWithPostCounts.map((admin) => {
+        //             return {
+        //                 user_id: admin.user_id,
+        //                 is_active: admin.is_active,
+        //                 post_count: admin.post_count,
+        //                 like_count: admin.like_count,
+        //                 cmt_count: admin.cmt_count,
+        //             };
+        //         });
+
+        //         const skip = (page - 1) * size;
+        //         const paginated_admins = filteredAdmins.slice(skip, skip + size);
+        //         const totals = filteredAdmins.length;
+
+        //         return res.status(200).json({
+        //             success: true,
+        //             totals,
+        //             admins: paginated_admins,
+        //         });
         const groupId = req.params.gr_id;
         const { size = 10, page = 1 } = req.query;
-        const [group, list_posts] = await Promise.all([
+
+        const [group, posts] = await Promise.all([
             Group.findById(groupId)
                 .select("admin")
                 .populate(
@@ -2549,54 +2660,70 @@ exports.getAdmin = async (req, res) => {
             Post.find({
                 group_id: groupId,
                 is_approved: true,
-            }),
+            })
+                .select("_id user_id")
+                .lean(),
         ]);
 
-        const postIds = list_posts.map((post) => post._id);
+        const postIds = posts.map((post) => post._id);
         const admins = group.admin;
 
-        const adminsWithPostCounts = await Promise.all(
-            admins.map(async (admin) => {
-                const postCount = await Post.countDocuments({
-                    user_id: admin.user_id._id,
-                    group_id: groupId,
-                    is_approved: true,
-                });
-                const likeCount = await Post_liked.countDocuments({
-                    user_id: admin.user_id._id,
-                    post_id: { $in: postIds },
-                });
-                const cmtCount = await Comment.countDocuments({
-                    user_id: admin.user_id._id,
-                    post_id: { $in: postIds },
-                });
-                return {
-                    ...admin,
-                    post_count: postCount,
-                    like_count: likeCount,
-                    cmt_count: cmtCount,
-                };
-            })
-        );
+        const postCounts = posts.reduce((acc, post) => {
+            acc[post.user_id] = (acc[post.user_id] || 0) + 1;
+            return acc;
+        }, {});
 
-        const filteredAdmins = await adminsWithPostCounts.map((admin) => {
+        const adminUserIds = admins.map((admin) => admin.user_id._id);
+
+        const [likeCounts, cmtCounts] = await Promise.all([
+            Post_liked.aggregate([
+                {
+                    $match: {
+                        user_id: { $in: adminUserIds },
+                        post_id: { $in: postIds },
+                    },
+                },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } },
+            ]),
+            Comment.aggregate([
+                {
+                    $match: {
+                        user_id: { $in: adminUserIds },
+                        post_id: { $in: postIds },
+                    },
+                },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } },
+            ]),
+        ]);
+
+        const likeCountMap = likeCounts.reduce((acc, like) => {
+            acc[like._id] = like.count;
+            return acc;
+        }, {});
+
+        const cmtCountMap = cmtCounts.reduce((acc, cmt) => {
+            acc[cmt._id] = cmt.count;
+            return acc;
+        }, {});
+
+        const adminsWithCounts = admins.map((admin) => {
+            const userId = admin.user_id._id;
             return {
                 user_id: admin.user_id,
                 is_active: admin.is_active,
-                post_count: admin.post_count,
-                like_count: admin.like_count,
-                cmt_count: admin.cmt_count,
+                post_count: postCounts[userId] || 0,
+                like_count: likeCountMap[userId] || 0,
+                cmt_count: cmtCountMap[userId] || 0,
             };
         });
 
         const skip = (page - 1) * size;
-        const paginated_admins = filteredAdmins.slice(skip, skip + size);
-        const totals = filteredAdmins.length;
+        const paginatedAdmins = adminsWithCounts.slice(skip, skip + size);
 
         return res.status(200).json({
             success: true,
-            totals,
-            admins: paginated_admins,
+            totals: adminsWithCounts.length,
+            admins: paginatedAdmins,
         });
     } catch (error) {
         console.error("Lỗi:", error);
