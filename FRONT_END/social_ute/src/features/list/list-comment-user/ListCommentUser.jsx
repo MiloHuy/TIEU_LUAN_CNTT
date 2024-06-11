@@ -8,15 +8,16 @@ import { TYPELOADING } from "constants/type.const";
 import { useComments } from "hook/comment/useComments";
 import { useEffect } from "react";
 
-const ListCommentUser = ({ postId }) => {
+const ListCommentUser = ({ postId, groupId, permission, role }) => {
 
-  const { comments, fetchAllComments, isLoading } = useComments()
+  const { comments, fetchAllComments, isLoading, fetchCommentGroup } = useComments()
 
   useEffect(() => {
     if (!postId) return;
 
-    fetchAllComments(postId)
-  }, [fetchAllComments, postId])
+    groupId && fetchCommentGroup(permission, role, postId, groupId)
+    !groupId && fetchAllComments(postId)
+  }, [fetchAllComments, postId, fetchCommentGroup, groupId, permission, role])
 
   return (
     <LoadingComponent type={TYPELOADING.TITLE} condition={!isLoading} title='Đang lấy dữ liệu'>
@@ -28,7 +29,7 @@ const ListCommentUser = ({ postId }) => {
                 <div className={clsx(
                   'flex flex-row gap-3 items-center w-full h-20 px-2 bg-neutral-100',
                   'text-sm text-black dark:text-white font-quick_sans font-bold',
-                  ' rounded-md'
+                  'rounded-md'
                 )}>
                   <AvatarComponent.Avatar>
                     <AvatarComponent.AvatarImage src={comment.user_id?.avatar?.url} />

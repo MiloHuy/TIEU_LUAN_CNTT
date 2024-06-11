@@ -65,7 +65,9 @@ const Footer = (
                     />
                   </Button>
                 }
-
+                groupId={groupId}
+                permission={permission}
+                role={role}
                 userName={userName}
                 postDetail={postDetail}
               />
