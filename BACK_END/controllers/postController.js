@@ -342,6 +342,17 @@ exports.create = async (req, res) => {
         // });
 
         // Nhiều ảnh
+        const privacyValue = Number(req.body.privacy);
+        if (
+            privacyValue == undefined ||
+            (privacyValue !== 0 && privacyValue !== 1 && privacyValue !== 2)
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 2010,
+                message: "Đăng bài thất bại. Giá trị privacy phải là 0 hoặc 1 hoặc 2.",
+            });
+        }
         if (!req.files) {
             return res.status(400).json({
                 success: false,
