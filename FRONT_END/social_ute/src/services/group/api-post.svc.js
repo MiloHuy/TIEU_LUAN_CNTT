@@ -34,3 +34,17 @@ export const leaveGroup = async (url, groupId) => {
   const res = AxiosInstance.post(url.replace(":gr_id", groupId));
   return res;
 };
+
+export const likePostGroup = async (url, postId, groupId) => {
+  const res = AxiosInstance.post(
+    url.replace(":gr_id", groupId).replace(":post_id", postId),
+  );
+  return res;
+};
+
+export const storePostGroup = async (url, postId, groupId) => {
+  const res = AxiosInstance.post(
+    url.replace(":gr_id", groupId).replace(":post_id", postId),
+  );
+  return res;
+};

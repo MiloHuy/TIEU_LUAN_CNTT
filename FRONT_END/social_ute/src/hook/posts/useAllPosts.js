@@ -1,4 +1,5 @@
 import { getAllPost } from "services/post/api-get.svc";
+import { errorHandler } from "utils/error-response.utils";
 
 const { useState, useRef, useCallback } = require("react");
 
@@ -37,6 +38,7 @@ export const useAllPost = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
+      errorHandler(error);
     }
   }, []);
 
@@ -47,7 +49,7 @@ export const useAllPost = () => {
         fetchAllPosts(filter.page, filter.size);
       }
     },
-    [filter.page],
+    [filter.page, filter.size, fetchAllPosts, hasMore],
   );
 
   return {

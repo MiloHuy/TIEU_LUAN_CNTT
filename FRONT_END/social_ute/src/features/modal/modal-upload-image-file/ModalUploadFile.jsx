@@ -34,8 +34,6 @@ const ModalUploadFile = ({ trigger, onUpload }) => {
     }
   }, [stepForm])
 
-  console.log('onUpload: ' + typeof onUpload)
-
   const multipleForm = [
     <FormSelectPostOrStory
       stepForm={stepForm}

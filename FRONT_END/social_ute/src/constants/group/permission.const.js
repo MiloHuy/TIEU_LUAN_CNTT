@@ -28,12 +28,13 @@ const basePermissions = {
     "group_regulation",
   ),
   allMember: createPermission(catePermiss.SEE, "GET", "members"),
-  comment: createPermission(catePermiss.INTERACT, "GET", "comment"),
+  allComment: createPermission(catePermiss.INTERACT, "GET", "comment"),
   likePost: createPermission(catePermiss.INTERACT, "POST", "like_post"),
   commentPost: createPermission(catePermiss.INTERACT, "POST", "comment_post"),
   savePost: createPermission(catePermiss.INTERACT, "POST", "save_post"),
   allPosts: createPermission(catePermiss.POST, "GET", "posts"),
   createPost: createPermission(catePermiss.POST, "POST", "post"),
+  detailPost: createPermission(catePermiss.POST, "GET", "post"),
 };
 
 const superAdminPermissions = {

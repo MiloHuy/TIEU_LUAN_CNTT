@@ -12,7 +12,7 @@ import { usePushComment } from "hook/comment/usePushComment";
 import HeaderPostUser from "layout/header-post-user";
 import FieldAvatarNameTimeDes from "./FieldModalPostUser/FieldAvatarNameTimeDes";
 
-const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
+const ModalPostUserV2 = ({ trigger, className, postDetail, userName, groupId = null, permission = null, role = null }) => {
 
   const { isLoading, handlePostComment } = usePushComment({ postId: postDetail?._id })
 
@@ -75,7 +75,12 @@ const ModalPostUserV2 = ({ trigger, className, postDetail, userName }) => {
                         postDescription={postDetail.post_description}
                       />
 
-                      <ListCommentUser postId={postDetail?._id} />
+                      <ListCommentUser
+                        groupId={groupId}
+                        postId={postDetail?._id}
+                        permission={permission}
+                        role={role}
+                      />
 
                       <div className='grid gap-1'>
                         <InputPush

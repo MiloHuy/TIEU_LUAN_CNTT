@@ -15,8 +15,10 @@ export const getRolePermission = async (groupId) => {
   return res;
 };
 
-export const getAllPostGroup = async () => {
-  const res = AxiosInstance.get(API_GROUP_ENDPOINT.GET.allPostGroup);
+export const getAllPostGroup = async (url, groupId, params) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId), {
+    params: params,
+  });
   return res;
 };
 
@@ -32,5 +34,19 @@ export const getAllMember = async (url, groupId) => {
 
 export const getAllRegulations = async (url, groupId) => {
   const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+};
+
+export const getPostDetailGroup = async (url, postId, groupId) => {
+  const res = AxiosInstance.get(
+    url.replace(":post_id", postId).replace(":gr_id", groupId),
+  );
+  return res;
+};
+
+export const getAllCommentPostGroup = async (url, postId, groupId) => {
+  const res = AxiosInstance.get(
+    url.replace(":post_id", postId).replace(":gr_id", groupId),
+  );
   return res;
 };

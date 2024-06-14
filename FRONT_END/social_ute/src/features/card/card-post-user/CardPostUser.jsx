@@ -24,7 +24,7 @@ const CardPostUser = (props) => {
           "border border-black dark:border-white rounded-lg"
         )}>
         <HeaderPostUser
-          className='min-h-[8vh] h-[8vh] rounded-lg w-[35vw] '
+          className='h-16 rounded-lg w-full'
           img={postData.avatar}
           name={userName}
           privacy={postData.privacy}
@@ -40,7 +40,7 @@ const CardPostUser = (props) => {
 
         <div className="w-full min-h-[95vh] h-max flex flex-col justify-start ">
           <CaroselVersion2
-            className='h-[75vh]'
+            className='h-[500px] w-full'
             type={PostType.POST_IMG}
             slides={postData.img} />
 
