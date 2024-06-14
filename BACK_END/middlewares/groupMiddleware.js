@@ -3,7 +3,7 @@ const Group = require("../models/Group");
 const isSuperAdminGroup = async (req, res, next) => {
     const groupId = req.params.gr_id;
     const userId = req.user._id;
-    const group = await Group.findById(groupId).select('super_admin admin member');
+    const group = await Group.findById(groupId).select('super_admin admin member list_report');
     if (!group) {
         return res.status(404).json({
             success: false,

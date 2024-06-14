@@ -24,13 +24,24 @@ const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
 exports.create = async (req, res) => {
     try {
-        const { name, ...body } = req.body;
+        const { name, privacy, regulation, approve_post } = req.body;
 
         if (!name) {
             return res.status(400).json({
                 success: false,
                 code: 10026,
                 message: "Tạo nhóm thất bại. Phải có tên nhóm.",
+            });
+        }
+        const privacyValue = Number(privacy);
+        if (
+            privacyValue == undefined ||
+            (privacyValue !== 1 && privacyValue !== 2)
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 10005,
+                message: "Tạo nhóm thất bại. Giá trị privacy phải là 1 hoặc 2.",
             });
         }
         let Avatar = null;
@@ -84,7 +95,9 @@ exports.create = async (req, res) => {
             avatar: Avatar,
             super_admin: req.user._id,
             name,
-            ...body,
+            privacyValue,
+            regulation,
+            approve_post,
         });
 
         return res.status(200).json({
@@ -1966,7 +1979,9 @@ exports.adminGetMembers = async (req, res) => {
             Post.find({
                 group_id: groupId,
                 is_approved: true,
-            }).select("_id user_id").lean(),
+            })
+                .select("_id user_id")
+                .lean(),
         ]);
 
         const postIds = posts.map((post) => post._id);
@@ -1977,17 +1992,27 @@ exports.adminGetMembers = async (req, res) => {
             return acc;
         }, {});
 
-        const memberUserIds = members.map(member => member.user_id._id);
+        const memberUserIds = members.map((member) => member.user_id._id);
 
         const [likeCounts, cmtCounts] = await Promise.all([
             Post_liked.aggregate([
-                { $match: { user_id: { $in: memberUserIds }, post_id: { $in: postIds } } },
-                { $group: { _id: "$user_id", count: { $sum: 1 } } }
+                {
+                    $match: {
+                        user_id: { $in: memberUserIds },
+                        post_id: { $in: postIds },
+                    },
+                },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } },
             ]),
             Comment.aggregate([
-                { $match: { user_id: { $in: memberUserIds }, post_id: { $in: postIds } } },
-                { $group: { _id: "$user_id", count: { $sum: 1 } } }
-            ])
+                {
+                    $match: {
+                        user_id: { $in: memberUserIds },
+                        post_id: { $in: postIds },
+                    },
+                },
+                { $group: { _id: "$user_id", count: { $sum: 1 } } },
+            ]),
         ]);
 
         const likeCountMap = likeCounts.reduce((acc, like) => {
@@ -2000,14 +2025,14 @@ exports.adminGetMembers = async (req, res) => {
             return acc;
         }, {});
 
-        const membersWithCounts = members.map(member => {
+        const membersWithCounts = members.map((member) => {
             const userId = member.user_id._id;
             return {
                 user_id: member.user_id,
                 is_active: member.is_active,
                 post_count: postCounts[userId] || 0,
                 like_count: likeCountMap[userId] || 0,
-                cmt_count: cmtCountMap[userId] || 0
+                cmt_count: cmtCountMap[userId] || 0,
             };
         });
 
@@ -2519,7 +2544,7 @@ exports.addAdmin = async (req, res) => {
             });
         }
 
-        if (!memberIds.has(userId)) {
+        if (!(memberIds.has(userId) || adminIds.has(userId))) {
             return res.status(401).json({
                 success: false,
                 code: 10005,
@@ -2542,7 +2567,9 @@ exports.addAdmin = async (req, res) => {
             role_permisson: admin.role_permisson,
         };
         group.admin.push(new_admin);
-        group.member = group.member.filter(member => member.user_id.toString() !== userId);
+        group.member = group.member.filter(
+            (member) => member.user_id.toString() !== userId
+        );
 
         await group.save();
 
@@ -2753,7 +2780,6 @@ exports.getAdminPermission = async (req, res) => {
             success: true,
             admin: managePermissions,
         });
-
     } catch (error) {
         console.error("Lỗi:", error);
         res.status(500).json({
@@ -2865,8 +2891,6 @@ exports.superEditActiveAdmin = async (req, res) => {
     }
 };
 
-//
-
 exports.superEditPermissionAdmin = async (req, res) => {
     try {
         const userId = req.params.user_id;
@@ -2881,7 +2905,7 @@ exports.superEditPermissionAdmin = async (req, res) => {
                 message: "Không tìm thấy người dùng",
             });
         }
-        
+
         const check_admin = group.admin.find(
             (admin) => admin.user_id.toString() === userId
         );
@@ -2949,13 +2973,13 @@ exports.superAdminDeleteAdmin = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
         const userId = req.params.user_id;
-        const group = await Group.findById(groupId).lean();
+        const group = req.group;
 
-        const admin = group.admin.find(
-            (admin) => admin.user_id._id.toString() === userId
+        const adminIds = new Set(
+            group.admin.map((admin) => admin.user_id.toString())
         );
 
-        if (!admin) {
+        if (!adminIds.has(userId)) {
             return res.status(404).json({
                 success: false,
                 code: 10071,
@@ -2968,8 +2992,6 @@ exports.superAdminDeleteAdmin = async (req, res) => {
             { $pull: { admin: { user_id: userId } } },
             { new: true }
         );
-
-        // const new_list = updatedGroup.member
 
         return res.status(200).json({
             success: true,
@@ -3070,16 +3092,29 @@ exports.changeAvatar = async (req, res) => {
 
 exports.putSetting = async (req, res) => {
     try {
-        if (!req.body.name || req.body.name == null) {
+        const { name, privacy, approve_post } = req.body;
+        if (!name) {
             return res.status(400).json({
                 success: false,
-                code: 10026,
-                message: "Tạo nhóm thất bại. Phải có tên nhóm.",
+                code: 10082,
+                message: "Cập nhật thất bại. Phải có tên nhóm",
+            });
+        }
+        const privacyValue = Number(privacy);
+        if (
+            privacyValue == undefined ||
+            (privacyValue !== 1 && privacyValue !== 2)
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 10083,
+                message: "Cập nhật thất bại. Giá trị privacy phải là 1 hoặc 2.",
             });
         }
         const groupId = req.params.gr_id;
         const group = await Group.findByIdAndUpdate(groupId, {
-            ...req.body,
+            privacyValue,
+            approve_post,
         });
         return res.status(201).json({
             success: true,
@@ -3100,7 +3135,7 @@ exports.SuperAdminDeletePost = async (req, res) => {
         const groupId = req.params.gr_id;
         const postId = req.params.post_id;
         const post = await Post.findById(postId);
-        const group = await Group.findById(groupId);
+        const group = req.group;
 
         if (!post) {
             return res.status(404).json({
@@ -3187,7 +3222,6 @@ exports.SuperAdminLeaveGroup = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
 
-        // Tìm nhóm để lấy thông tin avatar.publicId
         const group = await Group.findById(groupId).lean();
         if (!group) {
             return res.status(404).json({
