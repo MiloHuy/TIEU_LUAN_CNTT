@@ -1167,6 +1167,18 @@ exports.createPost = async (req, res) => {
         const groupId = req.params.gr_id;
         const group = req.group;
 
+        const privacyValue = Number(req.body.privacy);
+        if (
+            privacyValue == undefined ||
+            (privacyValue !== 0 && privacyValue !== 3)
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 10046,
+                message: "Đăng bài thất bại. Giá trị privacy phải là 3.",
+            });
+        }
+
         if (!req.files) {
             return res.status(400).json({
                 success: false,
@@ -1544,6 +1556,18 @@ exports.adminCreatePost = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
 
+        const privacyValue = Number(req.body.privacy);
+        if (
+            privacyValue == undefined ||
+            (privacyValue !== 0 && privacyValue !== 3)
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 10046,
+                message: "Đăng bài thất bại. Giá trị privacy phải là 3.",
+            });
+        }
+        
         if (!req.files) {
             return res.status(400).json({
                 success: false,
