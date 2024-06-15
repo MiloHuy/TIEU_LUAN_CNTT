@@ -53,6 +53,9 @@ const {
     SuperAdminLeaveGroup,
     adminCreatePost,
     getAdminPermission,
+    getInvitations,
+    acceptInvitation,
+    refuseInvitation,
 } = require('../controllers/groupController.js');
 
 const {
@@ -74,6 +77,11 @@ router.post('/:gr_id/post/like/:post_id', verifyToken, isUser, likePost);
 router.post('/:gr_id/post/store/:post_id', verifyToken, isUser, storePost);
 router.post('/:gr_id/post/comment/:post_id', verifyToken, isUser, commentPost);
 router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost);
+
+//Guest
+router.get('/invitations', verifyToken, isUser, getInvitations);
+router.post('/invitation/accept/:gr_id', verifyToken, isUser, acceptInvitation);
+router.post('/invitation/refuse/:gr_id', verifyToken, isUser, refuseInvitation);
 
 // Member, Ad, Super
 router.get('/:gr_id/my-posts', verifyToken, isUser, isJoinGroup, getMyPosts);

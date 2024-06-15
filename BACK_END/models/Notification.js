@@ -15,6 +15,10 @@ const Notification = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
     },
+    group_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group",
+    },
     add_user_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

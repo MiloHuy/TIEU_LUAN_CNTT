@@ -19,6 +19,7 @@ const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
 const Comment = require("../models/Comment");
 const Comment_liked = require("../models/Comment_like");
+const Group_invitation = require("../models/Group_invitation");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -984,6 +985,108 @@ exports.getCommentPost = async (req, res) => {
     }
 };
 
+exports.getInvitations = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
+        const invitations = await Group_invitation.find({ user_id: userId })
+            .select("invatation")
+            .populate(
+                "invitation.group_id invitation.user_id",
+                "name first_name last_name avatar.url"
+            ).lean()
+        
+        const formattedInvitations = invitations.map(
+            (invitation) => invitation.invitation
+        ).flat();
+
+        const paginatedInvitations = formattedInvitations.slice(skip, skip + size);
+
+        const totals = formattedInvitations.length;
+
+        return res.status(200).json({
+            success: true,
+            totals,
+            invitations: paginatedInvitations,
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10085,
+            message: "Lấy lời mời vào nhóm thất bại " + error.message,
+        });
+    }
+};
+
+exports.acceptInvitation = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id
+        const userId = req.user._id
+
+        const [invitation, addmember] = await Promise.all([
+            Group_invitation.updateOne(
+                { user_id: userId },
+                { $pull: { invitation: { group_id: groupId } } }
+            ),
+            Group.updateOne(
+                { _id: groupId },
+                { $addToSet: { member: { user_id: userId, is_active: true } } }
+            ),
+        ]);
+
+        if (invitation.modifiedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                code: 10087,
+                message: "Không tìm thấy lời mời.",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Chấp nhận lời mời vào nhóm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10086,
+            message: "Chấp nhận lời mời vào nhóm thất bại " + error.message,
+        });
+    }
+};
+
+exports.refuseInvitation = async (req, res) => {
+    try {
+        const groupId = req.params.gr_id
+        const userId = req.user._id
+        const result = await Group_invitation.updateOne(
+            { user_id: userId },
+            { $pull: { invitation: { group_id: groupId } } }
+        );
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                code: 10087,
+                message: "Không tìm thấy lời mời.",
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Từ chối lời mời vào nhóm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return res.status(500).json({
+            success: false,
+            code: 10088,
+            message: "Chấp nhận lời mời vào nhóm thất bại " + error.message,
+        });
+    }
+};
+
 exports.getMyPosts = async (req, res) => {
     try {
         const groupId = req.params.gr_id;
@@ -1567,7 +1670,7 @@ exports.adminCreatePost = async (req, res) => {
                 message: "Đăng bài thất bại. Giá trị privacy phải là 3.",
             });
         }
-        
+
         if (!req.files) {
             return res.status(400).json({
                 success: false,
@@ -1702,7 +1805,14 @@ exports.inviteUser = async (req, res) => {
         const userId = req.params.user_id;
         const group = req.group;
 
-        const check_user = await User.findById(userId);
+        const [check_user, new_invitation] = await Promise.all([
+            User.findById(userId),
+            Group_invitation.findOneAndUpdate(
+                { user_id: userId },
+                {},
+                { new: true, upsert: true }
+            ),
+        ]);
 
         if (!check_user) {
             return res.status(401).json({
@@ -1718,8 +1828,11 @@ exports.inviteUser = async (req, res) => {
         const adminIds = new Set(
             group.admin.map((admin) => admin.user_id.toString())
         );
-        const requestIds = new Set(
-            group.request_join.map((request) => request.user_id.toString())
+
+        const invited = new Set(
+            new_invitation.invitation.map((invitation) =>
+                invitation.group_id.toString()
+            )
         );
 
         if (
@@ -1734,23 +1847,60 @@ exports.inviteUser = async (req, res) => {
             });
         }
 
-        const new_member = {
-            user_id: userId,
-        };
-
-        if (requestIds.has(userId)) {
-            group.request_join = group.request_join.filter(
-                (request) => !request.user_id.equals(userId)
-            );
+        if (invited.has(group._id.toString())) {
+            return res.status(401).json({
+                success: false,
+                code: 10084,
+                message: "Người này đã được mời.",
+            });
         }
 
-        group.member.push(new_member);
+        // Mời thẳng
+        // const new_member = {
+        //     user_id: userId,
+        // };
 
-        await group.save();
+        // if (requestIds.has(userId)) {
+        //     group.request_join = group.request_join.filter(
+        //         (request) => !request.user_id.equals(userId)
+        //     );
+        // }
+
+        // group.member.push(new_member);
+
+        // await group.save();
+
+        //Mời chờ chấp nhận
+        new_invitation.invitation.push({
+            group_id: group._id,
+            user_id: req.user._id,
+        });
+        await new_invitation.save();
+
+        const currentDate = new Date();
+        const content =
+            req.user.first_name +
+            " " +
+            req.user.last_name +
+            " mời bạn vào nhóm " +
+            group.name;
+        // const noti = await Notification.create({
+        //     user_id: req.user._id,
+        //     noti_content: content,
+        //     group_id: group._id,
+        //     noti_create_time: currentDate,
+        // });
+
+        // await Noti_user.findOneAndUpdate(
+        //     { user_id: userId },
+        //     { $push: { detail: { noti_id: noti._id } } },
+        //     { new: true, upsert: true }
+        // );
 
         return res.status(200).json({
             success: true,
-            message: "Mời vào nhóm thành công.",
+            message: "Gửi lời mời thành công.",
+            // content: content
         });
     } catch (error) {
         console.error("Lỗi:", error);
@@ -2802,7 +2952,7 @@ exports.getAdminPermission = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            admin: managePermissions,
+            permission: managePermissions,
         });
     } catch (error) {
         console.error("Lỗi:", error);

@@ -26,7 +26,7 @@ const isSuperAdminGroup = async (req, res, next) => {
 const isAdminGroup = async (req, res, next) => {
     const userId = req.user._id;
     const groupId = req.params.gr_id;
-    const group = await Group.findById(groupId).select('super_admin admin member request_join list_report regulation');
+    const group = await Group.findById(groupId).select('super_admin admin member request_join list_report regulation name _id');
     if (!group) {
         return res.status(404).json({
             success: false,
