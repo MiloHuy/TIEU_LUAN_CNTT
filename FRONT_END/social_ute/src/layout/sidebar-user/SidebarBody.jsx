@@ -13,12 +13,12 @@ import { handleCreatePost, handleLogOut, handleNavigateHome, handleNavigateReque
 
 const SidebarButton = ({ className, Icon, text, onClick }) => (
   <Button
-    className={className}
+    className={clsx("h-[50px]",className)}
     variant="ghost"
     onClick={onClick}
   >
     <Icon size={24} strokeWidth={1.5} />
-    <p className='font-quick_sans text-lg'>{text}</p>
+    <p className='font-quick_sans text-xl'>{text}</p>
   </Button>
 );
 
