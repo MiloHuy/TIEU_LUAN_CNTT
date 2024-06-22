@@ -16,8 +16,10 @@ const MemberCard = ({ member, ...props }) => (
     }
     body={
       <div className="flex flex-col gap-2">
-        <h3 className="text-xl font-semibold">{getFullName(member.first_name, member.last_name)}</h3>
-        <p className="text-sm text-gray-400">20/10/2000</p>
+        <h3 className="text-xl font-semibold">
+          {getFullName(member.first_name, member.last_name)}
+        </h3>
+        <p className="text-sm text-gray-400">{member.department}</p>
       </div>
     }
     footer={<Button className="p-4">Click me</Button>}
@@ -25,4 +27,4 @@ const MemberCard = ({ member, ...props }) => (
   />
 );
 
-export default MemberCard
+export default MemberCard;

@@ -1,18 +1,22 @@
 import { selectCurrenUser } from "app/slice/auth/auth.slice";
-import ArrayEmpty from "combine/array-empty/ArrayEmpty";
+import ArrayEmpty from "combine/array-empty";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
-import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
-import { motion } from "framer-motion";
 import { usePostDetail } from "hook/posts/usePostDetail";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getFullName } from "utils/user.utils";
-import { containerMotion, itemMotion } from "./MotionListPostUser";
+import { motion } from "framer-motion";
+import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
+import {
+  containerMotion,
+  itemMotion,
+} from "../list-post-user-detail/MotionListPostUser";
+import clsx from "clsx";
 import { useAllPostsHome } from "hook/me/useAllPostsHome";
 
-const ListPostUserDetail = () => {
-  const { posts, fetchMePosts } = useAllPostsHome();
+const ListPostUserHome = ({ userId, className }) => {
+  const { posts, fetchPostsHome } = useAllPostsHome();
 
   const user = useSelector(selectCurrenUser);
   const fullName = getFullName(user.first_name, user.last_name);
@@ -20,14 +24,17 @@ const ListPostUserDetail = () => {
   const { postDetail, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
-    fetchMePosts();
-  }, [fetchMePosts]);
+    fetchPostsHome(userId);
+  }, [fetchPostsHome, userId]);
 
   return (
     <LoadingComponent type={TYPELOADING.TITLE} condition={Boolean(posts)}>
       <ArrayEmpty arr={posts} title="Chưa có bài viết ở hiện tại">
         <motion.div
-          className="grid lg:grid-cols-3 gap-2 w-full h-full md:grid-cols-1 "
+          className={clsx(
+            "grid lg:grid-cols-3 gap-2 w-full h-full md:grid-cols-1",
+            className
+          )}
           variants={containerMotion}
           initial="hidden"
           animate="visible"
@@ -44,7 +51,6 @@ const ListPostUserDetail = () => {
                       alt="image1"
                       onClick={() => fetchPostDetails(post._id)}
                       variants={itemMotion}
-                      userName="AAA"
                     />
                   }
                   postDetail={postDetail}
@@ -59,4 +65,4 @@ const ListPostUserDetail = () => {
   );
 };
 
-export default ListPostUserDetail;
+export default ListPostUserHome;
