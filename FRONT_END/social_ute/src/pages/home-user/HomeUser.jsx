@@ -4,7 +4,6 @@ import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import ListFriendsUser from "features/list/list-friends-user";
 import ListPostStored from "features/list/list-post-stored";
-import ListPostUserDetail from "features/list/list-post-user-detail";
 import ListStoryUserDetail from "features/list/list-story-user-detail";
 import { useMeAllStory } from "hook/me/useMeAllStory";
 import { useFollowAndFollwing } from "hook/statisic/useFollowAndFollwing";
