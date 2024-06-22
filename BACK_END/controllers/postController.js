@@ -65,13 +65,15 @@ exports.getAll = async (req, res) => {
         ]);
 
         const likedPostIds = new Set(
-            likedPosts.map((like) => like.post_id.toString())
+            likedPosts.filter(like => like && like.post_id).map((like) => like.post_id.toString())
         );
+        
         const storedPostIds = new Set(
-            storedPosts.flatMap((store) =>
-                store.post_id.map((id) => id.toString())
+            storedPosts.filter(store => store && store.post_id).flatMap((store) =>
+                store.post_id.map((id) => id ? id.toString() : "")
             )
         );
+
 
         const postsWithLikesAndStores = await Promise.all(
             posts.map(async (post) => {
@@ -483,15 +485,14 @@ exports.create = async (req, res) => {
 //POST /posts/store/:id
 exports.store = async (req, res) => {
     try {
-        const following_Users = await Follow.find({
-            user_id: req.user._id,
-        }).select("following_user_id");
-        const following_User_Ids = following_Users
-            .map((follow) => follow.following_user_id)
-            .flat();
-        following_User_Ids.push(req.user._id);
+        const userId = req.user._id;
+        const postId = req.params.id;
 
-        const post = await Post.findById(req.params.id);
+        const [followingUsers, post] = await Promise.all([
+            Follow.find({ user_id: userId }).select("following_user_id"),
+            Post.findById(postId)
+        ]);
+
         if (!post) {
             return res.status(404).json({
                 success: false,
@@ -500,43 +501,38 @@ exports.store = async (req, res) => {
             });
         }
 
-        switch (true) {
-            case post.privacy == 2:
-                break;
-            case !following_User_Ids.some((id) => id.equals(post.user_id._id)):
-                return res.status(400).json({
-                    success: false,
-                    code: 2008,
-                    message:
-                        "Không thể thao tác. Bài viết này của người mà bạn chưa theo dõi.",
-                });
-            case post.privacy == 0 && !post.user_id._id.equals(req.user._id):
-                return res.status(400).json({
-                    success: false,
-                    code: 2031,
-                    message:
-                        "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
-                });
+        const followingUserIds = followingUsers.map(follow => follow.following_user_id);
+        followingUserIds.push(userId);
+
+        if (
+            post.privacy !== 2 &&
+            !followingUserIds.some(id => id.equals(post.user_id._id)) ||
+            (post.privacy === 0 && !post.user_id._id.equals(userId))
+        ) {
+            return res.status(400).json({
+                success: false,
+                code: 2031,
+                message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+            });
         }
 
         const stored = await Post_stored.findOneAndUpdate(
-            { user_id: req.user._id },
-            {},
+            { user_id: userId },
+            { $pull: { post_id: postId } },
             { new: true, upsert: true }
         );
-        if (stored.post_id.includes(req.params.id)) {
-            stored.post_id.pull(req.params.id);
+
+        if (!stored.post_id.includes(postId)) {
+            stored.post_id.push(postId);
             await stored.save();
-            res.status(201).json({
-                success: true,
-                message: "Bỏ lưu bài viết.",
-            });
-        } else {
-            stored.post_id.push(req.params.id);
-            await stored.save();
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Lưu bài viết thành công.",
+            });
+        } else {
+            return res.status(201).json({
+                success: true,
+                message: "Bỏ lưu bài viết.",
             });
         }
     } catch (error) {
@@ -610,6 +606,8 @@ exports.like = async (req, res) => {
                 post_id: req.params.id,
             });
 
+            console.log(noti);
+            
             if (noti) {
                 await Noti_user.findOneAndUpdate(
                     { user_id: post.user_id },
