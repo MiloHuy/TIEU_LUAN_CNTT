@@ -24,4 +24,4 @@ const SuccessCode = {
   DISLIKE_POST: 2001,
 };
 
-module.export = { ErrorCode, ErrorMess, SuccesMess, SuccessCode };
+module.exports = { ErrorCode, ErrorMess, SuccesMess, SuccessCode };

@@ -9,13 +9,9 @@ const Follow = require("../models/Follow");
 const { PostAPIFeatures } = require("../utils/APIFeatures");
 const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
-const {
-    ErrorMess,
-    ErrorCode,
-    SuccesMess,
-    SuccessCode,
-} = require("../constants/error.const");
+
 const { genMessNotAction } = require("../utils/mess.util");
+const { ErrorMess, ErrorCode, SuccesMess, SuccessCode } = require("../constants/error.const");
 
 //GET /posts
 exports.getAll = async (req, res) => {
@@ -655,7 +651,7 @@ exports.like = async (req, res) => {
             });
         }
     } catch (error) {
-        res.status(500).json({
+        res.status(ErrorCode.SERVER_ERROR).json({
             success: false,
             code: 2012,
             message: error.message,

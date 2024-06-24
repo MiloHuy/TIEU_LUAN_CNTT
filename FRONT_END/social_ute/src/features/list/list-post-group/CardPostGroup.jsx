@@ -14,6 +14,10 @@ const CardPostGroup = ({ postData, ...props }) => {
     postData.user_id?.last_name
   );
 
+  const dateNow = new Date();
+  const dateCreatePost = new Date(postData?.create_post_time);
+  const diffTime = Math.abs((dateNow - dateCreatePost) / (1000 * 60 * 60 * 24));
+
   return (
     <CardBaseLayout
       align="horizontal"
@@ -24,6 +28,7 @@ const CardPostGroup = ({ postData, ...props }) => {
           img={postData.user_id?.avatar.url}
           name={fullName}
           privacy={postData.privacy}
+          dateBetween={Math.floor(diffTime)}
           // href={navigateById(postData.userId?._id, ID, navigate)}
           action={
             <DropdownShowMoreOptions

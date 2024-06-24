@@ -133,6 +133,7 @@ export const groupPermission = {
   },
   [ERoleNameGroup.ADMIN]: {
     ...basePermissions,
+    ...superAdminPermissions,
     leaveGroup: createPermission(
       catePermiss.LEAVE_GROUP,
       "POST",
