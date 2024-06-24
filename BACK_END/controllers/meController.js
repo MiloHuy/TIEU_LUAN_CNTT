@@ -1,114 +1,136 @@
-const fs = require('fs').promises;
-const path = require('path');
-const cloudinary = require('cloudinary').v2;
+const fs = require("fs").promises;
+const path = require("path");
+const cloudinary = require("cloudinary").v2;
 
-const Post = require('../models/Post')
-const Story = require('../models/Story')
-const User = require('../models/User')
-const RefreshToken = require('../models/RefreshToken')
-const Post_stored = require('../models/Post_stored')
-const bcrypt = require('bcrypt');
-const Addfriend = require('../models/Addfriend')
-const Post_liked = require('../models/Post_liked')
-const Friend = require('../models/Friend')
-const { UserAPIFeatures } = require('../utils/APIFeatures');
-const Follow = require('../models/Follow');
+const Post = require("../models/Post");
+const Story = require("../models/Story");
+const User = require("../models/User");
+const RefreshToken = require("../models/RefreshToken");
+const Post_stored = require("../models/Post_stored");
+const bcrypt = require("bcrypt");
+const Addfriend = require("../models/Addfriend");
+const Post_liked = require("../models/Post_liked");
+const Friend = require("../models/Friend");
+const { UserAPIFeatures } = require("../utils/APIFeatures");
+const Follow = require("../models/Follow");
 
 //GET /posts
-exports.getMyPosts = (async (req, res) => {
+exports.getMyPosts = async (req, res) => {
     try {
-        const posts = await Post.find({ user_id : req.user._id })
-            .select('_id post_img.url')
-            .sort({ create_post_time: -1 })
-            .lean()
-        
-        const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
-            const post_like = await Post_liked.findOne({ post_id: post._id });
-            const likes = post_like ? post_like.user_id.length : 0;
+        const { size = 10, page = 1 } = req.query;
+        const skip = size * (page - 1);
+        const [posts, totals] = await Promise.all([
+            Post.find({ user_id: req.user._id })
+                .select("_id post_img.url")
+                .sort({ create_post_time: -1 })
+                .limit(Number(size))
+                .skip(skip)
+                .lean()
+                ,
 
-            //Làm thêm phần count_cmt
-        
-            return {
-                ...post,
-                likes,
-            };
-        }));
+            Post.countDocuments({ user_id: req.user._id }),
+        ]);
+
+        const postsAfferCountLike = await Promise.all(
+            posts.map(async (post) => {
+                const post_like = await Post_liked.findOne({
+                    post_id: post._id,
+                });
+                const likes = post_like ? post_like.user_id.length : 0;
+
+                //Làm thêm phần count_cmt
+
+                return {
+                    ...post,
+                    likes,
+                };
+            })
+        );
+
+        const paginated_posts = postsAfferCountLike.slice(skip, skip + size);
 
         return res.status(200).json({
             success: true,
-            posts: postsAfferCountLike
-        })
-            
-        
+            posts: postsAfferCountLike,
+            totals,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
             code: 3000,
-            message: error.message, 
+            message: error.message,
         });
     }
-})
+};
 
 //GET /stored/posts
-exports.getPosts = (async (req, res) => {
+exports.getPosts = async (req, res) => {
     try {
-        const store = await Post_stored.findOne({ user_id : req.user._id })
-        .select('post_id -_id')
-        .populate('post_id', 'post_img.url')
-        .sort({ create_post_time: -1 })
-        .lean()
-        if(!store){
+        const store = await Post_stored.findOne({ user_id: req.user._id })
+            .select("post_id -_id")
+            .populate("post_id", "post_img.url")
+            .sort({ create_post_time: -1 })
+            .lean();
+        if (!store) {
             return res.status(200).json({
                 success: true,
-                posts: []
-            })
+                posts: [],
+            });
         }
-        const posts = store.post_id
-        const postsAfferCountLike = await Promise.all(posts.map(async (post) => {
-            const post_like = await Post_liked.findOne({ post_id: post._id });
-            const likes = post_like ? post_like.user_id.length : 0;
+        const posts = store.post_id;
+        const postsAfferCountLike = await Promise.all(
+            posts.map(async (post) => {
+                const post_like = await Post_liked.findOne({
+                    post_id: post._id,
+                });
+                const likes = post_like ? post_like.user_id.length : 0;
 
-            //Làm thêm phần count_cmt
-        
-            return {
-                ...post,
-                likes,
-            };
-        }));
+                //Làm thêm phần count_cmt
+
+                return {
+                    ...post,
+                    likes,
+                };
+            })
+        );
         return res.status(200).json({
             success: true,
-            posts: postsAfferCountLike
-        })
+            posts: postsAfferCountLike,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
             code: 3001,
-            message: error.message, 
+            message: error.message,
         });
     }
-})
+};
 
 //GET /stored/stories
-exports.getStories = (async (req, res) => {
+exports.getStories = async (req, res) => {
     try {
-        const stories = await Story.find({ user_id : req.user._id }).select('-story_content.publicId')
+        const stories = await Story.find({ user_id: req.user._id }).select(
+            "-story_content.publicId"
+        );
         return res.status(200).json({
             success: true,
-            stories
-        })
+            stories,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
             code: 3002,
-            message: error.message, 
+            message: error.message,
         });
     }
-})
+};
 
 //GET /account/info
-exports.getInfo = (async (req, res) => {
+exports.getInfo = async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user._id }).select('-pass_word -is_active -__v -avatar.publicId -_id');
+        const user = await User.findOne({ _id: req.user._id }).select(
+            "-pass_word -is_active -__v -avatar.publicId -_id"
+        );
         res.status(200).json({
             success: true,
             user,
@@ -117,21 +139,24 @@ exports.getInfo = (async (req, res) => {
         res.status(500).json({
             success: false,
             code: 3003,
-            message: err.message, 
+            message: err.message,
         });
     }
-})
+};
 
 //GET /friend-request
-exports.getFriendRequest = (async (req, res) => {
+exports.getFriendRequest = async (req, res) => {
     try {
         const friend_request = await Addfriend.find({
-                add_user_id: req.user._id
-            })
-            .populate('user_id', 'first_name last_name avatar.url department id')
-            .select('-_id user_id');
-        if(friend_request.length > 0){
-            const formattedRequests = friend_request.map(request => {
+            add_user_id: req.user._id,
+        })
+            .populate(
+                "user_id",
+                "first_name last_name avatar.url department id"
+            )
+            .select("-_id user_id");
+        if (friend_request.length > 0) {
+            const formattedRequests = friend_request.map((request) => {
                 const user = request.user_id;
                 return {
                     avatar: user.avatar,
@@ -139,7 +164,7 @@ exports.getFriendRequest = (async (req, res) => {
                     first_name: user.first_name,
                     last_name: user.last_name,
                     id: user.id,
-                    department: user.department
+                    department: user.department,
                 };
             });
 
@@ -153,55 +178,60 @@ exports.getFriendRequest = (async (req, res) => {
                 requests: [],
             });
         }
-        
     } catch (err) {
         res.status(500).json({
             success: false,
             code: 3004,
-            message: err.message, 
+            message: err.message,
         });
     }
-})
+};
 
 //GET /friends
-exports.getFriends = (async (req, res) => {
+exports.getFriends = async (req, res) => {
     try {
-        const friends = await Friend
-            .findOne({user_id: req.user._id})
-            .populate('friend_id', 'first_name last_name avatar.url department id')
-            .select('-_id friend_id');
-        const friend_list = friends.friend_id || []
+        const friends = await Friend.findOne({ user_id: req.user._id })
+            .populate(
+                "friend_id",
+                "first_name last_name avatar.url department id"
+            )
+            .select("-_id friend_id");
+        const friend_list = friends.friend_id || [];
         return res.status(200).json({
             success: true,
-            friends:friend_list,
+            friends: friend_list,
         });
-        
     } catch (err) {
         res.status(500).json({
             success: false,
             code: 3005,
-            message: err.message, 
+            message: err.message,
         });
     }
-})
+};
 
 //GET /me/friends/search
-exports.searchFriends = (async (req, res) => {
+exports.searchFriends = async (req, res) => {
     try {
         const { size } = req.query;
-        const friends = await Friend.findOne({ user_id: req.user._id }).select('-_id friend_id');
-        const friend_ids = friends.friend_id
+        const friends = await Friend.findOne({ user_id: req.user._id }).select(
+            "-_id friend_id"
+        );
+        const friend_ids = friends.friend_id;
 
-        const userQuery = User.find({ _id: { $in: friend_ids } })
-            .select('avatar.url first_name last_name department id');
-        
-        const apiFeatures = new UserAPIFeatures(userQuery, req.query)
-            .search();
-        
+        const userQuery = User.find({ _id: { $in: friend_ids } }).select(
+            "avatar.url first_name last_name department id"
+        );
+
+        const apiFeatures = new UserAPIFeatures(userQuery, req.query).search();
+
         let allUser = await apiFeatures.query;
         const totals = allUser.length;
-        
-        const apiFeaturesPagination = new UserAPIFeatures(User.find(userQuery), req.query)
+
+        const apiFeaturesPagination = new UserAPIFeatures(
+            User.find(userQuery),
+            req.query
+        )
             .search()
             .pagination(size);
 
@@ -216,132 +246,140 @@ exports.searchFriends = (async (req, res) => {
         res.status(500).json({
             success: false,
             code: 3006,
-            message: error.message, 
+            message: error.message,
         });
     }
-});
+};
 
 //GET /list-follows
-exports.getFollows = (async (req, res) => {
+exports.getFollows = async (req, res) => {
     try {
-        const followers = await Follow
-            .findOne({user_id: req.user._id})
-            .populate('follower_user_id following_user_id', 'first_name last_name avatar.url department id')
-            .select('-_id follower_user_id')
-            .lean()
-        const follower_list = followers.follower_user_id || []
-        const following_list = followers.following_user_id || []
-        console.log('follower_list ' + follower_list);
-        console.log('following_list ' + following_list);
-        const follower_list_after_check = follower_list.map(follower => {
-            const isFollowing = following_list.some(following => following._id.equals(follower._id));
+        const followers = await Follow.findOne({ user_id: req.user._id })
+            .populate(
+                "follower_user_id following_user_id",
+                "first_name last_name avatar.url department id"
+            )
+            .select("-_id follower_user_id")
+            .lean();
+        const follower_list = followers.follower_user_id || [];
+        const following_list = followers.following_user_id || [];
+        console.log("follower_list " + follower_list);
+        console.log("following_list " + following_list);
+        const follower_list_after_check = follower_list.map((follower) => {
+            const isFollowing = following_list.some((following) =>
+                following._id.equals(follower._id)
+            );
             return {
                 ...follower,
-                isFollowing: isFollowing 
+                isFollowing: isFollowing,
             };
         });
         return res.status(200).json({
             success: true,
-            followers:follower_list_after_check,
-            followings:following_list
+            followers: follower_list_after_check,
+            followings: following_list,
         });
     } catch (err) {
         res.status(500).json({
             success: false,
             code: 3016,
-            message: err.message, 
+            message: err.message,
         });
     }
-})
+};
 
 //PUT /account/info
-exports.updateInfo = (async (req, res) => {
+exports.updateInfo = async (req, res) => {
     try {
-        if(Object.keys(req.body).length === 0){
+        if (Object.keys(req.body).length === 0) {
             return res.status(400).json({
                 success: false,
                 code: 3007,
-                message:'Cập nhật thất bại. Chưa nhập dữ liệu.',
-            })
+                message: "Cập nhật thất bại. Chưa nhập dữ liệu.",
+            });
         }
         const user = await User.findByIdAndUpdate(
-            { _id : req.user._id },
-            {$set: {...req.body}},
-            { new: true },
-        ).select('-pass_word -role_id -is_active -__v -avatar -_id');
+            { _id: req.user._id },
+            { $set: { ...req.body } },
+            { new: true }
+        ).select("-pass_word -role_id -is_active -__v -avatar -_id");
         res.status(200).json({
             success: true,
-            message:'Cập nhật thành công.',
-            user
-        })
+            message: "Cập nhật thành công.",
+            user,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
             code: 3008,
-            message:'Cập nhật thất bại.',
-            message: error.message, 
+            message: "Cập nhật thất bại.",
+            message: error.message,
         });
     }
-})
+};
 
 //PUT /account/password
-exports.updatePassword = (async (req, res) => {
+exports.updatePassword = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (!user) {
-        return res.status(404).json({ 
-            success: false, 
+        return res.status(404).json({
+            success: false,
             code: 3009,
-            message: 'Không tìm thấy người dùng.' 
-        });;
+            message: "Không tìm thấy người dùng.",
+        });
     }
     const isPasswordMatched = await user.comparePassword(req.body.pass_word);
     if (!isPasswordMatched) {
-        return res.status(400).json({ 
-            success: false, 
+        return res.status(400).json({
+            success: false,
             code: 3010,
-            message: 'Mật khẩu không chính xác.' 
+            message: "Mật khẩu không chính xác.",
         });
     }
     if (req.body.new_password !== req.body.confirm) {
-        return res.status(400).json({ 
-            success: false, 
+        return res.status(400).json({
+            success: false,
             code: 3011,
-            message: 'Nhập lại mật khẩu không trùng khớp.' });
+            message: "Nhập lại mật khẩu không trùng khớp.",
+        });
     }
 
     const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
 
     await User.findByIdAndUpdate(req.user._id, { pass_word: hashedPassword });
 
-    res.status(201).json({ 
-        success: true, 
-        message: 'Đổi mật khẩu thành công.' 
+    res.status(201).json({
+        success: true,
+        message: "Đổi mật khẩu thành công.",
     });
-})
+};
 
 // uploadAvatar
-const validImageFormats = ['jpg', 'jpeg', 'png'];
+const validImageFormats = ["jpg", "jpeg", "png"];
 const maxFileSize = 10 * 1024 * 1024;
 //POST /me/avatar
-exports.uploadAvatar = (async (req, res) => {
+exports.uploadAvatar = async (req, res) => {
     try {
         if (!req.files.avatar || !req.files.avatar.data) {
             return res.status(400).json({
                 success: false,
                 code: 3012,
-                message: 'Đổi avatar thất bại. Chưa có ảnh.',
+                message: "Đổi avatar thất bại. Chưa có ảnh.",
             });
         }
 
-        const allowedExtensions = validImageFormats.map(format => `.${format}`);
+        const allowedExtensions = validImageFormats.map(
+            (format) => `.${format}`
+        );
         const fileExtension = path.extname(req.files.avatar.name).toLowerCase();
 
         if (!allowedExtensions.includes(fileExtension)) {
             return res.status(400).json({
                 success: false,
                 code: 3013,
-                message: 'Đổi avatar thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.',
+                message:
+                    "Đổi avatar thất bại. Định dạng ảnh không hợp lệ. Chỉ chấp nhận .jpg, .jpeg hoặc .png.",
             });
         }
 
@@ -350,33 +388,36 @@ exports.uploadAvatar = (async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 3014,
-                message: 'Đổi avatar thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).',
+                message:
+                    "Đổi avatar thất bại. Kích thước ảnh vượt quá giới hạn cho phép (10MB).",
             });
         }
 
-        const user = await User.findOne({_id: req.user._id})
+        const user = await User.findOne({ _id: req.user._id });
 
-        if(user.avatar.publicId){
-            await cloudinary.uploader.destroy(user.avatar.publicId)
+        if (user.avatar.publicId) {
+            await cloudinary.uploader.destroy(user.avatar.publicId);
         }
 
         // Tạo một thư mục tạm thời nếu nó chưa tồn tại
-        const tempDir = path.join(__dirname, 'temp');
+        const tempDir = path.join(__dirname, "temp");
         await fs.mkdir(tempDir, { recursive: true });
 
         // Tạo một bộ đệm từ dữ liệu tệp
         const buffer = req.files.avatar.data;
 
         // Tạo một đường dẫn tạm thời để lưu trữ tệp
-        const tempFilePath = path.join(tempDir, 'uploadedFile.jpg');
+        const tempFilePath = path.join(tempDir, "uploadedFile.jpg");
 
         // Ghi dữ liệu vào tệp tạm thời
         await fs.writeFile(tempFilePath, buffer);
 
-        const result = await cloudinary.uploader.upload(
-            tempFilePath,
-            { folder: 'avatars', width: 512, height: 512, crop: 'fill', },
-        );
+        const result = await cloudinary.uploader.upload(tempFilePath, {
+            folder: "avatars",
+            width: 512,
+            height: 512,
+            crop: "fill",
+        });
 
         // Xóa tệp tạm thời
         await fs.unlink(tempFilePath);
@@ -390,26 +431,26 @@ exports.uploadAvatar = (async (req, res) => {
             { _id: req.user._id },
             { avatar: avatar },
             { new: true }
-        ).select("_id avatar.url first_name last_name role_id")
+        ).select("_id avatar.url first_name last_name role_id");
 
-        const new_user ={
+        const new_user = {
             _id: update_user._id,
             avatar: update_user.avatar.url,
             first_name: update_user.first_name,
             last_name: update_user.last_name,
             role_id: update_user.role_id,
-        }
+        };
 
         res.status(201).json({
             success: true,
-            message: 'Đổi avatar thành công.',
-            user: new_user
+            message: "Đổi avatar thành công.",
+            user: new_user,
         });
     } catch (error) {
         res.status(500).json({
             success: false,
             code: 3015,
-            message: 'Đổi avatar thất bại :' + error.message, 
+            message: "Đổi avatar thất bại :" + error.message,
         });
     }
-})
+};

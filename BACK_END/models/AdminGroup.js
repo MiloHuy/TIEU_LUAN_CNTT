@@ -56,7 +56,7 @@ const AdminGroup = new Schema({
                 edit_active: { type: String, default: 'group/:gr_id/admin/edit-active/:user_id' }
             },
             DELETE: {
-                delete_member: { type: String, default: 'group/:gr_id/admin/delete_member/:user_id' }
+                delete_member: { type: String, default: 'group/:gr_id/admin/delete-member/:user_id' }
             }
         },
         Manage_post: {

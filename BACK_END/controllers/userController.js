@@ -81,38 +81,6 @@ exports.getInfo = (async (req, res) => {
 //GET /posts/:id
 exports.getPosts = (async (req, res) => {
     try {
-        // if(req.params.id==req.user._id){
-        //     return res.status(400).json({
-        //         success: false,
-        //         code: 4003,
-        //         message:'Phải dùng id của người khác, không được dùng id của bản thân.',
-        //     });
-        // }
-        // const user = await User.findOne({ _id: req.params.id });
-        // if(!user){
-        //     return res.status(404).json({
-        //         success: false,
-        //         code: 4004,
-        //         message: 'Không tìm thấy người dùng.', 
-        //     });
-        // }
-
-        // const following_Users = await Follow.findOne({
-        //     user_id: req.user._id,
-        // })
-        // // .select("following_user_id")
-        // .lean()
-
-        // const following = following_Users.following_user_id.map(id => id.toString())
-
-        // const is_follow = following.includes(req.params.id);
-
-        // // console.log(req.params.id);
-
-        
-        // // .some((id) => id.equals(res.user._id))
-
-        //Cách 1
         const is_follow = await Follow.findOne({
             user_id: req.user._id,
             following_user_id: req.params.id
