@@ -1,9 +1,7 @@
 import { ERoleNameGroup } from "constants/group/enum";
 import {
   catePermiss,
-  endPointsManageGroup,
   groupPermission,
-  methodManageGroup,
 } from "constants/group/permission.const";
 
 export const contentDropdownShowMoreGroup = [
@@ -33,32 +31,6 @@ export const contentDropdownShowMoreGroup = [
         groupPermission[ERoleNameGroup.MEMBER]["post_wait_approve"]?.method,
       endPoint:
         groupPermission[ERoleNameGroup.MEMBER]["post_wait_approve"]?.endPoint,
-    },
-  },
-  {
-    title: "Quản lý nhóm",
-    value: {
-      category: catePermiss.MANAGE_INTERACT,
-      method:
-        methodManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["manageGroup"],
-        ) ||
-        methodManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["managePost"],
-        ) ||
-        methodManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["manageInteract"],
-        ),
-      endPoint:
-        endPointsManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["manageGroup"],
-        ) ||
-        endPointsManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["managePost"],
-        ) ||
-        endPointsManageGroup(
-          groupPermission[ERoleNameGroup.SUPERADMIN]["manageInteract"],
-        ),
     },
   },
   {

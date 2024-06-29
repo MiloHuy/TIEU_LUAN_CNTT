@@ -7,24 +7,29 @@ import HeaderPostUser from "layout/header-post-user";
 import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 
 const CardPostUser = (props) => {
-  const { postData } = props
+  const { postData } = props;
 
-  const userName = getFullName(postData.userId?.first_name, postData.userId?.last_name);
+  const userName = getFullName(
+    postData.userId?.first_name,
+    postData.userId?.last_name
+  );
   const ID = getUserIdFromCookie();
 
-  const navigateHome = postData.userId?._id !== ID
-    ? `/welcome/home-guest/${postData.userId?._id}`
-    : `/welcome/home-user/${ID}`
+  const navigateHome =
+    postData.userId?._id !== ID
+      ? `/welcome/home-guest/${postData.userId?._id}`
+      : `/welcome/home-user/${ID}`;
 
   return (
-    <div className='max-w-[40vw] w-[40vw] p-2' {...props}>
-      <div className={
-        clsx(
-          "flex flex-col justify-between items-center gap-2 py-2 w-full min-h-[95vh] h-max overflow-hidden",
+    <div className="max-w-[40vw] w-[40vw] p-2" {...props}>
+      <div
+        className={clsx(
+          "flex flex-col justify-between items-center gap-2 py-2 w-full min-h-[500px] overflow-hidden",
           "border border-black dark:border-white rounded-lg"
-        )}>
+        )}
+      >
         <HeaderPostUser
-          className='h-16 rounded-lg w-full'
+          className="h-16 rounded-lg w-full"
           img={postData.avatar}
           name={userName}
           privacy={postData.privacy}
@@ -38,11 +43,12 @@ const CardPostUser = (props) => {
           }
         />
 
-        <div className="w-full min-h-[95vh] h-max flex flex-col justify-start ">
+        <div className="w-full min-h-[300px] h-max flex flex-col justify-start ">
           <CaroselVersion2
-            className='h-[500px] w-full'
+            className="h-[500px] w-full"
             type={PostType.POST_IMG}
-            slides={postData.img} />
+            slides={postData.img}
+          />
 
           <FooterActionsPost
             post_id={postData.id}
@@ -53,9 +59,9 @@ const CardPostUser = (props) => {
             saved_posts={postData.savedPosts}
           />
         </div>
-      </div >
-    </div >
-  )
-}
+      </div>
+    </div>
+  );
+};
 
-export default CardPostUser
+export default CardPostUser;

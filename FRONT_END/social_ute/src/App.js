@@ -14,8 +14,6 @@ import { adminRoutes, mainRoutes, userRoutes } from "router";
 import "./App.css";
 import Main from "./pages/main";
 
-const HomeG = lazy(() => import("pages/home-guests"));
-
 const router = createBrowserRouter([
   {
     path: "/",

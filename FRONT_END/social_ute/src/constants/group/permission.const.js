@@ -38,30 +38,29 @@ const basePermissions = {
 };
 
 const superAdminPermissions = {
-  manageGroup: {
-    manageMember: {
-      allMember: createPermission(catePermiss.MANAGE_MEMBER, "GET", "members"),
-      allRequestJoin: createPermission(
-        catePermiss.MANAGE_MEMBER,
+  manageMember:{
+    allMember: createPermission(catePermiss.MANAGE_MEMBER, "GET", "members"),
+    allRequestJoin: createPermission(
+      catePermiss.MANAGE_MEMBER,
         "GET",
         "request_join",
       ),
-      acceptRequest: createPermission(
+    acceptRequest: createPermission(
         catePermiss.MANAGE_MEMBER,
         "POST",
         "accept_request",
       ),
-      refuseRequest: createPermission(
+    refuseRequest: createPermission(
         catePermiss.MANAGE_MEMBER,
         "POST",
         "refuse_request",
       ),
-      editActive: createPermission(
+    editActive: createPermission(
         catePermiss.MANAGE_MEMBER,
         "PUT",
         "edit_active",
       ),
-      deleteMember: createPermission(
+    deleteMember: createPermission(
         catePermiss.MANAGE_MEMBER,
         "DELETE",
         "delete_member",
@@ -103,7 +102,6 @@ const superAdminPermissions = {
         "GET",
         "statistic_like",
       ),
-    },
   },
   myPosts: createPermission(catePermiss.POST, "GET", "my_posts"),
   deletePost: createPermission(catePermiss.POST, "DELETE", "post"),
