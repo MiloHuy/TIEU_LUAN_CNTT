@@ -1,4 +1,4 @@
-import { getRolePermissionGroup } from "app/slice/group/group.slice";
+import { getRequestJoinGroup, getRolePermissionGroup } from "app/slice/group/group.slice";
 import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getRolePermission } from "services/group/api-get.svc";
@@ -17,10 +17,14 @@ export const useGetRolePermission = () => {
         setResDataRolePermission(res.data.role_permisson);
 
         dispatch(getRolePermissionGroup(res.data.role_permisson));
+        const isRequest = res.data.is_request;
+
+        if(isRequest){
+          dispatch(getRequestJoinGroup(isRequest));
+        }
         setIsLoading(true);
       } catch (error) {
         setIsLoading(true);
-        console.error("Failed to fetch role permission: ", error);
         errorHandler(error);
       }
     },

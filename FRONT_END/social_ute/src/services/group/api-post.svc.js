@@ -48,3 +48,8 @@ export const storePostGroup = async (url, postId, groupId) => {
   );
   return res;
 };
+
+export const requestJoinGroup = async (url, groupId,userId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
+  return res;
+}

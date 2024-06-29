@@ -1,18 +1,20 @@
 import { DropdownMenuItem } from "components/dropdown";
-import { ERoleNameGroup } from "constants/group/enum";
-import { groupPermission } from "constants/group/permission.const";
+import fa from "dayjs/locale/fa";
 import ModalConfirm from "features/modal/modal-confirm/ModalConfirm";
 import ModalListRegulations from "features/modal/modal-list-regulations";
 import { useLeaveGroup } from "hook/group/useLeaveGroup";
 import { useParams } from "react-router-dom";
+import { checkPermissionMethod } from "utils/auth.utils";
 
-export const RenderContentDropDown = (permission, value, title) => {
+export const RenderContentDropDown = (permission, title, role) => {
   const { isLoading, handleLeaveGroup } = useLeaveGroup();
   const { groupId } = useParams();
 
-  switch (value) {
-    case groupPermission[ERoleNameGroup.SUPERADMIN]["groupRegulations"]
-      .endPoint:
+  switch (true) {
+    case checkPermissionMethod(permission, {
+      action: "groupRegulations",
+      role: role,
+    }) !== false:
       return (
         <ModalListRegulations
           trigger={
@@ -25,7 +27,10 @@ export const RenderContentDropDown = (permission, value, title) => {
           }
         />
       );
-    case groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].endPoint:
+    case checkPermissionMethod(permission, {
+      action: "myPosts",
+      role: role,
+    }) !== false:
       return (
         <DropdownMenuItem
           className="flex gap-2"
@@ -34,7 +39,10 @@ export const RenderContentDropDown = (permission, value, title) => {
           <p>{title}</p>
         </DropdownMenuItem>
       );
-    case "post_wait_approve":
+    case checkPermissionMethod(permission, {
+      action: "post_wait_approve",
+      role: role,
+    }) !== false:
       return (
         <DropdownMenuItem
           className="flex gap-2"
@@ -43,7 +51,10 @@ export const RenderContentDropDown = (permission, value, title) => {
           <p>{title}</p>
         </DropdownMenuItem>
       );
-    case groupPermission[ERoleNameGroup.MEMBER]["leaveGroup"]?.endPoint:
+    case checkPermissionMethod(permission, {
+      action: "leaveGroup",
+      role: role,
+    }) !== false:
       return (
         <ModalConfirm
           trigger={

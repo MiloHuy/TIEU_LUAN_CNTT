@@ -9,10 +9,9 @@ import { ChevronDown } from "lucide-react";
 import { Fragment } from "react";
 import { contentDropdownShowMoreGroup } from "./constanst";
 import { RenderContentDropDown } from "./utils";
-import { ERoleNameGroup } from "constants/group/enum";
 import { catePermiss } from "constants/group/permission.const";
 
-const DropDownShowMoreOptionsGroup = ({ permission }) => {
+const DropDownShowMoreOptionsGroup = ({ permission, role }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -27,11 +26,7 @@ const DropDownShowMoreOptionsGroup = ({ permission }) => {
             <Fragment key={index}>
               {permission[item.value.category] &&
                 permission[item.value.category][item.value.method] &&
-                RenderContentDropDown(
-                  permission,
-                  item.value.endPoint,
-                  item.title
-                )}
+                RenderContentDropDown(permission, item.title, role)}
             </Fragment>
           );
         })}

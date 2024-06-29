@@ -12,7 +12,7 @@ export const useDeleteMemberGroup = () => {
   const handleDeleteMember = useCallback(async (permission, groupId, memberId) => {
     try {
       const { category, method, endPoint } =
-        groupPermission[ERoleNameGroup.SUPERADMIN].manageGroup.manageMember.deleteMember;
+        groupPermission[ERoleNameGroup.SUPERADMIN].manageMember.deleteMember;
 
       const url = permission[category][method][endPoint];
       if (!url) {

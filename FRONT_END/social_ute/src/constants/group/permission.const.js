@@ -5,6 +5,7 @@ export const catePermiss = {
   INTERACT: "Interact",
   POST: "Post",
   INVITE: "Invite",
+  REQUEST: "Request",
   MANAGE_ADMIN: "Manage_admin",
   MANAGE_MEMBER: "Manage_member",
   MANAGE_POST: "Manage_post",
@@ -35,6 +36,7 @@ const basePermissions = {
   allPosts: createPermission(catePermiss.POST, "GET", "posts"),
   createPost: createPermission(catePermiss.POST, "POST", "post"),
   detailPost: createPermission(catePermiss.POST, "GET", "post"),
+  requestJoin: createPermission(catePermiss.REQUEST, "POST", "join"),
 };
 
 const superAdminPermissions = {

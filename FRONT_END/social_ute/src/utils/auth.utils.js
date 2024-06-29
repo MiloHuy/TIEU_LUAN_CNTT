@@ -20,7 +20,11 @@ export const checkPermission = (permission, category, method, endPoint) => {
 };
 
 export const checkPermissionMethod = (permission, { action, role }) => {
-  const { category, method, endPoint } = groupPermission[role]?.[action];
+  if (!groupPermission[role] || !groupPermission[role][action]) {
+    return false; 
+  }
+
+  const { category, method, endPoint } = groupPermission[role][action];
 
   const isValid = checkPermission(permission, category, method, endPoint);
 

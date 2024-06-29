@@ -12,6 +12,7 @@ import { useDeleteMemberGroup } from "hook/group/useDeleteMemberGroup";
 
 const DropDownDeleteMember = ({ permission, groupId, memberId }) => {
   const { isLoading, handleDeleteMember } = useDeleteMemberGroup();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

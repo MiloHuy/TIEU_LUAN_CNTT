@@ -5,6 +5,7 @@ import DropDownDeleteMember from "features/dropdown/dropdown-delete-member/DropD
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { checkPermissionMethod } from "utils/auth.utils";
 import { getFullName } from "utils/user.utils";
 
 const MemberCard = ({ member, ...props }) => {
@@ -13,10 +14,12 @@ const MemberCard = ({ member, ...props }) => {
   const { groupId } = useParams();
 
   const renderDropdownDeleteMember = useMemo(() => {
-    const { category, method, endPoint } =
-      groupPermission[role]["manageGroup"]["manageMember"]["deleteMember"];
+    const isValid = checkPermissionMethod(permission, {
+      action: "deleteMember",
+      role: role,
+    });
 
-    if (permission[category][method][endPoint]) {
+    if (isValid) {
       return (
         <DropDownDeleteMember
           permission={permission}
@@ -25,7 +28,7 @@ const MemberCard = ({ member, ...props }) => {
         />
       );
     }
-    return null;
+    return <div></div>;
   }, [permission, role, groupId, member]);
 
   return (
