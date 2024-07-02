@@ -19,6 +19,7 @@ import StatisticalSystems from "pages/manage/statistical/statistical-systems";
 import RequestFriend from "pages/request-friend";
 import User from "pages/user";
 import "./App.css";
+import ManageGroup from "pages/manage/group/ManageGroup";
 
 export const mainRoutes = [
   { path: "/home", element: <Home /> },
@@ -28,6 +29,7 @@ export const mainRoutes = [
 
 export const groupChildRoutes = [
   { path: "groupDetails/:groupId", element: <GroupDetail /> },
+  {path: "manageGroup/:groupId", element: <ManageGroup/>},
 ];
 
 export const userRoutes = [

@@ -15,7 +15,6 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.defaults.headers.post["Content-Type"] = "application/json";
 AxiosInstance.defaults.headers["Accept"] = "application/json";
-AxiosInstance.defaults.headers["Origin"] = "*";
 AxiosInstance.defaults.headers["Content-Type"] = "application/json";
 
 AxiosInstance.interceptors.request.use(

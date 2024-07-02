@@ -8,6 +8,21 @@ import { logout } from "services/auth.svc";
 import { createPost } from "services/post/api-post.svc";
 import { errorHandler } from "utils/error-response.utils";
 import { handleRevokeBlobUrl } from "utils/file.utils";
+import ModalGroup from "features/modal/modal-group/ModalGroup";
+import ModalSearchUser from "features/modal/modal-search-user/ModalSearchUser";
+import ModalUploadFile from "features/modal/modal-upload-image-file/ModalUploadFile";
+import popupNofication from "features/popup/popup-nofication";
+import {
+  Bell,
+  Home,
+  LogOut,
+  MessageCircle,
+  PlusSquare,
+  Search,
+  UserCircle2,
+  UserPlus,
+  Users,
+} from "lucide-react";
 
 export const handleNavigateUser = (navigate, userID) => {
   navigate(`home-user/${userID}`);
@@ -90,4 +105,73 @@ export const handleCreatePost = async (values, files, images) => {
   } catch (err) {
     errorHandler(err, ERR_CREATE_POST);
   }
+};
+
+export const renderButtonsSidebarUser = (navigate, userID, dispatch) => {
+  return [
+    {
+      Icon: Home,
+      text: "Trang chủ",
+      onClick: () => handleNavigateHome(navigate),
+      isModal: false,
+    },
+    {
+      Icon: Search,
+      text: "Tìm kiếm",
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalSearchUser,
+      modalProps: { className: "w-[55vw] h-[70vh]" },
+    },
+    {
+      Icon: MessageCircle,
+      text: "Tin nhắn",
+      onClick: null,
+      isModal: false,
+    },
+    {
+      Icon: Bell,
+      text: "Thông báo",
+      onClick: null,
+      isModal: true,
+      ModalComponent: popupNofication,
+      modalProps: {},
+    },
+    {
+      Icon: UserCircle2,
+      text: "Trang cá nhân",
+      onClick: () => handleNavigateUser(navigate, userID),
+      isModal: false,
+    },
+    {
+      Icon: Users,
+      text: "Nhóm",
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalGroup,
+      modalProps: {},
+    },
+    {
+      Icon: UserPlus,
+      text: "Yêu cầu",
+      onClick: () => handleNavigateRequest(navigate),
+      isModal: false,
+    },
+    {
+      Icon: PlusSquare,
+      text: "Tạo",
+      onClick: null,
+      isModal: true,
+      ModalComponent: ModalUploadFile,
+      modalProps: {
+        onUpload: handleCreatePost,
+      },
+    },
+    {
+      Icon: LogOut,
+      text: "Đăng xuất",
+      onClick: () => handleLogOut(dispatch, navigate),
+      isModal: false,
+    },
+  ];
 };

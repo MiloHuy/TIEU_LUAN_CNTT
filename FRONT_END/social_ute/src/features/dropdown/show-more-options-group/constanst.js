@@ -10,10 +10,11 @@ export const contentDropdownShowMoreGroup = [
     value: {
       category: catePermiss.SEE,
       method:
-        groupPermission[ERoleNameGroup.SUPERADMIN]["groupRegulations"].method,
+        groupPermission[ERoleNameGroup.GUEST]["groupRegulations"].method,
       endPoint:
-        groupPermission[ERoleNameGroup.SUPERADMIN]["groupRegulations"].endPoint,
+        groupPermission[ERoleNameGroup.GUEST]["groupRegulations"].endPoint,
     },
+    action: "groupRegulations",
   },
   {
     title: "Bài viết của bạn",
@@ -22,6 +23,7 @@ export const contentDropdownShowMoreGroup = [
       method: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].method,
       endPoint: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].endPoint,
     },
+    action: "myPosts",
   },
   {
     title: "Bài viết chờ duyệt",
@@ -32,6 +34,7 @@ export const contentDropdownShowMoreGroup = [
       endPoint:
         groupPermission[ERoleNameGroup.MEMBER]["post_wait_approve"]?.endPoint,
     },
+    action: "post_wait_approve",
   },
   {
     title: "Rời nhóm",
@@ -40,5 +43,6 @@ export const contentDropdownShowMoreGroup = [
       method: groupPermission[ERoleNameGroup.MEMBER]["leaveGroup"]?.method,
       endPoint: groupPermission[ERoleNameGroup.MEMBER]["leaveGroup"]?.endPoint,
     },
+    action: "leaveGroup",
   },
 ];

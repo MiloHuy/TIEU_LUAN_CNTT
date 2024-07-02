@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(morgan("combined"));
 app.use(fileUpload());
 
-// Route init
+// Khởi tạo route
 route(app);
 
 const server = createServer(app);
@@ -46,37 +46,19 @@ const io = new Server(server);
 
 app.set("io", io);
 
-io.engine.use((req, res, next) => {
-    const socket = req.socket;
-    const isHandshake = req._query.sid === undefined;
-    if (!isHandshake) {
-        return next();
-    }
+const socketIo = require("socket.io")(server, {
+    cors: corsOptions
+  }); 
 
-    const header = req.headers["authorization"];
-
-    if (!header) {
-        return next(new Error('Không có token'))
-    }
-
-    if (!header.startsWith("bearer ")) {
-        return next(new Error('Token không hợp lệ.'))
-    }
-
-    const token = header.substring(7);
-
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-        if (err) {
-            return next(new Error('Token không hợp lệ.'))
-        }
-        req.user = decoded.data;
-        next();
-    });
-});
-
-io.on("connection", (socket) => {
+socketIo.on("connection", (socket) => {
+    console.log(`⚡: ${socket.id} người dùng vừa kết nối!`);
+    
     socket.on("notis", (noti) => {
-        console.log("noti: " + noti.content + " post_id: " + noti.post_id);
+        console.log("noti: " + Object.entries(noti));
+    });
+
+    socket.on('disconnect', () => {
+        console.log('🔥: Một người dùng đã ngắt kết nối');
     });
 });
 
@@ -89,5 +71,7 @@ app.get("/chat", (req, res) => {
 });
 
 server.listen(port, () => {
-    console.log("server running at http://localhost:3000");
+    console.log(`server đang chạy tại http://localhost:${port}`);
 });
+
+module.exports = { socketIo };

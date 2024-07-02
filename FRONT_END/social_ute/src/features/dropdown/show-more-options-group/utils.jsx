@@ -1,20 +1,16 @@
 import { DropdownMenuItem } from "components/dropdown";
-import fa from "dayjs/locale/fa";
+import { ERoleNameGroup } from "constants/group/enum";
 import ModalConfirm from "features/modal/modal-confirm/ModalConfirm";
 import ModalListRegulations from "features/modal/modal-list-regulations";
 import { useLeaveGroup } from "hook/group/useLeaveGroup";
 import { useParams } from "react-router-dom";
-import { checkPermissionMethod } from "utils/auth.utils";
 
-export const RenderContentDropDown = (permission, title, role) => {
+export const RenderContentDropDown = (permission, title, role, action) => {
   const { isLoading, handleLeaveGroup } = useLeaveGroup();
   const { groupId } = useParams();
 
-  switch (true) {
-    case checkPermissionMethod(permission, {
-      action: "groupRegulations",
-      role: role,
-    }) !== false:
+  switch (action) {
+    case "groupRegulations":
       return (
         <ModalListRegulations
           trigger={
@@ -27,10 +23,7 @@ export const RenderContentDropDown = (permission, title, role) => {
           }
         />
       );
-    case checkPermissionMethod(permission, {
-      action: "myPosts",
-      role: role,
-    }) !== false:
+    case "myPosts":
       return (
         <DropdownMenuItem
           className="flex gap-2"
@@ -39,38 +32,38 @@ export const RenderContentDropDown = (permission, title, role) => {
           <p>{title}</p>
         </DropdownMenuItem>
       );
-    case checkPermissionMethod(permission, {
-      action: "post_wait_approve",
-      role: role,
-    }) !== false:
+    case "post_wait_approve":
       return (
-        <DropdownMenuItem
-          className="flex gap-2"
-          onSelect={(e) => e.preventDefault()}
-        >
+        <DropdownMenuItem className="flex gap-2">
           <p>{title}</p>
         </DropdownMenuItem>
       );
-    case checkPermissionMethod(permission, {
-      action: "leaveGroup",
-      role: role,
-    }) !== false:
+    case "leaveGroup":
       return (
         <ModalConfirm
           trigger={
             <DropdownMenuItem
-              className="flex gap-2"
-              onSelect={(e) => e.preventDefault()}
+              className="flex gap-2 p-6"
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
             >
               <p>{title}</p>
             </DropdownMenuItem>
           }
           title="Bạn có chắc là rời nhóm ?"
+          isWarning={true}
+          description={
+            role === ERoleNameGroup.SUPERADMIN
+              ? "Nhóm sẽ không còn tồn tại sau khi bạn rời đi"
+              : ""
+          }
           isLoading={isLoading}
           handleCallback={() => handleLeaveGroup(permission, groupId)}
         />
       );
+
     default:
-      return null;
+      return;
   }
 };

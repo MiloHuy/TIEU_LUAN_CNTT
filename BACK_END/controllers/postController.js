@@ -563,6 +563,7 @@ exports.like = async (req, res) => {
                 { new: true, upsert: true }
             ),
         ]);
+        const socketIo = req.app.get("io"); 
 
         if (!post) {
             return res.status(ErrorCode.BAD_REQUEST).json({
@@ -613,6 +614,11 @@ exports.like = async (req, res) => {
             }
 
             const likes = userIdSet.size;
+            socketIo.emit('getNotiForLikePost', {
+                content: `${req.user.first_name} ${req.user.last_name} không thích bài viết của bạn.`,
+                post_id: post._id,
+                user_id: post.user_id,
+            })
 
             return res.status(SuccessCode.SUCCESS).json({
                 success: true,
@@ -628,6 +634,12 @@ exports.like = async (req, res) => {
                 const currentDate = new Date();
                 const content = `${req.user.first_name} ${req.user.last_name} yêu thích bài viết của bạn.`;
 
+                socketIo.emit('getNotiForLikePost', {
+                    content,
+                    post_id: post._id,
+                    user_id: post.user_id,
+                })
+                
                 const noti = await Notification.create({
                     user_id: req.user._id,
                     noti_content: content,

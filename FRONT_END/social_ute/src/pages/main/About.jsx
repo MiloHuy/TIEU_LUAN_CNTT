@@ -1,9 +1,7 @@
-
 const About = () => {
-
-    return (
-        <div className='relative w-full h-full items-center flex justify-center'>
-            {/* <div className="flex flex-col items-center justify-around px-3 w-full h-full">
+  return (
+    <div className="relative w-full h-full items-center flex justify-center">
+      {/* <div className="flex flex-col items-center justify-around px-3 w-full h-full">
         //         <p className="text-black text-center font-quick_sans  font-bold text-[50px] mt-3">
         //             Danh sách sinh viên tham gia
         //         </p>
@@ -54,10 +52,10 @@ const About = () => {
         //             </div>
         //         </div>
         //     </div> */}
-            {/* <Album /> */}
-            {/* <Story /> */}
-        </div>
-    )
-}
+      {/* <Album /> */}
+      {/* <Story /> */}
+    </div>
+  );
+};
 
-export default About
+export default About;

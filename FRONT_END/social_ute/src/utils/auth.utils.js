@@ -19,16 +19,29 @@ export const checkPermission = (permission, category, method, endPoint) => {
   );
 };
 
-export const checkPermissionMethod = (permission, { action, role }) => {
-  if (!groupPermission[role] || !groupPermission[role][action]) {
-    return false; 
+export const checkPermissionMethod = (permission, { action, role ,manage}) => {
+  if(!manage){
+    if (!groupPermission[role]  || !groupPermission[role][action]) {
+      return false; 
+    }
+  
+    const { category, method, endPoint } = groupPermission[role][action];
+  
+    const isValid = checkPermission(permission, category, method, endPoint);
+  
+    if (!isValid) return false;
+  
+    return permission[category][method][endPoint];
   }
-
-  const { category, method, endPoint } = groupPermission[role][action];
-
-  const isValid = checkPermission(permission, category, method, endPoint);
-
-  if (!isValid) return false;
-
-  return permission[category][method][endPoint];
+  
+  if(!groupPermission[role] && !groupPermission[role][manage] && !groupPermission[role][manage][action]){
+    return false;
+  }
+  const { category, method, endPoint } = groupPermission[role][manage][action];
+  
+    const isValid = checkPermission(permission, category, method, endPoint);
+  
+    if (!isValid) return false;
+  
+    return permission[category][method][endPoint];
 };

@@ -1,3 +1,5 @@
+import manage from "pages/manage";
+
 const { ERoleNameGroup } = require("./enum");
 
 export const catePermiss = {
@@ -68,42 +70,49 @@ const superAdminPermissions = {
         "delete_member",
       ),
     },
-    managePost: {
-      allPosts: createPermission(catePermiss.MANAGE_POST, "GET", "posts"),
-      deletePost: createPermission(catePermiss.MANAGE_POST, "DELETE", "post"),
-      approvePost: createPermission(
-        catePermiss.MANAGE_POST,
+  managePost: {
+    allPosts: createPermission(catePermiss.MANAGE_POST, "GET", "posts"),
+    deletePost: createPermission(catePermiss.MANAGE_POST, "DELETE", "post"),
+    approvePost: createPermission(
+      catePermiss.MANAGE_POST,
         "POST",
         "approve_post",
-      ),
-      reportPosts: createPermission(catePermiss.MANAGE_POST, "GET", "report"),
-      allPostWaitApprove: createPermission(
+    ),
+    allReportPosts: createPermission(catePermiss.MANAGE_POST, "GET", "report"),
+    allPostWaitApprove: createPermission(
         catePermiss.MANAGE_POST,
         "GET",
         "queue_post",
       ),
     },
-    manageInteract: {
-      statisticMember: createPermission(
-        catePermiss.MANAGE_INTERACT,
+  manageInteract: {
+    statisticMember: createPermission(
+      catePermiss.MANAGE_INTERACT,
         "GET",
         "statistic_member",
       ),
-      statisticPost: createPermission(
+    statisticPost: createPermission(
         catePermiss.MANAGE_INTERACT,
         "GET",
         "statistic_post",
       ),
-      statisticComment: createPermission(
+    statisticComment: createPermission(
         catePermiss.MANAGE_INTERACT,
         "GET",
         "statistic_cmt",
       ),
-      statisticLike: createPermission(
+    statisticLike: createPermission(
         catePermiss.MANAGE_INTERACT,
         "GET",
         "statistic_like",
-      ),
+     ),
+  },
+  manageRegulation:{
+    editContent: createPermission(
+        catePermiss.MANAGE_REGULATION,
+        "PUT",
+        "edit_regulation",
+    ),
   },
   myPosts: createPermission(catePermiss.POST, "GET", "my_posts"),
   deletePost: createPermission(catePermiss.POST, "DELETE", "post"),

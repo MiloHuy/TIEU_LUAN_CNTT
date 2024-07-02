@@ -1,47 +1,53 @@
 import clsx from "clsx";
-import SidebarUser from 'layout/sidebar-user';
+import SidebarUser from "layout/sidebar-user";
 import { CircleChevronLeft } from "lucide-react";
-import { useState } from 'react';
-import { Outlet } from 'react-router';
-import { getUserIdFromCookie } from 'utils/user.utils';
+import { useState } from "react";
+import { Outlet } from "react-router";
+import { getUserIdFromCookie } from "utils/user.utils";
 
 const Welcome = () => {
-    const [darkmode, setDarkMode] = useState('light')
+  const [darkmode, setDarkMode] = useState("light");
 
-    const handleDarkMode = (value) => {
-        setDarkMode(value)
-    }
+  const handleDarkMode = (value) => {
+    setDarkMode(value);
+  };
 
-    const [isShortCutSidebar, setShortCutSidebar] = useState(false)
+  const [isShortCutSidebar, setShortCutSidebar] = useState(false);
 
-    const handleShortCutSidebar = () => {
-        setShortCutSidebar(!isShortCutSidebar)
-    }
+  const handleShortCutSidebar = () => {
+    setShortCutSidebar(!isShortCutSidebar);
+  };
 
-    const Id = getUserIdFromCookie()
+  const Id = getUserIdFromCookie();
 
-    return (
-        <div className={`flex bg-background text-primary ${darkmode}`}>
-            <CircleChevronLeft
-                size={26} strokeWidth={1}
-                className={clsx('absolute cursor-pointer top-2 transform duration-500 ease-in-out',
-                    { 'rotate-180 ': isShortCutSidebar },
-                    `${isShortCutSidebar ? 'left-[5vw]' : 'left-[20vw]'}`
-                )}
-                onClick={handleShortCutSidebar}
-            />
+  return (
+    <div className={`flex bg-background text-primary ${darkmode}`}>
+      <CircleChevronLeft
+        size={26}
+        strokeWidth={1}
+        className={clsx(
+          "absolute cursor-pointer top-2 transform duration-500 ease-in-out",
+          { "rotate-180 ": isShortCutSidebar },
+          `${isShortCutSidebar ? "left-[80px]" : "left-[240px]"}`
+        )}
+        onClick={handleShortCutSidebar}
+      />
 
-            <SidebarUser
-                userID={Id}
-                isShortCutSidebar={isShortCutSidebar}
-                handleController={handleDarkMode}
-            />
+      <SidebarUser
+        userID={Id}
+        isShortCutSidebar={isShortCutSidebar}
+        handleController={handleDarkMode}
+      />
 
-            <div className={`${isShortCutSidebar === true ? 'min-w-[95vw] w-[95vw]' : 'min-w-[80vw]'} ${darkmode} overflow-auto`}>
-                <Outlet />
-            </div>
-        </div>
-    )
-}
+      <div
+        className={`${
+          isShortCutSidebar === true ? "min-w-[95vw] w-[95vw]" : "min-w-[80vw]"
+        } ${darkmode} overflow-auto`}
+      >
+        <Outlet />
+      </div>
+    </div>
+  );
+};
 
-export default Welcome
+export default Welcome;

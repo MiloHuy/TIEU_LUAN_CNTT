@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "components/button";
 import {
   DropdownMenu,
@@ -10,8 +11,13 @@ import { Fragment } from "react";
 import { contentDropdownShowMoreGroup } from "./constanst";
 import { RenderContentDropDown } from "./utils";
 import { catePermiss } from "constants/group/permission.const";
+import { checkPermissionMethod } from "utils/auth.utils";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DropDownShowMoreOptionsGroup = ({ permission, role }) => {
+  const navigate = useNavigate();
+  const { groupId } = useParams();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -24,9 +30,16 @@ const DropDownShowMoreOptionsGroup = ({ permission, role }) => {
         {contentDropdownShowMoreGroup.map((item, index) => {
           return (
             <Fragment key={index}>
-              {permission[item.value.category] &&
-                permission[item.value.category][item.value.method] &&
-                RenderContentDropDown(permission, item.title, role)}
+              {checkPermissionMethod(permission, {
+                action: item.action,
+                role,
+              }) &&
+                RenderContentDropDown(
+                  permission,
+                  item.title,
+                  role,
+                  item.action
+                )}
             </Fragment>
           );
         })}
@@ -38,16 +51,13 @@ const DropDownShowMoreOptionsGroup = ({ permission, role }) => {
             permission[catePermiss.MANAGE_ADMIN]) && (
             <DropdownMenuItem
               className="flex gap-2"
-              onSelect={(e) => e.preventDefault()}
+              onSelect={() => navigate(`/welcome/manageGroup/${groupId}`)}
             >
               <p>Quản lý nhóm</p>
             </DropdownMenuItem>
           )}
 
-        <DropdownMenuItem
-          className="flex gap-2"
-          onSelect={(e) => e.preventDefault()}
-        >
+        <DropdownMenuItem className="flex gap-2">
           <p>Chia sẻ nhóm</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
