@@ -12,6 +12,7 @@ const { join } = require("node:path");
 
 const route = require("./routes");
 const connectDatabase = require("./config/database");
+const NotificationSocket = require("./socket/Notification.socket");
 
 const app = express();
 const port = 3000;
@@ -50,17 +51,7 @@ const socketIo = require("socket.io")(server, {
     cors: corsOptions
   }); 
 
-socketIo.on("connection", (socket) => {
-    console.log(`⚡: ${socket.id} người dùng vừa kết nối!`);
-    
-    socket.on("notis", (noti) => {
-        console.log("noti: " + Object.entries(noti));
-    });
-
-    socket.on('disconnect', () => {
-        console.log('🔥: Một người dùng đã ngắt kết nối');
-    });
-});
+NotificationSocket.init(socketIo);
 
 app.get("/", (req, res) => {
     res.sendFile(join(__dirname, "index.html"));

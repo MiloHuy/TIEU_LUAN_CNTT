@@ -26,6 +26,6 @@ root.render(
       pauseOnHover
       theme="light"
     />
-    <Toaster richColors position="top-center" />
+    <Toaster richColors position="bottom-right" />
   </Provider>,
 );

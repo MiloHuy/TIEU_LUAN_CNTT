@@ -23,7 +23,7 @@ export const useActionsPosts = ({ liked_post, saved_posts, number_likes }) => {
       const data_numberLike = await likePost(post_id);
 
       setNumberLikes(data_numberLike.data.likes);
-      socket.emit('notis', { post_id, likes: data_numberLike.data.likes });
+      socket.emit('noti', { post_id, likes: data_numberLike.data.likes });
     } catch (err) {
       console.log(err);
     }

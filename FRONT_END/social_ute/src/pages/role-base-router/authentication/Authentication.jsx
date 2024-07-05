@@ -8,6 +8,7 @@ import Unauthorized from "../authorization/UnAuthorization";
 import socketIOClient from "socket.io-client";
 import { getAccessTokenFromCookie } from "utils/auth.utils";
 import { getSocket } from "app/slice/socket/socket.slice";
+import { toast } from "sonner";
 
 export default function Authentication() {
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -25,6 +26,12 @@ export default function Authentication() {
 
   const socketRef = useRef();
 
+  const handleShowToast = (data) => {
+    return toast(data.content, {
+      description: "Sunday, December 03, 2023 at 9:00 AM",
+    });
+  };
+
   useEffect(() => {
     if (accessToken) {
       socketRef.current = socketIOClient.connect("http://localhost:3000", {
@@ -33,6 +40,10 @@ export default function Authentication() {
         },
       });
       dispatch(getSocket(socketRef.current));
+
+      socketRef.current.on("getNotiForLikePost", (data) => {
+        handleShowToast(data);
+      });
 
       return () => {
         socketRef.current.disconnect();
