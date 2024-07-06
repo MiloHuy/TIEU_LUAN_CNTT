@@ -9,6 +9,7 @@ import socketIOClient from "socket.io-client";
 import { getAccessTokenFromCookie } from "utils/auth.utils";
 import { getSocket } from "app/slice/socket/socket.slice";
 import { toast } from "sonner";
+import { getUserIdFromCookie } from "utils/user.utils";
 
 export default function Authentication() {
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -32,6 +33,8 @@ export default function Authentication() {
     });
   };
 
+  const userId = getUserIdFromCookie();
+
   useEffect(() => {
     if (accessToken) {
       socketRef.current = socketIOClient.connect("http://localhost:3000", {
@@ -41,7 +44,7 @@ export default function Authentication() {
       });
       dispatch(getSocket(socketRef.current));
 
-      socketRef.current.on("getNotiForLikePost", (data) => {
+      socketRef.current.on(userId, (data) => {
         handleShowToast(data);
       });
 
@@ -49,7 +52,7 @@ export default function Authentication() {
         socketRef.current.disconnect();
       };
     }
-  }, [accessToken, dispatch]);
+  }, [accessToken, dispatch, userId]);
 
   useEffect(() => {
     fetchInfoMySelf();

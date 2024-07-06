@@ -8,31 +8,30 @@ import FormUploadFinal from "features/form/form-upload-multilple/FormUploadFinal
 import { useMemo, useState } from "react";
 
 const ModalUploadFile = ({ trigger, onUpload }) => {
-  const [stepForm, setStepForm] = useState(0)
+  const [stepForm, setStepForm] = useState(0);
   const [dataModalUpload, setDataModalUpload] = useState({
     files: [],
-    images: []
-  })
+    images: [],
+  });
 
   const handleNextForm = () => {
-    if (stepForm < 4)
-      setStepForm(stepForm + 1)
-  }
+    if (stepForm < 4) setStepForm(stepForm + 1);
+  };
 
   const transformNextForm = useMemo(() => {
     switch (stepForm) {
       case 0:
-        return 'min-h-[45vh] max-w-[50vw]'
+        return "min-h-[45vh] max-w-[50vw]";
       case 1:
-        return 'min-h-[50vh] max-w-[40vw]'
+        return "min-h-[50vh] max-w-[40vw]";
       case 2:
-        return 'min-h-[80vh] max-w-[55vw]'
+        return "min-h-[80vh] max-w-[55vw]";
       case 3:
-        return 'min-h-[80vh] max-w-[55vw] '
+        return "min-h-[80vh] max-w-[60vw] ";
       default:
-        break
+        break;
     }
-  }, [stepForm])
+  }, [stepForm]);
 
   const multipleForm = [
     <FormSelectPostOrStory
@@ -56,12 +55,11 @@ const ModalUploadFile = ({ trigger, onUpload }) => {
     <FormUploadFinal
       files={dataModalUpload.files}
       images={dataModalUpload.images}
-
       stepForm={stepForm}
       handleNextForm={handleNextForm}
       onUpload={onUpload}
-    />
-  ]
+    />,
+  ];
 
   return (
     <Dialog>
@@ -69,13 +67,17 @@ const ModalUploadFile = ({ trigger, onUpload }) => {
         {trigger ? trigger : <Button>Open Modal</Button>}
       </DialogTrigger>
 
-      <DialogContent className={`${transformNextForm} sm:rounded-lg transform duration-500 ease-in overflow-hidden`}>
-        <div className='flex'>
-          {multipleForm.map((form) => { return form })}
+      <DialogContent
+        className={`${transformNextForm} sm:rounded-lg transform duration-500 ease-in overflow-hidden`}
+      >
+        <div className="flex">
+          {multipleForm.map((form) => {
+            return form;
+          })}
         </div>
       </DialogContent>
-    </Dialog >
-  )
-}
+    </Dialog>
+  );
+};
 
-export default ModalUploadFile
+export default ModalUploadFile;

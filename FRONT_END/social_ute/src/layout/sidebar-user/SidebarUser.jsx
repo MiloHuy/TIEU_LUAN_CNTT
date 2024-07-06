@@ -12,7 +12,7 @@ const SidebarUser = (props) => {
   const { userID, isShortCutSidebar } = props;
   const location = useLocation();
   const isManageGroupPage = location.pathname.includes("manageGroup");
-  const socket = useSelector(selectSocketData);
+  // const socket = useSelector(selectSocketData);
 
   const handleController = (value) => {
     props.handleController(value);
@@ -25,16 +25,6 @@ const SidebarUser = (props) => {
       ? "min-w-[80px] w-[85px]"
       : "min-w-[200px] w-[240px]";
   }, [isShortCutSidebar]);
-
-  useEffect(() => {
-    socket.on("getNotiForLikePost", (data) => {
-      console.log("getNotiForLikePost", data);
-    });
-
-    return () => {
-      socket.off("getNotiForLikePost");
-    };
-  }, [socket]);
 
   return (
     <div
