@@ -20,6 +20,7 @@ const Noti_user = require("../models/Noti_user");
 const Comment = require("../models/Comment");
 const Comment_liked = require("../models/Comment_like");
 const Group_invitation = require("../models/Group_invitation");
+const NotificationSocket = require("../socket/Notification.socket");
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -642,6 +643,11 @@ exports.likePost = async (req, res) => {
                     { $push: { detail: { noti_id: noti._id } } },
                     { new: true, upsert: true }
                 );
+                
+                NotificationSocket.sendNotification({
+                    content: content,
+                    post_id: post._id,
+                },post.user_id);
             }
 
             const likes = liked.user_id.length;
@@ -854,6 +860,11 @@ exports.commentPost = async (req, res) => {
                 { $push: { detail: { noti_id: noti._id } } },
                 { new: true, upsert: true }
             );
+
+            NotificationSocket.sendNotification({
+                content: content,
+                post_id: post._id,
+            },post.user_id);
         }
 
         return res.status(201).json({

@@ -5,6 +5,7 @@ const Comment_liked = require("../models/Comment_like");
 const Follow = require("../models/Follow");
 const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
+const NotificationSocket = require("../socket/Notification.socket");
 
 //GET /:Post_id
 exports.getComments = async (req, res) => {
@@ -174,6 +175,11 @@ exports.create = async (req, res) => {
                 { $push: { detail: { noti_id: noti._id } } },
                 { new: true, upsert: true }
             );
+
+            NotificationSocket.sendNotification({
+                content: content,
+                post_id: post._id,
+            },userId);
         }
 
         res.status(201).json({

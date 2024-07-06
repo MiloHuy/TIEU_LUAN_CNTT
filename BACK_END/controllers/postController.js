@@ -11,7 +11,12 @@ const Notification = require("../models/Notification");
 const Noti_user = require("../models/Noti_user");
 
 const { genMessNotAction } = require("../utils/mess.util");
-const { ErrorMess, ErrorCode, SuccesMess, SuccessCode } = require("../constants/error.const");
+const {
+    ErrorMess,
+    ErrorCode,
+    SuccesMess,
+    SuccessCode,
+} = require("../constants/error.const");
 const NotificationSocket = require("../socket/Notification.socket");
 
 //GET /posts
@@ -62,15 +67,18 @@ exports.getAll = async (req, res) => {
         ]);
 
         const likedPostIds = new Set(
-            likedPosts.filter(like => like && like.post_id).map((like) => like.post_id.toString())
-        );
-        
-        const storedPostIds = new Set(
-            storedPosts.filter(store => store && store.post_id).flatMap((store) =>
-                store.post_id.map((id) => id ? id.toString() : "")
-            )
+            likedPosts
+                .filter((like) => like && like.post_id)
+                .map((like) => like.post_id.toString())
         );
 
+        const storedPostIds = new Set(
+            storedPosts
+                .filter((store) => store && store.post_id)
+                .flatMap((store) =>
+                    store.post_id.map((id) => (id ? id.toString() : ""))
+                )
+        );
 
         const postsWithLikesAndStores = await Promise.all(
             posts.map(async (post) => {
@@ -203,8 +211,6 @@ exports.getPost = async (req, res) => {
         });
     }
 };
-
-//
 
 const validImageFormats = ["jpg", "jpeg", "png", "mp4"];
 const maxFileSize = 10 * 1024 * 1024;
@@ -349,7 +355,8 @@ exports.create = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 code: 2010,
-                message: "Đăng bài thất bại. Giá trị privacy phải là 0 hoặc 1 hoặc 2.",
+                message:
+                    "Đăng bài thất bại. Giá trị privacy phải là 0 hoặc 1 hoặc 2.",
             });
         }
         if (!req.files) {
@@ -455,11 +462,13 @@ exports.create = async (req, res) => {
         }
 
         for (const userId of followerUserIds) {
-            //   console.log("id" + userId.toString());
-            req.app.get("io").emit(userId.toString(), {
-                content: content,
-                post_id: post._id,
-            });
+            NotificationSocket.sendNotification(
+                {
+                    content: content,
+                    post_id: post._id,
+                },
+                userId
+            );
         }
 
         // req.app.get('io').emit('notis', { content: content, post_id: post._id});
@@ -487,7 +496,7 @@ exports.store = async (req, res) => {
 
         const [followingUsers, post] = await Promise.all([
             Follow.find({ user_id: userId }).select("following_user_id"),
-            Post.findById(postId)
+            Post.findById(postId),
         ]);
 
         if (!post) {
@@ -498,18 +507,21 @@ exports.store = async (req, res) => {
             });
         }
 
-        const followingUserIds = followingUsers.map(follow => follow.following_user_id);
+        const followingUserIds = followingUsers.map(
+            (follow) => follow.following_user_id
+        );
         followingUserIds.push(userId);
 
         if (
-            post.privacy !== 2 &&
-            !followingUserIds.some(id => id.equals(post.user_id._id)) ||
+            (post.privacy !== 2 &&
+                !followingUserIds.some((id) => id.equals(post.user_id._id))) ||
             (post.privacy === 0 && !post.user_id._id.equals(userId))
         ) {
             return res.status(400).json({
                 success: false,
                 code: 2031,
-                message: "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
+                message:
+                    "Không thể thao tác. Bạn không phù hợp với chế độ xem của bài viết",
             });
         }
 
@@ -612,11 +624,6 @@ exports.like = async (req, res) => {
             }
 
             const likes = userIdSet.size;
-            NotificationSocket.sendNotification({
-                content: `${req.user.first_name} ${req.user.last_name} không thích bài viết của bạn.`,
-                post_id: post._id,
-                user_id: req.user._id
-            });
 
             return res.status(SuccessCode.SUCCESS).json({
                 success: true,
@@ -632,12 +639,6 @@ exports.like = async (req, res) => {
                 const currentDate = new Date();
                 const content = `${req.user.first_name} ${req.user.last_name} yêu thích bài viết của bạn.`;
 
-                NotificationSocket.sendNotification({
-                    content: content,
-                    post_id: post._id,
-                    user_id: req.user._id
-                });
-                
                 const noti = await Notification.create({
                     user_id: req.user._id,
                     noti_content: content,
@@ -649,6 +650,14 @@ exports.like = async (req, res) => {
                     { user_id: post.user_id },
                     { $push: { detail: { noti_id: noti._id } } },
                     { new: true, upsert: true }
+                );
+
+                NotificationSocket.sendNotification(
+                    {
+                        content: content,
+                        post_id: post._id,
+                    },
+                    post.user_id
                 );
             }
 

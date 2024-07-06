@@ -23,10 +23,11 @@ class NotificationSocket {
       });
   }
 
-  sendNotification(notification) {
+  sendNotification(notification, user_id) {
       if (this.io) {
         console.log("notification: " + Object.entries(notification));
-          this.io.emit('getNotiForLikePost', notification);
+        //   this.io.emit('getNotiForLikePost', notification);
+          this.io.emit(user_id, notification);
       } else {
           console.error("Socket.IO chưa được khởi tạo");
       }
