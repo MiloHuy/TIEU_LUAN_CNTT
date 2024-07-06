@@ -12,12 +12,13 @@ const {
     updateInfo,
     updatePassword,
     uploadAvatar,
-    getFollows
+    getFollows,
 } = require('../controllers/meController.js');
 
 const {
     getNotis,
     readNoti,
+    getUnreadNotis
 } = require('../controllers/nofiController.js');
 
 const {
@@ -35,6 +36,7 @@ router.get('/friends', verifyToken, isUser, getFriends);
 router.get('/friends/search', verifyToken, isUser, searchFriends);
 router.get('/list-follows', verifyToken, isUser, getFollows);
 router.get('/notis', verifyToken, isUser, getNotis);
+router.get('/unread-notis', verifyToken, isUser, getUnreadNotis);
 router.post('/notis/read/:id', verifyToken, isUser, readNoti);
 
 router.get('/account/info', verifyToken, isAdminOrUser, getInfo);
