@@ -6,10 +6,6 @@ export const FILE_ERROR = {
   OVER_SIZE: "Dung lượng file quá lớn",
 };
 
-const ERROR_CODE = {
-  PHONE_VALID: 1002,
-}
-
 export const ERROR_LOGIN = [
   {
     type: "ERR_PHONE",

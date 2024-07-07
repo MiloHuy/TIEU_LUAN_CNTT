@@ -49,11 +49,12 @@ const CardPostUser = (props) => {
         />
 
         <div className="w-full flex flex-col">
-          <Carousel className="w-full border-b max-h-[450px]">
+          <Carousel className="w-full max-h-[450px]">
             <CarouselContent>
               {postData.img.map((img, index) => (
                 <CarouselItem key={index}>
                   <img
+                    lazy="loading"
                     src={img.url}
                     alt="post"
                     className="w-full h-[450px] object-fill"

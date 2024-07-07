@@ -7,18 +7,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/select";
-import { Earth, LockKeyhole, User } from "lucide-react";
+import { Earth, Group, LockKeyhole, User } from "lucide-react";
 
 export const PrivacyPost = {
   ALONE: 0,
   FOLLOWER: 1,
   EVERYONE: 2,
+  GROUP: 3,
 };
 
 export const PrivacyPostLabel = {
   ALONE: "Chỉ mình tôi",
   FOLLOWER: "Người theo dõi",
   EVERYONE: "Mọi người",
+  GROUP: "Nhóm",
 };
 
 export const genOptionsPrivacyPost = () => {
@@ -37,6 +39,11 @@ export const genOptionsPrivacyPost = () => {
       value: PrivacyPost.EVERYONE,
       label: PrivacyPostLabel.EVERYONE,
       icon: <Earth size={20} strokeWidth={1.25} />,
+    },
+    {
+      value: PrivacyPost.GROUP,
+      label: PrivacyPostLabel.GROUP,
+      icon: <Group size={20} strokeWidth={1.25} />,
     },
   ];
 };

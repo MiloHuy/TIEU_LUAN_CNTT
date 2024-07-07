@@ -1,7 +1,7 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import { Button } from "components/button";
 import { useActionRequest } from "hook/manage-group/useActionRequest";
-import { CircleCheck, CircleX, Loader2 } from "lucide-react";
+import { CircleCheck, CircleX } from "lucide-react";
 import React from "react";
 import { getFullName } from "utils/user.utils";
 
