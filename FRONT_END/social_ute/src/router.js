@@ -19,7 +19,12 @@ import StatisticalSystems from "pages/manage/statistical/statistical-systems";
 import RequestFriend from "pages/request-friend";
 import User from "pages/user";
 import "./App.css";
-import ManageGroup from "pages/manage/group/ManageGroup";
+import ManageGroup from "pages/group/manage-group";
+import ManageMembers from "pages/group/manage-members";
+import ManageRequestJoin from "pages/group/mange-request-join/ManageRequestJoin";
+import ManagePostsGroup from "pages/group/manage-posts/ManagePostsGroup";
+import ManageApprovePost from "pages/group/manage-approve-post";
+import ManagePostsReport from "pages/group/manage-posts-report";
 
 export const mainRoutes = [
   { path: "/home", element: <Home /> },
@@ -29,7 +34,12 @@ export const mainRoutes = [
 
 export const groupChildRoutes = [
   { path: "groupDetails/:groupId", element: <GroupDetail /> },
-  {path: "manageGroup/:groupId", element: <ManageGroup/>},
+  { path:  "manageGroup/:groupId", element: <ManageGroup/>},
+  { path : "manageGroup/allMembers/:groupId", element: <ManageMembers/>},
+  { path : "manageGroup/allRequestJoin/:groupId",element: <ManageRequestJoin/>},
+  { path: 'manageGroup/allPosts/:groupId', element: <ManagePostsGroup/>},
+  { path : 'manageGroup/allPostWaitApprove/:groupId', element: <ManageApprovePost/>},
+  { path : 'manageGroup/allReportPosts/:groupId', element: <ManagePostsReport/>},
 ];
 
 export const userRoutes = [

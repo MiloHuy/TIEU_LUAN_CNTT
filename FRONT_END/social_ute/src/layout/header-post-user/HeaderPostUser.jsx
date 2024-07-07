@@ -4,7 +4,7 @@ import {
   PrivacyPost,
   PrivacyPostLabel,
 } from "features/select/select-privacy-post/SelectPrivacyPost";
-import { Earth, LockKeyhole, MoreHorizontal, User } from "lucide-react";
+import { Earth, LockKeyhole, User } from "lucide-react";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ const HeaderPostUser = ({
   className,
   privacy,
   dateBetween,
+  titleTime,
 }) => {
   const renderIconPrivacy = useMemo(() => {
     switch (privacy) {
@@ -49,7 +50,7 @@ const HeaderPostUser = ({
   return (
     <div
       className={clsx(
-        "border-b border-black text-black flex justify-between overflow-hidden h-14",
+        "border-b border-black text-black flex justify-between overflow-hidden h-14 px-2",
         "dark:text-white dark:border-white font-quick_sans",
         className
       )}
@@ -69,18 +70,20 @@ const HeaderPostUser = ({
             </Link>
           </div>
 
-          <p className="text-sm ">
-            {dateBetween === 0
-              ? "Vừa mới đăng bài"
-              : `${dateBetween} thời gian trước`}
-            <span className="ml-2"> {renderIconPrivacy}</span>
-          </p>
+          {dateBetween ? (
+            <p className="text-sm ">
+              {dateBetween === 0
+                ? "Vừa mới đăng bài"
+                : `${dateBetween} thời gian trước`}
+              <span className="ml-2"> {renderIconPrivacy}</span>
+            </p>
+          ) : null}
+
+          {titleTime ? <p className="text-sm">{titleTime}</p> : null}
         </div>
       </div>
 
-      <div className="h-full flex items-center">
-        {action ? action : <MoreHorizontal size={20} strokeWidth={1.25} />}
-      </div>
+      <div className="h-full flex items-center">{action ? action : null}</div>
     </div>
   );
 };

@@ -1,12 +1,10 @@
 import clsx from "clsx";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import SidebarBody from "./SidebarBody";
 import SidebarFooter from "./SidebarFooter";
 import SidebarHeader from "./SidebarHeader";
 import SidebarManageGroup from "layout/sidebar-manage-group";
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectSocketData } from "app/slice/socket/socket.slice";
 
 const SidebarUser = (props) => {
   const { userID, isShortCutSidebar } = props;

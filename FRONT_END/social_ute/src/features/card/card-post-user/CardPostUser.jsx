@@ -1,6 +1,11 @@
 import clsx from "clsx";
-import CaroselVersion2 from "components/carousel/Carosel-V2";
-import { PostType } from "constants/post.const";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "components/carousel";
 import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import FooterActionsPost from "layout/footer-actions-post";
 import HeaderPostUser from "layout/header-post-user";
@@ -24,7 +29,7 @@ const CardPostUser = (props) => {
     <div className="max-w-[40vw] w-[40vw] p-2" {...props}>
       <div
         className={clsx(
-          "flex flex-col justify-between items-center gap-2 py-2 w-full min-h-[500px] overflow-hidden",
+          "flex flex-col items-center gap-2 py-2 w-full overflow-hidden",
           "border border-black dark:border-white rounded-lg"
         )}
       >
@@ -43,12 +48,23 @@ const CardPostUser = (props) => {
           }
         />
 
-        <div className="w-full min-h-[300px] h-max flex flex-col justify-start ">
-          <CaroselVersion2
-            className="h-[500px] w-full"
-            type={PostType.POST_IMG}
-            slides={postData.img}
-          />
+        <div className="w-full flex flex-col">
+          <Carousel className="w-full max-h-[450px]">
+            <CarouselContent>
+              {postData.img.map((img, index) => (
+                <CarouselItem key={index}>
+                  <img
+                    lazy="loading"
+                    src={img.url}
+                    alt="post"
+                    className="w-full h-[450px] object-fill"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2" />
+            <CarouselNext className="right-2" />
+          </Carousel>
 
           <FooterActionsPost
             post_id={postData.id}
