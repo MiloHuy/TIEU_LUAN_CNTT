@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -12,27 +12,14 @@ import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import { useSelector } from "react-redux";
 import { selectRolePermission } from "app/slice/group/group.slice";
-
-const ManageGroupItem = ({ mainTitle, childTitle, ...props }) => {
-  return (
-    <AccordionItem
-      value={mainTitle}
-      className="font-quick_sans px-2"
-      {...props}
-    >
-      <AccordionTrigger>{mainTitle}</AccordionTrigger>
-      <AccordionContent key={childTitle}>
-        <Button variant="ghost" className="w-full flex justify-start px-4">
-          {childTitle}
-        </Button>
-      </AccordionContent>
-    </AccordionItem>
-  );
-};
+import { useNavigate, useParams } from "react-router-dom";
 
 const SidebarManageGroup = () => {
   const rolePermission = useSelector(selectRolePermission);
   const { permission, role } = rolePermission;
+  const { groupId } = useParams();
+  const navigate = useNavigate();
+  console.log("groupId", groupId);
 
   const renderItemAccordion = useMemo(() => {
     return ARRAY_SIDEBAR_MANAGE_GROUP.map((item) => {
@@ -58,6 +45,9 @@ const SidebarManageGroup = () => {
                 <Button
                   variant="ghost"
                   className="w-full flex justify-start px-4 border-l border-r"
+                  onClick={() =>
+                    navigate(`/welcome/manageGroup/${child.path}/${groupId}`)
+                  }
                 >
                   {child.name}
                 </Button>
@@ -68,7 +58,7 @@ const SidebarManageGroup = () => {
       }
       return null;
     });
-  }, [permission, role]);
+  }, [permission, role, groupId, navigate]);
 
   return (
     <LoadingComponent type={TYPELOADING.NULL} condition={Boolean(permission)}>

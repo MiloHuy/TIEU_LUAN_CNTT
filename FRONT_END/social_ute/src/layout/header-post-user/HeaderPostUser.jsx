@@ -49,7 +49,7 @@ const HeaderPostUser = ({
   return (
     <div
       className={clsx(
-        "border-b border-black text-black flex justify-between overflow-hidden h-14",
+        "border-b border-black text-black flex justify-between overflow-hidden h-14 px-2",
         "dark:text-white dark:border-white font-quick_sans",
         className
       )}

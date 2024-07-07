@@ -11,10 +11,12 @@ export const ARRAY_SIDEBAR_MANAGE_GROUP = [
       {
         action: "allMember",
         name: "Tất cả thành viên",
+        path : "allMembers"
       },
       {
         action: "allRequestJoin",
         name: "Yêu cầu",
+        path: "allRequestJoin"
       }
     ]
   },
@@ -28,14 +30,17 @@ export const ARRAY_SIDEBAR_MANAGE_GROUP = [
       {
         action: "allPosts",
         name: "Tất cả bài viết",
+        path: "allPosts"
       },
       {
         action: "allPostWaitApprove",
         name: "Yêu cầu",
+        path: "allPostWaitApprove"
       },
       {
         action: "allReportPosts",
         name: "Báo cáo",
+        path: "allReportPosts"
       }
     ]
   },
@@ -49,6 +54,7 @@ export const ARRAY_SIDEBAR_MANAGE_GROUP = [
       {
         action: "statisticMember",
         name: "Thống kê",
+        path: "statisticMember"
       }
     ]
   },
@@ -60,8 +66,9 @@ export const ARRAY_SIDEBAR_MANAGE_GROUP = [
     },
     childs: [
       {
-        action: "editContent",
-        name: "Nội dung",
+        action : "editContent",
+        name : "Nội dung",
+        path : "editContent"
       }
     ]
   },

@@ -7,14 +7,25 @@ const classes = {
 
 const getCardClass = (align) => classes[align] || classes.vertical;
 
-const CardBaseLayout = ({ align = "vertical", header, body, footer, className, ...props }) => {
+const CardBaseLayout = ({
+  align = "vertical",
+  header,
+  body,
+  footer,
+  className,
+  ...props
+}) => {
   const clsCard = getCardClass(align);
 
   return (
-    <div className={clsx(
-      "border border-black/40 dark:border-white rounded-lg p-4 overflow-hidden",
-      clsCard, className
-    )} {...props}>
+    <div
+      className={clsx(
+        "border border-black/40 dark:border-white rounded-lg p-4 overflow-hidden font-quick_sans",
+        clsCard,
+        className
+      )}
+      {...props}
+    >
       {header && header}
 
       {body && body}

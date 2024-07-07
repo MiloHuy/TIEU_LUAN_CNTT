@@ -50,3 +50,18 @@ export const getAllCommentPostGroup = async (url, postId, groupId) => {
   );
   return res;
 };
+
+export const getAllMembersGroup = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+}
+
+export const acceptRequestJoinGroup = async (url, groupId, userId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
+  return res;
+}
+
+export const refuseRequestJoinGroup = async (url, groupId, userId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
+  return res;
+}

@@ -7,9 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "components/carousel";
-import CaroselVersion2 from "components/carousel/Carosel-V2";
 import { Textarea } from "components/textarea";
-import { PostType } from "constants/post.const";
 import SelectPrivacyPost from "features/select/select-privacy-post";
 import { PrivacyPost } from "features/select/select-privacy-post/SelectPrivacyPost";
 import { useFormik } from "formik";
@@ -18,7 +16,6 @@ import { useCallback, useMemo, useState } from "react";
 
 const FormUploadFinal = ({ className, stepForm, onUpload, images, files }) => {
   const [isLoading, setIsLoading] = useState(false);
-  console.log("images", images);
   const initFormUpload = {
     post_description: "",
     post_img: "",
@@ -59,7 +56,7 @@ const FormUploadFinal = ({ className, stepForm, onUpload, images, files }) => {
     handleChange: { handleInput },
   });
 
-  const { values } = formik;
+  const { values, setFieldValue } = formik;
 
   return (
     <div
@@ -74,13 +71,11 @@ const FormUploadFinal = ({ className, stepForm, onUpload, images, files }) => {
           <CarouselContent>
             {images.map((_, index) => (
               <CarouselItem key={index}>
-                <div className="p-1">
-                  <img
-                    src={images[index]}
-                    alt="preview"
-                    className="w-full h-[660px] object-contain"
-                  />
-                </div>
+                <img
+                  src={images[index]}
+                  alt="preview"
+                  className="w-full h-[660px] object-fill"
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -110,6 +105,7 @@ const FormUploadFinal = ({ className, stepForm, onUpload, images, files }) => {
               loading={isLoading}
               values={values["privacy"]}
               handleChange={setFormUpload}
+              setFieldValue={setFieldValue}
             />
 
             <Button
