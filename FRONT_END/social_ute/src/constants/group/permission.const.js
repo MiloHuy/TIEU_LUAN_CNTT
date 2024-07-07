@@ -1,5 +1,3 @@
-import manage from "pages/manage";
-
 const { ERoleNameGroup } = require("./enum");
 
 export const catePermiss = {
@@ -15,6 +13,7 @@ export const catePermiss = {
   MANAGE_REGULATION: "Manage_regulation",
   LEAVE_GROUP: "Leave_Group",
   EDIT_GROUP: "Edit",
+  REPORT : "Report",
 };
 
 const createPermission = (category, method, endPoint) => ({
@@ -39,6 +38,8 @@ const basePermissions = {
   createPost: createPermission(catePermiss.POST, "POST", "post"),
   detailPost: createPermission(catePermiss.POST, "GET", "post"),
   requestJoin: createPermission(catePermiss.REQUEST, "POST", "join"),
+  deletePost: createPermission(catePermiss.POST, "DELETE", "post"),
+  reportPost: createPermission(catePermiss.REPORT, "POST", "post"),
 };
 
 const superAdminPermissions = {

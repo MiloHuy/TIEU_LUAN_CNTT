@@ -54,7 +54,7 @@ export const ARRAY_SIDEBAR_MANAGE_GROUP = [
       {
         action: "statisticMember",
         name: "Thống kê",
-        path: "statisticMember"
+        path: "statistic"
       }
     ]
   },

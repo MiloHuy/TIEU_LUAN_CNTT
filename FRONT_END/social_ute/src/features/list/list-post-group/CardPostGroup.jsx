@@ -1,12 +1,12 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import CaroselVersion2 from "components/carousel/Carosel-V2";
 import { PostType } from "constants/post.const";
-import DropdownShowMoreOptions from "features/dropdown/dropdown-show-more-options";
 import HeaderPostUser from "layout/header-post-user";
 import { getFullName } from "utils/user.utils";
 import Footer from "./Footer";
+import DropDownShowMoreActionPostGroup from "features/dropdown/dropdown-show-more-option-post-group/DropDownShowMoreActionPostGroup";
 
-const CardPostGroup = ({ postData, ...props }) => {
+const CardPostGroup = ({ postData, permission, role, ...props }) => {
   // const ID = getUserIdFromCookie();
   // const navigate = useNavigate()
   const fullName = getFullName(
@@ -31,10 +31,10 @@ const CardPostGroup = ({ postData, ...props }) => {
           dateBetween={Math.floor(diffTime)}
           // href={navigateById(postData.userId?._id, ID, navigate)}
           action={
-            <DropdownShowMoreOptions
-              user_id={postData.userId?._id}
-              post_id={postData.id}
-              privacy={"2"}
+            <DropDownShowMoreActionPostGroup
+              permission={permission}
+              role={role}
+              postId={postData._id}
             />
           }
         />
