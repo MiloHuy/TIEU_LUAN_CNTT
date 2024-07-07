@@ -69,7 +69,8 @@ const AdminGroup = new Schema({
                 approve_post: { type: String, default: 'group/:gr_id/admin/posts/approve/:post_id' }
             },
             DELETE: {
-                delete_post: { type: String, default: 'group/:gr_id/admin/posts/:post_id' } // "Bài viết của bạn đã bị admin xóa"
+                delete_post: { type: String, default: 'group/:gr_id/admin/posts/:post_id' }, // "Bài viết của bạn đã bị admin xóa"
+                delete_report: { type: String, default: 'group/:gr_id/admin/report/:report_id' }
             }
         },
         Manage_interact: {

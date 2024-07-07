@@ -69,7 +69,8 @@ const SuperAdminGroup = new Schema({
                 approve_post: { type: String, default: 'group/:gr_id/admin/posts/approve/:post_id' }
             },
             DELETE: {
-                delete_post: { type: String, default: 'group/:gr_id/admin/posts/:post_id' }
+                delete_post: { type: String, default: 'group/:gr_id/admin/posts/:post_id' },
+                delete_report: { type: String, default: 'group/:gr_id/admin/report/:report_id' }
             }
         },
         Manage_interact: {

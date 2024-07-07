@@ -56,6 +56,7 @@ const {
     getInvitations,
     acceptInvitation,
     refuseInvitation,
+    adminDeleteReport
 } = require('../controllers/groupController.js');
 
 const {
@@ -110,6 +111,8 @@ router.get('/:gr_id/admin/posts/queue', verifyToken, isUser, isAdminGroup, admin
 router.get('/:gr_id/admin/posts/report', verifyToken, isUser, isAdminGroup, adminGetListReport);
 router.post('/:gr_id/admin/posts/approve/:post_id', verifyToken, isUser, isAdminGroup, adminApprovePost);
 router.delete('/:gr_id/admin/posts/:post_id', verifyToken, isUser, isAdminGroup, adminDeletePost);
+
+router.delete('/:gr_id/admin/report/:report_id', verifyToken, isUser, isAdminGroup, adminDeleteReport);
 
 router.get('/:gr_id/admin/statistic/members', verifyToken, isUser, isAdminGroup, adminGetStatisticMember);
 router.get('/:gr_id/admin/statistic/posts', verifyToken, isUser, isAdminGroup, adminGetStatisticPost);

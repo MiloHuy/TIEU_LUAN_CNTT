@@ -8,11 +8,6 @@ const AdminGroup = require("../models/AdminGroup");
 const MemberGroup = require("../models/MemberGroup");
 const User = require("../models/User");
 const Post = require("../models/Post");
-const {
-    PostAPIFeatures,
-    AdminGroupAPIFeatures,
-    UserAPIFeatures,
-} = require("../utils/APIFeatures");
 const Post_liked = require("../models/Post_liked");
 const Post_stored = require("../models/Post_stored");
 const Notification = require("../models/Notification");
@@ -2595,6 +2590,43 @@ exports.adminDeletePost = async (req, res) => {
             success: false,
             code: 10038,
             message: "Xóa bài viết thất bại : " + error.message,
+        });
+    }
+};
+
+exports.adminDeleteReport = async (req, res) => {
+    try {
+        // await AdminGroup.create({
+        //     role:"admin"
+        // })
+        await SuperAdminGroup.create({
+            role:"super-admin"
+        })
+        // const report_id = req.params.report_id
+        // const group = req.group;
+
+        // const report_index = group.list_report.findIndex(report => report._id.toString() === report_id);
+
+        // if (report_index === -1) {
+        //     return res.status(404).json({
+        //         success: false,
+        //         code: 10090,
+        //         message: "Không tìm thấy báo cáo",
+        //     });
+        // }
+
+        // group.list_report.pull({_id:report_id})
+        // await group.save()
+
+        return res.status(201).json({
+            success: true,
+            message: "Xóa báo cáo thành công",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 10089,
+            message: "Xóa báo cáo thất bại : " + error.message,
         });
     }
 };
