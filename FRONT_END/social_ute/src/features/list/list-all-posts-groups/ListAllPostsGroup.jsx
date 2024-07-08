@@ -20,7 +20,7 @@ const ListAllPostsGroup = ({ permission, role, groupId }) => {
             <img
               src={post.post_img[0].url}
               alt="post_img"
-              className="w-60 h-80 object-fill rounded-lg cursor-pointer"
+              className="w-[400px] h-80 object-fill rounded-lg cursor-pointer"
             />
             <p className="text-center">
               Người đăng:{" "}

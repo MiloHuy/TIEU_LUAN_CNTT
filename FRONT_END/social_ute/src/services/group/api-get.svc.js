@@ -105,3 +105,13 @@ export const deletePostGroup = async (url, groupId, postId) => {
   const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":post_id", postId));
   return res;
 }
+
+export const deleteReportPostGroup = async (url, groupId, reportId) => {
+  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":report_id", reportId));
+  return res;
+}
+
+export const deletePostManage = async (url, groupId, postId) => {
+  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":post_id", postId));
+  return res;
+}

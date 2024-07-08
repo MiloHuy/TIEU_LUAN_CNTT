@@ -1,19 +1,37 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import { Button } from "components/button";
-import CaroselVersion2 from "components/carousel/Carosel-V2";
-import { PostType } from "constants/post.const";
 import HeaderPostUser from "layout/header-post-user";
 import { CircleCheck, CircleX } from "lucide-react";
 import React from "react";
 import { formatDate } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "components/carousel";
+import { useDeletePostReport } from "hook/manage-group/useDeletePostReport";
 
-const CardPostReport = ({ postData, permission, role, groupId, ...props }) => {
+const CardPostReport = ({
+  postData,
+  userData,
+  permission,
+  role,
+  groupId,
+  reason,
+  createReportTime,
+  reportId,
+  ...props
+}) => {
   const fullName = getFullName(
     postData.user_id?.first_name,
     postData.user_id?.last_name
   );
-  const tileTime = `Thời gian đăng : ${formatDate(postData?.create_post_time)}`;
+  const tileTime = `Thời gian đăng : ${formatDate(createReportTime)}`;
+  const { handleDeleteReportPost, isLoading } = useDeletePostReport();
+
   return (
     <CardBaseLayout
       align="horizontal"
@@ -29,33 +47,43 @@ const CardPostReport = ({ postData, permission, role, groupId, ...props }) => {
       }
       body={
         <div className="max-h-[550px] w-full">
-          <CaroselVersion2
-            className="h-[500px] w-full"
-            type={PostType.POST_IMG}
-            slides={postData.post_img}
-          />
+          <Carousel className="w-full max-h-[450px]">
+            <CarouselContent>
+              {postData.post_img?.map((img, index) => (
+                <CarouselItem key={index}>
+                  <img
+                    lazy="loading"
+                    src={img.url}
+                    alt="post"
+                    className="w-full h-[450px] object-fill"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2" />
+            <CarouselNext className="right-2" />
+          </Carousel>
 
-          <p className="truncate ...">
-            Mô tả bài viết: {postData.post_description}
-          </p>
+          <p className="truncate ...">Lý do: {reason}</p>
         </div>
       }
       footer={
         <div className="flex gap-2 w-full">
-          <Button
-            className="flex gap-2 w-full"
-            variant="outline"
-            // disabled={isLoading}
-            // onClick={() =>
-            //   handleApprovePost(permission, role, groupId, postData._id)
-            // }
-          >
-            Xóa bài
-            <CircleCheck size={20} color="#15af12" strokeWidth={1.25} />
-          </Button>
           <Button className="flex gap-2 w-full" variant="outline">
             Không xóa bài
             <CircleX size={20} color="#d80e0e" strokeWidth={1.25} />
+          </Button>
+
+          <Button
+            className="flex gap-2 w-full"
+            variant="outline"
+            onClick={() =>
+              handleDeleteReportPost(permission, role, groupId, reportId)
+            }
+            disabled={isLoading}
+          >
+            Xóa bài
+            <CircleCheck size={20} color="#15af12" strokeWidth={1.25} />
           </Button>
         </div>
       }

@@ -9,11 +9,12 @@ import { Button } from "components/button";
 import { MoreHorizontal, OctagonAlert, Trash2 } from "lucide-react";
 import ModalConfirm from "features/modal/modal-confirm";
 import { checkPermissionMethod } from "utils/auth.utils";
-import { toast } from "react-toastify";
 import { EMessGroup } from "constants/group/enum";
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useDeletePostGroup } from "hook/group/useDeletePostGroup";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
+import ModalReportPostGroup from "features/modal/modal-report-post-group";
 
 const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
   const { handleDeletePostGroup, isLoading } = useDeletePostGroup();
@@ -25,8 +26,7 @@ const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
       role,
     });
 
-    if (!url)
-      return toast.error(EMessGroup.DONT_HAVE_PERMISSION, TOAST_OPTION_DEFAULT);
+    if (!url) return toast(EMessGroup.DONT_HAVE_PERMISSION);
 
     return (
       <ModalConfirm
@@ -53,18 +53,29 @@ const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
     });
 
     if (!url)
-      return toast.error(EMessGroup.DONT_HAVE_PERMISSION, TOAST_OPTION_DEFAULT);
+      return toast.error(
+        `${EMessGroup.DONT_HAVE_PERMISSION} actions: report`,
+        TOAST_OPTION_DEFAULT
+      );
 
     return (
-      <DropdownMenuItem
-        className="flex gap-2"
-        onSelect={(e) => e.preventDefault()}
-      >
-        <OctagonAlert size={18} color="#cb0b0b" strokeWidth={1.25} />
-        <p>Báo cáo bài viết</p>
-      </DropdownMenuItem>
+      <ModalReportPostGroup
+        trigger={
+          <DropdownMenuItem
+            className="flex gap-2"
+            onSelect={(e) => e.preventDefault()}
+          >
+            <OctagonAlert size={18} color="#cb0b0b" strokeWidth={1.25} />
+            <p>Báo cáo bài viết</p>
+          </DropdownMenuItem>
+        }
+        url={url}
+        groupId={groupId}
+        postId={postId}
+        title="Tố cáo bài viết này"
+      />
     );
-  }, [permission, role]);
+  }, [permission, role, groupId, postId]);
 
   return (
     <DropdownMenu>

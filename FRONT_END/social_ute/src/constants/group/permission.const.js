@@ -1,3 +1,5 @@
+import ca from "dayjs/locale/ca";
+
 const { ERoleNameGroup } = require("./enum");
 
 export const catePermiss = {
@@ -73,7 +75,8 @@ const superAdminPermissions = {
     },
   managePost: {
     allPosts: createPermission(catePermiss.MANAGE_POST, "GET", "posts"),
-    deletePost: createPermission(catePermiss.MANAGE_POST, "DELETE", "post"),
+    deletePost: createPermission(catePermiss.MANAGE_POST, "DELETE", "delete_post"),
+    deleteReport: createPermission(catePermiss.MANAGE_POST, "DELETE", "delete_report"),
     approvePost: createPermission(
       catePermiss.MANAGE_POST,
         "POST",

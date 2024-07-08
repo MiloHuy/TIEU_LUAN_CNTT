@@ -1,11 +1,16 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import { Button } from "components/button";
 import CaroselVersion2 from "components/carousel/Carosel-V2";
+import { EMessGroup } from "constants/group/enum";
 import { PostType } from "constants/post.const";
+import { useDeletePostGroup } from "hook/group/useDeletePostGroup";
 import { useApprovePost } from "hook/manage-group/useApprovePost";
+import { useDeletePostManage } from "hook/manage-group/useDeletePostManage";
 import HeaderPostUser from "layout/header-post-user";
 import { CircleCheck, CircleX } from "lucide-react";
 import React from "react";
+import { toast } from "react-toastify";
+import { checkPermissionMethod } from "utils/auth.utils";
 import { formatDate } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 
@@ -17,6 +22,20 @@ const CardPostApprove = ({ postData, permission, role, groupId, ...props }) => {
   const tileTime = `Thời gian đăng : ${formatDate(postData?.create_post_time)}`;
 
   const { handleApprovePost, isLoading } = useApprovePost();
+  // const { handleDeletePostGroup, isLoading: loadDelete } = useDeletePostGroup();
+  // const onDeletePost = async () => {
+  //   const url = checkPermissionMethod(permission, {
+  //     action: "deletePost",
+  //     role,
+  //   });
+
+  //   if (!url) return toast.error(EMessGroup.DONT_HAVE_PERMISSION);
+
+  //   await handleDeletePostGroup(url, groupId, postData._id);
+  // };
+
+  const { handleDeletePostManage, isLoading: loadDelete } =
+    useDeletePostManage();
 
   return (
     <CardBaseLayout
@@ -57,7 +76,14 @@ const CardPostApprove = ({ postData, permission, role, groupId, ...props }) => {
             Duyệt bài
             <CircleCheck size={20} color="#15af12" strokeWidth={1.25} />
           </Button>
-          <Button className="flex gap-2 w-full" variant="outline">
+          <Button
+            className="flex gap-2 w-full"
+            variant="outline"
+            disabled={loadDelete}
+            onClick={() =>
+              handleDeletePostManage(permission, role, groupId, postData._id)
+            }
+          >
             Từ chối
             <CircleX size={20} color="#d80e0e" strokeWidth={1.25} />
           </Button>

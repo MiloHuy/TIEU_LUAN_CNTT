@@ -28,9 +28,7 @@ export default function Authentication() {
   const socketRef = useRef();
 
   const handleShowToast = (data) => {
-    return toast(data.content, {
-      description: "Sunday, December 03, 2023 at 9:00 AM",
-    });
+    return toast(data.content);
   };
 
   const userId = getUserIdFromCookie();

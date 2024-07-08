@@ -23,10 +23,14 @@ const ListPostsReportGroup = ({ permission, role, groupId }) => {
           {allPostsReport?.map((post) => (
             <CardPostReport
               key={post.id}
-              postData={post}
+              postData={post.post_id}
+              userData={post.user_id}
               permission={permission}
               role={role}
               groupId={groupId}
+              reason={post.reason}
+              createReportTime={post.create_report_time}
+              reportId={post._id}
             />
           ))}
         </div>
