@@ -80,3 +80,28 @@ export const allPostsReportManageGroup = async (url, groupId) => {
   const res = AxiosInstance.get(url.replace(":gr_id", groupId));
   return res;
 }
+
+export const getStatisticMemberGroup = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+}
+
+export const getStatisticPostGroup = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+}
+
+export const getStatisticCommentGroup = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+}
+
+export const getStatisticLikeGroup = async (url, groupId) => {
+  const res = AxiosInstance.get(url.replace(":gr_id", groupId));
+  return res;
+}
+
+export const deletePostGroup = async (url, groupId, postId) => {
+  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":post_id", postId));
+  return res;
+}

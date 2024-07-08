@@ -25,6 +25,7 @@ import ManageRequestJoin from "pages/group/mange-request-join/ManageRequestJoin"
 import ManagePostsGroup from "pages/group/manage-posts/ManagePostsGroup";
 import ManageApprovePost from "pages/group/manage-approve-post";
 import ManagePostsReport from "pages/group/manage-posts-report";
+import ManageStatisticGroup from "pages/group/manage-statistic-group";
 
 export const mainRoutes = [
   { path: "/home", element: <Home /> },
@@ -40,6 +41,7 @@ export const groupChildRoutes = [
   { path: 'manageGroup/allPosts/:groupId', element: <ManagePostsGroup/>},
   { path : 'manageGroup/allPostWaitApprove/:groupId', element: <ManageApprovePost/>},
   { path : 'manageGroup/allReportPosts/:groupId', element: <ManagePostsReport/>},
+  { path : 'manageGroup/statistic/:groupId', element: <ManageStatisticGroup/>},
 ];
 
 export const userRoutes = [
