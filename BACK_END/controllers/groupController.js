@@ -2596,27 +2596,21 @@ exports.adminDeletePost = async (req, res) => {
 
 exports.adminDeleteReport = async (req, res) => {
     try {
-        // await AdminGroup.create({
-        //     role:"admin"
-        // })
-        await SuperAdminGroup.create({
-            role:"super-admin"
-        })
-        // const report_id = req.params.report_id
-        // const group = req.group;
+        const report_id = req.params.report_id
+        const group = req.group;
 
-        // const report_index = group.list_report.findIndex(report => report._id.toString() === report_id);
+        const report_index = group.list_report.findIndex(report => report._id.toString() === report_id);
 
-        // if (report_index === -1) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         code: 10090,
-        //         message: "Không tìm thấy báo cáo",
-        //     });
-        // }
+        if (report_index === -1) {
+            return res.status(404).json({
+                success: false,
+                code: 10090,
+                message: "Không tìm thấy báo cáo",
+            });
+        }
 
-        // group.list_report.pull({_id:report_id})
-        // await group.save()
+        group.list_report.pull({_id:report_id})
+        await group.save()
 
         return res.status(201).json({
             success: true,
