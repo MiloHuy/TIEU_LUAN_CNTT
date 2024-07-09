@@ -59,7 +59,7 @@ export const RenderContentDropDown = (permission, title, role, action) => {
               : ""
           }
           isLoading={isLoading}
-          handleCallback={() => handleLeaveGroup(permission, groupId)}
+          handleCallback={() => handleLeaveGroup(permission, role, groupId)}
         />
       );
 

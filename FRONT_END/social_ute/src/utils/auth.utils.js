@@ -15,7 +15,7 @@ export function getRefreshTokenFromCookie() {
 export const checkPermission = (permission, category, method, endPoint) => {
   return (
     permission[category] &&
-    permission[category][method].hasOwnProperty(endPoint)
+    permission[category][method] && permission[category][method].hasOwnProperty(endPoint)
   );
 };
 

@@ -14,7 +14,14 @@ import { checkPermissionMethod } from "utils/auth.utils";
 import { formatDate } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 
-const CardPostApprove = ({ postData, permission, role, groupId, ...props }) => {
+const CardPostApprove = ({
+  postData,
+  permission,
+  role,
+  groupId,
+  onRefresh,
+  ...props
+}) => {
   const fullName = getFullName(
     postData.user_id?.first_name,
     postData.user_id?.last_name
@@ -69,9 +76,10 @@ const CardPostApprove = ({ postData, permission, role, groupId, ...props }) => {
             className="flex gap-2 w-full"
             variant="outline"
             disabled={isLoading}
-            onClick={() =>
-              handleApprovePost(permission, role, groupId, postData._id)
-            }
+            onClick={async () => {
+              await handleApprovePost(permission, role, groupId, postData._id);
+              onRefresh && (await onRefresh());
+            }}
           >
             Duyệt bài
             <CircleCheck size={20} color="#15af12" strokeWidth={1.25} />
@@ -80,9 +88,16 @@ const CardPostApprove = ({ postData, permission, role, groupId, ...props }) => {
             className="flex gap-2 w-full"
             variant="outline"
             disabled={loadDelete}
-            onClick={() =>
-              handleDeletePostManage(permission, role, groupId, postData._id)
-            }
+            onClick={async () => {
+              await handleDeletePostManage(
+                permission,
+                role,
+                groupId,
+                postData._id
+              );
+
+              onRefresh && (await onRefresh());
+            }}
           >
             Từ chối
             <CircleX size={20} color="#d80e0e" strokeWidth={1.25} />

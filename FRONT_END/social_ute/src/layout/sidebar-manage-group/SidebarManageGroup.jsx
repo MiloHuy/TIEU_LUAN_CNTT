@@ -19,7 +19,6 @@ const SidebarManageGroup = () => {
   const { permission, role } = rolePermission;
   const { groupId } = useParams();
   const navigate = useNavigate();
-  console.log("groupId", groupId);
 
   const renderItemAccordion = useMemo(() => {
     return ARRAY_SIDEBAR_MANAGE_GROUP.map((item) => {

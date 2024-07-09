@@ -13,6 +13,7 @@ export const useAllRequestJoinGroup = () => {
   const fetchAllRequestJoinManage = useCallback(
     async (permission, role, groupId) => {
       try {
+        setIsLoading(false);
         const url = checkPermissionMethod(permission, {
           action: "allRequestJoin",
           role,

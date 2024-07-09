@@ -1,23 +1,33 @@
-import { ERoleNameGroup } from "constants/group/enum";
-import { groupPermission } from "constants/group/permission.const";
+import { EMessGroup } from "constants/group/enum";
 import { useCallback, useState } from "react";
 import { leaveGroup } from "services/group/api-post.svc";
+import { toast } from "sonner";
+import { checkPermissionMethod } from "utils/auth.utils";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useLeaveGroup = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLeaveGroup = useCallback(async ({ permission, groupId }) => {
+  const handleLeaveGroup = useCallback(async (permission,role, groupId ) => {
     try {
       setIsLoading(true);
 
-      const { category, method, endPoint } =
-        groupPermission[ERoleNameGroup.MEMBER].leaveGroup;
+      const url = checkPermissionMethod(permission, {
+        action: "leaveGroup",
+        role,
+      });
 
-      const url = permission[category][method][endPoint];
+      if (!url) {
+        setIsLoading(false);
+        return toast.error(EMessGroup.DONT_HAVE_PERMISSION);
+      }
 
       await leaveGroup(url, groupId);
       setIsLoading(false);
+      toast.success(EMessGroup.LEAVE_GROUP_SUCCESS);
+      setTimeout(() => {
+        window.location.reload();
+      },1000);
     } catch (error) {
       setIsLoading(false);
       errorHandler(error);

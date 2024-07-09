@@ -61,3 +61,13 @@ export const reportPostGroup = async (url, groupId, postId, payload) => {
   );
   return res;
 }
+
+export const acceptRequestJoinGroup = async (url, groupId, userId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
+  return res;
+}
+
+export const approvePostGroup = async (url, groupId, postId) => {
+  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":post_id", postId));
+  return res;
+}

@@ -56,11 +56,6 @@ export const getAllMembersGroup = async (url, groupId) => {
   return res;
 }
 
-export const acceptRequestJoinGroup = async (url, groupId, userId) => {
-  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
-  return res;
-}
-
 export const refuseRequestJoinGroup = async (url, groupId, userId) => {
   const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":user_id", userId));
   return res;
@@ -68,11 +63,6 @@ export const refuseRequestJoinGroup = async (url, groupId, userId) => {
 
 export const allPostsManageGroup = async (url, groupId) => {
   const res = AxiosInstance.get(url.replace(":gr_id", groupId));
-  return res;
-}
-
-export const approvePostGroup = async (url, groupId, postId) => {
-  const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":post_id", postId));
   return res;
 }
 
@@ -101,17 +91,3 @@ export const getStatisticLikeGroup = async (url, groupId) => {
   return res;
 }
 
-export const deletePostGroup = async (url, groupId, postId) => {
-  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":post_id", postId));
-  return res;
-}
-
-export const deleteReportPostGroup = async (url, groupId, reportId) => {
-  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":report_id", reportId));
-  return res;
-}
-
-export const deletePostManage = async (url, groupId, postId) => {
-  const res = AxiosInstance.delete(url.replace(":gr_id", groupId).replace(":post_id", postId));
-  return res;
-}

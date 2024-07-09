@@ -19,7 +19,7 @@ const ListAllPostApprove = ({ permission, role, groupId }) => {
       condition={Boolean(allPostsApprove)}
     >
       <ArrayEmpty arr={allPostsApprove} title="Hiện chưa có bài viết nào.">
-        <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-2 justify-items-center">
+        <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-2 justify-items-center w-full">
           {allPostsApprove?.map((post) => (
             <CardPostApprove
               key={post.id}
@@ -27,6 +27,9 @@ const ListAllPostApprove = ({ permission, role, groupId }) => {
               permission={permission}
               role={role}
               groupId={groupId}
+              onRefresh={() =>
+                fetchAllPostsApproveManage(permission, role, groupId)
+              }
             />
           ))}
         </div>
