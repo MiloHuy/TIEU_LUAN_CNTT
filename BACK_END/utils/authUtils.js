@@ -27,3 +27,26 @@ exports.sendVerificationEmail = async function(options){
 
   await transport.sendMail(message);
 }
+
+exports.sendVerificationEmail1 = async function(options){
+    const transporter = nodemailer.createTransport({
+        service:'gmail',
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // Use `true` for port 465, `false` for all other ports
+        auth: {
+          user: "hungphu2151@gmail.com",
+          pass: "",
+        },
+    });
+  
+    const message = {
+    //   from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
+      from: '"Mạng Xã Hội" <noreply@socialmedia.com>',
+      to: options.gmail,
+      subject: options.subject,
+      html: options.message,
+    };
+  
+    await transporter.sendMail(message);
+  }

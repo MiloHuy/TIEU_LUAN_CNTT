@@ -11,7 +11,7 @@ const {
     getNextRefreshToken,
 } = require("../utils/tokenUtils.js");
 
-const { sendVerificationEmail } = require("../utils/authUtils.js");
+const { sendVerificationEmail, sendVerificationEmail1 } = require("../utils/authUtils.js");
 const { generateOTP } = require("../utils/authUtils.js");
 const Register_otp = require("../models/Register_otp.js");
 const Faculty = require("../models/Faculty");

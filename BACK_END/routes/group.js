@@ -75,7 +75,7 @@ router.get('/:gr_id/regulation', verifyToken, isUser, getRegulation);
 router.get('/:gr_id/posts', verifyToken, isUser, getPosts);
 router.get('/:gr_id/post/:post_id', verifyToken, isUser, getPost);
 router.post('/:gr_id/post/like/:post_id', verifyToken, isUser, likePost);
-router.post('/:gr_id/post/store/:post_id', verifyToken, isUser, storePost);
+router.post('/:gr_id/post/save/:post_id', verifyToken, isUser, storePost);
 router.post('/:gr_id/post/comment/:post_id', verifyToken, isUser, commentPost);
 router.get('/:gr_id/post/comment/:post_id', verifyToken, isUser, getCommentPost);
 
