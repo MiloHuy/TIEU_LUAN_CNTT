@@ -33,16 +33,15 @@ exports.sendVerificationEmail1 = async function(options){
         service:'gmail',
         host: "smtp.ethereal.email",
         port: 587,
-        secure: false, // Use `true` for port 465, `false` for all other ports
+        secure: false,
         auth: {
-          user: "hungphu2151@gmail.com",
-          pass: "",
+          user: process.env.GMAIL,
+          pass: process.env.APP_PW,
         },
     });
   
     const message = {
-    //   from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
-      from: '"Mạng Xã Hội" <noreply@socialmedia.com>',
+      from: 'Mạng Xã Hội <${process.env.GMAIL}>',
       to: options.gmail,
       subject: options.subject,
       html: options.message,
