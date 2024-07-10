@@ -34,29 +34,26 @@ const SelectDepartment = ({
       </SelectTrigger>
       <SelectContent className="font-quick_sans text-md">
         <SelectGroup>
-          {isLoading ? (
-            <LoadingComponent
-              type={TYPELOADING.TITLE}
-              title="Đang lấy dữ liệu"
-              condition={!isLoading}
-            >
-              {departments &&
-                departments.map((department, i) => {
-                  return (
-                    <SelectItem
-                      key={i}
-                      className="gap-1 border-b border-black"
-                      value={department.name}
-                    >
-                      <p>{department.name}</p>
-                    </SelectItem>
-                  );
-                })}
-            </LoadingComponent>
-          ) : (
-            <p>Vui lòng chọn vai trò của bạn.</p>
-          )}
+          <LoadingComponent
+            type={TYPELOADING.TITLE}
+            title="Đang lấy dữ liệu"
+            condition={Boolean(departments)}
+          >
+            {departments &&
+              departments.map((department, i) => {
+                return (
+                  <SelectItem
+                    key={i}
+                    className="gap-1 border-b border-black"
+                    value={department.name}
+                  >
+                    <p>{department.name}</p>
+                  </SelectItem>
+                );
+              })}
+          </LoadingComponent>
         </SelectGroup>
+        {!departments && <p>Vui lòng chọn vai trò của bạn.</p>}
       </SelectContent>
     </Select>
   );

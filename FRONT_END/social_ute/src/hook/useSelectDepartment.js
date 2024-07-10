@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { getDepartments } from "services/auth.svc";
+import { errorHandler } from "utils/error-response.utils";
 
 export const useSelectDepartement = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +14,7 @@ export const useSelectDepartement = () => {
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
-      console.log("error fetching department: ", err);
+      errorHandler(err);
     }
   }, []);
 
