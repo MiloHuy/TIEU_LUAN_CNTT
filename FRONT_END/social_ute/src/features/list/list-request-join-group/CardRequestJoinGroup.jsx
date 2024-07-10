@@ -12,6 +12,7 @@ const CardRequestJoinGroup = ({
   permission,
   role,
   groupId,
+  onRefresh,
   ...props
 }) => {
   const name = getFullName(item.first_name, item.last_name);
@@ -34,7 +35,6 @@ const CardRequestJoinGroup = ({
       body={
         <div className="flex flex-col gap-2 h-full justify-center items-start cursor-pointer w-full">
           <p>{name}</p>
-          <p>Khoa</p>
         </div>
       }
       footer={
@@ -42,9 +42,10 @@ const CardRequestJoinGroup = ({
           <Button
             className={clsBaseButton}
             variant="outline"
-            onClick={() =>
-              handleAcceptRequest(permission, role, groupId, item._id)
-            }
+            onClick={async () => {
+              await handleAcceptRequest(permission, role, groupId, item._id);
+              onRefresh && (await onRefresh());
+            }}
             disabled={isLoading}
           >
             Đồng ý
@@ -53,9 +54,10 @@ const CardRequestJoinGroup = ({
           <Button
             variant="outline"
             className={clsBaseButton}
-            onClick={() =>
-              handleRejectRequest(permission, role, groupId, item._id)
-            }
+            onClick={async () => {
+              await handleRejectRequest(permission, role, groupId, item._id);
+              onRefresh && (await onRefresh());
+            }}
             disabled={isLoading}
           >
             Từ chối

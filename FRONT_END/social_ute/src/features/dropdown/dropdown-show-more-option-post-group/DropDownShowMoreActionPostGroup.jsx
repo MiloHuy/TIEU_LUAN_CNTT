@@ -9,11 +9,8 @@ import { Button } from "components/button";
 import { MoreHorizontal, OctagonAlert, Trash2 } from "lucide-react";
 import ModalConfirm from "features/modal/modal-confirm";
 import { checkPermissionMethod } from "utils/auth.utils";
-import { EMessGroup } from "constants/group/enum";
-import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useDeletePostGroup } from "hook/group/useDeletePostGroup";
 import { useParams } from "react-router-dom";
-import { toast } from "sonner";
 import ModalReportPostGroup from "features/modal/modal-report-post-group";
 
 const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
@@ -26,7 +23,7 @@ const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
       role,
     });
 
-    if (!url) return toast(EMessGroup.DONT_HAVE_PERMISSION);
+    if (!url) return null;
 
     return (
       <ModalConfirm
@@ -52,11 +49,7 @@ const DropDownShowMoreActionPostGroup = ({ permission, role, postId }) => {
       role,
     });
 
-    if (!url)
-      return toast.error(
-        `${EMessGroup.DONT_HAVE_PERMISSION} actions: report`,
-        TOAST_OPTION_DEFAULT
-      );
+    if (!url) return null;
 
     return (
       <ModalReportPostGroup

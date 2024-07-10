@@ -2,21 +2,21 @@ import { EMessGroup } from "constants/group/enum";
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import { deleteReportPostGroup } from "services/group/api-delele.svc";
+import { deleteMemberManage } from "services/group/api-delele.svc";
 import { checkPermissionMethod } from "utils/auth.utils";
 import { errorHandler } from "utils/error-response.utils";
 
-export const useDeletePostReport = () => {
+export const useDeleteMemberGroup = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDeleteReportPost = useCallback(
-    async (permission, role, groupId, reportId) => {
+  const handleDeleteMemberManage = useCallback(
+    async (permission, role, groupId, userId) => {
       try {
         setIsLoading(true);
         const url = checkPermissionMethod(permission, {
-          action: "deleteReport",
+          action: "deleteMember",
           role,
-          manage : "managePost",
+          manage : "manageMember",
         });
 
         if (!url) {
@@ -26,7 +26,7 @@ export const useDeletePostReport = () => {
             TOAST_OPTION_DEFAULT,
           );
         }
-        await deleteReportPostGroup(url, groupId,reportId);
+        await deleteMemberManage(url, groupId,userId);
         setIsLoading(false);
 
         return toast.success(
@@ -43,6 +43,6 @@ export const useDeletePostReport = () => {
 
   return {
     isLoading,
-    handleDeleteReportPost,
+    handleDeleteMemberManage,
   };
 };

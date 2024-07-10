@@ -2,7 +2,7 @@ import { EMessGroup } from "constants/group/enum";
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import { deletePostManage  } from "services/group/api-get.svc";
+import { deletePostManage } from "services/group/api-delele.svc";
 import { checkPermissionMethod } from "utils/auth.utils";
 import { errorHandler } from "utils/error-response.utils";
 

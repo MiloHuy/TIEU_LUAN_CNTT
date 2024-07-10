@@ -1,7 +1,7 @@
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import {  deletePostGroup  } from "services/group/api-get.svc";
+import { deletePostGroup } from "services/group/api-delele.svc";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useDeletePostGroup = () => {

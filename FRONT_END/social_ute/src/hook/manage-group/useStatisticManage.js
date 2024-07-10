@@ -8,7 +8,12 @@ import { errorHandler } from "utils/error-response.utils";
 
 export const useStatistic = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [res,setRes] = useState();
+  const [res,setRes] = useState({
+    countMembers: 0,
+    countPosts: 0,
+    countLikes: 0,
+    countComments: 0,
+  });
 
   const fetchStatisticMembersManage = useCallback(
     async (permission, role, groupId) => {
@@ -26,7 +31,10 @@ export const useStatistic = () => {
           );
         }
         const res = await getStatisticMemberGroup(url, groupId);
-        setRes(res.data);
+        setRes((prev) => ({
+          ...prev,
+          countMembers: res.data.count_members,
+        }));
         setIsLoading(true);
       } catch (err) {
         setIsLoading(true);
@@ -52,7 +60,10 @@ export const useStatistic = () => {
           );
         }
         const res = await getStatisticPostGroup(url, groupId);
-        setRes(res.data);
+        setRes((prev) => ({
+          ...prev,
+          countPosts: res.data.count_posts,
+        }));
         setIsLoading(true);
       } catch (err) {
         setIsLoading(true);
@@ -78,7 +89,10 @@ export const useStatistic = () => {
           );
         }
         const res = await getStatisticLikeGroup(url, groupId);
-        setRes(res.data);
+        setRes((prev) => ({
+          ...prev,
+          countLikes: res.data.count_likes,
+        }));
         setIsLoading(true);
       } catch (err) {
         setIsLoading(true);
@@ -104,7 +118,10 @@ export const useStatistic = () => {
           );
         }
         const res = await getStatisticCommentGroup(url, groupId);
-        setRes(res.data);
+        setRes((prev) => ({
+          ...prev,
+          countComments: res.data.count_comments,
+        }));
         setIsLoading(true);
       } catch (err) {
         setIsLoading(true);
@@ -116,7 +133,7 @@ export const useStatistic = () => {
 
   return {
     isLoading,
-    ...res,
+    res,
 
     fetchStatisticMembersManage,
     fetchStatisticPostsManage,

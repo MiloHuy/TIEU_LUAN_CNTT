@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChartContainer,
   ChartTooltip,
@@ -8,20 +8,16 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { useStatistic } from "hook/manage-group/useStatisticManage";
 
 const chartData = [
-  { statistic: "Thành viên", desktop: 186, mobile: 80 },
-  { statistic: "Bài viết", desktop: 305, mobile: 200 },
-  { statistic: "Bình luận", desktop: 237, mobile: 120 },
-  { statistic: "Lượt xem", desktop: 400, mobile: 300 },
+  { statistic: "Thành viên", desktop: 186 },
+  { statistic: "Bài viết", desktop: 305 },
+  { statistic: "Bình luận", desktop: 237 },
+  { statistic: "Lượt xem", desktop: 400 },
 ];
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Nhóm",
     color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
   },
 };
 
@@ -31,27 +27,61 @@ const ChartManageGroup = ({ permission, role, groupId }) => {
     fetchStatisticPostsManage,
     fetchStatisticLikesManage,
     fetchStatisticCommentsManage,
+    res: response,
   } = useStatistic();
+
+  const [charData, setChartData] = useState([
+    { statistic: "Thành viên", desktop: 186 },
+    { statistic: "Bài viết", desktop: 305 },
+    { statistic: "Bình luận", desktop: 237 },
+    { statistic: "Lượt xem", desktop: 400 },
+  ]);
 
   useEffect(() => {
     fetchStatisticMembersManage(permission, role, groupId);
-  }, [fetchStatisticMembersManage, permission, role, groupId]);
+    fetchStatisticPostsManage(permission, role, groupId);
+    fetchStatisticLikesManage(permission, role, groupId);
+    fetchStatisticCommentsManage(permission, role, groupId);
+  }, [
+    fetchStatisticPostsManage,
+    permission,
+    role,
+    groupId,
+    fetchStatisticMembersManage,
+    fetchStatisticLikesManage,
+    fetchStatisticCommentsManage,
+  ]);
+
+  useEffect(() => {
+    setChartData([
+      { statistic: "Thành viên", desktop: response.countMembers },
+      { statistic: "Bài viết", desktop: response.countPosts },
+      { statistic: "Bình luận", desktop: response.countComments },
+      { statistic: "Lượt xem", desktop: response.countLikes },
+    ]);
+  }, [response]);
 
   return (
-    <ChartContainer config={chartConfig} className="h-[400px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="statistic"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-        />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <div className="flex flex-col gap-4">
+      <ChartContainer config={chartConfig} className="h-[400px] w-full">
+        <BarChart accessibilityLayer data={charData}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="statistic"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+        </BarChart>
+      </ChartContainer>
+
+      <p>Số lượng thành viên trong nhóm: {response.countMembers}</p>
+      <p>Số lượng bài viết trong nhóm: {response.countPosts}</p>
+      <p>Số lượng yêu thích trong nhóm: {response.countLikes}</p>
+      <p>Số lượng bình luận trong nhóm: {response.countComments}</p>
+    </div>
   );
 };
 

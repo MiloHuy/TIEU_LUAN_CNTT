@@ -7,8 +7,6 @@ import Footer from "./Footer";
 import DropDownShowMoreActionPostGroup from "features/dropdown/dropdown-show-more-option-post-group/DropDownShowMoreActionPostGroup";
 
 const CardPostGroup = ({ postData, permission, role, ...props }) => {
-  // const ID = getUserIdFromCookie();
-  // const navigate = useNavigate()
   const fullName = getFullName(
     postData.user_id?.first_name,
     postData.user_id?.last_name
@@ -29,7 +27,6 @@ const CardPostGroup = ({ postData, permission, role, ...props }) => {
           name={fullName}
           privacy={postData.privacy}
           dateBetween={Math.floor(diffTime)}
-          // href={navigateById(postData.userId?._id, ID, navigate)}
           action={
             <DropDownShowMoreActionPostGroup
               permission={permission}
