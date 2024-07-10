@@ -6,17 +6,20 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { checkPermissionMethod } from "utils/auth.utils";
-import { getFullName } from "utils/user.utils";
+import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 
 const MemberCard = ({ member, ...props }) => {
   const rolePermission = useSelector(selectRolePermission);
   const { permission, role } = rolePermission;
   const { groupId } = useParams();
+  const userId = getUserIdFromCookie();
 
   const renderDropdownDeleteMember = useMemo(() => {
+    if (userId === member._id) return <div></div>;
     const isValid = checkPermissionMethod(permission, {
       action: "deleteMember",
       role: role,
+      manage: "manageMember",
     });
 
     if (isValid) {
@@ -29,7 +32,7 @@ const MemberCard = ({ member, ...props }) => {
       );
     }
     return <div></div>;
-  }, [permission, role, groupId, member]);
+  }, [permission, role, groupId, member, userId]);
 
   return (
     <CardBaseLayout

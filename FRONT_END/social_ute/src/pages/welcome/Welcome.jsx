@@ -28,7 +28,7 @@ const Welcome = () => {
         className={clsx(
           "absolute cursor-pointer top-2 transform duration-500 ease-in-out",
           { "rotate-180 ": isShortCutSidebar },
-          `${isShortCutSidebar ? "left-[80px]" : "left-[240px]"}`
+          `${isShortCutSidebar ? "left-[80px]" : "left-[220px]"}`
         )}
         onClick={handleShortCutSidebar}
       />
@@ -41,7 +41,7 @@ const Welcome = () => {
 
       <div
         className={`${
-          isShortCutSidebar === true ? "min-w-[95vw] w-[95vw]" : "min-w-[80vw]"
+          isShortCutSidebar === true ? "min-w-[95vw] w-[95vw]" : "min-w-[85vw]"
         } ${darkmode} overflow-auto`}
       >
         <Outlet />

@@ -8,58 +8,57 @@ import { useSearchUser } from "hook/me/useSearchUser";
 import { useEffect, useState } from "react";
 
 const ModalSearchUser = ({ trigger, className }) => {
-
-  const { resultSearch, fetchSearch } = useSearchUser()
+  const { resultSearch, fetchSearch } = useSearchUser();
 
   const [filter, setFilter] = useState({
     page: 1,
     size: 0,
-    search: ''
-  })
+    search: "",
+  });
 
   const handleSearchDebounce = (query) => {
     setFilter((prev) => ({
       ...prev,
       size: 3,
-      search: query.search
-    }))
-  }
+      search: query.search,
+    }));
+  };
 
   useEffect(() => {
     if (filter.size !== 0) {
-      fetchSearch(
-        filter.page,
-        filter.size,
-        filter.search
-      )
+      fetchSearch(filter.page, filter.size, filter.search);
     }
-  }, [fetchSearch, filter.size, filter.page, filter.search])
+  }, [fetchSearch, filter.size, filter.page, filter.search]);
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
 
       <DialogContent
         hideCloseButton={true}
-        className={clsx('sm:rounded-lg overflow-hidden min-h-[45vh] max-w-[55vw]', className)}>
-
-        <div className='flex flex-col w-full h-full gap-5'>
+        className={clsx(
+          "sm:rounded-lg overflow-hidden min-h-[45vh] max-w-[45vw]",
+          className
+        )}
+      >
+        <div className="flex flex-col w-full h-full gap-5">
           <SearchBlockDebounce
-            placeholder='Tìm kiếm bạn bè'
-            className='w-full'
+            placeholder="Tìm kiếm bạn bè"
+            className="w-full"
             onSubmit={handleSearchDebounce}
           />
           {
-            <LoadingComponent type={TYPELOADING.TITLE} condition={Boolean(resultSearch)}>
+            <LoadingComponent
+              type={TYPELOADING.TITLE}
+              condition={Boolean(resultSearch)}
+            >
               <ListSearchUser resultSearch={resultSearch} />
             </LoadingComponent>
           }
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ModalSearchUser
+export default ModalSearchUser;

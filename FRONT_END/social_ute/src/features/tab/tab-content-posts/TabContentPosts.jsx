@@ -20,6 +20,11 @@ const TabContentPosts = () => {
   const { permission, role } = rolePermission;
   const { groupId } = useParams();
 
+  const isUploadImage = checkPermissionMethod(permission, {
+    action: "createPost",
+    role,
+  });
+
   const handleCreatePostGroup = async (values, files, images) => {
     try {
       const url = checkPermissionMethod(permission, {
@@ -55,25 +60,27 @@ const TabContentPosts = () => {
 
   return (
     <div className="flex flex-col gap-2 w-full items-center font-quick_sans">
-      <ModalUploadFile
-        trigger={
-          <div
-            className={clsx(
-              "w-[350px] h-20 flex gap-5 items-center justify-center overflow-hidden cursor-pointer",
-              "border-b border-black dark:border-white rounded-lg"
-            )}
-          >
-            <img
-              src={user.avatar.url}
-              alt="img_group"
-              className="h-12 w-12 rounded-full object-cover"
-            />
+      {isUploadImage && (
+        <ModalUploadFile
+          trigger={
+            <div
+              className={clsx(
+                "w-[350px] h-20 flex gap-5 items-center justify-center overflow-hidden cursor-pointer",
+                "border-b border-black dark:border-white rounded-lg"
+              )}
+            >
+              <img
+                src={user.avatar.url}
+                alt="img_group"
+                className="h-12 w-12 rounded-full object-cover"
+              />
 
-            <p>Hãy viết cảm nghĩ của bạn...</p>
-          </div>
-        }
-        onUpload={handleCreatePostGroup}
-      />
+              <p>Hãy viết cảm nghĩ của bạn...</p>
+            </div>
+          }
+          onUpload={handleCreatePostGroup}
+        />
+      )}
 
       <ListPostGroup permission={permission} groupId={groupId} role={role} />
     </div>
