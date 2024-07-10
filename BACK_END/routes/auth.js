@@ -13,7 +13,7 @@ const {
     getDepartment,
 } = require('../controllers/authController.js');
 
-router.get('/departments', getDepartment);
+router.post('/departments', getDepartment);
 router.post('/register', register);
 router.post('/register/send-otp', sendRegisterOtp);
 router.post('/refresh-token', refreshToken);
