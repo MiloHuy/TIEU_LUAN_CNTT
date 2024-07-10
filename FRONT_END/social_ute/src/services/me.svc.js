@@ -6,6 +6,8 @@ export const API_ME_ENDPOINT = {
     me_info: "/me/account/info",
     me_friends: "/me/friends",
     me_requests_friends: "/me/friend-request",
+    all_notifications: "/me/notis",
+    all_notifications_unread: "/me/unread-notis",
   },
   POST: {
     create_post: "/posts/create",
@@ -73,3 +75,13 @@ export const uploadImageAvatar = (payload) => {
   );
   return res;
 };
+
+export const getAllNotifications = () => {
+  const res = AxiosInstance.get(API_ME_ENDPOINT.GET.all_notifications);
+  return res;
+}
+
+export const getAllNotificationsUnread = () => {
+  const res = AxiosInstance.get(API_ME_ENDPOINT.GET.all_notifications_unread);
+  return res;
+}

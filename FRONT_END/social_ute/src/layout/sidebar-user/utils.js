@@ -11,7 +11,6 @@ import { handleRevokeBlobUrl } from "utils/file.utils";
 import ModalGroup from "features/modal/modal-group/ModalGroup";
 import ModalSearchUser from "features/modal/modal-search-user/ModalSearchUser";
 import ModalUploadFile from "features/modal/modal-upload-image-file/ModalUploadFile";
-import popupNofication from "features/popup/popup-nofication";
 import {
   Bell,
   Home,
@@ -23,6 +22,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import SheetListNoti from "features/sheet/sheet-list-noti/SheetListNoti";
 
 export const handleNavigateUser = (navigate, userID) => {
   navigate(`home-user/${userID}`);
@@ -124,17 +124,11 @@ export const renderButtonsSidebarUser = (navigate, userID, dispatch) => {
       modalProps: { className: "w-[55vw] h-[70vh]" },
     },
     {
-      Icon: MessageCircle,
-      text: "Tin nhắn",
-      onClick: null,
-      isModal: false,
-    },
-    {
       Icon: Bell,
       text: "Thông báo",
       onClick: null,
       isModal: true,
-      ModalComponent: popupNofication,
+      ModalComponent: SheetListNoti,
       modalProps: {},
     },
     {

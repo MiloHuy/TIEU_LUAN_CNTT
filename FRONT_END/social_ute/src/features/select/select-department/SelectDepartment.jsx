@@ -29,7 +29,7 @@ const SelectDepartment = ({
       id="department"
       name="department"
     >
-      <SelectTrigger className={clsx("w-full h-[70px]", className)}>
+      <SelectTrigger className={clsx("w-full h-[60px]", className)}>
         <SelectValue placeholder="Chọn phòng ban/khoa" />
       </SelectTrigger>
       <SelectContent className="font-quick_sans text-md">

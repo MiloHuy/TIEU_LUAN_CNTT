@@ -11,6 +11,10 @@ import { genformRegisterSchema } from "./schema";
 import { genLabelFormRegister, genOptionsPrivacyPost } from "./utils";
 import { register } from "services/auth.svc";
 import { errorHandler } from "utils/error-response.utils";
+import { useNavigate } from "react-router-dom";
+
+const clsBaseInput =
+  "w-full text-lg  bg-white/90 h-[50px] border border-black/50";
 
 const FormRegister = ({ className, handleNextForm, stepForm }) => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -35,6 +39,8 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
     setFormRegister({ ...formRegister, [e.target.name]: e.target.value });
   };
 
+  const navigate = useNavigate();
+
   const checkStepToNextForm = useMemo(() => {
     switch (stepForm) {
       case 0:
@@ -51,22 +57,18 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
     genformRegisterSchema(formLabel);
   }, [formLabel]);
 
-  const options = genOptionsPrivacyPost();
+  const options = useMemo(() => genOptionsPrivacyPost(), []);
 
-  const handleRegisterForm = async (e) => {
+  const handleRegisterForm = async () => {
     try {
-      await register(values);
+      const dataSubmit = {
+        ...values,
+        department: formRegister.department,
+        role: formRegister.role,
+      };
+      // console.log("dataSubmit", dataSubmit);
+      // await register(dataSubmit);
 
-      // toast.success('Đăng ký thành công!!!', {
-      //     position: "bottom-right",
-      //     autoClose: 1000,
-      //     hideProgressBar: true,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     progress: undefined,
-      //     theme: "light",
-      // });
       handleNextForm && handleNextForm();
     } catch (err) {
       errorHandler(err);
@@ -90,18 +92,14 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
   }, [errors]);
 
   return (
-    <form
+    <div
       className={clsx(
-        "flex flex-col gap-3 items-center justify-center p-4 min-w-[55vw] min-h-[75vh]",
+        "flex flex-col gap-3 items-center justify-center p-8 min-w-[55vw] h-[480px] font-quick_sans",
         `${checkStepToNextForm} transform duration-500 ease-in`,
         className
       )}
-      onSubmit={formik.handleSubmit}
-      onReset={formik.resetForm}
     >
-      <h1 className="text-2xl font-bold font-quick_sans text-center">
-        Đăng ký
-      </h1>
+      <h1 className="text-2xl font-bold text-center text-gray-900">Đăng ký</h1>
 
       <div className="grid grid-cols-2 gap-2 w-full">
         <InputV2
@@ -109,8 +107,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
           name="first_name"
           placeholder={formLabel.first_name}
           value={values["first_name"]}
-          defaultValue=""
-          className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+          className={clsBaseInput}
           onChange={formik.handleChange}
         />
 
@@ -119,8 +116,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
           name="last_name"
           value={values["last_name"]}
           placeholder={formLabel.last_name}
-          defaultValue=""
-          className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+          className={clsBaseInput}
           onChange={formik.handleChange}
         />
       </div>
@@ -130,9 +126,8 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
           type="email"
           name="gmail"
           value={values["gmail"]}
-          defaultValue=""
           placeholder="a@hcmute.edu.vn"
-          className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+          className={clsBaseInput}
           onChange={formik.handleChange}
         />
 
@@ -141,8 +136,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
           name="phone_number"
           value={values["phone_number"]}
           placeholder={formLabel.phone_number}
-          defaultValue=""
-          className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+          className={clsBaseInput}
           onChange={formik.handleChange}
         />
       </div>
@@ -152,8 +146,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
         name="pass_word"
         value={values["pass_word"]}
         placeholder={formLabel.pass_word}
-        defaultValue=""
-        className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+        className={clsBaseInput}
         onChange={formik.handleChange}
       />
 
@@ -161,6 +154,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
         <SelectRole
           className="h-[50px] text-lg text-black/80 border-black/50"
           options={options}
+          values={formRegister["role"]}
           onSubmit={handleFetchDepartment}
           handleChange={setFormRegister}
         />
@@ -170,8 +164,7 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
           name="id"
           value={values["id"]}
           placeholder={formLabel.id}
-          defaultValue=""
-          className="w-full text-lg font-quick_sans bg-white/90 h-[50px] border border-black/50"
+          className={clsBaseInput}
           onChange={formik.handleChange}
         />
       </div>
@@ -184,16 +177,23 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
 
       <div className="w-full flex justify-center gap-5">
         <Button
+          radius="sm"
+          className="text-lg text-white font-bold  w-1/2 bg-[#3C43B7] rounded-lg h-[50px]"
+          onClick={() => navigate("/login")}
+        >
+          Đăng nhập
+        </Button>
+
+        <Button
           isDisabled={isDisabled}
           radius="sm"
-          className="text-lg text-white font-bold font-quick_sans w-1/2 bg-[#3C43B7] rounded-lg"
+          className="text-lg text-white font-bold  w-1/2 bg-[#3C43B7] rounded-lg h-[50px]"
           onClick={handleRegisterForm}
-          type="submit"
         >
           Tiếp theo
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 

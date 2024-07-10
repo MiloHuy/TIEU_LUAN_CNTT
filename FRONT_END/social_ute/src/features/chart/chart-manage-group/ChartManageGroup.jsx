@@ -7,13 +7,6 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { useStatistic } from "hook/manage-group/useStatisticManage";
 
-const chartData = [
-  { statistic: "Thành viên", desktop: 186 },
-  { statistic: "Bài viết", desktop: 305 },
-  { statistic: "Bình luận", desktop: 237 },
-  { statistic: "Lượt xem", desktop: 400 },
-];
-
 const chartConfig = {
   desktop: {
     label: "Nhóm",
@@ -34,7 +27,7 @@ const ChartManageGroup = ({ permission, role, groupId }) => {
     { statistic: "Thành viên", desktop: 186 },
     { statistic: "Bài viết", desktop: 305 },
     { statistic: "Bình luận", desktop: 237 },
-    { statistic: "Lượt xem", desktop: 400 },
+    { statistic: "Lượt thích", desktop: 400 },
   ]);
 
   useEffect(() => {
@@ -57,7 +50,7 @@ const ChartManageGroup = ({ permission, role, groupId }) => {
       { statistic: "Thành viên", desktop: response.countMembers },
       { statistic: "Bài viết", desktop: response.countPosts },
       { statistic: "Bình luận", desktop: response.countComments },
-      { statistic: "Lượt xem", desktop: response.countLikes },
+      { statistic: "Lượt thích", desktop: response.countLikes },
     ]);
   }, [response]);
 

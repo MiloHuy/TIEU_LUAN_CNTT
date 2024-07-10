@@ -55,15 +55,6 @@ const FormSelectPostOrStory = ({
               <VideoIcon height="25" width="25" />
             </div>
           </Button>
-
-          <Button
-            className={`${classBaseButton}`}
-            variant="press"
-            onClick={() => handleNextForm()}
-          >
-            <p className={`${classBaseParagraph} text-[20px]`}>Tin</p>
-            <Camera strokeWidth={0.75} />
-          </Button>
         </div>
       </div>
     </div>
