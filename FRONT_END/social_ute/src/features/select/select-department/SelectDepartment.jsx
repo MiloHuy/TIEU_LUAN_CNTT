@@ -1,52 +1,65 @@
 import clsx from "clsx";
 import LoadingComponent from "combine/loading-component";
 import {
-  Select, SelectContent,
+  Select,
+  SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "components/select";
 import { TYPELOADING } from "constants/type.const";
 
-const SelectDepartment = ({ departments, handleChange, className, isLoading }) => {
+const SelectDepartment = ({
+  departments,
+  handleChange,
+  className,
+  isLoading,
+}) => {
   const handleChangeSelect = (e) => {
     handleChange((prev) => ({
       ...prev,
-      department: e
-    }))
-  }
+      department: e,
+    }));
+  };
 
   return (
-    <Select onValueChange={handleChangeSelect} id='department' name='department'>
-      <SelectTrigger className={clsx('w-full h-full', className)}>
+    <Select
+      onValueChange={handleChangeSelect}
+      id="department"
+      name="department"
+    >
+      <SelectTrigger className={clsx("w-full h-[70px]", className)}>
         <SelectValue placeholder="Chọn phòng ban/khoa" />
       </SelectTrigger>
-      <SelectContent className='font-quick_sans text-md'>
+      <SelectContent className="font-quick_sans text-md">
         <SelectGroup>
-          {
-            isLoading ?
-              <LoadingComponent type={TYPELOADING.TITLE} title='Đang lấy dữ liệu' condition={!isLoading}>
-                {
-                  departments && departments.map((department, i) => {
-                    return (
-                      <SelectItem
-                        key={i}
-                        className='gap-1 border-b border-black'
-                        value={department.name}>
-                        <p>{department.name}</p>
-                      </SelectItem>
-                    )
-                  })
-                }
-              </LoadingComponent>
-              :
-              <p>Vui lòng chọn vai trò của bạn.</p>
-          }
+          {isLoading ? (
+            <LoadingComponent
+              type={TYPELOADING.TITLE}
+              title="Đang lấy dữ liệu"
+              condition={!isLoading}
+            >
+              {departments &&
+                departments.map((department, i) => {
+                  return (
+                    <SelectItem
+                      key={i}
+                      className="gap-1 border-b border-black"
+                      value={department.name}
+                    >
+                      <p>{department.name}</p>
+                    </SelectItem>
+                  );
+                })}
+            </LoadingComponent>
+          ) : (
+            <p>Vui lòng chọn vai trò của bạn.</p>
+          )}
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
-}
+  );
+};
 
-export default SelectDepartment
+export default SelectDepartment;

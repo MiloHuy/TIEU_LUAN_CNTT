@@ -1,14 +1,13 @@
 import { Tab, Tabs } from "@nextui-org/react";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
-import ListPostUserDetail from "features/list/list-post-user-detail";
 import ListPostUserHome from "features/list/list-posts-user-home/ListPostUserHome";
 import HeaderHome from "layout/header-home";
 import { Grid3X3 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getAllPostsGuest, getUserInfo, statistics } from "services/user.svc";
+import { getUserInfo, statistics } from "services/user.svc";
 import { errorHandler } from "utils/error-response.utils";
 import { getFullName } from "utils/user.utils";
 
@@ -16,7 +15,6 @@ const HomeGuests = () => {
   const [userStatisics, setUserStatisics] = useState();
   const [userInfo, setUserInfo] = useState();
   const [selected, setSelected] = useState("posts");
-  const [posts, setPosts] = useState();
   const { guestId } = useParams();
   const dispatch = useDispatch();
   const userName = getFullName(
@@ -26,6 +24,7 @@ const HomeGuests = () => {
 
   const fetchUserStatisics = useCallback(async () => {
     try {
+      if (!guestId) return;
       const data_statistics = await statistics(guestId);
       setUserStatisics(data_statistics);
     } catch (error) {
@@ -35,6 +34,7 @@ const HomeGuests = () => {
 
   const fetchUserInfo = useCallback(async () => {
     try {
+      if (!guestId) return;
       const data_info = await getUserInfo(guestId);
       setUserInfo(data_info);
       dispatch(data_info.data);
@@ -44,10 +44,11 @@ const HomeGuests = () => {
   }, [guestId, dispatch]);
 
   useEffect(() => {
+    if (!guestId) return;
     fetchUserStatisics();
 
     fetchUserInfo();
-  }, [fetchUserStatisics, fetchUserInfo]);
+  }, [fetchUserStatisics, fetchUserInfo, guestId]);
 
   return (
     <LoadingComponent type={TYPELOADING.PROPAGATE} condition={userStatisics}>

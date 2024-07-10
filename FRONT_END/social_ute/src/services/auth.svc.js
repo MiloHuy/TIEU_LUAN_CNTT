@@ -22,7 +22,7 @@ export const login = async (payload) => {
 };
 
 export const getDepartments = async (payload) => {
-  const res = await AxiosInstance.get(
+  const res = await AxiosInstance.post(
     API_AUTH_ENDPOINT.GET.department,
     payload,
   );

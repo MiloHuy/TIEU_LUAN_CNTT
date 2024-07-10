@@ -8,7 +8,6 @@ import Register from "pages/authen/Register";
 import Authentication from "pages/role-base-router/authentication";
 import Authorization from "pages/role-base-router/authorization";
 import Welcome from "pages/welcome";
-import { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { adminRoutes, mainRoutes, userRoutes } from "router";
 import "./App.css";
