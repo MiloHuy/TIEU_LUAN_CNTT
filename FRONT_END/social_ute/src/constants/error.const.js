@@ -39,6 +39,16 @@ export const ERROR_FORGOT_PASSWORD = [
     label: "Vui lòng kiểm tra lại số điện thoại.",
   },
   {
+    type: "ERR_OTP_1",
+    code: 1011,
+    label: "OTP không đúng.",
+},
+    {
+        type: "ERR_OTP",
+        code: 1012,
+        label: "OTP hết hạn.",
+    },
+  {
     type: "ERR_MAIL",
     code: 1004,
     label: "Vui lòng kiểm tra lại email.",

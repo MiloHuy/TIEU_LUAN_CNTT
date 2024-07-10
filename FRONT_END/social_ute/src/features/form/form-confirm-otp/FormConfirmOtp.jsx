@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 import { toast } from 'react-toastify'
 import { verifyOtp } from "services/auth.svc"
 import { checkCodeInArray } from "utils/code-error.utils"
+import { errorHandler } from "utils/error-response.utils"
 
 const FormConfirmOtp = ({ title, formValues, className, stepForm, handleNextForm, setFormValues }) => {
   const [countDown, setCountDown] = useState(timeCountDown.otp)
@@ -50,32 +51,7 @@ const FormConfirmOtp = ({ title, formValues, className, stepForm, handleNextForm
     }
     catch (err) {
       setIsloading(false)
-      if (err && err.response && err.response.code) {
-        const { code } = err.response.data
-        const messageError = checkCodeInArray(ERROR_FORGOT_PASSWORD, code)
-        toast.error(messageError, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-      else {
-        toast.error(ERROR_SYSTEM, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
+      errorHandler(err,ERROR_FORGOT_PASSWORD)
     }
   }
 

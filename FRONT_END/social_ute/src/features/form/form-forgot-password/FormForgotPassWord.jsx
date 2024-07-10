@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from 'react-toastify';
 import { forgotPassword } from "services/auth.svc";
 import { checkCodeInArray } from "utils/code-error.utils";
+import { errorHandler } from "utils/error-response.utils";
 import { object, string } from 'yup';
 
 const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues, setFormValues }) => {
@@ -73,32 +74,8 @@ const FormForgotPassWord = ({ className, handleNextForm, stepForm, formValues, s
                 ...prev,
                 isLoading: false
             }))
-            if (err && err.response && err.response.code) {
-                const { code } = err.response.data
-                const messageError = checkCodeInArray(ERROR_FORGOT_PASSWORD, code)
-                toast.error(messageError, {
-                    position: "bottom-right",
-                    autoClose: 1000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
-            else {
-                toast.error(ERROR_SYSTEM, {
-                    position: "bottom-right",
-                    autoClose: 1000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+
+            errorHandler(err,ERROR_FORGOT_PASSWORD)
         }
     }
 
