@@ -57,7 +57,7 @@ const User = new Schema({
     url: {
       type: String,
       default:
-        "https://nhadepso.com/wp-content/uploads/2023/03/cap-nhat-50-hinh-anh-dai-dien-facebook-mac-dinh-dep-doc-la_17.jpg",
+        "https://res.cloudinary.com/dkeecnort/image/upload/v1720686574/avatars/cjapgr0v1hhi4eujzyhb.jpg",
     },
   },
   forgot_password: {
