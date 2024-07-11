@@ -7,21 +7,22 @@ import { motion } from "framer-motion";
 import { usePostDetail } from "hook/posts/usePostDetail";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getFullName } from "utils/user.utils";
+import { getFullName, getUserIdFromCookie } from "utils/user.utils";
 import { containerMotion, itemMotion } from "./MotionListPostUser";
 import { useAllPostsHome } from "hook/me/useAllPostsHome";
 
 const ListPostUserDetail = () => {
-  const { posts, fetchMePosts } = useAllPostsHome();
+  const { posts, fetchPostsHome } = useAllPostsHome();
 
   const user = useSelector(selectCurrenUser);
+  const userId = getUserIdFromCookie();
   const fullName = getFullName(user.first_name, user.last_name);
 
   const { postDetail, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
-    fetchMePosts();
-  }, [fetchMePosts]);
+    fetchPostsHome(userId);
+  }, [fetchPostsHome, userId]);
 
   return (
     <LoadingComponent type={TYPELOADING.TITLE} condition={Boolean(posts)}>
