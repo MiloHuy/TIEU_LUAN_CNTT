@@ -5,7 +5,7 @@ import { timeCountDown } from "constants/app.const";
 import { ERROR_FORGOT_PASSWORD } from "constants/error.const";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "services/auth.svc";
+import { register, verifyOtp } from "services/auth.svc";
 import { errorHandler } from "utils/error-response.utils";
 
 const FormConfirmOtp = ({
@@ -15,6 +15,7 @@ const FormConfirmOtp = ({
   stepForm,
   handleNextForm,
   setFormValues,
+  isRegister,
 }) => {
   const [countDown, setCountDown] = useState(timeCountDown.otp);
   const [isLoading, setIsloading] = useState(false);
@@ -41,22 +42,40 @@ const FormConfirmOtp = ({
   const handleVerifyOtp = async () => {
     try {
       setIsloading(true);
-      const res = await register({
-        ...formValues,
-        otp: otpValue,
-      });
-      setIsloading(false);
+      if (isRegister) {
+        const res = await register({
+          ...formValues,
+          otp: otpValue,
+        });
+        setIsloading(false);
 
-      if (res.data.success === true) {
-        handleNextForm && handleNextForm();
+        if (res.data.success === true) {
+          handleNextForm && handleNextForm();
 
-        if (setFormValues)
-          setFormValues((prev) => ({
-            ...prev,
-            resetPassWordToken: res.data.resetPasswordToken,
-          }));
+          if (setFormValues)
+            setFormValues((prev) => ({
+              ...prev,
+              resetPassWordToken: res.data.resetPasswordToken,
+            }));
 
-        navigate("/login");
+          navigate("/login");
+        }
+      } else {
+        const res = await verifyOtp({
+          ...formValues,
+          otp: otpValue,
+        });
+        setIsloading(false);
+
+        if (res.data.success === true) {
+          handleNextForm && handleNextForm();
+
+          if (setFormValues)
+            setFormValues((prev) => ({
+              ...prev,
+              resetPassWordToken: res.data.resetPasswordToken,
+            }));
+        }
       }
     } catch (err) {
       setIsloading(false);

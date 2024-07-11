@@ -39,7 +39,7 @@ const HomeGuests = () => {
       setUserInfo(data_info);
       dispatch(data_info.data);
     } catch (error) {
-      errorHandler(error);
+      console.log("Error: ", error);
     }
   }, [guestId, dispatch]);
 

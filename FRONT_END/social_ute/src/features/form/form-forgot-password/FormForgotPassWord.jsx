@@ -68,23 +68,23 @@ const FormForgotPassWord = ({
 
   const handleSubitFormForgotPassWord = async () => {
     try {
-      //   setCheckLoadOrDisable((prev) => ({
-      //     ...prev,
-      //     isLoading: true,
-      //   }));
-      //   const res = await forgotPassword(values);
-      //   setCheckLoadOrDisable((prev) => ({
-      //     ...prev,
-      //     isLoading: false,
-      //   }));
+      setCheckLoadOrDisable((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
+      const res = await forgotPassword(values);
+      setCheckLoadOrDisable((prev) => ({
+        ...prev,
+        isLoading: false,
+      }));
 
-      //   if (res.data.success === true) {
-      //     setFormValues({
-      //       phone_number: values.phone_number,
-      //       gmail: values.gmail,
-      //     });
-      //     handleNextForm && handleNextForm();
-      //   }
+      if (res.data.success === true) {
+        setFormValues({
+          phone_number: values.phone_number,
+          gmail: values.gmail,
+        });
+        handleNextForm && handleNextForm();
+      }
       handleNextForm && handleNextForm();
     } catch (err) {
       setCheckLoadOrDisable((prev) => ({

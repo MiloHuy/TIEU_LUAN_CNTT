@@ -62,6 +62,13 @@ const SidebarManageGroup = () => {
   return (
     <LoadingComponent type={TYPELOADING.NULL} condition={Boolean(permission)}>
       <Accordion type="multiple">{renderItemAccordion}</Accordion>
+      <Button
+        variant="secondary"
+        className="text-lg font-quick_sans flex w-full justify-start bg-white px-2 border-b"
+        onClick={() => navigate(`/welcome/groupDetails/${groupId}`)}
+      >
+        Quay về
+      </Button>
     </LoadingComponent>
   );
 };

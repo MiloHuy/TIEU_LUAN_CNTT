@@ -29,10 +29,10 @@ const ModalPostUserV2 = ({
     postId: postDetail?._id,
   });
 
-  const handlePostCommnentInput = (commentInput) => {
+  const handlePostCommnentInput = async (commentInput) => {
     if (!commentInput) return;
 
-    handlePostComment(commentInput);
+    await handlePostComment(commentInput);
   };
 
   return (
@@ -87,6 +87,7 @@ const ModalPostUserV2 = ({
                         imgAvatar={postDetail.user_id.avatar.url}
                         fullName={userName}
                         postDescription={postDetail.post_description}
+                        createdAt={postDetail.create_post_time}
                       />
 
                       <ListCommentUser
@@ -99,6 +100,7 @@ const ModalPostUserV2 = ({
                       <div className="grid gap-1">
                         <InputPush
                           isLoading={isLoading}
+                          post_id={postDetail._id}
                           onSubmit={handlePostCommnentInput}
                           className={clsx(
                             "px-1",

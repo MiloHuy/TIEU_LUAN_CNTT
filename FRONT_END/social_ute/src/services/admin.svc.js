@@ -48,6 +48,7 @@ export const getStatisticsUser = async (payload) => {
 };
 
 export const getAllPosts = async (payload) => {
+  console.log('payload', payload);
   const res = AxiosInstance.get(API_ADMIN_ENDPOINT.GET.all_posts, {
     params: payload,
   });

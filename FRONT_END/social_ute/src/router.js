@@ -26,6 +26,7 @@ import ManagePostsGroup from "pages/group/manage-posts/ManagePostsGroup";
 import ManageApprovePost from "pages/group/manage-approve-post";
 import ManagePostsReport from "pages/group/manage-posts-report";
 import ManageStatisticGroup from "pages/group/manage-statistic-group";
+import ManageRegulation from "pages/group/manage-edit-regulation/ManageRegulation";
 
 export const mainRoutes = [
   { path: "/home", element: <Home /> },
@@ -42,6 +43,7 @@ export const groupChildRoutes = [
   { path : 'manageGroup/allPostWaitApprove/:groupId', element: <ManageApprovePost/>},
   { path : 'manageGroup/allReportPosts/:groupId', element: <ManagePostsReport/>},
   { path : 'manageGroup/statistic/:groupId', element: <ManageStatisticGroup/>},
+  { path : 'manageGroup/editContent/:groupId', element: <ManageRegulation/>},
 ];
 
 export const userRoutes = [
@@ -64,7 +66,7 @@ export const adminRoutes = [
     path: "statistics",
     element: <StatisticLayout />,
     children: [
-      { element: <StatisticalSystems /> },
+      { path : '',element: <StatisticalSystems /> },
       { path: "month", element: <StatisticalMonth /> },
       { path: "month-details", element: <StatiscalMonthDetails /> },
     ],

@@ -32,6 +32,7 @@ const Register = () => {
       title="Đăng ký"
       stepForm={stepForm}
       formValues={dataForm}
+      isRegister={true}
     />,
   ];
 

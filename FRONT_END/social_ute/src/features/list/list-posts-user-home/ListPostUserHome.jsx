@@ -3,8 +3,7 @@ import ArrayEmpty from "combine/array-empty";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import { usePostDetail } from "hook/posts/usePostDetail";
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useMemo } from "react";
 import { getFullName } from "utils/user.utils";
 import { motion } from "framer-motion";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
@@ -18,10 +17,13 @@ import { useAllPostsHome } from "hook/me/useAllPostsHome";
 const ListPostUserHome = ({ userId, className }) => {
   const { posts, fetchPostsHome } = useAllPostsHome();
 
-  const user = useSelector(selectCurrenUser);
-  const fullName = getFullName(user.first_name, user.last_name);
+  // const user = useSelector(selectCurrenUser);
+  const fullName = useMemo(
+    () => getFullName(posts?.user_id?.first_name, posts?.user_id?.last_name),
+    [posts]
+  );
 
-  const { postDetail, fetchPostDetails } = usePostDetail();
+  const { postData, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
     fetchPostsHome(userId);
@@ -53,7 +55,7 @@ const ListPostUserHome = ({ userId, className }) => {
                       variants={itemMotion}
                     />
                   }
-                  postDetail={postDetail}
+                  postDetail={postData}
                   userName={fullName}
                 />
               </div>
