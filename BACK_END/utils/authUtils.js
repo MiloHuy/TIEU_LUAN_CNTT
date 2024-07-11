@@ -8,7 +8,7 @@ exports.generateOTP = function(length) {
   ).join('');
 }
 
-exports.sendVerificationEmail = async function(options){
+exports.sendVerificationMailTrap = async function(options){
   const transport = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
@@ -28,7 +28,7 @@ exports.sendVerificationEmail = async function(options){
   await transport.sendMail(message);
 }
 
-exports.sendVerificationEmail1 = async function(options){
+exports.sendVerificationMail = async function(options){
     const transporter = nodemailer.createTransport({
         service:'gmail',
         host: "smtp.ethereal.email",

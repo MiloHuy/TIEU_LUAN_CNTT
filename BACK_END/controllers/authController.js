@@ -11,7 +11,7 @@ const {
     getNextRefreshToken,
 } = require("../utils/tokenUtils.js");
 
-const { sendVerificationEmail, sendVerificationEmail1 } = require("../utils/authUtils.js");
+const { sendVerificationMailTrap, sendVerificationMail } = require("../utils/authUtils.js");
 const { generateOTP } = require("../utils/authUtils.js");
 const Register_otp = require("../models/Register_otp.js");
 const Faculty = require("../models/Faculty");
@@ -234,7 +234,7 @@ exports.forgotPassword = async (req, res) => {
     const message = `Mã OTP của bạn là: <span style='font-weight: bold; color: blue; font-size: large'>${otp}</span> có hiệu lực trong 90 giây<br /><strong>Nếu bạn không yêu cầu đặt lại mật khẩu thì hãy bỏ qua</strong>`;
 
     try {
-        await sendVerificationEmail({
+        await sendVerificationMail({
             gmail: user.gmail,
             subject: "Khôi phục mật khẩu Mạng Xã Hội",
             message,
@@ -375,7 +375,7 @@ exports.sendRegisterOtp = async (req, res) => {
     const message = `Mã OTP của bạn là: <span style='font-weight: bold; color: blue; font-size: large'>${otp}</span> có hiệu lực trong 90 giây<br />`;
 
     try {
-        await sendVerificationEmail({
+        await sendVerificationMail({
             gmail: gmail,
             subject: "Đăng ký tài khoản",
             message,
