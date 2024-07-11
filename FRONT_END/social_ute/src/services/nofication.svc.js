@@ -14,7 +14,7 @@ export const getAllNofications = () => {
   return res;
 };
 
-export const readNofications = () => {
-  const res = AxiosInstance.post(API_NOFICATIONS_ENDPOINT.POST.read_nofication);
+export const readNofications = (notiId) => {
+  const res = AxiosInstance.post(API_NOFICATIONS_ENDPOINT.POST.read_nofication.replace(":id", notiId));
   return res;
 };
