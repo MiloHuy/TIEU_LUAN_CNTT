@@ -176,12 +176,12 @@ exports.create = async (req, res) => {
                 { new: true, upsert: true }
             );
 
+            const userId = post.user_id._id
             NotificationSocket.sendNotification({
                 content: content,
                 post_id: post._id,
             },userId);
         }
-
         res.status(201).json({
             success: true,
             message: "Comment thành công.",
