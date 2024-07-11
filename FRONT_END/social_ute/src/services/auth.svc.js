@@ -7,6 +7,7 @@ export const API_AUTH_ENDPOINT = {
   POST: {
     login: "auth/login",
     register: "auth/register",
+    send_otp_register: "auth/register/send-otp",
     refresh_token: "/auth/refresh-token",
     logout: "auth/logout",
     forgot_password: "auth/forgot-password",
@@ -36,6 +37,14 @@ export const register = async (payload) => {
   );
   return res;
 };
+
+export const sendOtpRegister = async (payload) => {
+  const res = await AxiosInstance.post(
+    API_AUTH_ENDPOINT.POST.send_otp_register,
+    payload,
+  );
+  return res;
+}
 
 export const forgotPassword = async (payload) => {
   const res = await AxiosInstance.post(

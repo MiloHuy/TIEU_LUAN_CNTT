@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 const Register = () => {
   const [stepForm, handeStepForm] = useState(0);
+  const [dataForm, setDataForm] = useState();
 
   const handleNextForm = () => {
     if (stepForm <= 1) handeStepForm(stepForm + 1);
@@ -22,8 +23,16 @@ const Register = () => {
   }, [stepForm]);
 
   const multipleForm = [
-    <FormRegister stepForm={stepForm} handleNextForm={handleNextForm} />,
-    <FormConfirmOtp title="Đăng ký" stepForm={stepForm} />,
+    <FormRegister
+      stepForm={stepForm}
+      handleNextForm={handleNextForm}
+      handleChange={setDataForm}
+    />,
+    <FormConfirmOtp
+      title="Đăng ký"
+      stepForm={stepForm}
+      formValues={dataForm}
+    />,
   ];
 
   return (

@@ -9,14 +9,19 @@ import { useEffect, useMemo, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { genformRegisterSchema } from "./schema";
 import { genLabelFormRegister, genOptionsPrivacyPost } from "./utils";
-import { register } from "services/auth.svc";
+import { register, sendOtpRegister } from "services/auth.svc";
 import { errorHandler } from "utils/error-response.utils";
 import { useNavigate } from "react-router-dom";
 
 const clsBaseInput =
   "w-full text-lg  bg-white/90 h-[50px] border border-black/50";
 
-const FormRegister = ({ className, handleNextForm, stepForm }) => {
+const FormRegister = ({
+  className,
+  handleNextForm,
+  stepForm,
+  handleChange,
+}) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const { departments, isLoading, handleFetchDepartment } =
     useSelectDepartement();
@@ -66,8 +71,9 @@ const FormRegister = ({ className, handleNextForm, stepForm }) => {
         department: formRegister.department,
         role: formRegister.role,
       };
-      // console.log("dataSubmit", dataSubmit);
-      // await register(dataSubmit);
+
+      handleChange && handleChange(dataSubmit);
+      await sendOtpRegister(dataSubmit);
 
       handleNextForm && handleNextForm();
     } catch (err) {
