@@ -4,7 +4,8 @@ import Input from "components/input";
 import { timeCountDown } from "constants/app.const";
 import { ERROR_FORGOT_PASSWORD } from "constants/error.const";
 import { useEffect, useMemo, useState } from "react";
-import { verifyOtp } from "services/auth.svc";
+import { useNavigate } from "react-router-dom";
+import { register } from "services/auth.svc";
 import { errorHandler } from "utils/error-response.utils";
 
 const FormConfirmOtp = ({
@@ -18,6 +19,7 @@ const FormConfirmOtp = ({
   const [countDown, setCountDown] = useState(timeCountDown.otp);
   const [isLoading, setIsloading] = useState(false);
   const [otpValue, setOtp] = useState();
+  const navigate = useNavigate();
 
   const handleChangeInput = (e) => {
     setOtp(e.target.value);
@@ -39,7 +41,7 @@ const FormConfirmOtp = ({
   const handleVerifyOtp = async () => {
     try {
       setIsloading(true);
-      const res = await verifyOtp({
+      const res = await register({
         ...formValues,
         otp: otpValue,
       });
@@ -53,6 +55,8 @@ const FormConfirmOtp = ({
             ...prev,
             resetPassWordToken: res.data.resetPasswordToken,
           }));
+
+        navigate("/login");
       }
     } catch (err) {
       setIsloading(false);

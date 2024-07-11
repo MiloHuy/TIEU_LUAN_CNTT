@@ -57,7 +57,7 @@ export const userRoutes = [
 ];
 
 export const adminRoutes = [
-  { path: "manage", element: <Admin /> },
+  { path: "", element: <Admin /> },
   { path: "accounts", element: <ManageAccount /> },
   { path: "posts", element: <ManagePosts /> },
   {

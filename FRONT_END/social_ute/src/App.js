@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { adminRoutes, mainRoutes, userRoutes } from "router";
 import "./App.css";
 import Main from "./pages/main";
+import Manage from "pages/manage/Manage";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +50,13 @@ const router = createBrowserRouter([
           },
           {
             element: <Authorization roles={ROLECHECK.role_admin} />,
-            children: adminRoutes,
+            children:[ 
+            {
+              path: "manage",
+              element: <Manage/>,
+              children: adminRoutes
+            }
+          ],
           },
         ],
       },
