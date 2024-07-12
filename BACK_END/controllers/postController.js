@@ -937,7 +937,7 @@ exports.changePrivacy = async (req, res) => {
 exports.adminGetAll = async (req, res) => {
     try {
         const { size } = req.query;
-        const posts = Post.find().select("-post_img.publicId").sort({ create_post_time: -1 });
+        const posts = Post.find().select("-post_img.publicId").populate("user_id", "first_name last_name avatar.url").sort({ create_post_time: -1 });
 
         const apiFeatures = new PostAPIFeatures(posts, req.query);
 
