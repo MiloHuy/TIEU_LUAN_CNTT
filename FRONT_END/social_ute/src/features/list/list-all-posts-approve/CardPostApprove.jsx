@@ -1,16 +1,12 @@
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
 import { Button } from "components/button";
 import CaroselVersion2 from "components/carousel/Carosel-V2";
-import { EMessGroup } from "constants/group/enum";
 import { PostType } from "constants/post.const";
-import { useDeletePostGroup } from "hook/group/useDeletePostGroup";
 import { useApprovePost } from "hook/manage-group/useApprovePost";
 import { useDeletePostManage } from "hook/manage-group/useDeletePostManage";
 import HeaderPostUser from "layout/header-post-user";
 import { CircleCheck, CircleX } from "lucide-react";
 import React from "react";
-import { toast } from "react-toastify";
-import { checkPermissionMethod } from "utils/auth.utils";
 import { formatDate } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 

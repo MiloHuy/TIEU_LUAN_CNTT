@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { renderButtonsSidebarUser } from "./utils";
-import SheetListNoti from "features/sheet/sheet-list-noti";
 
 const SidebarButton = ({
   className,

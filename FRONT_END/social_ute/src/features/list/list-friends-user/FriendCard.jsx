@@ -4,27 +4,39 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "components/dropdown";
 import ModalConfirm from "features/modal/modal-confirm";
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { getFullName } from "utils/user.utils";
 
-const FriendCard = ({ friend, isLoading, handleUnFriend, contentsDropDown, ...props }) => {
+const FriendCard = ({
+  friend,
+  isLoading,
+  handleUnFriend,
+  contentsDropDown,
+  ...props
+}) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex justify-center text-sm text-black dark:text-white" {...props}>
+    <div
+      className="flex justify-center text-sm text-black dark:text-white"
+      {...props}
+    >
       <CardBaseLayout
         align="vertical"
         className="w-[400px] items-center justify-between gap-4"
+        onClick={() => navigate(`/welcome/home-guest/${friend.id}`)}
         header={
           <img
             src={friend.avatar.url}
-            className='w-20 h-20 rounded-full object-cover'
-            loading='lazy'
-            alt='img'
+            className="w-20 h-20 rounded-full object-cover"
+            loading="lazy"
+            alt="img"
           />
         }
-
         body={
           <div className="flex flex-col gap-2 h-full justify-center items-start cursor-pointer w-full">
             <p>{getFullName(friend.first_name, friend.last_name)}</p>
@@ -32,51 +44,50 @@ const FriendCard = ({ friend, isLoading, handleUnFriend, contentsDropDown, ...pr
             <p className="uppercase">{friend.department}</p>
           </div>
         }
-
         footer={
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button
-                className='w-[20px]'
-                variant="light"
-              >
+              <Button className="w-[20px]" variant="light">
                 <MoreHorizontal size={28} strokeWidth={0.75} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <ModalConfirm
                 trigger={
-                  <DropdownMenuItem className='flex gap-2' onSelect={(e) => e.preventDefault()}>
-                    <p className='text-md font-quick_sans font-bold gap-2'>
+                  <DropdownMenuItem
+                    className="flex gap-2"
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <p className="text-md font-quick_sans font-bold gap-2">
                       Hủy kết bạn
                     </p>
                   </DropdownMenuItem>
                 }
-                title='Bạn có chắc chắn muốn hủy kết bạn?'
+                title="Bạn có chắc chắn muốn hủy kết bạn?"
                 isLoading={isLoading}
-
                 handleCallback={() => handleUnFriend(friend.id)}
               />
 
-              {contentsDropDown && contentsDropDown.map((content, index) => {
-                return (
-                  <DropdownMenuItem
-                    key={index}
-                    onClick={() => content.method(friend)}
-                    className="text-md font-quick_sans font-bold gap-2"
-                  >
-                    <p className='text-md font-quick_sans font-bold gap-2'>
-                      {content.title}
-                    </p>
-                  </DropdownMenuItem>
-                )
-              })}
+              {contentsDropDown &&
+                contentsDropDown.map((content, index) => {
+                  return (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => content.method(friend)}
+                      className="text-md font-quick_sans font-bold gap-2"
+                    >
+                      <p className="text-md font-quick_sans font-bold gap-2">
+                        {content.title}
+                      </p>
+                    </DropdownMenuItem>
+                  );
+                })}
             </DropdownMenuContent>
           </DropdownMenu>
         }
       />
     </div>
-  )
-}
+  );
+};
 
-export default FriendCard
+export default FriendCard;

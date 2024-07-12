@@ -81,11 +81,13 @@ const HeaderPostUser = ({
             </p>
           ) : null}
 
-          <p className="flex gap-2">
-            {" "}
-            {formatDate(createAt)}{" "}
-            <span className="ml-2"> {renderIconPrivacy}</span>
-          </p>
+          {createAt && (
+            <p className="flex gap-2">
+              {" "}
+              {formatDate(createAt)}{" "}
+              <span className="ml-2"> {renderIconPrivacy}</span>
+            </p>
+          )}
 
           {titleTime ? <p className="text-sm">{titleTime}</p> : null}
         </div>
