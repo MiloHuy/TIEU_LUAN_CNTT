@@ -1,6 +1,7 @@
 import { Spinner } from "@nextui-org/react";
 import ListPostUserDetail from "features/list/list-post-user-detail";
-import { useCallback, useEffect, useRef, useState } from "react";
+import ListPostsAdmin from "features/list/list-posts-admin";
+import { useCallback, useRef, useState } from "react";
 import { getAllPosts } from "services/admin.svc";
 
 const ManagePosts = () => {
@@ -73,16 +74,7 @@ const ManagePosts = () => {
           Danh sách bài viết của người dùng
         </p>
 
-        <ListPostUserDetail posts={postsData} />
-
-        {hasMore && (
-          <div
-            className="flex items-center justify-center h-full"
-            ref={elementRef}
-          >
-            <Spinner color="default" />
-          </div>
-        )}
+        <ListPostsAdmin />
       </div>
     </div>
   );

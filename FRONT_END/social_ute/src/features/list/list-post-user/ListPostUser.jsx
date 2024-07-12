@@ -1,10 +1,8 @@
-import CardPostUser from "features/card/card-post-user"
+import CardPostUser from "features/card/card-post-user";
 
 const ListPostUser = ({ posts }) => {
-
-  return (
-    posts.length !== 0 ?
-      posts.map((post) => {
+  return posts.length !== 0
+    ? posts.map((post) => {
         return (
           <CardPostUser
             postData={{
@@ -17,13 +15,12 @@ const ListPostUser = ({ posts }) => {
               numberLikes: post.likes,
               savedPosts: post.stored,
               privacy: post.privacy,
+              createAt: post.create_post_time,
             }}
           />
-        )
+        );
       })
-      :
-      ''
-  )
-}
+    : "";
+};
 
-export default ListPostUser
+export default ListPostUser;

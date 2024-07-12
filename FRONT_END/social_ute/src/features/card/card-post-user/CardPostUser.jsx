@@ -39,6 +39,7 @@ const CardPostUser = (props) => {
           name={userName}
           privacy={postData.privacy}
           href={navigateHome}
+          createAt={postData.createAt}
           action={
             <DropdownShowMoreOptions
               user_id={postData.userId?._id}

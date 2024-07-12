@@ -8,6 +8,7 @@ import { Earth, LockKeyhole, User } from "lucide-react";
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { formatDate } from "utils/format-date.utils";
 
 const HeaderPostUser = ({
   img,
@@ -17,6 +18,7 @@ const HeaderPostUser = ({
   className,
   privacy,
   dateBetween,
+  createAt,
   titleTime,
 }) => {
   const renderIconPrivacy = useMemo(() => {
@@ -78,6 +80,12 @@ const HeaderPostUser = ({
               <span className="ml-2"> {renderIconPrivacy}</span>
             </p>
           ) : null}
+
+          <p className="flex gap-2">
+            {" "}
+            {formatDate(createAt)}{" "}
+            <span className="ml-2"> {renderIconPrivacy}</span>
+          </p>
 
           {titleTime ? <p className="text-sm">{titleTime}</p> : null}
         </div>

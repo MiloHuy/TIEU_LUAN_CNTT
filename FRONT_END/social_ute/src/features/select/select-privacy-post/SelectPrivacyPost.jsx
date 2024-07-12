@@ -8,6 +8,8 @@ import {
   SelectValue,
 } from "components/select";
 import { Earth, Group, LockKeyhole, User } from "lucide-react";
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 export const PrivacyPost = {
   ALONE: 0,
@@ -56,7 +58,19 @@ const SelectPrivacyPost = ({
   values,
   setFieldValue,
 }) => {
-  const options = genOptionsPrivacyPost();
+  // const options = genOptionsPrivacyPost();
+  const { groupId } = useParams();
+
+  const options = useMemo(() => {
+    if (!groupId) {
+      return genOptionsPrivacyPost().filter(
+        (option) => option.value !== PrivacyPost.GROUP
+      );
+    }
+    return genOptionsPrivacyPost().filter(
+      (option) => option.value === PrivacyPost.GROUP
+    );
+  }, [groupId]);
 
   const handleChangeSelect = (e) => {
     handleChange((prev) => ({
