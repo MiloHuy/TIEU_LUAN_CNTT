@@ -12,7 +12,7 @@ export const useReadNoti = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      errorHandler(error);
+      // errorHandler(error);
     }
   }, []);
 

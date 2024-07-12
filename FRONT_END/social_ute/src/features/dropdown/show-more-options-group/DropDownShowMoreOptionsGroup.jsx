@@ -57,9 +57,9 @@ const DropDownShowMoreOptionsGroup = ({ permission, role }) => {
             </DropdownMenuItem>
           )}
 
-        <DropdownMenuItem className="flex gap-2">
+        {/* <DropdownMenuItem className="flex gap-2">
           <p>Chia sẻ nhóm</p>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

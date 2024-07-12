@@ -16,15 +16,15 @@ export const contentDropdownShowMoreGroup = [
     },
     action: "groupRegulations",
   },
-  {
-    title: "Bài viết của bạn",
-    value: {
-      category: catePermiss.POST,
-      method: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].method,
-      endPoint: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].endPoint,
-    },
-    action: "myPosts",
-  },
+  // {
+  //   title: "Bài viết của bạn",
+  //   value: {
+  //     category: catePermiss.POST,
+  //     method: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].method,
+  //     endPoint: groupPermission[ERoleNameGroup.SUPERADMIN]["myPosts"].endPoint,
+  //   },
+  //   action: "myPosts",
+  // },
   {
     title: "Bài viết chờ duyệt",
     value: {
