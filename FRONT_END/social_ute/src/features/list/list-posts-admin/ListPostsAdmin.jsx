@@ -14,6 +14,7 @@ import {
   containerMotion,
   itemMotion,
 } from "../list-post-user-detail/MotionListPostUser";
+import { formatDate } from "utils/format-date.utils";
 
 const ListPostsAdmin = () => {
   const { posts, elementRef, hasMore, onIntersection } = useAllPostAdmin();
@@ -47,7 +48,7 @@ const ListPostsAdmin = () => {
         >
           {posts?.map((post) => {
             return (
-              <div className="relative w-full h-full group flex justify-center">
+              <div className="relative w-full h-full group flex flex-col items-center justify-center">
                 <ModalPostUserV2
                   trigger={
                     <motion.img
@@ -63,6 +64,16 @@ const ListPostsAdmin = () => {
                   postDetail={postData}
                   userName={userName}
                 />
+                <p className="flex gap-2">
+                  Người đăng bài:{" "}
+                  {getFullName(
+                    post?.user_id?.first_name,
+                    post?.user_id?.last_name
+                  )}
+                </p>
+                <p className="flex gap-2">
+                  Thời gian đăng bài: {formatDate(post.create_post_time)}
+                </p>
               </div>
             );
           })}
