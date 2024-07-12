@@ -1,167 +1,167 @@
 import { Button } from "@nextui-org/react";
 import { useCallback, useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AcceptFriend, RefuseRequest } from "services/user.svc";
 import { getFullName } from "utils/user.utils";
 
 const CardFriendRequest = ({ friends, handleCallback }) => {
-    const navigate = useNavigate()
-    const [arrIsLoadingAccept, setArrIsLoadingAccept] = useState(new Array(friends.requests.length).fill(false))
-    const [arrIsLoadingRefused, setArrIsLoadingRefused] = useState(new Array(friends.requests.length).fill(false))
+  const navigate = useNavigate();
+  const [arrIsLoadingAccept, setArrIsLoadingAccept] = useState(
+    new Array(friends.requests.length).fill(false)
+  );
+  const [arrIsLoadingRefused, setArrIsLoadingRefused] = useState(
+    new Array(friends.requests.length).fill(false)
+  );
 
-    const handleNavigateFriend = (id) => {
-        navigate(`/welcome/home-guest/${id}`)
+  const handleNavigateFriend = (id) => {
+    navigate(`/welcome/home-guest/${id}`);
+  };
+
+  const handleRefreshData = useCallback(() => {
+    handleCallback();
+  }, [handleCallback]);
+
+  const handleAcceptRequest = async (id, index) => {
+    try {
+      const arrClone = [...arrIsLoadingAccept];
+      arrClone[index] = true;
+
+      setArrIsLoadingAccept([...arrClone]);
+
+      await AcceptFriend(id);
+
+      arrClone[index] = false;
+      setArrIsLoadingAccept([...arrClone]);
+
+      toast.success("Chấp nhận kết bạn thành công!!!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      handleRefreshData();
+    } catch (err) {
+      console.log("err:" + err);
+
+      toast.error("Chấp nhận kết bạn thất bại!!!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
+  };
 
-    const handleRefreshData = useCallback(() => {
-        handleCallback();
-    }, [handleCallback])
+  const handleRefusedFriend = async (id, index) => {
+    try {
+      const arrClone = [...arrIsLoadingRefused];
+      arrClone[index] = true;
 
-    const handleAcceptRequest = async (id, index) => {
-        try {
-            const arrClone = [...arrIsLoadingAccept]
-            arrClone[index] = true
+      setArrIsLoadingRefused([...arrClone]);
 
-            setArrIsLoadingAccept([...arrClone])
+      await RefuseRequest(id);
 
-            await AcceptFriend(id)
+      arrClone[index] = false;
+      setArrIsLoadingRefused([...arrClone]);
 
-            arrClone[index] = false
-            setArrIsLoadingAccept([...arrClone])
+      toast.success("Từ chối kết bạn thành công!!!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
 
-            toast.success('Chấp nhận kết bạn thành công!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+      handleRefreshData();
+    } catch (err) {
+      console.log("err :" + err);
 
-            handleRefreshData()
-        }
-        catch (err) {
-            console.log("err:" + err)
-
-            toast.error('Chấp nhận kết bạn thất bại!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
+      toast.error("Từ chối kết bạn thất bạn!!!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
+  };
 
-    const handleRefusedFriend = async (id, index) => {
-        try {
-            const arrClone = [...arrIsLoadingRefused]
-            arrClone[index] = true
+  console.log("arrIsLoadingRefused: " + arrIsLoadingRefused);
 
-            setArrIsLoadingRefused([...arrClone])
+  return friends.requests.length !== 0 ? (
+    friends.requests.map((request, index) => {
+      return (
+        <div className="relative group w-2/3 h-[100px] border-black dark:border-white rounded-[15px] border-1 flex items-center justify-center">
+          <img
+            className="h-full rounded-[15px] p-2"
+            alt="friend"
+            src={request.avatar.url}
+          />
 
-            await RefuseRequest(id)
+          <div className="flex justify-between items-center w-full">
+            <div
+              onClick={() => handleNavigateFriend(request._id)}
+              className="flex flex-col gap-2 h-full justify-center cursor-pointer"
+            >
+              <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
+                {getFullName(request.first_name, request.last_name)}
+              </p>
 
-            arrClone[index] = false
-            setArrIsLoadingRefused([...arrClone])
+              <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
+                {request.department}
+              </p>
+            </div>
 
-            toast.success('Từ chối kết bạn thành công!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            <div className="flex gap-2 p-2">
+              <Button
+                onClick={() => handleAcceptRequest(request._id, index)}
+                isLoading={arrIsLoadingAccept[index]}
+                className="border border-black dark:border-white"
+                variant="ghost"
+                radius="sm"
+              >
+                <p className="text-sm font-quick_sans font-bold gap-2">
+                  Chấp nhận yêu cầu
+                </p>
+              </Button>
 
-            handleRefreshData()
-        }
-        catch (err) {
-            console.log('err :' + err)
+              <Button
+                onClick={() => handleRefusedFriend(request._id, index)}
+                isLoading={arrIsLoadingRefused[index]}
+                className="border border-black dark:border-white"
+                variant="ghost"
+                radius="sm"
+              >
+                <p className="text-sm font-quick_sans font-bold gap-2">
+                  Hủy yêu cầu
+                </p>
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <p className="text-black dark:text-white font-quick_sans text-md text-start">
+      KHÔNG CÓ YÊU CẦU KẾT BẠN
+    </p>
+  );
+};
 
-            toast.error('Từ chối kết bạn thất bạn!!!', {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-    }
-
-    console.log('arrIsLoadingRefused: ' + arrIsLoadingRefused)
-
-    return (
-        friends.requests.length !== 0
-            ?
-            friends.requests.map((request, index) => {
-                return (
-                    <div className="relative group w-2/3 h-[100px] border-black dark:border-white rounded-[15px] border-1 flex items-center justify-center">
-                        <img
-                            className="h-full rounded-[15px] p-2"
-                            alt='friend'
-                            src={request.avatar.url}
-                        />
-
-                        <div className='flex justify-between items-center w-full'>
-                            <div
-                                onClick={() => handleNavigateFriend(request._id)}
-                                className="flex flex-col gap-2 h-full justify-center cursor-pointer">
-                                <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
-                                    {getFullName(request.first_name, request.last_name)}
-                                </p>
-
-                                <p className="text-sm text-black dark:text-white font-quick_sans font-bold">
-                                    {request.department}
-                                </p>
-                            </div>
-
-                            <div className="flex gap-2 p-2">
-                                <Button
-                                    onClick={() => handleAcceptRequest(request._id, index)}
-                                    isLoading={arrIsLoadingAccept[index]}
-                                    className="border border-black dark:border-white"
-                                    variant="ghost"
-                                    radius="sm"
-                                >
-                                    <p className='text-sm font-quick_sans font-bold gap-2'>
-                                        Chấp nhận yêu cầu
-                                    </p>
-                                </Button>
-
-                                <Button
-                                    onClick={() => handleRefusedFriend(request._id, index)}
-                                    isLoading={arrIsLoadingRefused[index]}
-                                    className="border border-black dark:border-white"
-                                    variant="ghost"
-                                    radius="sm"
-                                >
-                                    <p className='text-sm font-quick_sans font-bold gap-2'>
-                                        Hủy yêu cầu
-                                    </p>
-                                </Button>
-                            </div>
-
-                        </div>
-                    </div>
-                )
-            })
-            :
-            <p className='text-black dark:text-white font-quick_sans text-md'>
-                KHÔNG CÓ YÊU CẦU KẾT BẠN
-            </p>
-    )
-}
-
-export default CardFriendRequest
+export default CardFriendRequest;

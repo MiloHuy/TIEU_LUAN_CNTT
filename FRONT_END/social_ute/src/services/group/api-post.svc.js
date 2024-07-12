@@ -71,3 +71,13 @@ export const approvePostGroup = async (url, groupId, postId) => {
   const res = AxiosInstance.post(url.replace(":gr_id", groupId).replace(":post_id", postId));
   return res;
 }
+
+export const acceptInviteGroup = async (groupId) => {
+  const res = AxiosInstance.post(API_GROUP_ENDPOINT.POST.acceptInviteGroup.replace(":gr_id", groupId));
+  return res;
+}
+
+export const rejectInviteGroup = async (groupId) => {
+  const res = AxiosInstance.post(API_GROUP_ENDPOINT.POST.rejectInviteGroup.replace(":gr_id", groupId));
+  return res;
+}

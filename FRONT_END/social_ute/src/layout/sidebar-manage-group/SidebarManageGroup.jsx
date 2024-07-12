@@ -64,7 +64,7 @@ const SidebarManageGroup = () => {
       <Accordion type="multiple">{renderItemAccordion}</Accordion>
       <Button
         variant="secondary"
-        className="text-lg font-quick_sans flex w-full justify-start bg-white px-2 border-b"
+        className="text-lg font-quick_sans flex w-full justify-start bg-white px-2 border-b dark:text-white dark:bg-black"
         onClick={() => navigate(`/welcome/groupDetails/${groupId}`)}
       >
         Quay về

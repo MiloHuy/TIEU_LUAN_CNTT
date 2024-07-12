@@ -21,7 +21,7 @@ export const useGetAllRegulations = () => {
         const url = permission[category][method][endPoint];
 
         const res = await getAllRegulations(url, groupId);
-        setResData(res.data.regulation);
+        setResData(res.data);
 
         setIsLoading(true);
       } catch (error) {
@@ -34,7 +34,7 @@ export const useGetAllRegulations = () => {
 
   return {
     isLoading,
-    resData,
+    ...resData,
 
     fetchAllRegulations,
   };

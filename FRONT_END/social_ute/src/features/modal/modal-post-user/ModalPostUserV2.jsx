@@ -24,6 +24,7 @@ const ModalPostUserV2 = ({
   groupId = null,
   permission = null,
   role = null,
+  privacy,
 }) => {
   const { isLoading, handlePostComment } = usePushComment({
     postId: postDetail?._id,
@@ -59,7 +60,7 @@ const ModalPostUserV2 = ({
                 />
               </ResizablePanel>
 
-              <ResizableHandle className="border border-black/30" />
+              <ResizableHandle className="border border-gray-400" />
 
               <ResizablePanel defaultSize={50}>
                 <ResizablePanelGroup direction="vertical">
@@ -70,20 +71,22 @@ const ModalPostUserV2 = ({
                         img={postDetail.user_id.avatar.url}
                         name={userName}
                         createAt={postDetail.create_post_time}
+                        privacy={privacy}
                         action={
                           <DropdownShowMoreOptions
                             user_id={postDetail.user_id._id}
                             post_id={postDetail._id}
+                            privacy={privacy}
                           />
                         }
                       />
                     </div>
                   </ResizablePanel>
 
-                  <ResizableHandle className="border border-black/30" />
+                  <ResizableHandle className="border border-gray-400" />
 
                   <ResizablePanel defaultSize={85}>
-                    <div className="flex flex-col justify-between gap-2 h-full w-full p-4">
+                    <div className="flex flex-col justify-between h-full w-full p-4">
                       <FieldAvatarNameTimeDes
                         imgAvatar={postDetail.user_id.avatar.url}
                         fullName={userName}

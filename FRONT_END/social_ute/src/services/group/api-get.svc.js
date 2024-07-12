@@ -91,3 +91,7 @@ export const getStatisticLikeGroup = async (url, groupId) => {
   return res;
 }
 
+export const getAllInviteGroup = async ()=>{
+  const res  = AxiosInstance.get(API_GROUP_ENDPOINT.GET.allInviteGroup);
+  return res
+}

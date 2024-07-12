@@ -28,13 +28,13 @@ const FriendCard = ({
       <CardBaseLayout
         align="vertical"
         className="w-[400px] items-center justify-between gap-4"
-        onClick={() => navigate(`/welcome/home-guest/${friend.id}`)}
         header={
           <img
             src={friend.avatar.url}
             className="w-20 h-20 rounded-full object-cover"
             loading="lazy"
             alt="img"
+            onClick={() => navigate(`/welcome/home-guest/${friend.id}`)}
           />
         }
         body={

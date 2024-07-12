@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { inviteMember } from "services/group/api-post.svc";
+import { toast } from "sonner";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useInviteMember = () => {
@@ -11,6 +12,7 @@ export const useInviteMember = () => {
 
       await inviteMember(url, groupId, userId);
       setIsLoading(false);
+      toast.success("Mời thành công");
     } catch (error) {
       setIsLoading(false);
       console.error(error);

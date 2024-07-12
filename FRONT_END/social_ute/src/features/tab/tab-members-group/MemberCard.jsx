@@ -1,6 +1,5 @@
 import { selectRolePermission } from "app/slice/group/group.slice";
 import CardBaseLayout from "combine/card-base/CardBaseLayout";
-import { groupPermission } from "constants/group/permission.const";
 import DropDownDeleteMember from "features/dropdown/dropdown-delete-member/DropDownDeleteMember";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";

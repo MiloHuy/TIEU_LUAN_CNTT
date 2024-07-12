@@ -42,7 +42,7 @@ const SheetListNoti = ({ trigger }) => {
           type={TYPELOADING.TITLE}
           condition={Boolean(allNotis)}
         >
-          <div className="flex flex-col gap-4 w-full h-full overflow-auto">
+          <div className="flex flex-col gap-4 w-full h-full overflow-auto no-scrollbar">
             {allNotis?.map((noti, index) => {
               return <CardNotis key={index} items={noti} />;
             })}

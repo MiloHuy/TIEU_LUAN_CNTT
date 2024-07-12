@@ -1,4 +1,3 @@
-import ca from "dayjs/locale/ca";
 
 const { ERoleNameGroup } = require("./enum");
 

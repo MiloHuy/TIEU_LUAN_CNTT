@@ -20,4 +20,5 @@ export const EMessGroup = {
   DONT_HAVE_PERMISSION: "Bạn không có quyền thực hiện chức năng này",
   NO_GROUP: "Chưa có nhóm nào",
   LEAVE_GROUP_SUCCESS: "Rời nhóm thành công",
+  DELETE_MEMBER_SUCCESS: "Xóa thành viên thành công",
 };

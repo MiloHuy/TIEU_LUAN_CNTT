@@ -35,7 +35,7 @@ const ModalChangePrivacy = ({
 
       <DialogContent
         className={clsx(
-          "min-w-[20vw] w-[60vw] min-h-[35vh] h-[60vh] p-2 grid gap-2 items-center uppercase",
+          "min-w-[20vw] w-[60vw] h-[400px] p-2 grid gap-2 items-center uppercase",
           "font-bold text-lg font-quick_sans",
           className
         )}

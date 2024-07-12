@@ -4,7 +4,7 @@ import { ShareIcon } from "components/icon/bonus.icon";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
 import { useActionsPostGroup } from "hook/group/useActionsPostGroup";
 import { usePostDetailGroup } from "hook/group/usePostDetailGroup";
-import { Bookmark, Heart, MessageCircle } from "lucide-react";
+import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import cn from "utils/cn.utils";
@@ -79,7 +79,7 @@ const Footer = ({
           )}
 
           <Button className="w-[20px]" variant="ghost">
-            <ShareIcon height={18} width={18} />
+            <Send size={20} strokeWidth={1.5} />
           </Button>
         </div>
 

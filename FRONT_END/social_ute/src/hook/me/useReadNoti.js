@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { readNofications } from "services/nofication.svc";
-import { errorHandler } from "utils/error-response.utils";
 
 export const useReadNoti = () => {
   const [isLoading,setIsLoading] = useState(false);

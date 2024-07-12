@@ -6,9 +6,12 @@ export const API_GROUP_ENDPOINT = {
     allGroup: "/group/:role",
     rolePermission: "/group/:groupId/get-role-permission",
     infoGroup: "/group/:gr_id/info",
+    allInviteGroup: "/group/invitations",
   },
   POST: {
     createGroup: "/group/create",
+    acceptInviteGroup: "/group/invitation/accept/:gr_id",
+    rejectInviteGroup: "/group/invitation/refuse/:gr_id",
   },
   PUT: {},
   DELETE: {},

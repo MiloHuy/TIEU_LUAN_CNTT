@@ -1853,13 +1853,13 @@ exports.inviteUser = async (req, res) => {
             });
         }
 
-        if (invited.has(group._id.toString())) {
-            return res.status(401).json({
-                success: false,
-                code: 10084,
-                message: "Người này đã được mời.",
-            });
-        }
+        // if (invited.has(group._id.toString())) {
+        //     return res.status(401).json({
+        //         success: false,
+        //         code: 10084,
+        //         message: "Người này đã được mời.",
+        //     });
+        // }
 
         // Mời thẳng
         // const new_member = {

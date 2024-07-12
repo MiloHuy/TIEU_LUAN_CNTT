@@ -1,10 +1,11 @@
 import { Button } from "components/button";
-import { ShareIcon } from "components/icon/bonus.icon";
+import { MODEAPP } from "constants/app.const";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
 import { useActionsPosts } from "hook/posts/useActionsPosts";
 import { usePostDetail } from "hook/posts/usePostDetail";
-import { Bookmark, Heart, MessageCircle } from "lucide-react";
+import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import cn from "utils/cn.utils";
+import { getModeApp } from "utils/user.utils";
 
 const FooterActionsPost = ({
   post_id,
@@ -15,13 +16,13 @@ const FooterActionsPost = ({
   number_likes,
   saved_posts,
   className,
+  privacy,
 }) => {
   const { numberLikes, statusPost, handleLikePost, handleSavePost } =
     useActionsPosts({ liked_post, number_likes, saved_posts });
 
   const { postData, fetchPostDetails } = usePostDetail();
-
-  console.log("postData", postData);
+  const mode = getModeApp();
 
   return (
     <>
@@ -36,12 +37,19 @@ const FooterActionsPost = ({
               strokeWidth={statusPost.isLiked ? 0 : 1.5}
               absoluteStrokeWidth
               size={20}
-              fill={statusPost.isLiked ? "red" : "white"}
+              fill={
+                statusPost.isLiked
+                  ? "red"
+                  : mode === MODEAPP.dark
+                  ? "black"
+                  : "white"
+              }
             />
           </Button>
 
           {hideComment === true ? null : (
             <ModalPostUserV2
+              privacy={privacy}
               trigger={
                 <Button
                   onClick={() => fetchPostDetails(post_id)}
@@ -57,7 +65,7 @@ const FooterActionsPost = ({
           )}
 
           <Button className="w-[20px]" variant="ghost">
-            <ShareIcon height={18} width={18} />
+            <Send size={20} strokeWidth={1.5} />
           </Button>
         </div>
 

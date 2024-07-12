@@ -71,6 +71,7 @@ const CardPostUser = (props) => {
             post_id={postData.id}
             postDescription={postData.description}
             userName={userName}
+            privacy={postData.privacy}
             liked_post={postData.liked}
             number_likes={postData.numberLikes}
             saved_posts={postData.savedPosts}

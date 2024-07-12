@@ -32,7 +32,7 @@ const ModalConfirm = ({
 
       <DialogContent
         className={clsx(
-          "min-w-[400px] min-h-[200px] p-2 grid gap-2 items-center",
+          "min-w-[400px] min-h-[150px] p-2 grid gap-2 items-center",
           className
         )}
       >
@@ -46,19 +46,24 @@ const ModalConfirm = ({
         </p>
 
         <div className="w-full grid grid-cols-2 gap-2 items-center ">
-          <Button disabled={isLoading} variant="icon" onClick={handleAgree}>
-            <LoadingComponent type={TYPELOADING.SPINNER} condition={!isLoading}>
-              <Check size={16} strokeWidth={0.75} />
-              Có
-            </LoadingComponent>
-          </Button>
-
           <DialogClose asChild>
-            <Button className="text-black/90" variant="icon" color="danger">
+            <Button className="text-black/90" variant="icon">
               <CircleX size={20} strokeWidth={1.25} />
               Không
             </Button>
           </DialogClose>
+
+          <Button
+            disabled={isLoading}
+            variant="icon"
+            onClick={handleAgree}
+            color="danger"
+          >
+            <LoadingComponent type={TYPELOADING.SPINNER} condition={!isLoading}>
+              <Check size={16} strokeWidth={1.25} color="#fff" />
+              <h1 className="text-white">Có</h1>
+            </LoadingComponent>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

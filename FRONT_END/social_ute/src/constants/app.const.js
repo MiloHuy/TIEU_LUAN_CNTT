@@ -22,3 +22,8 @@ export const FileSize = {
   max: 10,
   min: 1,
 };
+
+export const MODEAPP = {
+  light: "light",
+  dark: "dark",
+};

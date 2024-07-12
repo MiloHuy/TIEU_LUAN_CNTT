@@ -1,16 +1,21 @@
 import clsx from "clsx";
 import SidebarUser from "layout/sidebar-user";
 import { CircleChevronLeft } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Outlet } from "react-router";
+import Cookies from "js-cookie";
 import { getUserIdFromCookie } from "utils/user.utils";
+import { MODEAPP } from "constants/app.const";
 
 const Welcome = () => {
-  const [darkmode, setDarkMode] = useState("light");
+  const mode = Cookies.get("mode");
+  const [darkmode, setDarkMode] = useState(mode ?? MODEAPP.light);
 
-  const handleDarkMode = (value) => {
+  const handleDarkMode = useCallback((value) => {
     setDarkMode(value);
-  };
+    console.log(value);
+    Cookies.set("mode", value, { expires: 1 });
+  }, []);
 
   const [isShortCutSidebar, setShortCutSidebar] = useState(false);
 

@@ -31,7 +31,7 @@ const ListCommentUser = ({ postId, groupId, permission, role }) => {
             return (
               <div
                 className={clsx(
-                  "flex gap-3 items-center w-full h-20 p-2 border",
+                  "flex gap-3 w-full items-start p-2 border-b",
                   "text-sm text-black dark:text-white font-quick_sans font-bold",
                   "rounded-md"
                 )}
@@ -52,9 +52,7 @@ const ListCommentUser = ({ postId, groupId, permission, role }) => {
                   )}
                 </p>
 
-                <p className="font-normal line-clamp-2 w-full ">
-                  {comment.comment_content}
-                </p>
+                <p>{comment.comment_content}</p>
               </div>
             );
           })}

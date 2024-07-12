@@ -19,3 +19,8 @@ export function getUserAvatarFromCookie() {
 export const getFullName = (firstName, lastName) => {
   return [firstName, lastName].join(" ");
 };
+
+export const getModeApp = () => {
+  const mode = Cookies.get("mode");
+  return mode;
+}

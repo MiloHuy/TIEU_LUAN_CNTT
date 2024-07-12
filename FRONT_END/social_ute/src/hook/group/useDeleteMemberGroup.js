@@ -2,8 +2,8 @@ import { EMessGroup, ERoleNameGroup } from "constants/group/enum";
 import { groupPermission } from "constants/group/permission.const";
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useCallback, useState } from "react";
-import { toast } from "react-toastify";
 import { deleteMemberGroup } from "services/group/api-delele.svc";
+import { toast } from "sonner";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useDeleteMemberGroup = () => {
@@ -25,6 +25,7 @@ export const useDeleteMemberGroup = () => {
       setIsLoading(true);
       await deleteMemberGroup(url, groupId, memberId);
       setIsLoading(false);
+      toast.success(EMessGroup.DELETE_MEMBER_SUCCESS);
     } catch (error) {
       setIsLoading(false);
       errorHandler(error);
