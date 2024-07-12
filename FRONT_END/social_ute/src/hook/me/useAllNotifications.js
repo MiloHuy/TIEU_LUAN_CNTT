@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { getAllNotifications, getAllNotificationsUnread } from "services/me.svc";
-import { errorHandler } from "utils/error-response.utils";
 
 export const useAllNotifications = () => {
   const [res, setRes] = useState(true);
@@ -11,7 +10,7 @@ export const useAllNotifications = () => {
         const res = await getAllNotifications();
         setRes(res.data);
       } catch (error) {
-        errorHandler(error);
+        // errorHandler(error);
       }
     }, []);
 
@@ -21,7 +20,7 @@ export const useAllNotifications = () => {
         const res = await getAllNotificationsUnread();
         setRes(res.data);
       } catch (error) {
-        errorHandler(error);
+        // errorHandler(error);
       }
     }, []);
 

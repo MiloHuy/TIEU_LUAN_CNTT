@@ -1,4 +1,4 @@
-import LoadingComponent from "combine/loading-component/LoadingComponent";
+import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import { Button } from "components/button";
 import {
   DropdownMenu,
@@ -6,16 +6,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "components/dropdown";
-import { TYPELOADING } from "constants/type.const";
 import ModalChangePrivacy from "features/modal/modal-change-privacy";
 import ModalConfirm from "features/modal/modal-confirm";
 import { useDeletePost } from "hook/posts/useDeletePost";
 import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
-import { getUserIdFromCookie } from "utils/user.utils";
+import { useSelector } from "react-redux";
 
 const DropDownShowMoreOptions = ({ user_id, post_id, privacy }) => {
-  const id = getUserIdFromCookie();
-  const { isLoading, handleDeletePost } = useDeletePost({ post_id });
+  const userInfo = useSelector(selectCurrenUser);
+  const { isLoading, handleDeletePost } = useDeletePost({
+    post_id,
+    role: userInfo.role_id,
+  });
 
   return (
     <DropdownMenu>
@@ -41,22 +43,22 @@ const DropDownShowMoreOptions = ({ user_id, post_id, privacy }) => {
           title="Chọn phạm vi muốn thay đổi"
         />
 
-        <LoadingComponent type={TYPELOADING.NULL} condition={user_id === id}>
-          <ModalConfirm
-            isLoading={isLoading}
-            handleCallback={handleDeletePost}
-            title="Xác nhận xóa bài viết của mình."
-            trigger={
-              <DropdownMenuItem
-                className="flex gap-2"
-                onSelect={(e) => e.preventDefault()}
-              >
-                <Trash2 size={18} color="#d04e4e" strokeWidth={0.75} />
-                <p>Xóa bài viết</p>
-              </DropdownMenuItem>
-            }
-          />
-        </LoadingComponent>
+        {/* <LoadingComponent type={TYPELOADING.NULL} condition={user_id === id}> */}
+        <ModalConfirm
+          isLoading={isLoading}
+          handleCallback={handleDeletePost}
+          title="Xác nhận xóa bài viết."
+          trigger={
+            <DropdownMenuItem
+              className="flex gap-2"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Trash2 size={18} color="#d04e4e" strokeWidth={0.75} />
+              <p>Xóa bài viết</p>
+            </DropdownMenuItem>
+          }
+        />
+        {/* </LoadingComponent> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

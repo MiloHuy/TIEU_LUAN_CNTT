@@ -21,7 +21,7 @@ const ListPostsAdmin = () => {
   const user = useSelector(selectCurrenUser);
   const userName = getFullName(user.first_name, user.last_name);
 
-  const { postDetail, fetchPostDetails } = usePostDetail();
+  const { postData, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
     const observer = new IntersectionObserver(onIntersection);
@@ -60,7 +60,7 @@ const ListPostsAdmin = () => {
                       userName="AAA"
                     />
                   }
-                  postDetail={postDetail}
+                  postDetail={postData}
                   userName={userName}
                 />
               </div>

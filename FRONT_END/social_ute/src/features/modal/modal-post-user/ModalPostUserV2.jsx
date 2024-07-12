@@ -69,6 +69,7 @@ const ModalPostUserV2 = ({
                         className="min-h-[8vh] h-[8vh] rounded-[30px] w-[40vw]"
                         img={postDetail.user_id.avatar.url}
                         name={userName}
+                        createAt={postDetail.create_post_time}
                         action={
                           <DropdownShowMoreOptions
                             user_id={postDetail.user_id._id}

@@ -1,6 +1,8 @@
+import { ERROR_CHANGE_PRIVACY } from "constants/error.const";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { updatePrivacyPost } from "services/post/api-put.svc";
+import { errorHandler } from "utils/error-response.utils";
 
 export const usePrivacyPost = ({ post_id }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,16 +30,7 @@ export const usePrivacyPost = ({ post_id }) => {
         }, 1500);
       } catch (err) {
         setIsLoading(false);
-        toast.error("Thay đổi thất bại!!!", {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        errorHandler(err,ERROR_CHANGE_PRIVACY);
       }
     },
     [post_id],

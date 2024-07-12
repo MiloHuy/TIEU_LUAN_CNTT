@@ -52,6 +52,7 @@ const PostDetail = () => {
                 img={postData?.user_id.avatar.url}
                 name={userName}
                 privacy={postData.privacy}
+                createAt={postData.create_post_time}
                 action={
                   <DropdownShowMoreOptions
                     user_id={postData.userId?._id}

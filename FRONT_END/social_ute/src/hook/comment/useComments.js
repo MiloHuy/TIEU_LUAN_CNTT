@@ -1,4 +1,3 @@
-import { ERR_POST } from "constants/error.const";
 import { EMessGroup } from "constants/group/enum";
 import { TOAST_OPTION_DEFAULT } from "constants/toast.const";
 import { useCallback, useState } from "react";
@@ -6,7 +5,6 @@ import { toast } from "react-toastify";
 import { getAllCommentPostGroup } from "services/group/api-get.svc";
 import { getCommentPost } from "services/post/api-get.svc";
 import { checkPermissionMethod } from "utils/auth.utils";
-import { checkCodeInArray } from "utils/code-error.utils";
 import { errorHandler } from "utils/error-response.utils";
 
 export const useComments = () => {
@@ -21,21 +19,6 @@ export const useComments = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      const { code } = error.response.data;
-
-      const messageError = checkCodeInArray(ERR_POST, code);
-      if (messageError) {
-        toast.error(`${messageError}`, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
     }
   }, []);
 

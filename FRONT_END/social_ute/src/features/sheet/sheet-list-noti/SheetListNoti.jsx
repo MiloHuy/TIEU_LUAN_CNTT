@@ -5,7 +5,6 @@ import { Button } from "components/button";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import CardNotis from "./CardNotis";
-import { useReadNoti } from "hook/me/useReadNoti";
 
 const SheetListNoti = ({ trigger }) => {
   const {

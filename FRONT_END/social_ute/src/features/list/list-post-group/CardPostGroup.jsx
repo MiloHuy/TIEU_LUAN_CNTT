@@ -12,9 +12,9 @@ const CardPostGroup = ({ postData, permission, role, ...props }) => {
     postData.user_id?.last_name
   );
 
-  const dateNow = new Date();
-  const dateCreatePost = new Date(postData?.create_post_time);
-  const diffTime = Math.abs((dateNow - dateCreatePost) / (1000 * 60 * 60 * 24));
+  // const dateNow = new Date();
+  // const dateCreatePost = new Date(postData?.create_post_time);
+  // const diffTime = Math.abs((dateNow - dateCreatePost) / (1000 * 60 * 60 * 24));
 
   return (
     <CardBaseLayout
@@ -26,7 +26,7 @@ const CardPostGroup = ({ postData, permission, role, ...props }) => {
           img={postData.user_id?.avatar.url}
           name={fullName}
           privacy={postData.privacy}
-          dateBetween={Math.floor(diffTime)}
+          createAt={postData.create_post_time}
           action={
             <DropDownShowMoreActionPostGroup
               permission={permission}

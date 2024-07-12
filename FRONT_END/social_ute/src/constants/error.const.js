@@ -106,3 +106,19 @@ export const ERR_POST = [
     label: "Không thể thao tác bài của người chưa theo dõi.",
   },
 ];
+
+export const ERROR_CHANGE_PRIVACY = [
+  {
+    type: "ERR_PRIVACY",
+    code: 2026,
+    label: "Không thể thao tác trên bài viết của người khác",
+  },
+];
+
+export const ERROR_DELETE_POST = [
+  {
+    type: "ERR_DELETE",
+    code: 2019,
+    label: "Không thể xóa bài viết của người khác",
+  },
+];
