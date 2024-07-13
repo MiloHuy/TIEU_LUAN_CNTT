@@ -22,7 +22,7 @@ const ListPostsAdmin = () => {
   const user = useSelector(selectCurrenUser);
   const userName = getFullName(user.first_name, user.last_name);
 
-  const { postData, fetchPostDetails } = usePostDetail();
+  const { post: postData, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
     const observer = new IntersectionObserver(onIntersection);

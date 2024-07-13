@@ -21,7 +21,7 @@ const FooterActionsPost = ({
   const { numberLikes, statusPost, handleLikePost, handleSavePost } =
     useActionsPosts({ liked_post, number_likes, saved_posts });
 
-  const { postData, fetchPostDetails } = usePostDetail();
+  const { post: postData, fetchPostDetails } = usePostDetail();
   const mode = getModeApp();
 
   return (

@@ -1,9 +1,8 @@
-import { selectCurrenUser } from "app/slice/auth/auth.slice";
 import ArrayEmpty from "combine/array-empty";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
 import { usePostDetail } from "hook/posts/usePostDetail";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { getFullName } from "utils/user.utils";
 import { motion } from "framer-motion";
 import ModalPostUserV2 from "features/modal/modal-post-user/ModalPostUserV2";
@@ -13,21 +12,26 @@ import {
 } from "../list-post-user-detail/MotionListPostUser";
 import clsx from "clsx";
 import { useAllPostsHome } from "hook/me/useAllPostsHome";
+import { Loader2 } from "lucide-react";
 
 const ListPostUserHome = ({ userId, className }) => {
-  const { posts, fetchPostsHome } = useAllPostsHome();
-
-  // const user = useSelector(selectCurrenUser);
-  const fullName = useMemo(
-    () => getFullName(posts?.user_id?.first_name, posts?.user_id?.last_name),
-    [posts]
-  );
-
-  const { postData, fetchPostDetails } = usePostDetail();
+  const { posts, onIntersection, hasMore, elementRef } =
+    useAllPostsHome(userId);
 
   useEffect(() => {
-    fetchPostsHome(userId);
-  }, [fetchPostsHome, userId]);
+    const observer = new IntersectionObserver(onIntersection);
+    if (observer && elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [posts, elementRef, onIntersection]);
+
+  const { post: postData, fetchPostDetails } = usePostDetail();
 
   return (
     <LoadingComponent type={TYPELOADING.TITLE} condition={Boolean(posts)}>
@@ -42,6 +46,10 @@ const ListPostUserHome = ({ userId, className }) => {
           animate="visible"
         >
           {posts?.map((post) => {
+            const fullName = getFullName(
+              post.user_id?.first_name,
+              post.user_id?.last_name
+            );
             return (
               <div className="relative w-full h-full group flex justify-center">
                 <ModalPostUserV2
@@ -63,6 +71,15 @@ const ListPostUserHome = ({ userId, className }) => {
           })}
         </motion.div>
       </ArrayEmpty>
+
+      {hasMore && (
+        <div
+          className="flex items-center justify-center h-full"
+          ref={elementRef}
+        >
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+        </div>
+      )}
     </LoadingComponent>
   );
 };
