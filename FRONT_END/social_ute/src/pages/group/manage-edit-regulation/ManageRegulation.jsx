@@ -25,7 +25,7 @@ const ManageRegulation = () => {
   }, [fetchAllRegulations, groupId]);
 
   return (
-    <div className="w-full h-full mt-10 flex flex-col gap-4 p-10">
+    <div className="w-full h-[100vh] mt-10 flex flex-col gap-4 p-10">
       <p className="text-xl font-quick_sans font-bold">Nội quy của nhóm</p>
       <LoadingComponent type={TYPELOADING.TITLE} condition={isLoading}>
         <Formik
@@ -91,9 +91,15 @@ const ManageRegulation = () => {
                 <Button
                   className="p-2 mt-4 flex gap-2 w-[200px] font-quick_sans"
                   type="submit"
+                  disabled={isLoadRegulate}
                 >
-                  Chỉnh sửa nội quy
-                  <PencilLine size={18} strokeWidth={1.5} />
+                  <LoadingComponent
+                    type={TYPELOADING.SPINNER}
+                    condition={!isLoadRegulate}
+                  >
+                    Chỉnh sửa nội quy
+                    <PencilLine size={18} strokeWidth={1.5} />
+                  </LoadingComponent>
                 </Button>
               </Form>
             );
