@@ -57,7 +57,7 @@ const User = new Schema({
     url: {
       type: String,
       default:
-        "https://res.cloudinary.com/dkeecnort/image/upload/v1720687777/avatars/lodypysgadcixvgkn8r1.jpg",
+        "https://res.cloudinary.com/dkeecnort/image/upload/v1720686574/avatars/cjapgr0v1hhi4eujzyhb.jpg",
     },
   },
   forgot_password: {
