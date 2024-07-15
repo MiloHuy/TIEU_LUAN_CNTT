@@ -26,11 +26,11 @@ export const useEditRegulationManageGroup = () => {
             TOAST_OPTION_DEFAULT,
           );
         }
-        await editRegulationGroup(url, groupId,regulations);
+        await editRegulationGroup(url, groupId,{regulation: regulations});
         setIsLoading(false);
 
         return toast.success(
-          'Đã xóa thành công',
+          EMessGroup.EDIT_SUCCESS,
           TOAST_OPTION_DEFAULT,
         );
       } catch (err) {

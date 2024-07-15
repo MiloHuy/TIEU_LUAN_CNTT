@@ -24,8 +24,8 @@ export const API_ME_ENDPOINT = {
   },
 };
 
-export const getAllMePosts = () => {
-  const res = AxiosInstance.get(API_ME_ENDPOINT.GET.me_posts);
+export const getAllMePosts = (_id,payload) => {
+  const res = AxiosInstance.get(API_ME_ENDPOINT.GET.me_posts, {params: payload});
   return res;
 };
 

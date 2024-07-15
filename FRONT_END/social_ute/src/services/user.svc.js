@@ -4,7 +4,7 @@ export const API_USER_ENDPOINT = {
   GET: {
     user_Info: "/users/info/:id",
     statistics: "/statistics/:id ",
-    list_posts_guest: "/users/posts/:id ",
+    list_posts_guest: "/users/posts/:id",
     get_search: "/search",
   },
 
@@ -68,9 +68,11 @@ export const RefuseRequest = async (id) => {
   return res;
 };
 
-export const getAllPostsGuest = (id) => {
+export const getAllPostsGuest = (id,payload) => {
+  console.log("payload", payload);
   const res = AxiosInstance.get(
-    API_USER_ENDPOINT.GET.list_posts_guest.replace(":id", id),
+    API_USER_ENDPOINT.GET.list_posts_guest.replace(":id", id), 
+    {params: payload}
   );
   return res;
 };

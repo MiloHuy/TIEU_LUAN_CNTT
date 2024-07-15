@@ -15,19 +15,20 @@ import {
 import FooterActionsPost from "layout/footer-actions-post";
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
+import { ERROR_POST_DETAIL } from "constants/error.const";
 
 const PostDetail = () => {
   const { postId } = useParams();
 
-  const { fetchPostDetails, postData } = usePostDetail();
+  const { fetchPostDetails, post, code, isLoading } = usePostDetail();
 
   useEffect(() => {
     fetchPostDetails(postId);
   }, [fetchPostDetails, postId]);
 
   const userName = getFullName(
-    postData?.user_id?.first_name,
-    postData?.user_id?.last_name
+    post?.user_id?.first_name,
+    post?.user_id?.last_name
   );
 
   return (
@@ -35,11 +36,8 @@ const PostDetail = () => {
       <p className="text-2xl font-quick_sans uppercase font-bold text-start">
         Chi tiết bài viết của {userName}
       </p>
-      <LoadingComponent
-        type={TYPELOADING.PROPAGATE}
-        condition={Boolean(postData)}
-      >
-        {postData && (
+      <LoadingComponent type={TYPELOADING.PROPAGATE} condition={isLoading}>
+        {post && (
           <div className="max-w-[40vw] w-[40vw] p-2">
             <div
               className={clsx(
@@ -49,15 +47,15 @@ const PostDetail = () => {
             >
               <HeaderPostUser
                 className="h-16 rounded-lg w-full"
-                img={postData?.user_id.avatar.url}
+                img={post?.user_id.avatar.url}
                 name={userName}
-                privacy={postData.privacy}
-                createAt={postData.create_post_time}
+                privacy={post.privacy}
+                createAt={post.create_post_time}
                 action={
                   <DropdownShowMoreOptions
-                    user_id={postData.userId?._id}
-                    post_id={postData.id}
-                    privacy={postData.privacy}
+                    user_id={post.userId?._id}
+                    post_id={post.id}
+                    privacy={post.privacy}
                   />
                 }
               />
@@ -65,7 +63,7 @@ const PostDetail = () => {
               <div className="w-full flex flex-col">
                 <Carousel className="w-full max-h-[450px]">
                   <CarouselContent>
-                    {postData?.post_img?.map((img, index) => (
+                    {post?.post_img?.map((img, index) => (
                       <CarouselItem key={index}>
                         <img
                           lazy="loading"
@@ -81,17 +79,25 @@ const PostDetail = () => {
                 </Carousel>
 
                 <FooterActionsPost
-                  post_id={postData._id}
-                  postDescription={postData.description}
+                  post_id={post._id}
+                  postDescription={post.description}
                   userName={userName}
-                  liked_post={postData.liked}
-                  number_likes={postData.likes}
-                  saved_posts={postData.stored}
+                  liked_post={post.liked}
+                  number_likes={post.likes}
+                  saved_posts={post.stored}
                 />
               </div>
             </div>
           </div>
         )}
+      </LoadingComponent>
+
+      <LoadingComponent type={TYPELOADING.NULL} condition={Boolean(code)}>
+        <p className="text-red-500">
+          {code === ERROR_POST_DETAIL[0].code
+            ? ERROR_POST_DETAIL[0].label
+            : "Lỗi không xác định"}
+        </p>
       </LoadingComponent>
     </div>
   );

@@ -21,14 +21,22 @@ export function DataTableV2({ columns, data = [], className }) {
   });
 
   return (
-    <div className={clsx("rounded-md border", className)}>
+    <div
+      className={clsx(
+        "rounded-md border border-black dark:border-white overflow-y-auto w-full",
+        className
+      )}
+    >
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="text-black">
+                  <TableHead
+                    key={header.id}
+                    className="text-black dark:text-white"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

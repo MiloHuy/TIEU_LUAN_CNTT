@@ -1,34 +1,42 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getAllMePosts } from "services/me.svc";
 import { getAllPostsGuest } from "services/user.svc";
 import { errorHandler } from "utils/error-response.utils";
 import { getUserIdFromCookie } from "utils/user.utils";
 
-export const useAllPostsHome = () => {
+export const useAllPostsHome = (userId) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [posts, setPosts] = useState();
+  const [posts, setPosts] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const elementRef = useRef(null);
+  const [filter, setFilter] = useState({ page: 1, size: 6 });
 
-  const fetchPostsHome = useCallback(async (userId) => {
+  const fetchPosts = useCallback(async () => {
     setIsLoading(true);
     try {
-      let dataPosts;
-      if (userId === getUserIdFromCookie()) {
-        dataPosts = await getAllMePosts();
+      const isCurrentUser = userId === getUserIdFromCookie();
+      const service = isCurrentUser ? getAllMePosts : getAllPostsGuest;
+      const dataPosts = await service(userId, { page: filter.page, size: filter.size });
+
+      if (dataPosts.data.posts.length === 0) {
+        setHasMore(false);
       } else {
-        dataPosts = await getAllPostsGuest(userId);
+        setPosts((prevPosts) => [...prevPosts, ...dataPosts.data.posts]);
+        setFilter((prevFilter) => ({ ...prevFilter, page: prevFilter.page + 1 }));
       }
-      setPosts(dataPosts.data.posts);
     } catch (error) {
       errorHandler(error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [userId, filter.page, filter.size]);
 
-  return {
-    posts,
-    isLoading,
+  const onIntersection = useCallback((entries) => {
+    const firstEntry = entries[0];
+    if (firstEntry.isIntersecting && hasMore) {
+      fetchPosts();
+    }
+  }, [fetchPosts, hasMore]);
 
-    fetchPostsHome,
-  };
+  return { isLoading, posts, elementRef, hasMore, onIntersection };
 };

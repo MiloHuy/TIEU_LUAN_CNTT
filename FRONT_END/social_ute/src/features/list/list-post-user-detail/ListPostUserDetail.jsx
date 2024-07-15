@@ -18,7 +18,7 @@ const ListPostUserDetail = () => {
   const userId = getUserIdFromCookie();
   const fullName = getFullName(user.first_name, user.last_name);
 
-  const { postDetail, fetchPostDetails } = usePostDetail();
+  const { post: postDetail, fetchPostDetails } = usePostDetail();
 
   useEffect(() => {
     fetchPostsHome(userId);

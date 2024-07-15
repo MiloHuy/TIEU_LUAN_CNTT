@@ -122,3 +122,11 @@ export const ERROR_DELETE_POST = [
     label: "Không thể xóa bài viết của người khác",
   },
 ];
+
+export const ERROR_POST_DETAIL = [
+  {
+    type: "ERR_POST",
+    code: 2030,
+    label: "Bài viết không tồn tại",
+  },
+];

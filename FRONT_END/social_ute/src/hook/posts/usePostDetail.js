@@ -3,19 +3,25 @@ import { getPostById } from "services/post/api-get.svc";
 import { errorHandler } from "utils/error-response.utils";
 
 export const usePostDetail = () => {
-  const [postData, setpostData] = useState();
+  const [res, setRes] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPostDetails = useCallback(async (post_id) => {
     try {
+      setIsLoading(false);
       const postById = await getPostById(post_id);
-      setpostData(postById.data.post);
+      setRes(postById.data);
+      setIsLoading(true);
     } catch (err) {
-      errorHandler(err);
+      setIsLoading(true);
+      setRes(err.response.data);
+      // errorHandler(err);
     }
   }, []);
 
   return {
-    postData,
+    ...res,
+    isLoading,
 
     fetchPostDetails,
   };
