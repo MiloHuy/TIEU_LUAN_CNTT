@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { genformRegisterSchema } from "./schema";
 import { genLabelFormRegister, genOptionsPrivacyPost } from "./utils";
-import { register, sendOtpRegister } from "services/auth.svc";
+import { sendOtpRegister } from "services/auth.svc";
 import { errorHandler } from "utils/error-response.utils";
 import { useNavigate } from "react-router-dom";
 

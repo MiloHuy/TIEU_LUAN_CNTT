@@ -130,3 +130,11 @@ export const ERROR_POST_DETAIL = [
     label: "Bài viết không tồn tại",
   },
 ];
+
+export const ERROR_INVITE_MEMBER = [
+  {
+    type: "ERR_INVITE",
+    code: 10010,
+    label: "Người này đã vào nhóm",
+  },
+];

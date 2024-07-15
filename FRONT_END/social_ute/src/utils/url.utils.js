@@ -8,8 +8,6 @@ export const CopyURL = (post_id) => {
   document.execCommand("copy");
   document.body.removeChild(el);
 
-  console.log("el.value:" + el.value);
-
   toast.success("Sao chép đường dẫn thành công!!!", {
     position: "bottom-right",
     autoClose: 1000,

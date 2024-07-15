@@ -5,6 +5,7 @@ import { useActionsPosts } from "hook/posts/useActionsPosts";
 import { usePostDetail } from "hook/posts/usePostDetail";
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import cn from "utils/cn.utils";
+import { CopyURL } from "utils/url.utils";
 import { getModeApp } from "utils/user.utils";
 
 const FooterActionsPost = ({
@@ -64,7 +65,11 @@ const FooterActionsPost = ({
             />
           )}
 
-          <Button className="w-[20px]" variant="ghost">
+          <Button
+            className="w-[20px]"
+            variant="ghost"
+            onClick={() => CopyURL(post_id)}
+          >
             <Send size={20} strokeWidth={1.5} />
           </Button>
         </div>

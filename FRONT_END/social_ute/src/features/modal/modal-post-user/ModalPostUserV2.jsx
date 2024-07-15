@@ -15,6 +15,7 @@ import ListCommentUser from "features/list/list-comment-user";
 import { usePushComment } from "hook/comment/usePushComment";
 import HeaderPostUser from "layout/header-post-user";
 import FieldAvatarNameTimeDes from "./FieldModalPostUser/FieldAvatarNameTimeDes";
+import { useState } from "react";
 
 const ModalPostUserV2 = ({
   trigger,
@@ -30,10 +31,14 @@ const ModalPostUserV2 = ({
     postId: postDetail?._id,
   });
 
+  const [flag, setFlag] = useState(1);
+
   const handlePostCommnentInput = async (commentInput) => {
     if (!commentInput) return;
 
     await handlePostComment(commentInput);
+
+    setFlag((prev) => prev + 1);
   };
 
   return (
@@ -99,6 +104,7 @@ const ModalPostUserV2 = ({
                         postId={postDetail?._id}
                         permission={permission}
                         role={role}
+                        flag={flag}
                       />
 
                       <div className="grid gap-1">

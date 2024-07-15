@@ -8,16 +8,24 @@ import { TYPELOADING } from "constants/type.const";
 import { useComments } from "hook/comment/useComments";
 import { useEffect } from "react";
 
-const ListCommentUser = ({ postId, groupId, permission, role }) => {
+const ListCommentUser = ({ postId, groupId, permission, role, flag }) => {
   const { comments, fetchAllComments, isLoading, fetchCommentGroup } =
     useComments();
 
   useEffect(() => {
-    if (!postId) return;
+    if (!postId || !flag) return;
 
     groupId && fetchCommentGroup(permission, role, postId, groupId);
     !groupId && fetchAllComments(postId);
-  }, [fetchAllComments, postId, fetchCommentGroup, groupId, permission, role]);
+  }, [
+    fetchAllComments,
+    postId,
+    fetchCommentGroup,
+    groupId,
+    permission,
+    role,
+    flag,
+  ]);
 
   return (
     <LoadingComponent

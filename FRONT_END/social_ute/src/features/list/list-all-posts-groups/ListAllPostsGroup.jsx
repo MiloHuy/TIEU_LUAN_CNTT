@@ -1,12 +1,18 @@
 import LoadingComponent from "combine/loading-component";
 import { TYPELOADING } from "constants/type.const";
+import ModalConfirm from "features/modal/modal-confirm";
 import { useAllPostManage } from "hook/manage-group/useAllPostManage";
+import { useDeletePostManage } from "hook/manage-group/useDeletePostManage";
+import { Trash2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { formatDate } from "utils/format-date.utils";
 import { getFullName } from "utils/user.utils";
 
 const ListAllPostsGroup = ({ permission, role, groupId }) => {
   const { fetchAllPostsManage, posts: allPosts } = useAllPostManage();
+
+  const { handleDeletePostManage, isLoading: loadDelete } =
+    useDeletePostManage();
 
   useEffect(() => {
     fetchAllPostsManage(permission, role, groupId);
@@ -24,10 +30,18 @@ const ListAllPostsGroup = ({ permission, role, groupId }) => {
             />
             <p className="text-center">
               Người đăng:{" "}
-              {getFullName(post.user_id.first_name, post.user_id.last_name)}
+              {getFullName(post?.user_id?.first_name, post?.user_id?.last_name)}
             </p>
-            <p className="text-center">
+            <p className="flex gap-2 items-center justify-center">
               Ngày đăng: {formatDate(post.create_post_time)}
+              <ModalConfirm
+                trigger={<Trash2 size={18} color="#c20f0f" strokeWidth={1.5} />}
+                handleCallback={() =>
+                  handleDeletePostManage(permission, role, groupId, post._id)
+                }
+                title="Xác nhận xóa bài viết"
+                isLoading={loadDelete}
+              />
             </p>
           </div>
         ))}

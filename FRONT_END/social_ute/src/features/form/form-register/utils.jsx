@@ -7,7 +7,7 @@ export const genLabelFormRegister = () => {
     last_name: "Tên",
     email: "Gmail",
     phone_number: "Số điện thoại",
-    id: "MSSV",
+    id: "Mã số ID",
     pass_word: "Mật khẩu",
     department: "Khoa/Phòng ban",
     role: "Vai trò",

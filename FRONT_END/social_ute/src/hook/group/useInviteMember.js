@@ -1,3 +1,4 @@
+import { ERROR_INVITE_MEMBER } from "constants/error.const";
 import { useCallback, useState } from "react";
 import { inviteMember } from "services/group/api-post.svc";
 import { toast } from "sonner";
@@ -16,7 +17,7 @@ export const useInviteMember = () => {
     } catch (error) {
       setIsLoading(false);
       console.error(error);
-      errorHandler(error);
+      errorHandler(error,ERROR_INVITE_MEMBER);
     }
   }, []);
 
