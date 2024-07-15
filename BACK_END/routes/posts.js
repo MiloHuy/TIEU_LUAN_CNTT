@@ -12,6 +12,7 @@ const {
     adminGetAll,
     adminDestroy,
     changePrivacy,
+    adminGetPost,
 } = require('../controllers/postController.js');
 
 const {
@@ -23,6 +24,7 @@ const {
 
 router.get('/admin', verifyToken, isAdmin, adminGetAll);
 router.delete('/admin/:id', verifyToken, isAdmin, adminDestroy);
+router.get('/admin/:id', verifyToken, isAdminOrUser, adminGetPost);
 
 router.get('/:id', verifyToken, isAdminOrUser, getPost);
 // router.get('/:id', verifyToken, isUser, getPost);

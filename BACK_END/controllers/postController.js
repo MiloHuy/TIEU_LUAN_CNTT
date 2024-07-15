@@ -1016,4 +1016,69 @@ exports.adminDestroy = async (req, res) => {
     }
 };
 
-// code: 2032
+exports.adminGetPost = async (req, res) => {
+    try {
+        // const userId = req.user._id;
+        const postId = req.params.id;
+
+        const [post, check_liked, check_stored, post_like] =
+            await Promise.all([
+                Post.findById(postId)
+                    .populate("user_id", "first_name last_name avatar.url")
+                    .select("-post_img.publicId")
+                    .lean(),
+                Post_liked.findOne({
+                    post_id: postId,
+                    user_id: userId,
+                }),
+                Post_stored.findOne({
+                    user_id: userId,
+                    post_id: postId,
+                }),
+                Post_liked.findOne({ post_id: postId }),
+            ]);
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                code: 2001,
+                message: "Không tìm thấy bài viết.",
+            });
+        }
+
+        // if (!following_User_Ids.some((id) => id.equals(post.user_id._id))) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2029,
+        //         message:
+        //             "Không thể xem. Bài viết này của người mà bạn chưa theo dõi.",
+        //     });
+        // }
+
+        // if (post.privacy == 0 && !post.user_id._id.equals(req.user._id)) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         code: 2030,
+        //         message: "Bạn không phù hợp với chế độ xem của bài viết",
+        //     });
+        // }
+
+        post.liked = !!check_liked;
+        post.stored = !!check_stored;
+
+        post.likes = post_like ? post_like.user_id.length : 0;
+
+        return res.status(200).json({
+            success: true,
+            post,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            code: 2032,
+            message: error.message,
+        });
+    }
+};
+
+// code: 2033
