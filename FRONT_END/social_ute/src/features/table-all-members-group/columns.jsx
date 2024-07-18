@@ -1,5 +1,5 @@
 import { getFullName } from "utils/user.utils";
-import CellHeaderAllMembersGroup, { CellAction } from "./Cell";
+import CellHeaderAllMembersGroup, { CellAction, CellStatus } from "./Cell";
 
 export const columns = [
   {
@@ -15,6 +15,11 @@ export const columns = [
     accessorKey: "department",
     header: CellHeaderAllMembersGroup,
     cell: ({ row }) => row.original.user_id.department,
+  },
+  {
+    accessorKey: "isActive",
+    header: CellHeaderAllMembersGroup,
+    cell: CellStatus,
   },
   {
     accessorKey: "post_count",

@@ -1,4 +1,5 @@
 import { selectRolePermission } from "app/slice/group/group.slice";
+import { Badge } from "components/badge";
 import { Button } from "components/button";
 import {
   DropdownMenu,
@@ -9,7 +10,8 @@ import {
 } from "components/dropdown";
 import ModalConfirm from "features/modal/modal-confirm";
 import { useDeleteMemberGroup } from "hook/group/useDeleteMemberGroup";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { useEditActiveMember } from "hook/manage-group/useEditActiveMember";
+import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -17,6 +19,7 @@ const CellHeaderAllMembersGroup = ({ column }) => {
   const titleMapping = {
     name: "Tên thành viên",
     department: "Phòng ban",
+    isActive: "Trạng thái",
     post_count: "Số bài viết",
     like_count: "Số lượt thích",
     cmt_count: "Số bình luận",
@@ -26,10 +29,20 @@ const CellHeaderAllMembersGroup = ({ column }) => {
   return titleMapping[column.id];
 };
 
+export const CellStatus = ({ row }) => {
+  return row.original.is_active ? (
+    <Badge>Kích hoạt</Badge>
+  ) : (
+    <Badge className="bg-red">Bị cấm</Badge>
+  );
+};
+
 export const CellAction = ({ row }) => {
   const { handleDeleteMember, isLoading } = useDeleteMemberGroup();
+  const { handleEditMemberManage, isLoading: isLoadEdit } =
+    useEditActiveMember();
   const rolePermission = useSelector(selectRolePermission);
-  const { permission } = rolePermission;
+  const { permission, role } = rolePermission;
   const { groupId } = useParams();
 
   return (
@@ -58,7 +71,28 @@ export const CellAction = ({ row }) => {
           }
         />
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Cấm thành viên</DropdownMenuItem>
+
+        <ModalConfirm
+          isLoading={isLoadEdit}
+          handleCallback={() =>
+            handleEditMemberManage(
+              permission,
+              role,
+              groupId,
+              row.original.user_id._id
+            )
+          }
+          title="Xác nhận chỉnh sửa thành viên."
+          trigger={
+            <DropdownMenuItem
+              className="flex gap-2"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <SquarePen size={18} color="#d04e4e" strokeWidth={0.75} />
+              <p>Chỉnh sửa thành viên</p>
+            </DropdownMenuItem>
+          }
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );
