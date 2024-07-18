@@ -18,7 +18,7 @@ export const genOptionsPrivacyPost = () => {
   return [
     {
       value: RoleConst.STUDENT,
-      label: "Sinh viên",
+      label: "Giảng viên/Sinh viên",
       icon: <User size={20} strokeWidth={1.25} />,
     },
     {
